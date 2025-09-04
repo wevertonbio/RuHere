@@ -56,7 +56,7 @@ set_gbif_credentials <- function(gbif_username, gbif_email, gbif_password,
 # # Test
 # gbif_username = "wevertonf1993"
 # gbif_email = "wevertonf1993@hotmail.com"
-# gbif_password = "nene1993"
+# gbif_password = "teste"
 #
 #
 
