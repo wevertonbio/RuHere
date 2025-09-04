@@ -11,11 +11,11 @@ Text in progress...
 
 Note: Internet connection is required to install the package.
 
-To install the latest release of kuenm2 use the following line of code:
+To install the latest release of RuHere use the following line of code:
 
 ``` r
 # Installing from CRAN 
-#install.packages("kuenm2")  # in progress
+#install.packages("RuHere")  # in progress
 ```
 
 The development version of RuHere can be installed using the code below.
