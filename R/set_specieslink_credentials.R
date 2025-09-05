@@ -49,7 +49,5 @@ set_specieslink_credentials <- function(specieslink_key, overwrite = FALSE,
 
 # # # Test
 # specieslink_key = "teste"
-# set_specieslink_credentials(specieslink_key = specieslink_key, overwrite = TRUE,
-#                             open_Renviron = TRUE)
-
-
+# set_specieslink_credentials(specieslink_key = specieslink_key,
+#                             overwrite = TRUE, open_Renviron = TRUE)
