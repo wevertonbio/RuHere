@@ -573,9 +573,7 @@ get_specieslink <- function (key = NULL, dir = "results/", filename = "output",
     }
   }
 
-  if (is.null(limit)) {
-    base_url
-  } else {
+  if (!is.null(limit)) {
     if (is.numeric(limit)) {
       mr <- url_query(limit, "limit")
       base_url <- paste0(base_url, mr)
@@ -585,9 +583,28 @@ get_specieslink <- function (key = NULL, dir = "results/", filename = "output",
   }
 
   base_url <- paste0(base_url, "apikey=", key)
+
   message("Making request to speciesLink...")
 
-  df <- jsonlite::fromJSON(base_url)$features$properties
+  df_json <- jsonlite::fromJSON(base_url)
+
+  n_records <- df_json$numberMatched
+
+  if (n_records > 5000) {
+    n_requests <- 1:ceiling(n_records/5000) - 1
+    
+    list_urls <- lapply(n_requests, function(x) {
+      offset_x <- ifelse(x == 0, 0, (x * 5000))
+      paste0(base_url, "&limit=5000", "&offset=", x * offset_x)
+    })
+
+    df_lim <- lapply(list_urls, 
+                     function(x) jsonlite::fromJSON(x)$features$properties)
+    
+    df <- dplyr::bind_rows(df_lim)
+  } else {
+    df <- df_json$features$properties
+  }
 
   if (!is.logical(save)) {
     stop("save must be TRUE or FALSE")
