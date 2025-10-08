@@ -1,11 +1,11 @@
 get_specieslink <- function (key = NULL, dir = "results/", filename = "output",
                             save = FALSE, basisOfRecord = NULL, family = NULL,
-                            species = NULL, institutionCode = NULL, 
+                            species = NULL, institutionCode = NULL,
                             collectionID = NULL, catalogNumber = NULL,
                             kingdom = NULL, phylum = NULL, class = NULL,
-                            order = NULL, genus = NULL, specificEpithet = NULL, 
+                            order = NULL, genus = NULL, specificEpithet = NULL,
                             infraspecificEpithet = NULL, collectionCode = NULL,
-                            identifiedBy = NULL, yearIdentified = NULL, 
+                            identifiedBy = NULL, yearIdentified = NULL,
                             country = NULL, stateProvince = NULL, county = NULL,
                             typeStatus = NULL, recordedBy = NULL,
                             recordNumber = NULL, yearCollected = NULL,
@@ -14,8 +14,8 @@ get_specieslink <- function (key = NULL, dir = "results/", filename = "output",
                             landuse_year_1 = NULL, landuse_2 = NULL,
                             landuse_year_2 = NULL, phonetic = FALSE,
                             coordinates = NULL, scope = NULL, synonyms = NULL,
-                            typus = FALSE, images = FALSE, redlist = NULL, 
-                            limit = NULL, file.format = "csv", 
+                            typus = FALSE, images = FALSE, redlist = NULL,
+                            limit = NULL, file.format = "csv",
                             compress = FALSE) {
 
   base_url <- "https://specieslink.net/ws/1.0/search?"
@@ -48,7 +48,7 @@ get_specieslink <- function (key = NULL, dir = "results/", filename = "output",
   } else {
     if (is.character(basisOfRecord)) {
       if (basisOfRecord %in% c("PreservedSpecimen", "LivingSpecimen",
-                               "FossilSpecimen", "HumanObservation", 
+                               "FossilSpecimen", "HumanObservation",
                                "MachineObservation", "MaterialSample")) {
         bor <- url_query(basisOfRecord, "basisOfRecord")
         base_url <- paste0(base_url, bor)
@@ -638,7 +638,7 @@ get_specieslink <- function (key = NULL, dir = "results/", filename = "output",
   }
 
   warning("Please make sure that the restrictions and citation indicated by\n  each speciesLink/CRIA data provider are observed and respected.")
-  
+
   return(df)
 }
 
