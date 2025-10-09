@@ -1,9 +1,18 @@
 standardize_countries <- function(occ,
                                   country_column = "country",
                                   max_distance = 0.1,
-                                  return_report = TRUE){
+                                  user_dictionary = NULL,
+                                  lookup_na_country = FALSE,
+                                  long = NULL, lat = NULL,
+                                  return_dictionary = TRUE){
   # Get country dictionary
   cd <- RuHere::country_dictionary
+
+  # Bind user dictionary
+  if(!is.null(user_dictionary)){
+    cd$country_name <- rbind(cd$country_name, user_dictionary)
+  }
+
 
   # Remove accents
   occ[[country_column]] <- remove_accent(occ[[country_column]])
@@ -51,12 +60,29 @@ standardize_countries <- function(occ,
   final_countries <- dplyr::bind_rows(ccn, ccc)
 
   if(nrow(final_countries) > 0){
-  occ_final <- left_join(occ, final_countries, by = country_column) %>%
-    relocate(country_suggested, .after = country_column)} else {
+  occ_final <- left_join(occ, final_countries, by = country_column) } else {
       occ_final <- occ
-    }
+      occ_final$country_suggested <- NA
+  }
 
-  if(return_report){
+  # Relocate columns
+  occ_final <- occ_final %>%
+    relocate(country_suggested, .after = dplyr::all_of(country_column))
+
+  # Fill NA?
+  if(lookup_na_country){
+    occ_final <- country_from_coords(occ_final, long, lat,
+                                      country_column = "country_suggested",
+                                      output_column = "country_suggested",
+                                      from = "na_only", append_source = TRUE)
+    occ_final$country_source[
+      is.na(occ_final$country_source) &
+        !is.na(occ_final[["country_suggested"]])] <- "metadata"
+  }
+
+
+  # Return dictionary?
+  if(return_dictionary){
     countries_out <- setdiff(unique_countries, final_countries$country)
     if(length(countries_out) > 0) {
       countries_out <- data.frame("country" = countries_out,
@@ -67,16 +93,28 @@ standardize_countries <- function(occ,
                      countries_out)
       return(list("occ" = occ_final,
                   "report" = r))
-  } else {#End of return_report
+  } else {#End of return_dictionary
     return(occ_final)
   }
 } #End of function
 
-# # For test
+# # # For test
+# occ_gbif <- RuHere::occ_gbif
+# occ_splink <- RuHere::occ_splink
+# occ_bien <- RuHere::occ_bien
+# # Format columns
+# occ_gbif <- format_columns(occ_gbif, metadata = "gbif")
+# occ_splink <- format_columns(occ_splink, metadata = "specieslink")
+# occ_bien <- format_columns(occ_bien, metadata = "bien")
+# # Merge data
+# all_occ <- bind_rows(occ_gbif, occ_splink, occ_bien)
 # res <- standardize_countries(all_occ)
 # View(res$occ)
 # View(res$report)
-# res <- standardize_countries(all_occ, return_report = F)
+# res <- standardize_countries(all_occ, return_dictionary = F)
 # View(res$occ)
 # View(res$report)
-
+# res <- standardize_countries(all_occ, lookup_na_country = TRUE,
+#                              long = "decimalLongitude", lat = "decimalLatitude",
+#                              return_dictionary = TRUE)
+# res$occ %>% select(dplyr::starts_with("countr")) %>% View()
