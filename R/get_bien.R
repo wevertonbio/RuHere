@@ -1,11 +1,11 @@
-get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
+get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
                      all.taxonomy = FALSE, native.status = FALSE,
                      natives.only = TRUE, observation.type = FALSE,
-                     political.boundaries = FALSE, collection.info = FALSE,
-                     only.geovalid = FALSE, min.lat = NULL, max.lat = NULL,
+                     political.boundaries = TRUE, collection.info = TRUE,
+                     only.geovalid = TRUE, min.lat = NULL, max.lat = NULL,
                      min.long = NULL, max.long = NULL, species = NULL,
-                     genus = NULL, country = NULL, country.code = NULL, 
-                     state = NULL, county = NULL, state.code = NULL, 
+                     genus = NULL, country = NULL, country.code = NULL,
+                     state = NULL, county = NULL, state.code = NULL,
                      county.code = NULL, family = NULL, sf = NULL, ...) {
 
     # Botanical Information and Ecology Network Database
@@ -19,7 +19,7 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
     }
 
     if (!is.character(by) || !by %in% c("box", "country", "county", "family",
-                                        "genus", "records_per_species", 
+                                        "genus", "records_per_species",
                                         "species", "sf", "state")) {
         stop("'by' must be one of: box, country, county, family, genus, records_per_species, species, sf, state")
     }
@@ -29,21 +29,21 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
     if (by == "box") {
 
         invalid_args <- c()
-        if (only.geovalid == TRUE) invalid_args <- 
+        if (only.geovalid == TRUE) invalid_args <-
             c(invalid_args, "only.geovalid")
         if (!is.null(country)) invalid_args <- c(invalid_args, "country")
-        if (!is.null(country.code)) invalid_args <- c(invalid_args, 
+        if (!is.null(country.code)) invalid_args <- c(invalid_args,
                                                       "country.code")
         if (!is.null(state)) invalid_args <- c(invalid_args, "state")
         if (!is.null(county)) invalid_args <- c(invalid_args, "county")
         if (!is.null(state.code)) invalid_args <- c(invalid_args, "state.code")
-        if (!is.null(county.code)) invalid_args <- c(invalid_args, 
+        if (!is.null(county.code)) invalid_args <- c(invalid_args,
                                                      "county.code")
         if (!is.null(family)) invalid_args <- c(invalid_args, "family")
         if (!is.null(sf)) invalid_args <- c(invalid_args, "sf")
-        
+
         if (length(invalid_args) > 0) {
-            warning("The following arguments are not valid for 'box': ", 
+            warning("The following arguments are not valid for 'box': ",
                     paste(invalid_args, collapse = ", "))
         }
 
@@ -76,13 +76,13 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
         if (!is.null(state)) invalid_args <- c(invalid_args, "state")
         if (!is.null(county)) invalid_args <- c(invalid_args, "county")
         if (!is.null(state.code)) invalid_args <- c(invalid_args, "state.code")
-        if (!is.null(county.code)) invalid_args <- c(invalid_args, 
+        if (!is.null(county.code)) invalid_args <- c(invalid_args,
                                                      "county.code")
         if (!is.null(family)) invalid_args <- c(invalid_args, "family")
         if (!is.null(sf)) invalid_args <- c(invalid_args, "sf")
-        
+
         if (length(invalid_args) > 0) {
-            warning("The following arguments are not valid for 'country': ", 
+            warning("The following arguments are not valid for 'country': ",
                     paste(invalid_args, collapse = ", "))
         }
 
@@ -107,7 +107,7 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
     } else if (by == "county") {
 
         invalid_args <- c()
-        if (only.geovalid == TRUE) invalid_args <- 
+        if (only.geovalid == TRUE) invalid_args <-
             c(invalid_args, "only.geovalid")
         if (!is.null(min.lat)) invalid_args <- c(invalid_args, "min.lat")
         if (!is.null(max.lat)) invalid_args <- c(invalid_args, "max.lat")
@@ -117,9 +117,9 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
         if (!is.null(genus)) invalid_args <- c(invalid_args, "genus")
         if (!is.null(family)) invalid_args <- c(invalid_args, "family")
         if (!is.null(sf)) invalid_args <- c(invalid_args, "sf")
-        
+
         if (length(invalid_args) > 0) {
-            warning("The following arguments are not valid for 'county': ", 
+            warning("The following arguments are not valid for 'county': ",
                     paste(invalid_args, collapse = ", "))
         }
 
@@ -150,17 +150,17 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
         if (!is.null(species)) invalid_args <- c(invalid_args, "species")
         if (!is.null(genus)) invalid_args <- c(invalid_args, "genus")
         if (!is.null(country)) invalid_args <- c(invalid_args, "country")
-        if (!is.null(country.code)) invalid_args <- c(invalid_args, 
+        if (!is.null(country.code)) invalid_args <- c(invalid_args,
                                                       "country.code")
         if (!is.null(state)) invalid_args <- c(invalid_args, "state")
         if (!is.null(county)) invalid_args <- c(invalid_args, "county")
         if (!is.null(state.code)) invalid_args <- c(invalid_args, "state.code")
-        if (!is.null(county.code)) invalid_args <- c(invalid_args, 
+        if (!is.null(county.code)) invalid_args <- c(invalid_args,
                                                      "county.code")
         if (!is.null(sf)) invalid_args <- c(invalid_args, "sf")
-        
+
         if (length(invalid_args) > 0) {
-            warning("The following arguments are not valid for 'family': ", 
+            warning("The following arguments are not valid for 'family': ",
                     paste(invalid_args, collapse = ", "))
         }
 
@@ -180,7 +180,7 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
     } else if (by == "genus") {
 
         invalid_args <- c()
-        if (only.geovalid == TRUE) invalid_args <- 
+        if (only.geovalid == TRUE) invalid_args <-
             c(invalid_args, "only.geovalid")
         if (!is.null(min.lat)) invalid_args <- c(invalid_args, "min.lat")
         if (!is.null(max.lat)) invalid_args <- c(invalid_args, "max.lat")
@@ -188,18 +188,18 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
         if (!is.null(max.long)) invalid_args <- c(invalid_args, "max.long")
         if (!is.null(species)) invalid_args <- c(invalid_args, "species")
         if (!is.null(country)) invalid_args <- c(invalid_args, "country")
-        if (!is.null(country.code)) invalid_args <- c(invalid_args, 
+        if (!is.null(country.code)) invalid_args <- c(invalid_args,
                                                       "country.code")
         if (!is.null(state)) invalid_args <- c(invalid_args, "state")
         if (!is.null(county)) invalid_args <- c(invalid_args, "county")
         if (!is.null(state.code)) invalid_args <- c(invalid_args, "state.code")
-        if (!is.null(county.code)) invalid_args <- c(invalid_args, 
+        if (!is.null(county.code)) invalid_args <- c(invalid_args,
                                                      "county.code")
         if (!is.null(family)) invalid_args <- c(invalid_args, "family")
         if (!is.null(sf)) invalid_args <- c(invalid_args, "sf")
-        
+
         if (length(invalid_args) > 0) {
-            warning("The following arguments are not valid for 'genus': ", 
+            warning("The following arguments are not valid for 'genus': ",
                     paste(invalid_args, collapse = ", "))
         }
 
@@ -220,11 +220,11 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
         invalid_args <- c()
         if (cultivated == TRUE) invalid_args <- c(invalid_args, "cultivated")
         if (!is.null(new.world)) invalid_args <- c(invalid_args, "new.world")
-        if (all.taxonomy == TRUE) invalid_args <- c(invalid_args, 
+        if (all.taxonomy == TRUE) invalid_args <- c(invalid_args,
                                                     "all.taxonomy")
-        if (native.status == TRUE) invalid_args <- c(invalid_args, 
+        if (native.status == TRUE) invalid_args <- c(invalid_args,
                                                      "native.status")
-        if (natives.only == FALSE) invalid_args <- c(invalid_args, 
+        if (natives.only == FALSE) invalid_args <- c(invalid_args,
                                                     "natives.only")
         if (observation.type == TRUE) {
             invalid_args <- c(invalid_args, "observation.type")
@@ -244,18 +244,18 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
         if (!is.null(max.long)) invalid_args <- c(invalid_args, "max.long")
         if (!is.null(genus)) invalid_args <- c(invalid_args, "genus")
         if (!is.null(country)) invalid_args <- c(invalid_args, "country")
-        if (!is.null(country.code)) invalid_args <- c(invalid_args, 
+        if (!is.null(country.code)) invalid_args <- c(invalid_args,
                                                       "country.code")
         if (!is.null(state)) invalid_args <- c(invalid_args, "state")
         if (!is.null(county)) invalid_args <- c(invalid_args, "county")
         if (!is.null(state.code)) invalid_args <- c(invalid_args, "state.code")
-        if (!is.null(county.code)) invalid_args <- c(invalid_args, 
+        if (!is.null(county.code)) invalid_args <- c(invalid_args,
                                                      "county.code")
         if (!is.null(family)) invalid_args <- c(invalid_args, "family")
         if (!is.null(sf)) invalid_args <- c(invalid_args, "sf")
-        
+
         if (length(invalid_args) > 0) {
-            warning("The following arguments are not valid for 'records_per_species': ", 
+            warning("The following arguments are not valid for 'records_per_species': ",
                     paste(invalid_args, collapse = ", "))
         }
 
@@ -272,18 +272,18 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
         if (!is.null(max.long)) invalid_args <- c(invalid_args, "max.long")
         if (!is.null(genus)) invalid_args <- c(invalid_args, "genus")
         if (!is.null(country)) invalid_args <- c(invalid_args, "country")
-        if (!is.null(country.code)) invalid_args <- c(invalid_args, 
+        if (!is.null(country.code)) invalid_args <- c(invalid_args,
                                                       "country.code")
         if (!is.null(state)) invalid_args <- c(invalid_args, "state")
         if (!is.null(county)) invalid_args <- c(invalid_args, "county")
         if (!is.null(state.code)) invalid_args <- c(invalid_args, "state.code")
-        if (!is.null(county.code)) invalid_args <- c(invalid_args, 
+        if (!is.null(county.code)) invalid_args <- c(invalid_args,
                                                      "county.code")
         if (!is.null(family)) invalid_args <- c(invalid_args, "family")
         if (!is.null(sf)) invalid_args <- c(invalid_args, "sf")
-        
+
         if (length(invalid_args) > 0) {
-            warning("The following arguments are not valid for 'species': ", 
+            warning("The following arguments are not valid for 'species': ",
                     paste(invalid_args, collapse = ", "))
         }
 
@@ -303,7 +303,7 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
     } else if (by == "sf") {
 
         invalid_args <- c()
-        if (only.geovalid == TRUE) invalid_args <- 
+        if (only.geovalid == TRUE) invalid_args <-
             c(invalid_args, "only.geovalid")
         if (!is.null(min.lat)) invalid_args <- c(invalid_args, "min.lat")
         if (!is.null(max.lat)) invalid_args <- c(invalid_args, "max.lat")
@@ -312,17 +312,17 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
         if (!is.null(genus)) invalid_args <- c(invalid_args, "genus")
         if (!is.null(species)) invalid_args <- c(invalid_args, "species")
         if (!is.null(country)) invalid_args <- c(invalid_args, "country")
-        if (!is.null(country.code)) invalid_args <- c(invalid_args, 
+        if (!is.null(country.code)) invalid_args <- c(invalid_args,
                                                       "country.code")
         if (!is.null(state)) invalid_args <- c(invalid_args, "state")
         if (!is.null(county)) invalid_args <- c(invalid_args, "county")
         if (!is.null(state.code)) invalid_args <- c(invalid_args, "state.code")
-        if (!is.null(county.code)) invalid_args <- c(invalid_args, 
+        if (!is.null(county.code)) invalid_args <- c(invalid_args,
                                                      "county.code")
         if (!is.null(family)) invalid_args <- c(invalid_args, "family")
-        
+
         if (length(invalid_args) > 0) {
-            warning("The following arguments are not valid for 'sf': ", 
+            warning("The following arguments are not valid for 'sf': ",
                     paste(invalid_args, collapse = ", "))
         }
 
@@ -341,7 +341,7 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
     } else if (by == "state") {
 
         invalid_args <- c()
-        if (only.geovalid == TRUE) invalid_args <- 
+        if (only.geovalid == TRUE) invalid_args <-
             c(invalid_args, "only.geovalid")
         if (!is.null(min.lat)) invalid_args <- c(invalid_args, "min.lat")
         if (!is.null(max.lat)) invalid_args <- c(invalid_args, "max.lat")
@@ -350,13 +350,13 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
         if (!is.null(genus)) invalid_args <- c(invalid_args, "genus")
         if (!is.null(species)) invalid_args <- c(invalid_args, "species")
         if (!is.null(county)) invalid_args <- c(invalid_args, "county")
-        if (!is.null(county.code)) invalid_args <- c(invalid_args, 
+        if (!is.null(county.code)) invalid_args <- c(invalid_args,
                                                      "county.code")
         if (!is.null(family)) invalid_args <- c(invalid_args, "family")
         if (!is.null(sf)) invalid_args <- c(invalid_args, "sf")
-        
+
         if (length(invalid_args) > 0) {
-            warning("The following arguments are not valid for 'state': ", 
+            warning("The following arguments are not valid for 'state': ",
                     paste(invalid_args, collapse = ", "))
         }
 
@@ -382,10 +382,10 @@ get_bien <- function(by = NULL, cultivated = FALSE, new.world = NULL,
 
 # # # Test
 # res_test <- get_bien(
-#     by = "species", 
-#     species = "Paubrasilia echinata", 
-#     cultivated = TRUE, 
-#     native.status = TRUE, 
-#     observation.type = TRUE, 
+#     by = "species",
+#     species = "Paubrasilia echinata",
+#     cultivated = TRUE,
+#     native.status = TRUE,
+#     observation.type = TRUE,
 #     only.geovalid = T
 # )

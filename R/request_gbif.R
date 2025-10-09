@@ -6,7 +6,7 @@ request_gbif <- function(gbif_info, hasCoordinate = TRUE,
   k <- gbif_info$usageKey
 
   # Get list of arguments
-  p_list <- pred_and(rgbif::pred_in("taxonKey", k), #Taxonkey
+  p_list <- rgbif::pred_and(rgbif::pred_in("taxonKey", k), #Taxonkey
                  rgbif::pred("hasCoordinate", hasCoordinate),
                  rgbif::pred("hasGeospatialIssue", hasGeospatialIssue))
 

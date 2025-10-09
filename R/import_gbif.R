@@ -1,5 +1,5 @@
 import_gbif <- function(request_key,
-                        output_dir,
+                        output_dir = NULL,
                         write_file = FALSE,
                         file.format = "gz",
                         select_columns = TRUE,
@@ -16,7 +16,7 @@ import_gbif <- function(request_key,
 
   # Download records to temporary location
   temporary_file <- rgbif::occ_download_get(key = request_key,
-                                            path = tempdir(),
+                                            path = normalizePath(tempdir()),
                                             overwrite = overwrite)
   # Check columns to import
   if(select_columns){
@@ -30,7 +30,7 @@ import_gbif <- function(request_key,
   }
 
   # Import occurrences
-  occ <- rgbif::occ_download_import(temporary_file, select = c_imp, ...)
+  occ <- rgbif::occ_download_import(x = temporary_file, select = c_imp, ...)
 
   if(write_file){
   data.table::fwrite(occ,
