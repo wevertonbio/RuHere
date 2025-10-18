@@ -280,3 +280,95 @@ plot(states)
 mapview(states)
 dir.create("inst/extdata", recursive = TRUE)
 writeVector(states, "inst/extdata/states.gpkg", overwrite = TRUE)
+
+#### Fake data for test country coordinates ####
+# Import data
+# SpeciesLink
+occ <- RuHere::occ_splink
+occ_splink <- format_columns(occ = occ, metadata = "specieslink")
+# # GBIF
+occ <- RuHere::occ_gbif
+occ_gbif <- format_columns(occ = occ, metadata = "gbif")
+# BIEN
+occ <- RuHere::occ_bien
+occ_bien <- format_columns(occ = occ, metadata = "bien")
+# Merge data with bind_rows
+all_occ <- bind_rows(occ_splink, occ_gbif, occ_bien)
+# Standardize countries
+res <- standardize_countries(all_occ,
+                             lookup_na_country = TRUE,
+                             long = "decimalLongitude", lat = "decimalLatitude",
+                             return_dictionary = F)
+
+# Standardize States
+res <- standardize_states(res, return_dictionary = F,
+                          lookup_na_state = TRUE,
+                          long = "decimalLongitude", lat = "decimalLatitude")
+# Check countries
+res <- check_countries(res, country_column = "country_suggested")
+res_correct <- res %>% filter(correct_country)
+
+# Mess coordinates
+# Coordinates inverted
+fake1 <- res_correct[1:35, ]
+# Only longitude inverted
+fake1$decimalLongitude[1:10] <- - fake1$decimalLongitude[1:10]
+# Only latitude inverted
+fake1$decimalLatitude[11:20] <- - fake1$decimalLatitude[11:20]
+# Long and lat inverted
+fake1$decimalLongitude[21:35] <- - fake1$decimalLongitude[21:35]
+fake1$decimalLatitude[21:35] <- - fake1$decimalLatitude[21:35]
+# Coordinates swapped
+fake2 <- res_correct[100:150, ]
+original_x <- fake2$decimalLongitude
+original_y <- fake2$decimalLatitude
+
+# Only swapped
+fake2$decimalLongitude[1:5] <- original_y[1:5]
+fake2$decimalLatitude[1:5] <- original_x[1:5]
+# Swapped and longitude inverted
+fake2$decimalLongitude[6:12] <- - original_y[6:12]
+fake2$decimalLatitude[6:12] <- original_x[6:12]
+# Swapped and latitude inverted
+fake2$decimalLongitude[13:19] <- original_y[13:19]
+fake2$decimalLatitude[13:19] <- - original_x[13:19]
+# Swapped and both inverted
+fake2$decimalLongitude[20:28] <- - original_y[20:28]
+fake2$decimalLatitude[20:28] <- - original_x[20:28]
+fake_data <- bind_rows(fake1, fake2)
+fake_data <- fake_data %>% select(colnames(all_occ))
+fake_data$data_source <- "fake_data"
+usethis::use_data(fake_data, overwrite = TRUE)
+
+#### Map for use with wcvp ####
+wcvp_map <- vect(rWCVPdata::wgsrpd3)
+wcvp_map <- wcvp_map[,c("LEVEL3_NAM", "LEVEL3_COD")]
+plot(wcvp_map)
+writeVector(wcvp_map, "Data/wcvp_map.gpkg")
+
+#### Native ranges of Red list plants ####
+# Download files from:
+# https://datadryad.org/api/v2/files/1330968/download
+# Import data
+a <- terra::sds("redlist/range_data_default.nc")
+a <- a[["Native region"]]
+#Rename a
+names(a) <- sub("Native region_SpeciesID=", "", names(a))
+# Get species ids
+spp_ids <- data.table::fread(file.path("redlist/", "metadata_default.csv"),
+                             select = c("speciesID", "scientificname"))
+# Get species ready
+spp_ready <- list.files("redlist/native_ranges/")
+spp_ready <- spp_ready %>% fs::path_ext_remove()
+spp_to_run <- spp_ids %>% filter(!(scientificname %in% spp_ready)) %>%
+  pull(speciesID)
+#Get and save polygon of native region of all species
+dir.create("redlist/native_ranges")
+spp_native <- pblapply(spp_to_run, function(x) {
+  spp_x <- spp_ids %>% filter(speciesID == x) %>% pull(scientificname)
+  rx <- terra::trim(a[[x]])
+  # px <- as.polygons(rx)
+  names(rx) <- spp_x
+  writeRaster(rx, paste0("redlist/native_ranges/",
+                         spp_x, ".tif"))
+})

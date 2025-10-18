@@ -38,7 +38,7 @@
   # IUCN - Como acessa dados sem baixar todas as espécies????????
   # Birdlife - ?????????
   # Outras bases de dados?
-  # expowo: An R package for mining global plant diversity  and distribution data
+  # expowo: An R package for mining global plant diversity  and distribution data - mesmo que wcvp
 
 # Checar espécies disponíveis em cada base
 
