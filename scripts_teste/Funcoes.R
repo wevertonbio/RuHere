@@ -34,7 +34,7 @@
   # World Checklist of Vascular Plants (WCVP) - pacote rWCVP
   # BIEN - pacote BIEN (função BIEN_ranges_species)
   # Fishbase - pacote rfishbase
-  # Artigo "Native range estimates for red-listed vascular plants" - ?????
+  # Artigo "Native range estimates for red-listed vascular plants" - USA MESMO QUE WCVP
   # IUCN - Como acessa dados sem baixar todas as espécies????????
   # Birdlife - ?????????
   # Outras bases de dados?

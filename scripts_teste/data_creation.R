@@ -340,11 +340,21 @@ fake_data <- fake_data %>% select(colnames(all_occ))
 fake_data$data_source <- "fake_data"
 usethis::use_data(fake_data, overwrite = TRUE)
 
-#### Map for use with wcvp ####
-wcvp_map <- vect(rWCVPdata::wgsrpd3)
-wcvp_map <- wcvp_map[,c("LEVEL3_NAM", "LEVEL3_COD")]
-plot(wcvp_map)
-writeVector(wcvp_map, "Data/wcvp_map.gpkg")
+#### Map for use with wcvp and IUCN ####
+# wcvp_map <- vect(rWCVPdata::wgsrpd3)
+# wcvp_map <- wcvp_map[,c("LEVEL3_NAM", "LEVEL3_COD")]
+# plot(wcvp_map)
+# writeVector(wcvp_map, "Data/wcvp_map.gpkg")
+
+# Download map level 4 of from WGSRPD:
+# https://www.arcgis.com/home/item.html?id=22e7b5071e69461d8b6466efff489976
+# Import data
+mapa <- vect("../RuHere_test/level4/level4.shp")
+names(mapa)
+# Choose columns
+wgsrpd <- mapa[, c(c("ISO_Code", "Level_4_Na", "Level4_cod", "Level3_cod"))]
+plot(wgsrpd)
+writeVector(wgsrpd, "../spatial_files/Data/wgsrpd.gpkg", overwrite=TRUE)
 
 #### Native ranges of Red list plants ####
 # Download files from:

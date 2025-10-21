@@ -42,3 +42,11 @@ res_countries %>% select(country_suggested, country_issues) %>% View()
 res_states <- check_states(occ = res,
                            state_column = "state_suggested",
                            try_to_fix = TRUE)
+
+#### Get data from WCVP ####
+wcvp_here(data_dir = "../RuHere_test/")
+# See data
+wcvp <- fread("../RuHere_test/wcvp/wcvp.gz")
+spp <- data.frame(species = unique(wcvp$species))
+
+# Check species from
