@@ -51,9 +51,10 @@ wcvp_here <- function(data_dir,
   }
 
   # Get map
-  utils::download.file(url = "https://github.com/wevertonbio/spatial_files/raw/refs/heads/main/Data/wcvp_map.gpkg",
-                       destfile = file.path(odir, "wcvp_map.gpkg"),
+  utils::download.file(url = "https://github.com/wevertonbio/spatial_files/raw/refs/heads/main/Data/wgsrpd.gpkg",
+                       destfile = file.path(odir, "wgsrpd.gpkg"),
                        method = "auto",
+                       mode = "wb",
                        cacheOK = TRUE)
 
 
