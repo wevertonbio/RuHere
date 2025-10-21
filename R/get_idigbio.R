@@ -1,9 +1,14 @@
+# Perguntas:
+# Precisa de e-mail?
+# É possível transformar o argumento "rq" em "species"?
+# Talvez deixar search_records como padrão?
+
 
 get_idigbio <- function(type = c("api_records, search_records, search_media"),
-                        email = NULL, rq = NULL, fields = NULL, 
-                        max_items = NULL, limit = NULL, offset = NULL, 
-                        sort = NULL, mq = NULL, dir = "results/", 
-                        filename = "idigbio_output", save = TRUE, 
+                        email = NULL, rq = NULL, fields = NULL,
+                        max_items = NULL, limit = NULL, offset = NULL,
+                        sort = NULL, mq = NULL, dir = "results/",
+                        filename = "idigbio_output", save = TRUE,
                         compress = FALSE, ...) {
 
   if (is.null(rq) && is.null(mq)) {
@@ -31,75 +36,75 @@ get_idigbio <- function(type = c("api_records, search_records, search_media"),
 
     query_json <- jsonlite::toJSON(rq, auto_unbox = TRUE)
     query_encoded <- utils::URLencode(query_json, reserved = TRUE)
-    
+
     base_url <- "https://api.idigbio.org/v2/download/"
 
     base_url <- paste0(base_url, "?rq=", query_encoded)
-    
+
     if (!is.null(email) && (!is.character(email) || !grepl("@", email))) {
       stop("email should be a valid address")
     }
 
     if (!is.null(email)) base_url <- paste0(base_url, "&email=", email)
-  
+
     response <- httr::GET(base_url)
-    
+
     if (httr::status_code(response) != 200) {
       stop("Error in request: ", httr::content(response, "text"))
     }
-    
+
     result <- httr::content(response, as = "parsed")
-    
+
     if (is.null(result$status_url)) {
       stop("No status URL returned. Response: ", jsonlite::toJSON(result, auto_unbox = TRUE))
     }
-    
+
     status_url <- result$status_url
-    
+
     message("Still processing...")
-    while (TRUE) {    
+    while (TRUE) {
       status_response <- httr::GET(status_url)
       status <- httr::content(status_response, as = "parsed")
-      
+
       if (!is.null(status$complete) && status$complete == TRUE) {
         message("Processing complete!")
         break
       }
-      
+
       if (!is.null(status$error)) {
         stop("Error during processing: ", status$error)
       }
     }
-    
+
     options(timeout = 3600)
 
     download_url <- status$download_url
-    
+
     if (is.null(download_url)) {
       stop("Error during download: please try again.")
     }
 
     temp_dir <- tempdir()
-    
+
     if (!dir.exists(temp_dir)) {
       dir.create(temp_dir, recursive = TRUE)
     }
 
     zip_file <- tempfile(fileext = ".zip")
     download.file(download_url, destfile = zip_file, mode = "wb", quiet = FALSE)
-    
+
     extract_dir <- tempdir()
     unzip(zip_file, exdir = extract_dir)
 
-    files <- list.files(extract_dir, pattern = "occurrence\\.(txt|csv)", 
+    files <- list.files(extract_dir, pattern = "occurrence\\.(txt|csv)",
                         full.names = TRUE, recursive = TRUE)
-    
+
     if (length(files) == 0) {
       stop("Occurrence file not found.")
     }
-    
+
     occ_file <- files[1]
-    
+
     df <- data.table::fread(occ_file, encoding = "UTF-8")
 
     unlink(zip_file)
@@ -117,7 +122,7 @@ get_idigbio <- function(type = c("api_records, search_records, search_media"),
     }
 
     warning("Synchronous searches are strictly limited to a MAXIMUM of 100,000 records ('max_items'). You cannot retrieve the remaining data using 'limit' or 'offset' for queries exceeding this cap. For large volumes, you must use 'api_records'.")
-    
+
     if (!is.null(max_items)) {
       if(!inherits(max_items, "numeric")) {
         stop("max_items should be numeric")
@@ -154,7 +159,7 @@ get_idigbio <- function(type = c("api_records, search_records, search_media"),
 
     if (is.null(mq)) mq <- FALSE
 
-    df <- ridigbio::idig_search_records(rq = rq, fields = fields, 
+    df <- ridigbio::idig_search_records(rq = rq, fields = fields,
                                         max_items = max_items, limit = limit,
                                         offset = offset, sort = sort, ...)
   }
@@ -219,24 +224,24 @@ get_idigbio <- function(type = c("api_records, search_records, search_media"),
           if (is.null(x) || length(x) == 0) {
             return(NA_character_)
           } else {
-            return(paste(unlist(x), collapse = "; ")) 
+            return(paste(unlist(x), collapse = "; "))
           }
         }, FUN.VALUE = character(1), USE.NAMES = FALSE)
       }
     }
-      
+
     if (!inherits(dir, "character")) {
       stop("'dir' should be a character string")
     }
-    
+
     if (!dir.exists(dir)) {
       dir.create(dir, recursive = TRUE)
     }
-    
+
     if (!inherits(filename, "character")) {
       stop("'filename' must be a character string")
     }
-    
+
     if (compress) {
       fullname <- paste0(dir, filename, ".csv.zip")
       data.table::fwrite(df, file = fullname, compress = "gzip")
@@ -244,7 +249,7 @@ get_idigbio <- function(type = c("api_records, search_records, search_media"),
       fullname <- paste0(dir, filename, ".csv")
       data.table::fwrite(df, file = fullname)
     }
-    
+
   }
 
   return(df)
