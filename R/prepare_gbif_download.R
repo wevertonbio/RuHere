@@ -3,23 +3,26 @@ prepare_gbif_download <- function(species, rank = NULL, kingdom = NULL,
                                   family = NULL, genus = NULL, strict = FALSE,
                                   ...){ #Add ... in functions with occ_search
 
-  # Get taxonomy info
-  gbif_info <- rgbif::name_backbone(name = species, rank, kingdom,
-                                    phylum, class, order,
-                                    family, genus, strict)
+  res <- pbapply::pblapply(species, function(sp){
+    # Get taxonomy info
+    gbif_info <- rgbif::name_backbone(name = sp, rank, kingdom,
+                                      phylum, class, order,
+                                      family, genus, strict)
 
-  # Get number of records (all)
-  n <- rgbif::occ_count(taxonKey = gbif_info$usageKey)
-  # Number of records (only with coordinates)
-  n_with_xy <- rgbif::occ_count(taxonKey = gbif_info$usageKey,
-                                hasCoordinate = TRUE, ...)
-  # Append information
-  gbif_info <- gbif_info %>% dplyr::mutate(n_records = n,
-                                    with_coordinates = n_with_xy,
-                                    .before = canonicalName) %>%
-    dplyr::relocate(species)
+    # Get number of records (all)
+    n <- rgbif::occ_count(taxonKey = gbif_info$usageKey)
+    # Number of records (only with coordinates)
+    n_with_xy <- rgbif::occ_count(taxonKey = gbif_info$usageKey,
+                                  hasCoordinate = TRUE, ...)
+    # Append information
+    gbif_info <- gbif_info %>% dplyr::mutate(n_records = n,
+                                             with_coordinates = n_with_xy,
+                                             .before = canonicalName) %>%
+      dplyr::relocate(species)
 
-  return(gbif_info)
+  })
+
+  return(as.data.frame(rbindlist(res)))
 }
 
 

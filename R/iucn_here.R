@@ -78,6 +78,6 @@ iucn_here <- function(species,
 # overwrite = TRUE
 # verbose = TRUE
 
-iucn <- iucn_here(species = c("Araucaria angustifolia", "Panthera onca",
-                              "Cyanocorax coeruleus"),
-                  data_dir = "../RuHere_test/")
+# iucn <- iucn_here(species = c("Araucaria angustifolia", "Panthera onca",
+#                               "Cyanocorax coeruleus"),
+#                   data_dir = "../RuHere_test/")

@@ -214,7 +214,7 @@ fix_countries <- function(occ,
                       geom = c(x = lat, y = long),
                       crs = "+init=epsg:4326")
     message("Task 5 of 7: testing if longitude and latitude are swapped -
-            with latitude inverted")
+            with longitude inverted")
     test_5 <- pbapply::pbsapply(countries_5, function(i){
       country_i <- country_shp[country_shp$name == i]
       country_i <- terra::buffer(country_i, width = distance*1000)

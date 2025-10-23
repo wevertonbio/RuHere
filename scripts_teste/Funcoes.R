@@ -71,3 +71,6 @@
 
 # https://onlinelibrary.wiley.com/doi/full/10.1111/geb.13847
 
+
+#### Função para corrigir casa decimal ####
+# Colocar dentro de check_countries?

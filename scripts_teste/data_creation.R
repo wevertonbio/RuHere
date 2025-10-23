@@ -47,9 +47,9 @@ splink_metadata <- data.frame(scientificName = "scientificname", #Nome científi
                               datasetKey = NA, #Chave da origem dos dados
                               key = NA) #Chave da espécie no GBIF
 # Criar metadados
-idigbio_metadata <- data.frame(scientificName = "scientificname",
-                          collectionCode = "collectioncode",
-                          catalogNumber = "catalognumber",
+idigbio_metadata <- data.frame(scientificName = "dwc:scientificName",
+                          collectionCode = "dwc:collectionCode",
+                          catalogNumber = "dwc:catalogNumber",
                           decimalLongitude = "geopoint.lon",
                           decimalLatitude = "geopoint.lat",
                           coordinateUncertaintyInMeters = "coordinateuncertainty",
@@ -96,7 +96,7 @@ prepared_metadata <- list("gbif" = gbif_metadata,
                           "bien" = bien_metadata)
 usethis::use_data(prepared_metadata, overwrite = TRUE)
 
-#### Occurrences of pau-brasil from specieslink, gbif and bien ####
+#### Occurrences of pau-brasil from specieslink, gbif, bien and idigbio####
 # Splink
 occ_splink <- get_specieslink(species = "Paubrasilia echinata",
                               limit = 10000, save = FALSE)
@@ -120,6 +120,12 @@ occ_gbif <- import_gbif(request_key = req_gbif, write_file = FALSE,
                         select_columns = FALSE,
                         overwrite = TRUE)
 usethis::use_data(occ_gbif, overwrite = TRUE)
+
+
+# idigbio
+occ_idig <- get_idigbio(rq=list(scientificname = "Paubrasilia echinata"),
+                        type = "api_records")
+usethis::use_data(occ_idig, overwrite = TRUE)
 
 
 #### List of countries ####

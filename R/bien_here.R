@@ -28,12 +28,12 @@ bien_here <- function(data_dir,
   return(data.table::rbindlist(res))
 }
 
-data_dir <- "../RuHere_test/"
-species = c("Araucaria araucana", "Araucaria angustifolia")
-overwrite = TRUE
-verbose = TRUE
-bien_here(data_dir = "../RuHere_test/",
-          species = species)
+# data_dir <- "../RuHere_test/"
+# species = c("Araucaria araucana", "Araucaria angustifolia")
+# overwrite = TRUE
+# verbose = TRUE
+# bien_here(data_dir = "../RuHere_test/",
+#           species = species)
 
 
 # library(BIEN)

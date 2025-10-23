@@ -1,4 +1,4 @@
-get_specieslink <- function (key = NULL, dir = "results/", filename = "output",
+get_specieslink <- function (key = NULL, dir, filename = "output",
                             save = FALSE, basisOfRecord = NULL, family = NULL,
                             species = NULL, institutionCode = NULL,
                             collectionID = NULL, catalogNumber = NULL,
@@ -21,7 +21,7 @@ get_specieslink <- function (key = NULL, dir = "results/", filename = "output",
   base_url <- "https://specieslink.net/ws/1.0/search?"
 
   url_query <- function(vector, name) {
-    if(length(vetor)>1){
+    if(length(vector)>1){
       vector <- paste(vector, collapse = ",")
     }
     char <- paste(paste0(vector, "&"), collapse = "")
@@ -75,7 +75,7 @@ get_specieslink <- function (key = NULL, dir = "results/", filename = "output",
       if (length(species) > 50)
         stop("Please make request of no more than 50 species at a time!")
       species <- gsub(" ", "+", species)
-      spp <- url_query(species, "scientificName")
+      spp <- url_query(vector = species, name = "scientificName")
       base_url <- paste0(base_url, spp)
     } else {
       stop("species must be a character")

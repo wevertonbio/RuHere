@@ -2,13 +2,18 @@
 # Precisa de e-mail?
 # É possível transformar o argumento "rq" em "species"?
 # Talvez deixar search_records como padrão?
-
-
+# Não está funcionando com scientificname e vários nomes
+# Precisa arrumar nome da especie, que vem tudo em minusculo - usar florabr:::firstup() function
+# Arrumar coordenadas (vem na mesma coluna)
+# Arrumar nome de colunas (vem como 'dwc:scientificName')
+# Talvez simplificar função, deixando apenas procura por espécies
 get_idigbio <- function(type = c("api_records, search_records, search_media"),
                         email = NULL, rq = NULL, fields = NULL,
                         max_items = NULL, limit = NULL, offset = NULL,
-                        sort = NULL, mq = NULL, dir = "results/",
-                        filename = "idigbio_output", save = TRUE,
+                        sort = NULL, mq = NULL,
+                        dir, #Não pode criar diretorio sem ciência do usuário
+                        filename = "idigbio_output",
+                        save = FALSE, # Melhor deixar padrão como falso
                         compress = FALSE, ...) {
 
   if (is.null(rq) && is.null(mq)) {

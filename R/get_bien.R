@@ -11,7 +11,7 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
     # Botanical Information and Ecology Network Database
     # https://bien.nceas.ucsb.edu/bien/
 
-    require(BIEN)
+    # require(BIEN) # Não colocar dentro da função
 
     # Get data type
     if (is.null(by)) {
@@ -47,7 +47,7 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
                     paste(invalid_args, collapse = ", "))
         }
 
-        occ_bien <- BIEN_occurrence_box(
+        occ_bien <- BIEN::BIEN_occurrence_box(
             min.lat = min.lat,
             max.lat = max.lat,
             min.long = min.long,
