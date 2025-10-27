@@ -388,3 +388,9 @@ spp_native <- pblapply(spp_to_run, function(x) {
   writeRaster(rx, paste0("redlist/native_ranges/",
                          spp_x, ".tif"))
 })
+
+#### Synonyms ####
+synonyms <- florabr::get_synonym(data = floradata,
+                                 species = c("Araucaria angustifolia",
+                                             "Paubrasilia echinata"))
+usethis::use_data(synonyms, overwrite = TRUE)
