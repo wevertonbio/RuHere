@@ -1,5 +1,6 @@
 bien_here <- function(data_dir,
                       species,
+                      synonyms = NULL,
                       overwrite = TRUE,
                       verbose = TRUE){
 
@@ -15,7 +16,15 @@ bien_here <- function(data_dir,
 
   # Save species
   res <- pbapply::pblapply(species, function(i){
-    sp_i <- sub(" ", "_", i)
+    if(!is.null(synonyms)){
+      s_i <- synonyms[synonyms[[1]] == i, 2]
+      if(length(s_i) > 0){
+        spp <- unique(c(i, s_i))
+      } else {spp <- i}
+    } else {spp <- i}
+
+
+    sp_i <- sub(" ", "_", spp)
     v_i <- BIEN::BIEN_ranges_load_species(species = sp_i, fetch.query = FALSE)
     if(nrow(v_i) > 0){
       v_i <- terra::vect(v_i)

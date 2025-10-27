@@ -1,4 +1,5 @@
 iucn_here <- function(species,
+                      synonyms = NULL,
                       data_dir,
                       iucn_credential = NULL,
                       overwrite = TRUE,
@@ -24,40 +25,60 @@ iucn_here <- function(species,
     stop("You must get and save an IUCN API key. Check the function 'set_iucn_credentials()")
   }
 
-  # Split binomial name in genus and species
-  spp <- strsplit(species, " ")
-  names(spp) <- species
 
   # Get species information
-  spinfo <- pbapply::pblapply(species, function(sp){
-    r <- try(rredlist::rl_species(genus = spp[[sp]][1],
-                              species = spp[[sp]][2],
-                              key = key)$assessments, silent = TRUE)
+  spinfo <- pbapply::pblapply(species, function(i){
+    if(!is.null(synonyms)){
+      s_i <- synonyms[synonyms[[1]] == i, 2]
+      if(length(s_i) > 0){
+        spp <- unique(c(i, s_i))
+      } else {spp <- i}
+    } else {spp <- i}
 
-    if(inherits(r, "data.frame")){
-      assessment <- rredlist::rl_assessment(r$assessment_id[r$latest],
-                                          key = key)
-      if("locations" %in% names(assessment)){
-        l <- assessment$locations
-        d <- l$description$en
-        l <- l %>% dplyr::select(code, origin, presence) %>%
-          mutate(species = sp,
-                 region = d, .before = 1)
-    } else { #If there is no info on location
-      l <- data.frame(species = sp, region = NA, code = NA, origin = NA,
-                      presence = NA)
-    }
-    } else { #If it's not a dataframe
-      l <- data.frame(species = sp, region = NA, code = NA, origin = NA,
-                      presence = NA)
-    }
-    return(l)
+    # Split binomial name in genus and species
+    ss <- strsplit(spp, " ")
+    names(ss) <- spp
+
+    r <- lapply(ss, function(x){
+      r <- try(rredlist::rl_species(genus = x[1],
+                               species = x[2],
+                               key = key)$assessments, silent = TRUE)
+
+      if(inherits(r, "data.frame")){
+        assessment <- rredlist::rl_assessment(r$assessment_id[r$latest],
+                                              key = key)
+        if("locations" %in% names(assessment)){
+          l <- assessment$locations
+          d <- l$description$en
+          l <- l %>% dplyr::select(code, origin, presence) %>%
+            mutate(species = i,
+                   region = d, .before = 1)
+        } else { #If there is no info on location
+          l <- data.frame(species = i, region = NA, code = NA, origin = NA,
+                          presence = NA)
+        }
+      } else { #If it's not a dataframe
+        l <- data.frame(species = i, region = NA, code = NA, origin = NA,
+                        presence = NA)
+      }
+      return(l)
+    })
+    r <- na.omit(data.table::rbindlist(r))
+    return(r)
   })
-  spinfo <- data.table::rbindlist(spinfo)
+
+  spinfo <- distinct(data.table::rbindlist(spinfo))
 
   # Save results
   data.table::fwrite(x = spinfo,
                      file = file.path(odir, "iucn_distribution.gz"))
+
+  # Get map
+  utils::download.file(url = "https://zenodo.org/records/17455838/files/wgsrpd.gpkg?download=1",
+                       destfile = file.path(odir, "wgsrpd.gpkg"),
+                       method = "auto",
+                       mode = "wb",
+                       cacheOK = TRUE)
 
   # Data saved in...
   if(verbose){
