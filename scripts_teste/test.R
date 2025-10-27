@@ -69,6 +69,9 @@ all_occ <- bind_rows(occ_splink, occ_gbif, occ_bien)
 #### Bind ocurrences ####
 all_occ <- bind_here(occ_splink, occ_gbif, occ_bien, fake_data)
 
+# Save to use in package
+occurrences <- all_occ
+usethis::use_data(occurrences, overwrite = TRUE)
 
 #### Standardize countries ####
 res <- standardize_countries(all_occ,
@@ -111,19 +114,21 @@ mapview::mapview(wcvp_map)
 #### Get data from BIEN ####
 bien_here(data_dir = "../RuHere_test/",
           species = c("Araucaria angustifolia",
-                      "Paubrasilia echinata",
-                      "Araucaria araucana"))
+                      "Paubrasilia echinata"),
+          synonyms = RuHere::synonyms)
 # See data
-bien_range <- vect("../RuHere_test/bien/Araucaria araucana.gpkg")
+bien_range <- vect("../RuHere_test/bien/Paubrasilia echinata.gpkg")
 mapview::mapview(bien_range)
 
 #### Get data from IUCN ####
 # Precisa checar se mapa está em wcvp, se não estiver, baixar
 d <- iucn_here(species = c("Araucaria angustifolia",
                            "Paubrasilia echinata"),
+              synonyms = RuHere::synonyms,
               iucn_credential = NULL, #Salvo no Renviren
               data_dir = "../RuHere_test/",
               return_data = TRUE)
+d <- fread("../RuHere_test/iucn/iucn_distribution.gz")
 
 #### Get data from florabr ####
 florabr_here(data_dir = "../RuHere_test/",
@@ -131,6 +136,8 @@ florabr_here(data_dir = "../RuHere_test/",
              overwrite = TRUE, verbose = TRUE)
 # See data
 floradata <- florabr::load_florabr("../RuHere_test/florabr")
+
+
 # Example on how to filter
 res$species <- "Paubrasilia echinata" # Alguma função ou maneira de padronizar nomes???
 floradata %>% filter(species == "Paubrasilia echinata") %>%
@@ -154,7 +161,7 @@ faunadata <- faunabr::load_faunabr("../RuHere_test/faunabr")
 faunadata %>% filter(species == "Panthera onca") %>%
   select(species, states, countryCode) %>% View()
 ?faunabr::filter_faunabr
-
+faunabr::fauna_synonym(data = faunadata, species = "Panthera onca")
 
 #### Dados ####
 list.files("data")
