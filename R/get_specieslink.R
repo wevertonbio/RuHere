@@ -543,6 +543,10 @@ get_specieslink <- function (key = NULL, dir, filename = "output",
       stop("file.format must be either 'csv' or 'rds'")
     }
 
+    if (!inherits(dir, "character")) {
+      stop("'dir' should be a character string")
+    }
+
     if (!dir.exists(dir)) {
       dir.create(dir)
     }
