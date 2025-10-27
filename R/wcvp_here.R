@@ -1,7 +1,8 @@
 wcvp_here <- function(data_dir,
                       overwrite = TRUE,
                       verbose = TRUE,
-                      remove_files = TRUE){
+                      remove_files = TRUE,
+                      timeout = 300){
 
   if(!file.exists(data_dir)){
     stop(data_dir, " directory does not exist. Please create it or specify a different directory.")
@@ -11,6 +12,13 @@ wcvp_here <- function(data_dir,
   odir <- file.path(data_dir, "wcvp")
   dir.create(odir, showWarnings = FALSE)
 
+
+
+  # Set time out
+  original_timeout <- getOption("timeout")
+  if(timeout != original_timeout){
+    options(timeout = timeout)
+  }
 
   if(verbose){
     message("Task 1 of 3: Downloading data from the World Checklist of Vascular Plants (WCVP) repository...\n")
@@ -51,7 +59,7 @@ wcvp_here <- function(data_dir,
   }
 
   # Get map
-  utils::download.file(url = "https://github.com/wevertonbio/spatial_files/raw/refs/heads/main/Data/wgsrpd.gpkg",
+  utils::download.file(url = "https://zenodo.org/records/17455838/files/wgsrpd.gpkg?download=1",
                        destfile = file.path(odir, "wgsrpd.gpkg"),
                        method = "auto",
                        mode = "wb",
@@ -67,6 +75,11 @@ wcvp_here <- function(data_dir,
   }
 
 
+  # Set time out
+  if(original_timeout != timeout){
+    options(timeout = original_timeout)
+  }
+
   if(verbose){
     message("Finished!\n")
   }
@@ -75,8 +88,8 @@ wcvp_here <- function(data_dir,
           Govaerts, R., Nic Lughadha, E. et al. The World Checklist of Vascular Plants, a continuously updated resource for exploring global plant diversity. Sci Data, 8, 215 (2021). https://doi.org/10.1038/s41597-021-00997-6")
 }
 
-# data_dir <- "../RuHere_test/"
-# overwrite = TRUE
-# verbose = TRUE
-# remove_files = TRUE
+data_dir <- "../RuHere_test/"
+overwrite = TRUE
+verbose = TRUE
+remove_files = TRUE
 # wcvp_here(data_dir = "../RuHere_test/")
