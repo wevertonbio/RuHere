@@ -14,7 +14,6 @@ faunabr_here <- function(data_dir,
   faunabr::get_faunabr(output_dir = file.path(data_dir, "faunabr"),
                        data_version,
                        solve_discrepancies = TRUE,
-                       translate = TRUE,
                        overwrite = overwrite,
                        verbose = verbose)
 }
