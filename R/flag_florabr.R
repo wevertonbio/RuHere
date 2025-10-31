@@ -1,7 +1,21 @@
 flag_florabr <- function(data_dir, occ, species = "species",
                          long = "decimalLongitude", lat = "decimalLatitude",
-                         origin = NULL, verbose = TRUE, by_endemism = FALSE) {
+                         verbose = TRUE, origin = NULL, 
+                         by_state = TRUE, buffer_state = 20,
+                         by_biome = TRUE, buffer_biome = 20, by_endemism = TRUE,
+                         buffer_brazil = 20, state_vect = NULL,
+                         state_column = NULL, biome_vect = NULL,
+                         biome_column = NULL, br_vect = NULL,
+                         keep_columns = TRUE) {
 
+  if (!is.null(data_dir) && !inherits(data_dir, "character")) {
+      stop("data_dir must be a character")
+  }
+
+  if (!is.null(verbose) && !inherits(verbose, "logical")) {
+      stop("verbose must be logical")
+  }
+  
   # Check if data_dir exists
   if(!file.exists(file.path(data_dir, "florabr/"))){
     stop("Data from florabr necessary to check records is not available in ", data_dir,
@@ -38,6 +52,12 @@ flag_florabr <- function(data_dir, occ, species = "species",
     d_i <- d %>% dplyr::filter(species == i)
 
     if(!is.null(origin)) {
+
+      if(!origin %in% c("native", "cultivated", "naturalized", "unknown", 
+                        "not_found_in_brazil")) {
+        stop("origin should be 'native', 'cultivated', 'naturalized', 'unknown', or 'not_found_in_brazil'.")
+      }
+
       d_i$origin <- tolower(d_i$origin)
 
       if ("native" %in% origin) {
@@ -61,8 +81,19 @@ flag_florabr <- function(data_dir, occ, species = "species",
                                      species = species,
                                      long = long,
                                      lat = lat,
+                                     value = "flag",
+                                     by_state = by_state, 
+                                     buffer_state = buffer_state,
+                                     by_biome = by_biome, 
+                                     buffer_biome = buffer_biome, 
                                      by_endemism = by_endemism,
-                                     value = "flag")
+                                     buffer_brazil = buffer_brazil, 
+                                     state_vect = state_vect,
+                                     state_column = state_column, 
+                                     biome_vect = biome_vect,
+                                     biome_column = biome_column, 
+                                     br_vect = br_vect,
+                                     keep_columns = keep_columns)
 
     colnames(occ_i)[colnames(occ_i) == "filters_ok"] <- "florabr_flag"
 
@@ -89,9 +120,7 @@ flag_florabr <- function(data_dir, occ, species = "species",
 # species = "species"
 # long = "decimalLongitude"
 # lat = "decimalLatitude"
-# by_endemism = FALSE
-# origin = NULL
 # res <- flag_florabr(data_dir = data_dir, occ = occ, origin = origin,
 #                     species = species, long = long,
-#                     lat = lat, by_endemism = by_endemism)
+#                     lat = lat)
 
