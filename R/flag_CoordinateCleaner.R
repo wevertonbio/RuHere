@@ -3,7 +3,9 @@ flag_CoordinateCleaner <- function(occ, species = "species",
                                    lat = "decimalLatitude",
                                    verbose = TRUE, 
                                    countries = NULL,
-                                   tests = NULL,
+                                   tests = c("capitals", "centroids", "equal", 
+                                             "gbif", "institutions", 
+                                             "outliers", "seas", "zeros"),
                                    capitals_rad = 10000,
                                    centroids_rad = 1000,
                                    centroids_detail = "both",
@@ -66,8 +68,8 @@ flag_CoordinateCleaner <- function(occ, species = "species",
 # species = "species"
 # long = "decimalLongitude"
 # lat = "decimalLatitude"
-# tests = c("capitals", "centroids", "equal", "gbif", "institutions", "outliers",
-#           "seas", "zeros")
+# tests = c("capitals", "centroids", "equal", "gbif", "institutions", 
+#           "outliers", "seas", "zeros")
 # res <- flag_CoordinateCleaner(occ = occ, species = species, 
 #                               long = long, lat = lat, tests = tests)
 
