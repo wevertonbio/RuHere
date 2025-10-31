@@ -1,6 +1,17 @@
 flag_faunabr <- function(data_dir, occ, species = "species",
                          long = "decimalLongitude", lat = "decimalLatitude",
-                         origin = NULL, verbose = TRUE, by_endemism = FALSE) {
+                         verbose = TRUE, by_state = TRUE, buffer_state = 20,
+                         by_country = TRUE, buffer_country = 20, 
+                         keep_columns = TRUE, spat_state = NULL,
+                         spat_country = NULL) {
+
+  if (!is.null(data_dir) && !inherits(data_dir, "character")) {
+      stop("data_dir must be a character")
+  }
+
+  if (!is.null(verbose) && !inherits(verbose, "logical")) {
+      stop("verbose must be logical")
+  }
 
   # Check if data_dir exists
   if(!file.exists(file.path(data_dir, "faunabr/"))){
@@ -38,22 +49,21 @@ flag_faunabr <- function(data_dir, occ, species = "species",
     d_i <- d %>% dplyr::filter(species == i)
 
     if(!is.null(origin)) {
+
+      if(!origin %in% c("native", "cryptogenic", "exotic")) {
+        stop("origin should be 'native', 'cryptogenic', or 'exotic'.")
+      }
+
       d_i$origin <- tolower(d_i$origin)
 
       if ("native" %in% origin) {
         d_i <- d_i[d_i$origin == "native", ]
       }
-      if ("cultivated" %in% origin) {
-        d_i <- d_i[d_i$origin == "cultivated", ]
+      if ("cryptogenic" %in% origin) {
+        d_i <- d_i[d_i$origin == "cryptogenic", ]
       }
-      if ("naturalized" %in% origin) {
-        d_i <- d_i[d_i$origin == "naturalized", ]
-      }
-      if ("unknown" %in% origin) {
-        d_i <- d_i[d_i$origin == "unknown", ]
-      }
-      if ("not_found_in_brazil" %in% origin) {
-        d_i <- d_i[d_i$origin == "not_found_in_brazil", ]
+      if ("exotic" %in% origin) {
+        d_i <- d_i[d_i$origin == "EXOTICA", ]
       }
     }
 
@@ -61,8 +71,14 @@ flag_faunabr <- function(data_dir, occ, species = "species",
                                      species = species,
                                      long = long,
                                      lat = lat,
-                                     by_endemism = by_endemism,
-                                     value = "flag")
+                                     value = "flag",
+                                     by_state = by_state, 
+                                     buffer_state = buffer_state,
+                                     by_country = by_country, 
+                                     buffer_country = buffer_country,
+                                     keep_columns = keep_columns,
+                                     spat_state = spat_state,
+                                     spat_country = spat_country)
 
     colnames(occ_i)[colnames(occ_i) == "filters_ok"] <- "faunabr_flag"
 
@@ -84,14 +100,14 @@ flag_faunabr <- function(data_dir, occ, species = "species",
 }
 
 # occ <- RuHere::occurrences
-# occ$species <- "Gallus Gallus"
+# occ$species <- "Panthera onca"
 # data_dir = "../RuHere_test/"
 # species = "species"
 # long = "decimalLongitude"
 # lat = "decimalLatitude"
 # by_endemism = FALSE
 # origin = NULL
-# res <- flag_faunabr(data_dir = data_dir, occ = occ, origin = origin,
+# res <- flag_faunabr(data_dir = data_dir, occ = occ, 
 #                     species = species, long = long,
-#                     lat = lat, by_endemism = by_endemism)
+#                     lat = lat)
 
