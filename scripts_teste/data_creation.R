@@ -403,3 +403,51 @@ cultivated <- list("cultivated" = plantR:::cultivated,
 cultivated$cultivated
 cultivated$not_cultivated
 usethis::use_data(cultivated, overwrite = TRUE)
+
+#### Filtered records ####
+occ <- RuHere::occurrences
+occ$species <- "Paubrasilia echinata"
+# Check countries and states
+occ <- standardize_countries(occ = occ, return_dictionary = FALSE)
+occ <- standardize_states(occ = occ, return_dictionary = FALSE)
+occ <- check_countries(occ = occ, country_column = "country_suggested")
+occ <- check_states(occ = occ, state_column = "state_suggested")
+
+# Check with florabr
+occ_flora <- flag_florabr(data_dir = "../RuHere_test/",
+                          occ = occ)
+# Check with wcvp
+occ_wcvp <- flag_wcvp(data_dir = "../RuHere_test/", occ = occ_flora)
+
+# Check with iucn
+occ_iucn <- flag_iucn(data_dir = "../RuHere_test/", occ = occ_wcvp)
+
+# Check with BIEN
+occ_bien <- flag_bien(data_dir = "../RuHere_test/", occ = occ_iucn)
+
+# Flag cultivates and inaturalist
+occ_cult <- flag_cultivated(occ = occ_bien)
+occ_inat <- flag_inaturalist(occ = occ_cult)
+
+#Remove duplicates
+occ_unique <- flag_duplicates(occ = occ_inat,
+                              continuous_variable = "year")
+# Save as occ_flagged
+occ_flagged <- occ_unique
+usethis::use_data(occ_flagged, overwrite = TRUE)
+
+# Get worldclim at 10arc-min of resolution
+wc <- geodata::worldclim_global(var = "bio", res = 5,
+                                 path = tempdir())
+names(wc) <- sub("wc2.1_5m_", "", names(wc))
+wc <- wc[[c("bio_1", "bio_7", "bio_12")]]
+plot(wc)
+# Mask to occurrences
+occ_filtered <- remove_flagged(RuHere::occ_flagged)
+pts <- terra::vect(occ_filtered,
+                   geom = c(x = "decimalLongitude", y = "decimalLatitude"),
+                   crs = "epsg:4326")
+m <- terra::convHull(pts) %>% buffer(., width = 50)
+wc_m <- crop(wc, m, mask = TRUE) %>% terra::trim()
+plot(wc_m)
+terra::writeRaster(wc_m, "inst/extdata/worldclim.tif", overwrite = TRUE)
