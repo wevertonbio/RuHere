@@ -1,12 +1,14 @@
-remove_duplicates <- function(occ,
-                              species, long, lat,
-                              additional_groups = NULL,
-                              continuous_variable = NULL,
-                              decreasing = TRUE,
-                              categorical_variable = NULL,
-                              priority_categories = NULL,
-                              by_cell = FALSE,
-                              raster_variable = NULL){
+flag_duplicates <- function(occ,
+                            species = "species",
+                            long = "decimalLongitude",
+                            lat = "decimalLatitude",
+                            additional_groups = NULL,
+                            continuous_variable = NULL,
+                            decreasing = TRUE,
+                            categorical_variable = NULL,
+                            priority_categories = NULL,
+                            by_cell = FALSE,
+                            raster_variable = NULL){
 
 
   # Extract ID of rasters if by_cell
