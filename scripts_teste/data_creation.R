@@ -394,3 +394,12 @@ synonyms <- florabr::get_synonym(data = floradata,
                                  species = c("Araucaria angustifolia",
                                              "Paubrasilia echinata"))
 usethis::use_data(synonyms, overwrite = TRUE)
+
+#### Cultivated ####
+cultivated <- list("cultivated" = plantR:::cultivated,
+                   "not_cultivated" = c(plantR:::notCultivated, "no plantada",
+                                         "no cultivada", "not cultivated",
+                                         "not planted"))
+cultivated$cultivated
+cultivated$not_cultivated
+usethis::use_data(cultivated, overwrite = TRUE)
