@@ -85,13 +85,13 @@ flag_iucn <- function(data_dir, occ, species = "species",
 
     # Check if records fall inside
     occ_i <- occ[occ[[species]] == i, ]
-    pts <- vect(occ_i, geom = c(x = long, y = lat), crs = "epsg:4326")
+    pts <- terra::vect(occ_i, geom = c(x = long, y = lat), crs = "epsg:4326")
 
     occ_i$iucn_flag <- terra::is.related(pts, m_i, "intersects")
     # Flags
     return(occ_i)
     })
-  res_flag <- data.table(rbindlist(res_flag)) %>% as.data.frame()
+  res_flag <- data.table::rbindlist(res_flag) %>% as.data.frame()
 
   # Append occurrences of spp_out, if exists
   if(length(spp_out) > 0){

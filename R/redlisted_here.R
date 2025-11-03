@@ -66,8 +66,8 @@ redlisted_here <- function(data_dir,
 
 }
 
-library(terra)
-library(dplyr)
+# library(terra)
+# library(dplyr)
 # data_dir <- "../RuHere_test/"
 # overwrite = TRUE
 # verbose = TRUE
