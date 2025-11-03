@@ -61,13 +61,13 @@ flag_bien <- function(data_dir, occ, species = "species",
   return(res_flag)
 }
 
-data_dir = "../RuHere_test/"
-occ = RuHere::occurrences
-occ$species <- "Paubrasilia echinata"
-species = "species"
-long = "decimalLongitude"
-lat = "decimalLatitude"
-origin = NULL
-presence = NULL
-buffer = 10
-verbose = TRUE
+# data_dir = "../RuHere_test/"
+# occ = RuHere::occurrences
+# occ$species <- "Paubrasilia echinata"
+# species = "species"
+# long = "decimalLongitude"
+# lat = "decimalLatitude"
+# origin = NULL
+# presence = NULL
+# buffer = 10
+# verbose = TRUE
