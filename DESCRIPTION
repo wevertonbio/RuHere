@@ -5,12 +5,17 @@ Authors@R: c(
     person("Weverton C. F.", "Trindade", email = "wevertonf1993@gmail.com", role = c("aut", "cre"),
     comment = c(ORCID = "0000-0003-2045-4555")),
     person("Fernanda S.", "Caron", email = "fernandadesouzacaron@gmail.com", role = c("aut"),
-    comment = c(ORCID = "0000-0002-1884-6157"))
+    comment = c(ORCID = "0000-0002-1884-6157")))
 Description: An R package that automatically flags common spatial errors in biological collection data using specialists' information.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Depends: 
     R (>= 3.5)
 LazyData: true
+LinkingTo: 
+    Rcpp,
+    RcppArmadillo
+Imports: 
+    Rcpp
