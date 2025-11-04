@@ -1,5 +1,48 @@
+#' Store SpeciesLink credential
+#'
+#' @description
+#' This function stores the IUCN credential (API key) in the R environment. This
+#' API key is required to obtain distributional data from IUCN.
+#'
+#' @usage set_iucn_credentials(iucn_key, overwrite = FALSE,
+#'                             open_Renviron = FALSE)
+#'
+#' @param iucn_key (character) your SpeciesLink API key. See Details.
+#' @param overwrite (logical) whether to overwrite IUCN credential if it
+#' already exists. Default is FALSE.
+#' @param open_Renviron (logical) whether to open the .Renviron file after
+#' saving the credentials. Default is FALSE.
+#'
+#' @details
+#' To check your API key, visit: [https://api.iucnredlist.org/users/edit](https://api.iucnredlist.org/users/edit).
+#'
+#'
+#' @returns
+#' If `open_Renviron` is set to TRUE, it opens the .Renviron file. Otherwise,
+#' the credentials are saved silently.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' set_iucn_credentials(iucn_key = "my_key")
+#' }
+#'
 set_iucn_credentials <- function(iucn_key,
                                  overwrite = FALSE, open_Renviron = FALSE) {
+
+  # Check arguments
+  if (!inherits(iucn_key, "character"))
+    stop("'iucn_key' must be a character, not ", class(iucn_key),
+         call. = FALSE)
+
+  if (!inherits(overwrite, "logical") || length(overwrite) != 1)
+    stop("'overwrite' must be a single logical value (TRUE or FALSE).",
+         call. = FALSE)
+
+  if (!inherits(open_Renviron, "logical") || length(open_Renviron) != 1)
+    stop("'open_Renviron' must be a single logical value (TRUE or FALSE).",
+         call. = FALSE)
+
   # Get R environment
   renviron_path <- file.path(Sys.getenv("HOME"), ".Renviron")
 

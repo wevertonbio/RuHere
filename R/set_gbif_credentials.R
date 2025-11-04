@@ -1,5 +1,58 @@
+#' Store GBIF credentials
+#'
+#' @description
+#' This function stores the GBIF credentials (username, email and password) in
+#' the R environment. These credentials are required to retrieve occurrence
+#' records from GBIF.
+#'
+#' @usage set_gbif_credentials(gbif_username, gbif_email, gbif_password,
+#'                            overwrite = FALSE, open_Renviron = FALSE)
+#'
+#' @param gbif_username (character) your GBIF username.
+#' @param gbif_email (character) your GBIF email adress.
+#' @param gbif_password (character) your GBIF password.
+#' @param overwrite (logical) whether to overwrite GBIF credentials if they
+#' already exist. Default is FALSE.
+#' @param open_Renviron (logical) whether to open the .Renviron file after
+#' saving the credentials. Default is FALSE.
+#'
+#' @returns
+#' If `open_Renviron` is set to TRUE, it opens the .Renviron file. Otherwise,
+#' the credentials are saved silently.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' store_gbif_credentials(gbif_username = "my_username",
+#'                        gbif_email = "my_email@example.com",
+#'                        gbif_password = "my_password")
+#' }
 set_gbif_credentials <- function(gbif_username, gbif_email, gbif_password,
                                  overwrite = FALSE, open_Renviron = FALSE) {
+
+  # Check arguments
+  if (!inherits(gbif_username, "character"))
+    stop("'gbif_username' must be a character, not ", class(gbif_username),
+         call. = FALSE)
+
+  if (!inherits(gbif_email, "character"))
+    stop("'gbif_email' must be a character, not ", class(gbif_email),
+         call. = FALSE)
+
+  if (!inherits(gbif_password, "character"))
+    stop("'gbif_password' must be a character, not ", class(gbif_password),
+         call. = FALSE)
+
+  if (!inherits(overwrite, "logical") || length(overwrite) != 1)
+    stop("'overwrite' must be a single logical value (TRUE or FALSE).",
+         call. = FALSE)
+
+  if (!inherits(open_Renviron, "logical") || length(open_Renviron) != 1)
+    stop("'open_Renviron' must be a single logical value (TRUE or FALSE).",
+         call. = FALSE)
+
+
   # Get R environment
   renviron_path <- file.path(Sys.getenv("HOME"), ".Renviron")
 
@@ -52,16 +105,3 @@ set_gbif_credentials <- function(gbif_username, gbif_email, gbif_password,
     file.edit(normalizePath(renviron_path, winslash = "/"))
   }
 }
-
-# # Test
-# gbif_username = "wevertonf1993"
-# gbif_email = "wevertonf1993@hotmail.com"
-# gbif_password = "teste"
-#
-#
-
-# set_gbif_credentials(gbif_username = gbif_username, gbif_email = gbif_email,
-#                      gbif_password = gbif_password, overwrite = TRUE,
-#                      open_Renviron = TRUE)
-
-
