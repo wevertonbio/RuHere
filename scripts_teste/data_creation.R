@@ -47,18 +47,18 @@ splink_metadata <- data.frame(scientificName = "scientificname", #Nome científi
                               datasetKey = NA, #Chave da origem dos dados
                               key = NA) #Chave da espécie no GBIF
 # Criar metadados
-idigbio_metadata <- data.frame(scientificName = "dwc:scientificName",
-                          collectionCode = "dwc:collectionCode",
-                          catalogNumber = "dwc:catalogNumber",
-                          decimalLongitude = "geopoint.lon",
-                          decimalLatitude = "geopoint.lat",
+idigbio_metadata <- data.frame(scientificName = "scientificname",
+                          collectionCode = "collectioncode",
+                          catalogNumber = "catalognumber",
+                          decimalLongitude = "lon",
+                          decimalLatitude = "lat",
                           coordinateUncertaintyInMeters = "coordinateuncertainty",
-                          elevation = NA,
+                          elevation = "maxelevation",
                           country = "country",
                           stateProvince = "stateprovince",
                           municipality = "municipality",
                           locality = "locality",
-                          year = "year",
+                          year = "datecollected",
                           eventDate = "datecollected",
                           recordedBy = "collector",
                           identifiedBy = NA,
@@ -68,6 +68,7 @@ idigbio_metadata <- data.frame(scientificName = "dwc:scientificName",
                           datasetName = NA,
                           datasetKey = "datasetid",
                           key = NA)
+
 bien_metadata <- data.frame(scientificName = "scrubbed_species_binomial",
                             collectionCode = "collection_code",
                             catalogNumber = NA,
@@ -123,8 +124,7 @@ usethis::use_data(occ_gbif, overwrite = TRUE)
 
 
 # idigbio
-occ_idig <- get_idigbio(rq=list(scientificname = "Paubrasilia echinata"),
-                        type = "api_records")
+occ_idig <- get_idigbio(species =  "Paubrasilia echinata")
 usethis::use_data(occ_idig, overwrite = TRUE)
 
 

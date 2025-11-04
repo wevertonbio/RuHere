@@ -1,6 +1,7 @@
-get_idigbio <- function(species = NULL, genus = NULL, family = NULL, 
+get_idigbio <- function(species = NULL, fields = "all",
+                        genus = NULL, family = NULL,
                         order = NULL, phylum = NULL, kingdom = NULL,
-                        country = NULL, county = NULL, limit = NULL, 
+                        country = NULL, county = NULL, limit = NULL,
                         offset = NULL, dir, filename = "idigbio_output",
                         save = FALSE, compress = FALSE, ...) {
 
@@ -74,11 +75,11 @@ get_idigbio <- function(species = NULL, genus = NULL, family = NULL,
     stop("save must be logical")
   }
 
-  df <- ridigbio::idig_search_records(rq=rq, limit = limit, offset = offset)
+  df <- ridigbio::idig_search_records(rq=rq, fields = fields,
+                                      limit = limit, offset = offset)
 
   df$scientificname <- florabr:::firstup(df$scientificname)
 
-  colnames(df)[colnames(df) == "scientificname"] <- "species"
   colnames(df)[colnames(df) == "geopoint.lon"] <- "lon"
   colnames(df)[colnames(df) == "geopoint.lat"] <- "lat"
   colnames(df)[colnames(df) == "data.dwc:eventDate"] <- "eventDate"

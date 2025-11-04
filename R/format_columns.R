@@ -1,18 +1,201 @@
+#' Format and standardize column names and data types of an occurrence dataset
+#'
+#' @param occ (data.frame or data.table) a dataset with occurrence records,
+#' preferably obtained from `import_gbif()`, `get_specieslink()`, `get_bien()`,
+#' or `get_idigbio()`.
+#' @param metadata (character or data.frame) if a character, one of 'gbif',
+#' 'specieslink', 'bien', or 'idigbio', specifying which metadata template to
+#' use (the corresponding data frames are available in
+#' `RuHere::prepared_metadata`). If a data.frame is provided, it must have 21
+#' columns (see **Details**).
+#' @param extract_binomial (logical) whether to create a column with the
+#' binomial name of the species. Default is TRUE.
+#' @param binomial_from (character) the column name from which to extract the
+#' binomial name. Only applicable if `extract_binomial = TRUE`. If `metadata`
+#' corresponds to one of the predefined sources ('gbif', 'specieslink', 'bien',
+#' or 'idigbio'), predefined columns will be used automatically. Default is NULL.
+#' @param include_subspecies (logical) whether to include subspecies in the
+#' binomial name.  Only applicable if `extract_binomial = TRUE`. If TRUE, the
+#' function includes any infraspecific epithet after the pattern "subsp.".
+#' Default if FALSE.
+#' @param include_variety (logical) whether to include variety in the binomial
+#' name. Only applicable if `extract_binomial = TRUE`. If TRUE, the function
+#' includes any infraspecific epithet after the pattern "var.". Default if FALSE.
+#' @param check_numeric (logical) whether to check and coerce the columns
+#' specified in `numeric_columns` to numeric type. Default is TRUE.
+#' @param numeric_columns (character) a vector of column names that must be
+#' numeric. Default is NULL, meaning that if `check_numeric = TRUE`, the
+#' following columns will be coerced: 'decimalLongitude', 'decimalLatitude',
+#' 'coordinateUncertaintyInMeters', 'elevation', and 'year'.
+#' @param check_encoding (logical) whether to check and fix the encoding of
+#' columns that typically contain special characters (see **Details**). Default
+#' is TRUE.
+#' @param data_source (character) the source of the occurrence records. Default
+#' is NULL, meaning it will use the same string provided in `metadata`. If
+#' `metadata` is a user-defined data.frame, this argument must be specified.
+#' @param verbose (logical) whether to print messages about the progress.
+#' Default is FALSE.
+#'
+#' @details
+#' If a user-defined metadata data.frame is provided, it must include the
+#' following 21 columns:
+#' 'scientificName', 'collectionCode', 'catalogNumber', 'decimalLongitude',
+#' 'decimalLatitude', 'coordinateUncertaintyInMeters', 'elevation', 'country',
+#' 'stateProvince', 'municipality', 'locality', 'year', 'eventDate',
+#' 'recordedBy', 'identifiedBy', 'basisOfRecord', 'occurrenceRemarks', 'habitat',
+#' 'datasetName', 'datasetKey', and 'key'.
+#'
+#' If `check_encoding = TRUE`, the function will inspect and, if necessary, fix
+#' the encoding of these columns:
+#' 'collectionCode', 'catalogNumber', 'country', 'stateProvince',
+#' municipality', 'locality', 'eventDate','recordedBy', 'identifiedBy',
+#' 'basisOfRecord', and 'datasetName'.
+#'
+#' @returns
+#' A data.frame with standardized column names and data types according to the
+#' specified metadata.
+#'
+#' @importFrom florabr get_binomial
+#' @importFrom dplyr rename %>%
+#' @importFrom stringi stri_enc_detect
+#' @importFrom pbapply pbsapply
+#'
+#' @export
+#'
+#' @examples
+#' # Example with GBIF
+#' data("occ_gbif", package = "RuHere") #Import data example
+#' gbif_standardized <- format_columns(occ_gbif, metadata = "gbif")
+#' # Example with SpeciesLink
+#' data("occ_splink", package = "RuHere") #Import data example
+#' splink_standardized <- format_columns(occ_splink, metadata = "specieslink")
+#' # Example with BIEN
+#' data("occ_bien", package = "RuHere") #Import data example
+#' bien_standardized <- format_columns(occ_bien, metadata = "bien")
+#' # Example with idigbio
+#' data("occ_idig", package = "RuHere") #Import data example
+#' idig_standardized <- format_columns(occ_idig, metadata = "idigbio")
+#'
 format_columns <- function(occ,
                            metadata,
+                           extract_binomial = TRUE,
+                           binomial_from = NULL,
+                           include_subspecies = FALSE,
+                           include_variety = FALSE,
                            check_numeric = TRUE,
                            numeric_columns = NULL,
-                           check_encoding = NULL,
-                           extract_year_from = NULL,
+                           check_encoding = TRUE,
                            data_source = NULL,
-                           verbose = TRUE) {
-  # Convert to dataframe
+                           verbose = FALSE) {
+
+  # ---- ARGUMENT CHECKING ----
+
+  # 1. Check occ
+  if (missing(occ) || !inherits(occ, c("data.frame", "data.table"))) {
+    stop("'occ' must be a data.frame or data.table containing occurrence records.",
+         call. = FALSE)
+  }
+  if (nrow(occ) == 0) {
+    stop("'occ' is empty. Please provide a dataset with occurrence records.",
+         call. = FALSE)
+  }
+
+  # 2. Check metadata
+  if (missing(metadata) || is.null(metadata)) {
+    stop("Argument 'metadata' is required. It must be either a string ('gbif', 'specieslink', 'bien', or 'idigbio') or a data.frame.", call. = FALSE)
+  }
+
+  if (is.character(metadata)) {
+    valid_sources <- c("gbif", "specieslink", "bien", "idigbio")
+    if (!metadata %in% valid_sources) {
+      stop("Invalid 'metadata' value. Must be one of: 'gbif', 'specieslink', 'bien', or 'idigbio'.", call. = FALSE)
+    }
+    meta_df <- RuHere::prepared_metadata[[metadata]]
+
+  } else if (is.data.frame(metadata)) {
+    # User-provided metadata
+    required_cols <- c("scientificName", "collectionCode", "catalogNumber",
+                       "decimalLongitude", "decimalLatitude",
+                       "coordinateUncertaintyInMeters", "elevation", "country",
+                       "stateProvince", "municipality", "locality", "year",
+                       "eventDate", "recordedBy", "identifiedBy",
+                       "basisOfRecord", "occurrenceRemarks", "habitat",
+                       "datasetName", "datasetKey", "key")
+
+    missing_cols <- setdiff(required_cols, names(metadata))
+    if (length(missing_cols) > 0) {
+      stop(paste0("The user-provided 'metadata' is missing the following required columns: ",
+                  paste(missing_cols, collapse = ", ")), call. = FALSE)
+    }
+    meta_df <- metadata
+
+  } else {
+    stop("'metadata' must be either a character string or a data.frame.",
+         call. = FALSE)
+  }
+
+  # 3. Check extract_binomial
+  if (!is.logical(extract_binomial) || length(extract_binomial) != 1) {
+    stop("'extract_binomial' must be a single logical value (TRUE or FALSE).",
+         call. = FALSE)
+  }
+
+  # 4. Check binomial_from
+  if (extract_binomial) {
+    if (!is.null(binomial_from) && !binomial_from %in% names(occ)) {
+      stop(paste0("The column specified in 'binomial_from' ('", binomial_from,
+                  "') was not found in 'occ'."), call. = FALSE)
+    }
+  }
+
+  # 5. Check include_subspecies / include_variety
+  if (!is.logical(include_subspecies) || length(include_subspecies) != 1)
+    stop("'include_subspecies' must be a single logical value.", call. = FALSE)
+  if (!is.logical(include_variety) || length(include_variety) != 1)
+    stop("'include_variety' must be a single logical value.", call. = FALSE)
+
+  # 6. Check check_numeric
+  if (!is.logical(check_numeric) || length(check_numeric) != 1)
+    stop("'check_numeric' must be a single logical value.", call. = FALSE)
+
+  # 7. Define numeric columns
+  if (is.null(numeric_columns)) {
+    numeric_columns <- c("decimalLongitude", "decimalLatitude",
+                         "coordinateUncertaintyInMeters", "elevation", "year")
+  } else {
+    if (!is.character(numeric_columns))
+      stop("'numeric_columns' must be a character vector of column names.",
+           call. = FALSE)
+  }
+
+  # 8. Check check_encoding
+  if (!is.logical(check_encoding) || length(check_encoding) != 1)
+    stop("'check_encoding' must be a single logical value.", call. = FALSE)
+
+  # 9. Check data_source
+  if (!is.null(data_source) && !is.character(data_source))
+    stop("'data_source' must be a character string or NULL.", call. = FALSE)
+  if (is.null(data_source)) {
+    if (is.character(metadata)) {
+      data_source <- metadata
+    } else {
+      stop("When 'metadata' is a custom data.frame, 'data_source' must be provided.",
+           call. = FALSE)
+    }
+  }
+
+  # 10. Check verbose
+  if (!is.logical(verbose) || length(verbose) != 1)
+    stop("'verbose' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+
+
+  # Convert to dataframe if necessary
   if(!inherits(occ, "data.frame")){
     occ <- as.data.frame(occ)}
 
 
   if(is.character(metadata)){
-    prepared_d <- RuHere::prepared_metadata
+    prepared_d <- getExportedValue("RuHere", "prepared_metadata")
     d <- prepared_metadata[[metadata]]
   }
 
@@ -44,6 +227,43 @@ format_columns <- function(occ,
     d[,"year"] <- "year"
   }
 
+  if(metadata == "idigbio"){
+    occ$year <- as.Date(occ$datecollected, format = "%Y-%m-%d") %>%
+      format(., "%Y")
+    d[,"year"] <- "year"
+  }
+
+  # Column to extract binomial species from kwonw metadata
+  if(extract_binomial){
+    if(is.null(binomial_from) & metadata %in% c("gbif", "specieslink", "idigbio",
+                                               "bien")){
+      binomial_from <- if(metadata == "gbif"){
+        "acceptedScientificName"
+      } else if(metadata == "specieslink"){
+        "scientificname"
+      } else if(metadata == "bien"){
+        "scrubbed_species_binomial"
+      } else if(metadata == "idigbio"){
+        "scientificname"
+      }
+    }
+
+    # Get binomial species
+    if(!is.null(binomial_from)){
+      # Check if columns exists
+      if(!(binomial_from %in% colnames(occ))){
+        stop("Columns specified in 'binomial_from' is not present in 'occ'")}
+
+      #Get binomial
+      species <- florabr::get_binomial(species_names = occ[[binomial_from]],
+                                       include_subspecies = include_subspecies,
+                                       include_variety = include_variety)
+    }
+
+  }
+
+
+
   # Rename and remove columns...
   if(verbose)
     message("Renaming columns...")
@@ -52,6 +272,10 @@ format_columns <- function(occ,
   to_keep <- as.character(new_names)
   to_keep <- to_keep[to_keep != "NA"]
   occ <- occ[,intersect(colnames(occ), to_keep)]
+
+  if(extract_binomial){
+    occ$species <- species
+  }
 
   #Create columns, if necessary
   absent_columns <- setdiff(to_keep, colnames(occ))
@@ -128,29 +352,10 @@ format_columns <- function(occ,
   # Create ID for each records
   occ$record_id <- paste(occ$data_source, 1:nrow(occ), sep = "_")
 
-  return(occ[,c("record_id", colnames(d), "data_source")])
+  if(!extract_binomial){
+    return(occ[,c("record_id", colnames(d), "data_source")])
+  } else {
+    return(occ[,c("record_id", "species", colnames(d), "data_source")])
+  }
 }
-
-# For test
-# SpeciesLink
-# occ <- RuHere::occ_splink
-# occ_splink <- format_columns(occ = occ, metadata = "specieslink")
-# # # GBIF
-# occ <- RuHere::occ_gbif
-# occ_gbif <- format_columns(occ = occ, metadata = "gbif")
-# # BIEN
-# occ <- RuHere::occ_bien
-# occ_bien <- format_columns(occ = occ, metadata = "bien")
-#
-#
-# all_occ <- bind_rows(occ_splink, occ_gbif, occ_bien)
-
-# # Test function
-# occ <- RuHere::occ_bien
-# metadata <- "bien"
-# numeric_columns = NULL
-# check_encoding = NULL
-# extract_year_from = NULL
-# data_source = NULL
-# verbose = TRUE
 
