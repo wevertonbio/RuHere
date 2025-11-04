@@ -57,8 +57,52 @@ flag_CoordinateCleaner <- function(occ, species = "species",
   )
 
   res_flag <- res_flag %>%
-    dplyr::select(colnames(occ), .summary) %>%
-    dplyr::rename(flag_CoordinateCleaner = .summary)
+    dplyr::rename(flag_CoordinateCleaner_summary = .summary)
+
+  if (".val" %in% names(res_flag)) {
+    res_flag <- res_flag %>%
+    dplyr::rename(flag_CoordinateCleaner_val = .val)
+  }
+
+  if (".equ" %in% names(res_flag)) {
+    res_flag <- res_flag %>%
+    dplyr::rename(flag_CoordinateCleaner_equal = .equ)
+  }
+
+  if (".zer" %in% names(res_flag)) {
+    res_flag <- res_flag %>%
+    dplyr::rename(flag_CoordinateCleaner_zeros = .zer)
+  }
+
+  if (".cap" %in% names(res_flag)) {
+    res_flag <- res_flag %>%
+    dplyr::rename(flag_CoordinateCleaner_capitals = .cap)
+  }
+
+  if (".cen" %in% names(res_flag)) {
+    res_flag <- res_flag %>%
+    dplyr::rename(flag_CoordinateCleaner_centroids = .cen)
+  }
+
+  if (".sea" %in% names(res_flag)) {
+    res_flag <- res_flag %>%
+    dplyr::rename(flag_CoordinateCleaner_sea = .sea)
+  }
+  
+  if (".otl" %in% names(res_flag)) {
+    res_flag <- res_flag %>%
+    dplyr::rename(flag_CoordinateCleaner_outliers = .otl)
+  }
+  
+  if (".gbf" %in% names(res_flag)) {
+    res_flag <- res_flag %>%
+    dplyr::rename(flag_CoordinateCleaner_gbif = .gbf)
+  }
+  
+  if (".inst" %in% names(res_flag)) {
+    res_flag <- res_flag %>%
+    dplyr::rename(flag_CoordinateCleaner_institutions = .inst)
+  }
 
   return(res_flag)
 }

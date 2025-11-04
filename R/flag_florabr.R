@@ -16,6 +16,28 @@ flag_florabr <- function(data_dir, occ, species = "species",
       stop("verbose must be logical")
   }
   
+  if (is.null(occ)) {
+    stop("occ should be specified")
+  } else if (!inherits(occ, "data.frame")) {
+    stop("occ should be a data.frame")
+  }
+
+  if (!inherits(species, "character")) {
+    stop("species should be a character")
+  }
+
+  if (!inherits(long, "character")) {
+    stop("long should be a character")
+  }
+
+  if (!inherits(lat, "character")) {
+    stop("lat should be a character")
+  }
+  
+  if (!inherits(buffer, "numeric")) {
+      stop("buffer must be numeric")
+  }
+
   # Check if data_dir exists
   if(!file.exists(file.path(data_dir, "florabr/"))){
     stop("Data from florabr necessary to check records is not available in ", data_dir,
