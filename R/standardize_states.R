@@ -1,3 +1,70 @@
+#' Standardize state names
+#'
+#' @description
+#' This function standardizes state names using both names and codes present
+#' in a specified column.
+#'
+#' @param occ (data.frame) a dataset with occurrence records, preferably
+#' standardized using `format_columns()`.
+#' @param state_column (character) the column name containing the state
+#' information.
+#' @param country_column (character) the column name containing the country
+#' information.
+#' @param max_distance (numeric) maximum allowed distance (as a fraction) when
+#' searching for suggestions for misspelled state names. Can be any value
+#' between 0 and 1. Higher values return more suggestions. See `agrep()` for
+#' details. Default is 0.1.
+#' @param lookup_na_state (logical) whether to extract the state from
+#' coordinates when the state column has missing values. If TRUE, longitude
+#' and latitude columns must be provided. Default is FALSE.
+#' @param long (character) column name with longitude. Only applicable if
+#' `lookup_na_state = TRUE`. Default is NULL.
+#' @param lat (character) column name with latitude. Only applicable if
+#' `lookup_na_state = TRUE`. Default is NULL.
+#' @param return_dictionary (logical) whether to return the dictionary of
+#' states that were (fuzzy) matched.
+#'
+#' @details
+#' States names are first standardized by exact matching against a list of
+#' state names in several languages from `rnaturalearthdata::states50`.
+#' Any unmatched names are then processed using a fuzzy matching algorithm to
+#' find potential candidates for misspelled state names. If unmatched names
+#' remain and `lookup_na_state = TRUE`, the state is extracted from
+#' coordinates using a map retrieved from `rnaturalearthdata::states50`.
+#'
+#' @returns
+#' A list with two elements:
+#' \item{data}{The original `occ` data.frame with an additional column
+#' (state_suggested) containing the suggested state names based on exact
+#' match, fuzzy match, and/or coordinates.}
+#' \item{dictionary}{If `return_dictionary = TRUE`, a data.frame with the
+#' original state names and the suggested matches.}
+#'
+#' @importFrom florabr match_names
+#' @importFrom dplyr left_join %>% select distinct filter bind_rows all_of
+#' relocate semi_join
+#' @export
+#'
+#' @examples
+#' # Import and standardize GBIF
+#' data("occ_gbif", package = "RuHere") #Import data example
+#' gbif_standardized <- format_columns(occ_gbif, metadata = "gbif")
+#' # Import and standardize SpeciesLink
+#' data("occ_splink", package = "RuHere") #Import data example
+#' splink_standardized <- format_columns(occ_splink, metadata = "specieslink")
+#' # Import and standardize BIEN
+#' data("occ_bien", package = "RuHere") #Import data example
+#' bien_standardized <- format_columns(occ_bien, metadata = "bien")
+#' # Import and standardize idigbio
+#' data("occ_idig", package = "RuHere") #Import data example
+#' idig_standardized <- format_columns(occ_idig, metadata = "idigbio")
+#' # Merge all
+#' all_occ <- bind_here(gbif_standardized, splink_standardized,
+#'                      bien_standardized, idig_standardized)
+#' # Standardize countries
+#' occ_standardized <- standardize_countries(occ = all_occ)
+#' # Standardize states
+#' occ_standardized2 <- standardize_states(occ = occ_standardized$occ)
 standardize_states <- function(occ,
                                state_column = "stateProvince",
                                country_column = "country_suggested",
@@ -5,8 +72,63 @@ standardize_states <- function(occ,
                                lookup_na_state = FALSE,
                                long = NULL, lat = NULL,
                                return_dictionary = TRUE){
+  # ---- ARGUMENT CHECKING ----
+
+  # 1. Check occ
+  if (missing(occ) || !inherits(occ, "data.frame")) {
+    stop("'occ' must be a data.frame containing occurrence records.", call. = FALSE)
+  }
+  if (nrow(occ) == 0) {
+    stop("'occ' is empty. Please provide a dataset with occurrence records.", call. = FALSE)
+  }
+
+  # 2. Check state_column
+  if (!inherits(state_column, "character") || length(state_column) != 1) {
+    stop("'state_column' must be a single character string specifying the column with state information.", call. = FALSE)
+  }
+  if (!state_column %in% names(occ)) {
+    stop(paste0("The column specified in 'state_column' ('", state_column, "') was not found in 'occ'."), call. = FALSE)
+  }
+
+  # 3. Check country_column
+  if (!inherits(country_column, "character") || length(country_column) != 1) {
+    stop("'country_column' must be a single character string specifying the column with country information.", call. = FALSE)
+  }
+  if (!country_column %in% names(occ)) {
+    stop(paste0("The column specified in 'country_column' ('", country_column, "') was not found in 'occ'."), call. = FALSE)
+  }
+
+  # 4. Check max_distance
+  if (!inherits(max_distance, "numeric") || length(max_distance) != 1 || max_distance < 0 || max_distance > 1) {
+    stop("'max_distance' must be a numeric value between 0 and 1.", call. = FALSE)
+  }
+
+  # 5. Check lookup_na_state
+  if (!inherits(lookup_na_state, "logical") || length(lookup_na_state) != 1) {
+    stop("'lookup_na_state' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+  }
+
+  # 6. Check long/lat columns if lookup_na_state is TRUE
+  if (lookup_na_state) {
+    if (!inherits(long, "character") || !long %in% names(occ)) {
+      stop("'long' must be provided and exist in 'occ' when 'lookup_na_state = TRUE'.", call. = FALSE)
+    }
+    if (!inherits(lat, "character") || !lat %in% names(occ)) {
+      stop("'lat' must be provided and exist in 'occ' when 'lookup_na_state = TRUE'.", call. = FALSE)
+    }
+    if (!inherits(occ[[long]], "numeric") || !inherits(occ[[lat]], "numeric")) {
+      stop("'long' and 'lat' columns must be numeric.", call. = FALSE)
+    }
+  }
+
+  # 7. Check return_dictionary
+  if (!inherits(return_dictionary, "logical") || length(return_dictionary) != 1) {
+    stop("'return_dictionary' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+  }
+
+
   # Get state dictionary
-  ss <- RuHere::states_dictionary
+  ss <- getExportedValue("RuHere", "states_dictionary")
 
   # Remove accents
   occ[[state_column]] <- remove_accent(occ[[state_column]])
@@ -29,7 +151,7 @@ standardize_states <- function(occ,
   # Check state names
   unique_states <- distinct(occ[, c(state_column, country_column)])
 
-  ccn <- florabr:::match_names(species = na.omit(unique_states[[state_column]]),
+  ccn <- florabr::match_names(species = na.omit(unique_states[[state_column]]),
                                species_to_match = ss$states_name$state_name,
                                max_distance = max_distance)
   colnames(ccn) <- c("state", "state_name", "Distance")
@@ -62,9 +184,9 @@ standardize_states <- function(occ,
   final_states <- dplyr::bind_rows(ccn, ccc)
 
   if(nrow(final_states) > 0){
-    occ_final <- left_join(occ, final_states,
+    occ_final <- dplyr::left_join(occ, final_states,
                            by = c(state_column, country_column)) %>%
-      relocate(state_suggested, .after = state_column)} else {
+      dplyr::relocate(state_suggested, .after = state_column)} else {
         occ_final <- occ
       }
 
@@ -97,22 +219,4 @@ standardize_states <- function(occ,
     return(occ_final)
   }
 } #End of function
-
-# # For test
-# occ_gbif <- RuHere::occ_gbif
-# occ_splink <- RuHere::occ_splink
-# occ_bien <- RuHere::occ_bien
-# # Format columns
-# occ_gbif <- format_columns(occ_gbif, metadata = "gbif")
-# occ_splink <- format_columns(occ_splink, metadata = "specieslink")
-# occ_bien <- format_columns(occ_bien, metadata = "bien")
-# # Merge data
-# all_occ <- bind_rows(occ_gbif, occ_splink, occ_bien)
-
-# res <- standardize_states(all_occ)
-# View(res$occ)
-# View(res$report)
-# res <- standardize_states(all_occ, return_dictionary = F)
-# View(res$occ)
-# View(res$report)
 

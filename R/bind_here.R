@@ -45,20 +45,21 @@ bind_here <- function(...,
                       fill = FALSE){
 
   # ---- Argument checks ----
-  if (!is.logical(fill) || length(fill) != 1)
-    stop("'fill' must be a single logical value (TRUE or FALSE).",
-         call. = FALSE)
 
+  # 1. Check fill
+  if (!inherits(fill, "logical") || length(fill) != 1) {
+    stop("'fill' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+  }
+
+  # 2. Check that at least one object is provided
   l <- list(...)
-  if (length(l) == 0)
-    stop("At least one data.frame must be provided to 'bind_here()'.",
-         call. = FALSE)
+  if (length(l) == 0) {
+    stop("At least one data.frame must be provided to 'bind_here()'.", call. = FALSE)
+  }
 
-  # Check that all elements are data.frames or data.tables
-  if (!all(vapply(l, function(x) inherits(x, c("data.frame", "data.table")),
-                  logical(1)))) {
-    stop("All inputs in '...' must be data.frames or data.tables.",
-         call. = FALSE)
+  # 3. Check that all elements are data.frames or data.tables
+  if (!all(vapply(l, function(x) inherits(x, c("data.frame", "data.table")), logical(1)))) {
+    stop("All inputs in '...' must be data.frames or data.tables.", call. = FALSE)
   }
 
   l <- list(...)

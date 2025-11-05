@@ -4,8 +4,8 @@
 #' This function standardizes country names using both names and codes present
 #' in a specified column.
 #'
-#' @param occ (data.frame) a dataset with occurrence records,
-#' preferably standardized using `format_columns()`.
+#' @param occ (data.frame) a dataset with occurrence records, preferably
+#' standardized using `format_columns()`.
 #' @param country_column (character) the column name containing the country
 #' information.
 #' @param max_distance (numeric) maximum allowed distance (as a fraction) when
@@ -44,8 +44,9 @@
 #' original country names and the suggested matches.}
 #'
 #' @importFrom florabr match_names
-#' @importFrom dplyr left_join %>% select distinct filter bind_rows left_join
-#' all_of relocate
+#' @importFrom dplyr left_join %>% select distinct filter bind_rows all_of
+#' relocate
+#'
 #' @export
 #'
 #' @examples
@@ -85,7 +86,7 @@ standardize_countries <- function(occ,
   }
 
   # 2. Check country_column
-  if (missing(country_column) || !is.character(country_column) || length(country_column) != 1) {
+  if (!inherits(country_column, "character") || length(country_column) != 1) {
     stop("'country_column' must be a single character string specifying the column with country information.", call. = FALSE)
   }
   if (!country_column %in% names(occ)) {
@@ -93,13 +94,13 @@ standardize_countries <- function(occ,
   }
 
   # 3. Check max_distance
-  if (!is.numeric(max_distance) || length(max_distance) != 1 || max_distance < 0 || max_distance > 1) {
+  if (!inherits(max_distance, "numeric") || length(max_distance) != 1 || max_distance < 0 || max_distance > 1) {
     stop("'max_distance' must be a numeric value between 0 and 1.", call. = FALSE)
   }
 
   # 4. Check user_dictionary
   if (!is.null(user_dictionary)) {
-    if (!is.data.frame(user_dictionary)) {
+    if (!inherits(user_dictionary, "data.frame")) {
       stop("'user_dictionary' must be a data.frame with columns 'country_name' and 'country_suggested'.", call. = FALSE)
     }
     required_dict_cols <- c("country_name", "country_suggested")
@@ -110,28 +111,26 @@ standardize_countries <- function(occ,
   }
 
   # 5. Check lookup_na_country
-  if (!is.logical(lookup_na_country) || length(lookup_na_country) != 1) {
-    stop("'lookup_na_country' must be a single logical value (TRUE or FALSE).",
-         call. = FALSE)
+  if (!inherits(lookup_na_country, "logical") || length(lookup_na_country) != 1) {
+    stop("'lookup_na_country' must be a single logical value (TRUE or FALSE).", call. = FALSE)
   }
 
   # 6. Check long/lat columns if lookup_na_country is TRUE
   if (lookup_na_country) {
-    if (is.null(long) || !long %in% names(occ)) {
+    if (!inherits(long, "character") || !long %in% names(occ)) {
       stop("'long' must be provided and exist in 'occ' when 'lookup_na_country = TRUE'.", call. = FALSE)
     }
-    if (is.null(lat) || !lat %in% names(occ)) {
+    if (!inherits(lat, "character") || !lat %in% names(occ)) {
       stop("'lat' must be provided and exist in 'occ' when 'lookup_na_country = TRUE'.", call. = FALSE)
     }
-    if (!is.numeric(occ[[long]]) || !is.numeric(occ[[lat]])) {
+    if (!inherits(occ[[long]], "numeric") || !inherits(occ[[lat]], "numeric")) {
       stop("'long' and 'lat' columns must be numeric.", call. = FALSE)
     }
   }
 
   # 7. Check return_dictionary
-  if (!is.logical(return_dictionary) || length(return_dictionary) != 1) {
-    stop("'return_dictionary' must be a single logical value (TRUE or FALSE).",
-         call. = FALSE)
+  if (!inherits(return_dictionary, "logical") || length(return_dictionary) != 1) {
+    stop("'return_dictionary' must be a single logical value (TRUE or FALSE).", call. = FALSE)
   }
 
 

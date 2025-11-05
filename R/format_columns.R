@@ -87,17 +87,14 @@ format_columns <- function(occ,
                            check_encoding = TRUE,
                            data_source = NULL,
                            verbose = FALSE) {
-
   # ---- ARGUMENT CHECKING ----
 
   # 1. Check occ
   if (missing(occ) || !inherits(occ, c("data.frame", "data.table"))) {
-    stop("'occ' must be a data.frame or data.table containing occurrence records.",
-         call. = FALSE)
+    stop("'occ' must be a data.frame or data.table containing occurrence records.", call. = FALSE)
   }
   if (nrow(occ) == 0) {
-    stop("'occ' is empty. Please provide a dataset with occurrence records.",
-         call. = FALSE)
+    stop("'occ' is empty. Please provide a dataset with occurrence records.", call. = FALSE)
   }
 
   # 2. Check metadata
@@ -105,14 +102,14 @@ format_columns <- function(occ,
     stop("Argument 'metadata' is required. It must be either a string ('gbif', 'specieslink', 'bien', or 'idigbio') or a data.frame.", call. = FALSE)
   }
 
-  if (is.character(metadata)) {
+  if (inherits(metadata, "character")) {
     valid_sources <- c("gbif", "specieslink", "bien", "idigbio")
     if (!metadata %in% valid_sources) {
       stop("Invalid 'metadata' value. Must be one of: 'gbif', 'specieslink', 'bien', or 'idigbio'.", call. = FALSE)
     }
     meta_df <- RuHere::prepared_metadata[[metadata]]
 
-  } else if (is.data.frame(metadata)) {
+  } else if (inherits(metadata, "data.frame")) {
     # User-provided metadata
     required_cols <- c("scientificName", "collectionCode", "catalogNumber",
                        "decimalLongitude", "decimalLatitude",
@@ -130,14 +127,12 @@ format_columns <- function(occ,
     meta_df <- metadata
 
   } else {
-    stop("'metadata' must be either a character string or a data.frame.",
-         call. = FALSE)
+    stop("'metadata' must be either a character string or a data.frame.", call. = FALSE)
   }
 
   # 3. Check extract_binomial
-  if (!is.logical(extract_binomial) || length(extract_binomial) != 1) {
-    stop("'extract_binomial' must be a single logical value (TRUE or FALSE).",
-         call. = FALSE)
+  if (!inherits(extract_binomial, "logical") || length(extract_binomial) != 1) {
+    stop("'extract_binomial' must be a single logical value (TRUE or FALSE).", call. = FALSE)
   }
 
   # 4. Check binomial_from
@@ -149,13 +144,13 @@ format_columns <- function(occ,
   }
 
   # 5. Check include_subspecies / include_variety
-  if (!is.logical(include_subspecies) || length(include_subspecies) != 1)
+  if (!inherits(include_subspecies, "logical") || length(include_subspecies) != 1)
     stop("'include_subspecies' must be a single logical value.", call. = FALSE)
-  if (!is.logical(include_variety) || length(include_variety) != 1)
+  if (!inherits(include_variety, "logical") || length(include_variety) != 1)
     stop("'include_variety' must be a single logical value.", call. = FALSE)
 
   # 6. Check check_numeric
-  if (!is.logical(check_numeric) || length(check_numeric) != 1)
+  if (!inherits(check_numeric, "logical") || length(check_numeric) != 1)
     stop("'check_numeric' must be a single logical value.", call. = FALSE)
 
   # 7. Define numeric columns
@@ -163,30 +158,29 @@ format_columns <- function(occ,
     numeric_columns <- c("decimalLongitude", "decimalLatitude",
                          "coordinateUncertaintyInMeters", "elevation", "year")
   } else {
-    if (!is.character(numeric_columns))
-      stop("'numeric_columns' must be a character vector of column names.",
-           call. = FALSE)
+    if (!inherits(numeric_columns, "character"))
+      stop("'numeric_columns' must be a character vector of column names.", call. = FALSE)
   }
 
   # 8. Check check_encoding
-  if (!is.logical(check_encoding) || length(check_encoding) != 1)
+  if (!inherits(check_encoding, "logical") || length(check_encoding) != 1)
     stop("'check_encoding' must be a single logical value.", call. = FALSE)
 
   # 9. Check data_source
-  if (!is.null(data_source) && !is.character(data_source))
+  if (!is.null(data_source) && !inherits(data_source, "character"))
     stop("'data_source' must be a character string or NULL.", call. = FALSE)
   if (is.null(data_source)) {
-    if (is.character(metadata)) {
+    if (inherits(metadata, "character")) {
       data_source <- metadata
     } else {
-      stop("When 'metadata' is a custom data.frame, 'data_source' must be provided.",
-           call. = FALSE)
+      stop("When 'metadata' is a custom data.frame, 'data_source' must be provided.", call. = FALSE)
     }
   }
 
   # 10. Check verbose
-  if (!is.logical(verbose) || length(verbose) != 1)
+  if (!inherits(verbose, "logical") || length(verbose) != 1)
     stop("'verbose' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+
 
 
   # Convert to dataframe if necessary
