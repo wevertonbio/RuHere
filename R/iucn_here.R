@@ -51,8 +51,9 @@
 #'
 #' @importFrom pbapply pblapply
 #' @importFrom rredlist rl_species rl_assessment
-#' @importFrom dplyr select %>% distinct mutate
+#' @importFrom dplyr %>% distinct mutate
 #' @importFrom data.table rbindlist fwrite
+#' @importFrom stats na.omit
 #' @export
 #'
 #' @examples
@@ -163,7 +164,7 @@ iucn_here <- function(data_dir,
         if("locations" %in% names(assessment)){
           l <- assessment$locations
           d <- l$description$en
-          l <- l %>% dplyr::select(code, origin, presence) %>%
+          l <- l[, c("code", "origin", "presence")] %>%
             dplyr::mutate(species = i,
                    region = d, .before = 1)
         } else { #If there is no info on location
@@ -176,7 +177,7 @@ iucn_here <- function(data_dir,
       }
       return(l)
     })
-    r <- na.omit(data.table::rbindlist(r))
+    r <- stats::na.omit(data.table::rbindlist(r))
     return(r)
   })
 
