@@ -1,3 +1,112 @@
+#' @title get_bien
+#'
+#' @usage get_bien <- function(by = "species", cultivated = FALSE,
+#' new.world = NULL, all.taxonomy = FALSE, native.status = FALSE,
+#' natives.only = TRUE, observation.type = FALSE, political.boundaries = TRUE,
+#' collection.info = TRUE, only.geovalid = TRUE, min.lat = NULL, max.lat = NULL,
+#' min.long = NULL, max.long = NULL, species = NULL, genus = NULL,
+#' country = NULL, country.code = NULL, state = NULL, county = NULL,
+#' state.code = NULL, county.code = NULL, family = NULL, sf = NULL, ...)
+#'
+#' @description
+#' Wrapper function to access and download occurrence records from the
+#' Botanical Information and Ecology Network (BIEN) database. It provides a
+#' unified interface to query BIEN data by species, genus, family, or by
+#' geographic or political boundaries.
+#'
+#' @param by (character) type of query to perform (`"box"`, `"country"`,
+#' `"county"`, `"family"`, `"genus"`, `"records_per_species"`, `"species"`,
+#' `"sf"`, or `"state"`). Default is `species`.
+#'
+#' @param cultivated (logical) whether to include cultivated records or exclude
+#' them. Default is `FALSE`.
+#'
+#' @param new.world (logical) if `TRUE`, restricts records to the New World,
+#' if `FALSE`, to the Old World, and if `NULL`, no restriction. Default is `NULL`.
+#'
+#' @param all.taxonomy (logical) if `TRUE`, returns all taxonomic levels
+#' available, otherwise, limits results to accepted names. Default is `FALSE`.
+#'
+#' @param native.status (logical) if `TRUE`, includes information about native
+#' versus non-native status of occurrences. Default is `FALSE`.
+#'
+#' @param natives.only (logical) if `TRUE`, restricts results to native species
+#' only. Default is `TRUE`.
+#'
+#' @param observation.type (logical) if `TRUE`, includes information on
+#' observation types. Default is `FALSE`.
+#'
+#' @param political.boundaries (logical) if `TRUE`, restricts the search to
+#' defined political boundaries. Default is `TRUE`.
+#'
+#' @param collection.info (logical) if `TRUE`, includes collection-level
+#' metadata. Default is `TRUE`.
+#'
+#' @param only.geovalid (logical) if `TRUE`, restricts output to
+#' georeferenced and spatially valid records. Default is `TRUE`.
+#'
+#' @param min.lat, max.lat, min.long, max.long (numeric) geographic limits
+#' (in decimal degrees) for bounding-box queries when `by = "box"`.
+#' Ignored otherwise. Default is `NULL`.
+#'
+#' @param species (character) species name(s) to query when `by = "species"`
+#' or `"records_per_species"`. Default is `NULL`.
+#'
+#' @param genus (character) genus name(s) to query when `by = "genus"`. Default is `NULL`.
+#'
+#' @param family (character) family name(s) to query when `by = "family"`.  Default is `NULL`.
+#'
+#' @param country (character) country name when `by = "country"`, `"state"`,
+#' or `"county"`. Default is `NULL`.
+#'
+#' @param country.code (character) two-letter ISO country code corresponding
+#' to `country`. Default is `NULL`.
+#'
+#' @param state (character) state or province name when `by = "state"` or
+#' `"county"`. Default is `NULL`.
+#'
+#' @param state.code (character) state or province code corresponding
+#' to `state`. Default is `NULL`.
+#'
+#' @param county (character) county or equivalent subdivision name
+#' when `by = "county"`. Default is `NULL`.
+#'
+#' @param county.code (character) county or equivalent subdivision code
+#' corresponding to `county`. Default is `NULL`.
+#'
+#' @param sf (object of class `sf`) a spatial object defining an area
+#' of interest when `by = "sf"`.  Default is `NULL`.
+#'
+#' @param ... additional arguments passed to the underlying BIEN function.
+#'
+#' @return
+#' A data frame containing BIEN occurrence records that match
+#' the specified query. The structure and available columns depend on the chosen
+#' `by` value and the corresponding BIEN function.
+#'
+#' @importFrom BIEN BIEN_occurrence_box BIEN_occurrence_country
+#' @importFrom BIEN BIEN_occurrence_county BIEN_occurrence_family
+#' @importFrom BIEN BIEN_occurrence_genus BIEN_occurrence_records_per_species
+#' @importFrom BIEN BIEN_occurrence_species BIEN_occurrence_sf
+#' @importFrom BIEN BIEN_occurrence_state
+#' @importFrom data.table fwrite
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Example: download occurrence records for a single species
+#' res_test <- get_bien(
+#'     by = "species",
+#'     species = "Paubrasilia echinata",
+#'     cultivated = TRUE,
+#'     native.status = TRUE,
+#'     observation.type = TRUE,
+#'     only.geovalid = TRUE
+#' )
+#' }
+#'
+#' @export
 get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
                      all.taxonomy = FALSE, native.status = FALSE,
                      natives.only = TRUE, observation.type = FALSE,
@@ -6,7 +115,9 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
                      min.long = NULL, max.long = NULL, species = NULL,
                      genus = NULL, country = NULL, country.code = NULL,
                      state = NULL, county = NULL, state.code = NULL,
-                     county.code = NULL, family = NULL, sf = NULL, ...) {
+                     county.code = NULL, family = NULL, sf = NULL, dir,
+                     filename = "output", file.format = "csv", compress = FALSE,
+                     save = FALSE, ...) {
 
     # Botanical Information and Ecology Network Database
     # https://bien.nceas.ucsb.edu/bien/
@@ -18,13 +129,92 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
         stop("Data type must be specified with argument 'by'!")
     }
 
-    if (!is.character(by) || !by %in% c("box", "country", "county", "family",
-                                        "genus", "records_per_species",
-                                        "species", "sf", "state")) {
-        stop("'by' must be one of: box, country, county, family, genus, records_per_species, species, sf, state")
+    valid_by <- c("box", "country", "county", "family", "genus",
+                "records_per_species", "species", "sf", "state")
+    if (!inherits(by, "character") || length(by) != 1 || !(by %in% valid_by)) {
+      stop("'by' must be one of: ", paste(valid_by, collapse = ", "), call. = FALSE)
     }
 
-    ##### Not checking other arguments: BIEN already does this!
+    # Logical arguments
+    logical_args <- list(
+      cultivated = cultivated,
+      all.taxonomy = all.taxonomy,
+      native.status = native.status,
+      natives.only = natives.only,
+      observation.type = observation.type,
+      political.boundaries = political.boundaries,
+      collection.info = collection.info,
+      only.geovalid = only.geovalid
+    )
+
+    for (arg in names(logical_args)) {
+      val <- logical_args[[arg]]
+      if (!inherits(val, "logical") || length(val) != 1) {
+        stop("'", arg, "' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+      }
+    }
+
+    if (!is.null(new.world) && !inherits(new.world, "logical")) {
+      stop("'new.world' must be a single logical value (TRUE or FALSE) or NULL.", call. = FALSE)
+    }
+
+    text_args <- c("country", "country.code", "state", "state.code", "county",
+                   "county.code")
+    for (nm in text_args) {
+      val <- get(nm)
+      if (!is.null(val) && !inherits(val, "character")) {
+        stop("'", nm, "' must be a character or NULL, not ", paste(class(val), collapse = "/"))
+      }
+    }
+
+    num_args <- c("min.lat", "max.lat", "min.long", "max.long")
+    for (nm in num_args) {
+      val <- get(nm)
+      if (!is.null(val) && !inherits(val, "numeric")) {
+        stop("'", nm, "' must be numeric or NULL, not ", paste(class(val), collapse = "/"))
+      }
+    }
+
+    # Taxonomic fields
+    if (!is.null(species) && !inherits(species, "character"))
+      stop("'species' must be a character vector or NULL, not ", class(species), call. = FALSE)
+    if (!is.null(genus) && !inherits(genus, "character"))
+      stop("'genus' must be a character vector or NULL, not ", class(genus), call. = FALSE)
+    if (!is.null(family) && !inherits(family, "character"))
+      stop("'family' must be a character vector or NULL, not ", class(family), call. = FALSE)
+
+    # Spatial object
+    if (!is.null(sf)) {
+      if (!inherits(sf, "sf")) {
+        stop("'sf' must be an object of class 'sf' or NULL, not ", class(sf), call. = FALSE)
+      }
+    }
+
+    if (!missing(save) && isTRUE(save)) {
+      if (missing(dir) || is.null(dir) || !inherits(dir, "character") || length(dir) != 1) {
+        stop("'dir' must be a single character string when save = TRUE, not ",
+             paste(class(dir), collapse = "/"))
+      }
+    } else {
+      if (!missing(dir) && !is.null(dir) && !inherits(dir, "character")) {
+        stop("'dir' must be a character if provided, not ", paste(class(dir), collapse = "/"))
+      }
+    }
+
+    if (!inherits(filename, "character") || length(filename) != 1)
+      stop("'filename' must be a single character value, not ", paste(class(filename), collapse = "/"))
+
+    if (!inherits(file.format, "character") || length(file.format) != 1)
+      stop("'file.format' must be a single character ('csv' or 'rds'), not ", paste(class(file.format), collapse = "/"))
+
+    if (!file.format %in% c("csv", "rds"))
+      stop("'file.format' must be either 'csv' or 'rds'")
+
+    if (!inherits(save, "logical") || length(save) != 1)
+      stop("'save' must be a single logical (TRUE/FALSE), not ", paste(class(save), collapse = "/"))
+
+    if (!inherits(compress, "logical") || length(compress) != 1)
+      stop("'compress' must be a single logical (TRUE/FALSE), not ", paste(class(compress), collapse = "/"))
 
     if (by == "box") {
 
@@ -377,15 +567,33 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
         )
     }
 
+    if (save) {
+
+      if (file.format == "csv") {
+        if (compress) {
+          fullname <- paste0(dir, "/", filename, ".csv.zip")
+          message(paste0("Writing ", fullname, " on disk."))
+          data.table::fwrite(occ_bien, file = fullname, compress = "gzip")
+        }
+        else {
+          fullname <- paste0(dir, "/", filename, ".csv")
+          message(paste0("Writing ", fullname, " on disk."))
+          data.table::fwrite(occ_bien, file = fullname)
+        }
+      }
+
+      if (file.format == "rds") {
+        fullname <- paste0(dir, "/", filename, ".rds")
+        message(paste0("Writing ", fullname, " on disk."))
+        if (compress) {
+          saveRDS(occ_bien, file = fullname, compress = "gzip")
+        }
+        else {
+          saveRDS(occ_bien, file = fullname, compress = FALSE)
+        }
+      }
+
+    }
+
     return(occ_bien)
 }
-
-# # # Test
-# res_test <- get_bien(
-#     by = "species",
-#     species = "Paubrasilia echinata",
-#     cultivated = TRUE,
-#     native.status = TRUE,
-#     observation.type = TRUE,
-#     only.geovalid = T
-# )
