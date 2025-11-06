@@ -19,95 +19,109 @@ images = FALSE, redlist = NULL, limit = NULL, file.format = "csv",
 compress = FALSE)
 }
 \arguments{
-\item{key}{(character) API key or authentication token if required.}
+\item{key}{(character) API key or authentication token if required. Default is \code{NULL}.}
 
-\item{dir}{(character) Directory where files will be saved (if \code{save = TRUE}).}
+\item{dir}{(character) directory where files will be saved (if \code{save = TRUE}).}
 
-\item{filename}{(character) Name of the output file without extension. Default is \code{"output"}.}
+\item{filename}{(character) name of the output file without extension. Default is \code{"output"}.}
 
-\item{save}{(logical) Whether to save the results to file. Default is \code{FALSE}.}
+\item{save}{(logical) whether to save the results to file. Default is \code{FALSE}.}
 
-\item{basisOfRecord}{(character) Filter by basis of record.}
+\item{basisOfRecord}{(character) filter by basis of record. Default is \code{NULL}.}
 
-\item{family}{(character) Family name.}
+\item{family}{(character) family name. Default is \code{NULL}.}
 
-\item{species}{(character) Species name.}
+\item{species}{(character) species name. Default is \code{NULL}.}
 
-\item{institutionCode}{(character) Code of the institution that holds the specimen.}
+\item{institutionCode}{(character) code of the institution that holds the specimen. Default is \code{NULL}.}
 
-\item{collectionID}{(character) Unique identifier for the collection.}
+\item{collectionID}{(character) unique identifier for the collection. Default is \code{NULL}.}
 
-\item{catalogNumber}{(character) Catalog number of the specimen or record.}
+\item{catalogNumber}{(character) catalog number of the specimen or record. Default is \code{NULL}.}
 
-\item{kingdom}{(character) Kingdom name.}
+\item{kingdom}{(character) kingdom name. Default is \code{NULL}.}
 
-\item{phylum}{(character) Phylum name.}
+\item{phylum}{(character) phylum name. Default is \code{NULL}.}
 
-\item{class}{(character) Class name.}
+\item{class}{(character) class name. Default is \code{NULL}.}
 
-\item{order}{(character) Order name.}
+\item{order}{(character) order name. Default is \code{NULL}.}
 
-\item{genus}{(character) Genus name.}
+\item{genus}{(character) genus name. Default is \code{NULL}.}
 
-\item{specificEpithet}{(character) Specific epithet of the species.}
+\item{specificEpithet}{(character) specific epithet of the species. Default is \code{NULL}.}
 
-\item{infraspecificEpithet}{(character) Infraspecific epithet.}
+\item{infraspecificEpithet}{(character) infraspecific epithet. Default is \code{NULL}.}
 
-\item{collectionCode}{(character) Code identifying the collection within an institution.}
+\item{collectionCode}{(character) code identifying the collection within an institution. Default is \code{NULL}.}
 
-\item{identifiedBy}{(character) Name of the person who identified the specimen.}
+\item{identifiedBy}{(character) name of the person who identified the specimen. Default is \code{NULL}.}
 
-\item{yearIdentified}{(numeric) Year of identification.}
+\item{yearIdentified}{(numeric) year of identification. Default is \code{NULL}.}
 
-\item{country}{(character) Country name.}
+\item{country}{(character) country name. Default is \code{NULL}.}
 
-\item{stateProvince}{(character) State or province name.}
+\item{stateProvince}{(character) state or province name. Default is \code{NULL}.}
 
-\item{county}{(character) County or municipality name.}
+\item{county}{(character) county or municipality name. Default is \code{NULL}.}
 
-\item{typeStatus}{(character) Type status.}
+\item{typeStatus}{(character) type status. Default is \code{NULL}.}
 
-\item{recordedBy}{(character) Collector name.}
+\item{recordedBy}{(character) collector name. Default is \code{NULL}.}
 
-\item{recordNumber}{(numeric) Collector’s record number.}
+\item{recordNumber}{(numeric) collector’s record number. Default is \code{NULL}.}
 
-\item{yearCollected}{(numeric) Year of collection.}
+\item{yearCollected}{(numeric) year of collection. Default is \code{NULL}.}
 
-\item{locality}{(character) Locality description.}
+\item{locality}{(character) locality description. Default is \code{NULL}.}
 
-\item{occurrenceRemarks}{(character) Text field for remarks about the occurrence.}
+\item{occurrenceRemarks}{(character) text field for remarks about the
+occurrence. Default is \code{NULL}.}
 
-\item{barcode}{(character) Barcode or unique specimen identifier.}
+\item{barcode}{(character) barcode or unique specimen identifier. Default is \code{NULL}.}
 
-\item{bbox}{(character) Bounding box coordinates in the format \code{"lon_min+lat_min+lon_max+lat_max"}.}
+\item{bbox}{(character) bounding box coordinates in the format
+\code{"lon_min+lat_min+lon_max+lat_max"}. Default is \code{NULL}.}
 
-\item{landuse_1}{(character) Land use category for the first year.}
+\item{landuse_1}{(character) land use category for the first year.
+Default is \code{NULL}.}
 
-\item{landuse_year_1}{(numeric) Year corresponding to \code{landuse_1}.}
+\item{landuse_year_1}{(numeric) year corresponding to \code{landuse_1}.
+Default is \code{NULL}.}
 
-\item{landuse_2}{(character) Land use category for the second year.}
+\item{landuse_2}{(character) land use category for the second year.
+Default is \code{NULL}.}
 
-\item{landuse_year_2}{(numeric) Year corresponding to \code{landuse_2}.}
+\item{landuse_year_2}{(numeric) year corresponding to \code{landuse_2}.
+Default is \code{NULL}.}
 
-\item{phonetic}{(logical) Whether to use phonetic matching for taxon names. Default is \code{FALSE}.}
+\item{phonetic}{(logical) whether to use phonetic matching for taxon names.
+Default is \code{FALSE}.}
 
-\item{coordinates}{(character) Whether to include only records with geographic coordinates (\code{"yes"}, \code{"no"}, \code{"original"}, \code{"automatic"}, \code{"blocked"}, \code{"consistent"}, \code{"suspect"})). Default is \code{NULL}.}
+\item{coordinates}{(character) whether to include only records with
+geographic coordinates (\code{"yes"}, \code{"no"}, \code{"original"}, \code{"automatic"}, \code{"blocked"}, \code{"consistent"}, \code{"suspect"})). Default is \code{NULL}.}
 
-\item{scope}{(character) Scope of the query (\code{"p"}, \code{"a"}, \code{"m"}, \code{"f"}, \code{"b"}). Default is \code{NULL}.}
+\item{scope}{(character) scope of the query (\code{"p"}, \code{"a"}, \code{"m"}, \code{"f"}, \code{"b"}).
+Default is \code{NULL}.}
 
-\item{synonyms}{(chacarter) Whether to include synonyms of the specified taxon (\code{"sp2000"}, \code{"flora2020"}, \code{"MycoBank"}, \code{"algaebase"}, \code{"DSMZ"}, \code{"moure"}). Default is \code{NULL}.}
+\item{synonyms}{(chacarter) whether to include synonyms of the specified
+taxon (\code{"sp2000"}, \code{"flora2020"}, \code{"MycoBank"}, \code{"algaebase"}, \code{"DSMZ"}, \code{"moure"}).
+Default is \code{NULL}.}
 
-\item{typus}{(logical) Whether to filter only type specimens. Default is \code{FALSE}.}
+\item{typus}{(logical) whether to filter only type specimens. Default is \code{FALSE}.}
 
-\item{images}{(logical) Whether to restrict to records with associated images. Default is \code{FALSE}.}
+\item{images}{(logical) whether to restrict to records with associated
+images. Default is \code{FALSE}.}
 
-\item{redlist}{(character) Filter by IUCN Red List category.}
+\item{redlist}{(character) filter by IUCN Red List category. Default is \code{NULL}.}
 
-\item{limit}{(numeric) Maximum number of records to return.}
+\item{limit}{(numeric) maximum number of records to return. Default is \code{NULL}.}
 
-\item{file.format}{(character) File format for saving output (\code{"csv"}, \code{"rds"}). Default is \code{"csv"}.}
+\item{file.format}{(character) file format for saving output (\code{"csv"}, \code{"rds"}).
+Default is \code{"csv"}.}
 
-\item{compress}{(logical) Whether to compress the output file into \code{.zip}. Default is \code{FALSE}.
+\item{compress}{(logical) whether to compress the output file into \code{.zip}.
+Default is \code{FALSE}.
 
 #' @details
 The speciesLink API key can be set permanently using:

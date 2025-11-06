@@ -19,51 +19,65 @@
 #' network using user-defined filters. The function allows querying by
 #' taxonomic, geographic, and collection-related parameters.
 #'
-#' @param key (character) API key or authentication token if required.
-#' @param dir (character) Directory where files will be saved (if `save = TRUE`).
-#' @param filename (character) Name of the output file without extension. Default is `"output"`.
-#' @param save (logical) Whether to save the results to file. Default is `FALSE`.
-#' @param basisOfRecord (character) Filter by basis of record.
-#' @param family (character) Family name.
-#' @param species (character) Species name.
-#' @param institutionCode (character) Code of the institution that holds the specimen.
-#' @param collectionID (character) Unique identifier for the collection.
-#' @param catalogNumber (character) Catalog number of the specimen or record.
-#' @param kingdom (character) Kingdom name.
-#' @param phylum (character) Phylum name.
-#' @param class (character) Class name.
-#' @param order (character) Order name.
-#' @param genus (character) Genus name.
-#' @param specificEpithet (character) Specific epithet of the species.
-#' @param infraspecificEpithet (character) Infraspecific epithet.
-#' @param collectionCode (character) Code identifying the collection within an institution.
-#' @param identifiedBy (character) Name of the person who identified the specimen.
-#' @param yearIdentified (numeric) Year of identification.
-#' @param country (character) Country name.
-#' @param stateProvince (character) State or province name.
-#' @param county (character) County or municipality name.
-#' @param typeStatus (character) Type status.
-#' @param recordedBy (character) Collector name.
-#' @param recordNumber (numeric) Collector’s record number.
-#' @param yearCollected (numeric) Year of collection.
-#' @param locality (character) Locality description.
-#' @param occurrenceRemarks (character) Text field for remarks about the occurrence.
-#' @param barcode (character) Barcode or unique specimen identifier.
-#' @param bbox (character) Bounding box coordinates in the format `"lon_min+lat_min+lon_max+lat_max"`.
-#' @param landuse_1 (character) Land use category for the first year.
-#' @param landuse_year_1 (numeric) Year corresponding to `landuse_1`.
-#' @param landuse_2 (character) Land use category for the second year.
-#' @param landuse_year_2 (numeric) Year corresponding to `landuse_2`.
-#' @param phonetic (logical) Whether to use phonetic matching for taxon names. Default is `FALSE`.
-#' @param coordinates (character) Whether to include only records with geographic coordinates (`"yes"`, `"no"`, `"original"`, `"automatic"`, `"blocked"`, `"consistent"`, `"suspect"`)). Default is `NULL`.
-#' @param scope (character) Scope of the query (`"p"`, `"a"`, `"m"`, `"f"`, `"b"`). Default is `NULL`.
-#' @param synonyms (chacarter) Whether to include synonyms of the specified taxon (`"sp2000"`, `"flora2020"`, `"MycoBank"`, `"algaebase"`, `"DSMZ"`, `"moure"`). Default is `NULL`.
-#' @param typus (logical) Whether to filter only type specimens. Default is `FALSE`.
-#' @param images (logical) Whether to restrict to records with associated images. Default is `FALSE`.
-#' @param redlist (character) Filter by IUCN Red List category.
-#' @param limit (numeric) Maximum number of records to return.
-#' @param file.format (character) File format for saving output (`"csv"`, `"rds"`). Default is `"csv"`.
-#' @param compress (logical) Whether to compress the output file into `.zip`. Default is `FALSE`.
+#' @param key (character) API key or authentication token if required. Default is `NULL`.
+#' @param dir (character) directory where files will be saved (if `save = TRUE`).
+#' @param filename (character) name of the output file without extension. Default is `"output"`.
+#' @param save (logical) whether to save the results to file. Default is `FALSE`.
+#' @param basisOfRecord (character) filter by basis of record. Default is `NULL`.
+#' @param family (character) family name. Default is `NULL`.
+#' @param species (character) species name. Default is `NULL`.
+#' @param institutionCode (character) code of the institution that holds the specimen. Default is `NULL`.
+#' @param collectionID (character) unique identifier for the collection. Default is `NULL`.
+#' @param catalogNumber (character) catalog number of the specimen or record. Default is `NULL`.
+#' @param kingdom (character) kingdom name. Default is `NULL`.
+#' @param phylum (character) phylum name. Default is `NULL`.
+#' @param class (character) class name. Default is `NULL`.
+#' @param order (character) order name. Default is `NULL`.
+#' @param genus (character) genus name. Default is `NULL`.
+#' @param specificEpithet (character) specific epithet of the species. Default is `NULL`.
+#' @param infraspecificEpithet (character) infraspecific epithet. Default is `NULL`.
+#' @param collectionCode (character) code identifying the collection within an institution. Default is `NULL`.
+#' @param identifiedBy (character) name of the person who identified the specimen. Default is `NULL`.
+#' @param yearIdentified (numeric) year of identification. Default is `NULL`.
+#' @param country (character) country name. Default is `NULL`.
+#' @param stateProvince (character) state or province name. Default is `NULL`.
+#' @param county (character) county or municipality name. Default is `NULL`.
+#' @param typeStatus (character) type status. Default is `NULL`.
+#' @param recordedBy (character) collector name. Default is `NULL`.
+#' @param recordNumber (numeric) collector’s record number. Default is `NULL`.
+#' @param yearCollected (numeric) year of collection. Default is `NULL`.
+#' @param locality (character) locality description. Default is `NULL`.
+#' @param occurrenceRemarks (character) text field for remarks about the
+#' occurrence. Default is `NULL`.
+#' @param barcode (character) barcode or unique specimen identifier. Default is `NULL`.
+#' @param bbox (character) bounding box coordinates in the format
+#' `"lon_min+lat_min+lon_max+lat_max"`. Default is `NULL`.
+#' @param landuse_1 (character) land use category for the first year.
+#' Default is `NULL`.
+#' @param landuse_year_1 (numeric) year corresponding to `landuse_1`.
+#' Default is `NULL`.
+#' @param landuse_2 (character) land use category for the second year.
+#' Default is `NULL`.
+#' @param landuse_year_2 (numeric) year corresponding to `landuse_2`.
+#' Default is `NULL`.
+#' @param phonetic (logical) whether to use phonetic matching for taxon names.
+#' Default is `FALSE`.
+#' @param coordinates (character) whether to include only records with
+#' geographic coordinates (`"yes"`, `"no"`, `"original"`, `"automatic"`, `"blocked"`, `"consistent"`, `"suspect"`)). Default is `NULL`.
+#' @param scope (character) scope of the query (`"p"`, `"a"`, `"m"`, `"f"`, `"b"`).
+#' Default is `NULL`.
+#' @param synonyms (chacarter) whether to include synonyms of the specified
+#' taxon (`"sp2000"`, `"flora2020"`, `"MycoBank"`, `"algaebase"`, `"DSMZ"`, `"moure"`).
+#' Default is `NULL`.
+#' @param typus (logical) whether to filter only type specimens. Default is `FALSE`.
+#' @param images (logical) whether to restrict to records with associated
+#' images. Default is `FALSE`.
+#' @param redlist (character) filter by IUCN Red List category. Default is `NULL`.
+#' @param limit (numeric) maximum number of records to return. Default is `NULL`.
+#' @param file.format (character) file format for saving output (`"csv"`, `"rds"`).
+#' Default is `"csv"`.
+#' @param compress (logical) whether to compress the output file into `.zip`.
+#' Default is `FALSE`.
 #'
 #'#' @details
 #' The speciesLink API key can be set permanently using:
@@ -149,6 +163,12 @@ get_specieslink <- function (key = NULL, dir, filename = "output",
   if (!inherits(save, "logical") || length(save) != 1)
     stop("'save' must be a single logical (TRUE/FALSE), not ", paste(class(save), collapse = "/"))
 
+  if (!is.null(basisOfRecord) && !all(basisOfRecord %in% c("PreservedSpecimen", "LivingSpecimen",
+                                                           "FossilSpecimen", "HumanObservation",
+                                                           "MachineObservation", "MaterialSample"))) {
+    stop("'basisOfRecord' contains invalid value(s). Allowed: 'PreservedSpecimen', 'LivingSpecimen', 'FossilSpecimen', 'HumanObservation', 'MachineObservation', 'MaterialSample'")
+  }
+
   if (!inherits(phonetic, "logical") || length(phonetic) != 1)
     stop("'phonetic' must be a single logical (TRUE/FALSE), not ", paste(class(phonetic), collapse = "/"))
 
@@ -182,9 +202,6 @@ get_specieslink <- function (key = NULL, dir, filename = "output",
 
   if (!is.null(landuse_year_2) && (!inherits(landuse_year_2, "numeric") || any(landuse_year_2 < 1985 | landuse_year_2 > 2021)))
     stop("'landuse_year_2' must be numeric year between 1985 and 2021")
-
-  if (!is.null(species) && length(species) > 50)
-    stop("Please request no more than 50 species at a time (argument 'species')")
 
   if (!is.null(bbox)) {
     if (!inherits(bbox, "character") || length(bbox) != 1) {
@@ -226,7 +243,7 @@ get_specieslink <- function (key = NULL, dir, filename = "output",
   if (!is.null(redlist) && !inherits(redlist, "character") && !all(redlist %in% c("CR", "PEX", "EN", "EW", "EX", "RE")))
     stop("'redlist' contains invalid value(s). Allowed: 'CR','PEX','EN','EW','EX','RE'")
 
-  text_args <- c("family", "institutionCode", "collectionID", "catalogNumber", "kingdom",
+  text_args <- c("family", "species", "institutionCode", "collectionID", "catalogNumber", "kingdom",
                  "phylum", "class", "order", "genus", "specificEpithet", "infraspecificEpithet",
                  "collectionCode", "identifiedBy", "country", "stateProvince", "county",
                  "typeStatus", "recordedBy", "locality", "occurrenceRemarks", "barcode")
@@ -235,10 +252,6 @@ get_specieslink <- function (key = NULL, dir, filename = "output",
     if (!is.null(val) && !inherits(val, "character")) {
       stop("'", nm, "' must be a character (or NULL), not ", paste(class(val), collapse = "/"))
     }
-  }
-
-  if (!is.null(filename) && grepl("[/\\\\]$", filename)) {
-    warning("'filename' ends with a path separator — remove '/' or '\\\\' from filename (use dir for folder)")
   }
 
   base_url <- "https://specieslink.net/ws/1.0/search?"
@@ -563,43 +576,23 @@ get_specieslink <- function (key = NULL, dir, filename = "output",
     df <- df_json$features$properties
   }
 
-  if (!is.logical(save)) {
-    stop("save must be TRUE or FALSE")
-  }
-
   if (save) {
-
-    if (!file.format %in% c("csv", "rds")) {
-      stop("file.format must be either 'csv' or 'rds'")
-    }
-
-    if (!inherits(dir, "character")) {
-      stop("'dir' should be a character string")
-    }
-
-    if (!dir.exists(dir)) {
-      dir.create(dir)
-    }
-
-    if (!is.logical(compress)) {
-      stop("compress must be TRUE or FALSE")
-    }
 
     if (file.format == "csv") {
       if (compress) {
-        fullname <- paste0(dir, filename, ".csv.zip")
+        fullname <- paste0(dir, "/", filename, ".csv.zip")
         message(paste0("Writing ", fullname, " on disk."))
         data.table::fwrite(df, file = fullname, compress = "gzip")
       }
       else {
-        fullname <- paste0(dir, filename, ".csv")
+        fullname <- paste0(dir, "/", filename, ".csv")
         message(paste0("Writing ", fullname, " on disk."))
         data.table::fwrite(df, file = fullname)
       }
     }
 
     if (file.format == "rds") {
-      fullname <- paste0(dir, filename, ".rds")
+      fullname <- paste0(dir, "/", filename, ".rds")
       message(paste0("Writing ", fullname, " on disk."))
       if (compress) {
         saveRDS(df, file = fullname, compress = "gzip")
