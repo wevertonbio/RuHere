@@ -37,6 +37,19 @@ outside the state assigned in the \code{state_column}. Default is \code{5}.}
 \item{verbose}{(logical) whether to print messages about function progress.
 Default is TRUE.}
 }
+\value{
+The original \code{occ} data.frame with the coordinates in the \code{long} and \code{lat}
+columns corrected, and an additional column (\code{state_issues}) indicating
+whether the coordinates are:
+\itemize{
+\item \strong{correct}: the record falls within the assigned state;
+\item \strong{inverted}: longitude and/or latitude have reversed signs;
+\item \strong{swapped}: longitude and latitude are transposed (i.e., each appears in
+the other's column).
+\strong{incorrect}: the record falls outside the assigned state and could not
+be corrected.
+}
+}
 \description{
 This function identifies and correct inverted and transposed coordinates
 based on state information
