@@ -1,3 +1,44 @@
+#' Check if the records fall in the state assigned in the metadata
+#'
+#' @param occ (data.frame) a dataset with occurrence records, preferably with
+#' country information standardized using `standardize_states()`.
+#' @param long (character) column name with longitude. Default is
+#' 'decimalLongitude'.
+#' @param lat lat (character) column name with latitude. Default is
+#' 'decimalLatitude'.
+#' @param state_column (character) column name containing the state information.
+#' @param distance (numeric) maximum distance (in kilometers) a record can fall
+#' outside the state assigned in the `state_column`. Default is `5`.
+#' @param try_to_fix (logical) whether to check if coordinates are inverted or
+#' transposed (see `fix_states()` for details). If `TRUE`, coordinates
+#' identified as inverted or transposed will be corrected. Default is `FALSE`.
+#' @param verbose (logical) whether to print messages about function progress.
+#' Default is TRUE.
+#'
+#' @returns
+#' The original `occ` data.frame with an additional column (`correct_state`)
+#' indicating whether each record falls within the state specified in the
+#' metadata (`TRUE`) or not (`FALSE`).
+#'
+#' @importFrom terra vect aggregate buffer is.related
+#' @importFrom dplyr distinct left_join relocate all_of %>%
+#' @importFrom pbapply pbsapply
+#'
+#' @export
+#'
+#' @examples
+#' # Load example data
+#' data("occurrences", package = "RuHere") #Import data example
+#' # Standardize country names
+#' occ_country <- standardize_countries(occ = occurrences,
+#'                                      return_dictionary = FALSE)
+#' # Standardize state names
+#' occ_state <- standardize_states(occ = occ_country,
+#'                                 country_column = "country_suggested",
+#'                                 return_dictionary = FALSE)
+#' # Check whether records fall within assigned states
+#' occ_state_checked <- check_states(occ = occ_state,
+#'                                     state_column = "state_suggested")
 check_states <- function(occ,
                          long = "decimalLongitude",
                          lat = "decimalLatitude",
@@ -73,16 +114,3 @@ check_states <- function(occ,
 
   return(occ)
 }
-
-# res2 <- check_states(occ = res,
-#                         state_column = "state_suggested",
-#                         try_to_fix = TRUE)
-
-
-# occ <- res
-# long = "decimalLongitude"
-# lat = "decimalLatitude"
-# state_column = "state_suggested"
-# distance = 5
-# verbose = T
-

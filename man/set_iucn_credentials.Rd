@@ -8,7 +8,7 @@ set_iucn_credentials(iucn_key, overwrite = FALSE,
                             open_Renviron = FALSE)
 }
 \arguments{
-\item{iucn_key}{(character) your SpeciesLink API key. See Details.}
+\item{iucn_key}{(character) your IUCN API key. See Details.}
 
 \item{overwrite}{(logical) whether to overwrite IUCN credential if it
 already exists. Default is FALSE.}

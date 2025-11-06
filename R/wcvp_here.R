@@ -1,18 +1,64 @@
+#' Download distribution data from the World Checklist of Vascular Plants (WCVP)
+#'
+#' @description
+#' This function downloads the World Checklist of Vascular Plants database,
+#' which is required for filtering occurrence records using specialists'
+#' information via the `flag_wcvp()` function.
+#'
+#'
+#' @param data_dir (character) a directory to save the data downloaded from
+#' WCVP.
+#' @param overwrite (logical) If TRUE, data is overwritten. Default is TRUE.
+#' @param remove_files (logical) whether to remove the downloaded files used in
+#' building the final dataset. Default is TRUE.
+#' @param timeout (numeric) maximum time (in seconds) allowed for downloading.
+#' Default is 300. Slower internet connections may require higher values.
+#' @param verbose (logical) whether to display messages during function
+#' execution. Set to TRUE to enable display, or FALSE to run silently. Default
+#' is TRUE.
+#'
+#' @returns
+#' A message indicating that the data were successfully saved in the directory
+#' specified by `data_dir`.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Define a directory to save the data
+#' data_dir <- tempdir() # Here, a temporary directory
+#'
+#' # Download the WCVP database
+#' wcvp_here(data_dir = data_dir)
+#' }
 wcvp_here <- function(data_dir,
                       overwrite = TRUE,
-                      verbose = TRUE,
                       remove_files = TRUE,
-                      timeout = 300){
+                      timeout = 300,
+                      verbose = TRUE){
 
-  if(!file.exists(data_dir)){
-    stop(data_dir, " directory does not exist. Please create it or specify a different directory.")
-  }
+  # Check arguments
+  if (!inherits(data_dir, "character"))
+    stop("'data_dir' must be a character string indicating the directory path.", call. = FALSE)
+
+  if (!dir.exists(data_dir))
+    stop("'data_dir' does not exist. Please provide a valid and existing directory.", call. = FALSE)
+
+  if (!inherits(overwrite, "logical") || length(overwrite) != 1)
+    stop("'overwrite' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+
+  if (!inherits(remove_files, "logical") || length(remove_files) != 1)
+    stop("'remove_files' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+
+  if (!inherits(timeout, "numeric") || length(timeout) != 1 || timeout <= 0)
+    stop("'timeout' must be a single positive numeric value (in seconds).", call. = FALSE)
+
+  if (!inherits(verbose, "logical") || length(verbose) != 1)
+    stop("'verbose' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+
 
   # Create directory
   odir <- file.path(data_dir, "wcvp")
   dir.create(odir, showWarnings = FALSE)
-
-
 
   # Set time out
   original_timeout <- getOption("timeout")
@@ -81,15 +127,9 @@ wcvp_here <- function(data_dir,
   }
 
   if(verbose){
-    message("Finished!\n")
+    message("Data sucessfuly saved in ", file.path(data_dir, "florabr\n"))
   }
 
   message("Please don't forget to cite:\n
-          Govaerts, R., Nic Lughadha, E. et al. The World Checklist of Vascular Plants, a continuously updated resource for exploring global plant diversity. Sci Data, 8, 215 (2021). https://doi.org/10.1038/s41597-021-00997-6")
+Govaerts, R., Nic Lughadha, E. et al. The World Checklist of Vascular Plants, a continuously updated resource for exploring global plant diversity. Sci Data, 8, 215 (2021). https://doi.org/10.1038/s41597-021-00997-6")
 }
-
-data_dir <- "../RuHere_test/"
-overwrite = TRUE
-verbose = TRUE
-remove_files = TRUE
-# wcvp_here(data_dir = "../RuHere_test/")

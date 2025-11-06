@@ -1,3 +1,52 @@
+#' Download species distribution information from BIEN
+#'
+#' @description
+#' This function downloads distribution information from the BIEN database,
+#' required for filtering occurrence records using specialists' information via
+#' the `flag_bien()` function.
+#'
+#' @param data_dir (character) directory to save the data downloaded from BIEN.
+#' @param species (character) a vector of species names for which to retrieve
+#' distribution information.
+#' @param synonyms (data.frame) an optional data.frame containing synonyms of
+#' the target species. The first column must contain the target species names,
+#' and the second column their corresponding synonyms. Default is `NULL`.
+#' See details for more information.
+#' @param overwrite (logical) whether to overwrite existing files. Default is
+#' `TRUE`.
+#' @param verbose (logical) whether to display progress messages. Default is
+#' `TRUE`.
+#'
+#' @details
+#' This function uses the `BIEN::BIEN_ranges_load_species()` function to
+#' retrieve polygons representing the distribution ranges of species available
+#' in the BIEN database.
+#'
+#' Because taxonomic information in BIEN may be outdated, you can optionally
+#' provide a table of synonyms to broaden the search. The synonyms data.frame
+#' should have the accepted species in the first column and their synonyms in
+#' the second. See `RuHere::synonys` for an example.
+#'
+#'
+#' @returns
+#' A data frame indicating whether the polygon(s) representing the species range
+#' are available in BIEN.
+#'
+#' @importFrom pbapply pblapply
+#' @importFrom BIEN BIEN_ranges_load_species
+#' @importFrom terra vect writeVector
+#' @importFrom data.table rbindlist
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Define a directory to save the data
+#' data_dir <- tempdir() # Here, a temporary directory
+#'
+#' # Download species distribution information from BIEN
+#' bien_here(data_dir = data_dir)
+#' }
 bien_here <- function(data_dir,
                       species,
                       synonyms = NULL,

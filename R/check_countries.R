@@ -1,3 +1,41 @@
+#' Check if the records fall in the country assigned in the metadata
+#'
+#' @param occ (data.frame) a dataset with occurrence records, preferably with
+#' country information standardized using `standardize_countries()`.
+#' @param long (character) column name with longitude. Default is
+#' 'decimalLongitude'.
+#' @param lat lat (character) column name with latitude. Default is
+#' 'decimalLatitude'.
+#' @param country_column (character) column name containing the country
+#' information.
+#' @param distance (numeric) maximum distance (in kilometers) a record can fall
+#' outside the country assigned in the `country_column`. Default is `5`.
+#' @param try_to_fix (logical) whether to check if coordinates are inverted or
+#' transposed (see `fix_countries()` for details). If `TRUE`, coordinates
+#' identified as inverted or transposed will be corrected. Default is `FALSE`.
+#' @param verbose (logical) whether to print messages about function progress.
+#' Default is TRUE.
+#'
+#' @returns
+#' The original `occ` data.frame with an additional column (`correct_country`)
+#' indicating whether each record falls within the country specified in the
+#' metadata (`TRUE`) or not (`FALSE`).
+#'
+#' @importFrom terra vect aggregate buffer is.related
+#' @importFrom dplyr distinct left_join relocate all_of %>%
+#' @importFrom pbapply pbsapply
+#'
+#' @export
+#'
+#' @examples
+#' # Load example data
+#' data("occurrences", package = "RuHere") #Import data example
+#' # Standardize country names
+#' occ_country <- standardize_countries(occ = occurrences,
+#'                                      return_dictionary = FALSE)
+#' # Check whether records fall within assigned countries
+#' occ_country_checked <- check_countries(occ = occ_country,
+#'                                        country_column = "country_suggested")
 check_countries <- function(occ,
                             long = "decimalLongitude",
                             lat = "decimalLatitude",
@@ -5,6 +43,67 @@ check_countries <- function(occ,
                             distance = 5,
                             try_to_fix = FALSE,
                             verbose = TRUE){
+  # ---- ARGUMENT CHECKING ----
+
+  # 1. Check occ
+  if (!inherits(occ, c("data.frame", "data.table"))) {
+    stop("'occ' must be a data.frame or data.table containing occurrence records.",
+         call. = FALSE)
+  }
+  if (nrow(occ) == 0) {
+    stop("'occ' is empty. Please provide a dataset with occurrence records.",
+         call. = FALSE)
+  }
+
+  # 2. Check long
+  if (!inherits(long, "character") || length(long) != 1) {
+    stop("'long' must be a single character string with the name of the longitude column.",
+         call. = FALSE)
+  }
+  if (!long %in% names(occ)) {
+    stop(paste0("The longitude column '", long, "' was not found in 'occ'."),
+         call. = FALSE)
+  }
+
+  # 3. Check lat
+  if (!inherits(lat, "character") || length(lat) != 1) {
+    stop("'lat' must be a single character string with the name of the latitude column.",
+         call. = FALSE)
+  }
+  if (!lat %in% names(occ)) {
+    stop(paste0("The latitude column '", lat, "' was not found in 'occ'."),
+         call. = FALSE)
+  }
+
+  # 4. Check country_column
+  if (!inherits(country_column, "character") || length(country_column) != 1) {
+    stop("'country_column' must be a single character string with the name of the country column.",
+         call. = FALSE)
+  }
+  if (!country_column %in% names(occ)) {
+    stop(paste0("The country column '", country_column, "' was not found in 'occ'."),
+         call. = FALSE)
+  }
+
+  # 5. Check distance
+  if (!inherits(distance, "numeric") || length(distance) != 1 || distance < 0) {
+    stop("'distance' must be a single non-negative numeric value (in km).",
+         call. = FALSE)
+  }
+
+  # 6. Check try_to_fix
+  if (!inherits(try_to_fix, "logical") || length(try_to_fix) != 1) {
+    stop("'try_to_fix' must be a single logical value (TRUE or FALSE).",
+         call. = FALSE)
+  }
+
+  # 7. Check verbose
+  if (!inherits(verbose, "logical") || length(verbose) != 1) {
+    stop("'verbose' must be a single logical value (TRUE or FALSE).",
+         call. = FALSE)
+  }
+
+
   #Get unique countries
   countries <- unique(occ[[country_column]])
 
@@ -73,15 +172,3 @@ check_countries <- function(occ,
 
   return(occ)
 }
-
-# res2 <- check_countries(occ = res,
-#                         country_column = "country_suggested",
-#                         try_to_fix = TRUE)
-
-
-# occ <- res
-# long = "decimalLongitude"
-# lat = "decimalLatitude"
-# country_column = "country_suggested"
-# distance = 5
-# verbose = T

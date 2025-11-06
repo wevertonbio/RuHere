@@ -7,7 +7,7 @@
 #' @usage set_iucn_credentials(iucn_key, overwrite = FALSE,
 #'                             open_Renviron = FALSE)
 #'
-#' @param iucn_key (character) your SpeciesLink API key. See Details.
+#' @param iucn_key (character) your IUCN API key. See Details.
 #' @param overwrite (logical) whether to overwrite IUCN credential if it
 #' already exists. Default is FALSE.
 #' @param open_Renviron (logical) whether to open the .Renviron file after
