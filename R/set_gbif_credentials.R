@@ -24,9 +24,9 @@
 #'
 #' @examples
 #' \dontrun{
-#' store_gbif_credentials(gbif_username = "my_username",
-#'                        gbif_email = "my_email@example.com",
-#'                        gbif_password = "my_password")
+#' set_gbif_credentials(gbif_username = "my_username",
+#'                      gbif_email = "my_email@example.com",
+#'                      gbif_password = "my_password")
 #' }
 set_gbif_credentials <- function(gbif_username, gbif_email, gbif_password,
                                  overwrite = FALSE, open_Renviron = FALSE) {
