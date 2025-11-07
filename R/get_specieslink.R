@@ -1,6 +1,6 @@
 #' @title get_specieslink
 
-#' @usage get_specieslink(key = NULL, dir, filename = "output", save = FALSE,
+#' @usage get_specieslink(key = NULL, dir, filename = "specieslink_output", save = FALSE,
 #' basisOfRecord = NULL, family = NULL, species = NULL, institutionCode = NULL,
 #' collectionID = NULL, catalogNumber = NULL, kingdom = NULL, phylum = NULL,
 #' class = NULL, order = NULL, genus = NULL, specificEpithet = NULL,
@@ -21,7 +21,7 @@
 #'
 #' @param key (character) API key or authentication token if required. Default is `NULL`.
 #' @param dir (character) directory where files will be saved (if `save = TRUE`).
-#' @param filename (character) name of the output file without extension. Default is `"output"`.
+#' @param filename (character) name of the output file without extension. Default is `"specieslink_output"`.
 #' @param save (logical) whether to save the results to file. Default is `FALSE`.
 #' @param basisOfRecord (character) filter by basis of record. Default is `NULL`.
 #' @param family (character) family name. Default is `NULL`.
@@ -91,6 +91,8 @@
 #' @importFrom jsonlite fromJSON
 #' @importFrom data.table fwrite
 #'
+#' @export
+#'
 #' @examples
 #' \dontrun{
 #' # Set your API key once per session
@@ -116,8 +118,7 @@
 #' )
 #' }
 #'
-#' @export
-get_specieslink <- function (key = NULL, dir, filename = "output",
+get_specieslink <- function (key = NULL, dir, filename = "specieslink_output",
                             save = FALSE, basisOfRecord = NULL, family = NULL,
                             species = NULL, institutionCode = NULL,
                             collectionID = NULL, catalogNumber = NULL,
@@ -137,17 +138,6 @@ get_specieslink <- function (key = NULL, dir, filename = "output",
                             limit = NULL, file.format = "csv",
                             compress = FALSE) {
 
-  if (!missing(save) && isTRUE(save)) {
-    if (missing(dir) || is.null(dir) || !inherits(dir, "character") || length(dir) != 1) {
-      stop("'dir' must be a single character string when save = TRUE, not ",
-        paste(class(dir), collapse = "/"))
-    }
-  } else {
-    if (!missing(dir) && !is.null(dir) && !inherits(dir, "character")) {
-      stop("'dir' must be a character if provided, not ", paste(class(dir), collapse = "/"))
-    }
-  }
-
   if (!inherits(filename, "character") || length(filename) != 1)
     stop("'filename' must be a single character value, not ", paste(class(filename), collapse = "/"))
 
@@ -162,6 +152,18 @@ get_specieslink <- function (key = NULL, dir, filename = "output",
 
   if (!inherits(save, "logical") || length(save) != 1)
     stop("'save' must be a single logical (TRUE/FALSE), not ", paste(class(save), collapse = "/"))
+
+  if (isTRUE(save)) {
+    if (missing(dir) || is.null(dir)) {
+      stop("'dir' is required (must not be NULL or missing) when save = TRUE.")
+    }
+    if (!inherits(dir, "character") || length(dir) != 1) {
+      stop("'dir' must be a single character string when save = TRUE, not ", class(dir))
+    }
+    if (!dir.exists(dir)) {
+      stop(paste0("Directory '", dir, "' does not exist. It must be created before saving."))
+    }
+  }
 
   if (!is.null(basisOfRecord) && !all(basisOfRecord %in% c("PreservedSpecimen", "LivingSpecimen",
                                                            "FossilSpecimen", "HumanObservation",
@@ -453,28 +455,14 @@ get_specieslink <- function (key = NULL, dir, filename = "output",
 
   # bbox
   if (!is.null(bbox)) {
-      bbox_parts <- strsplit(bbox, "[+]")[[1]]
-      if (length(bbox_parts) == 4) {
-        coords <- suppressWarnings(as.numeric(bbox_parts))
-        if (all(!is.na(coords))) {
-          long <- coords[c(1, 3)]
-          lat <- coords[c(2, 4)]
-          if (all(long >= -180 & long <= 180) && all(lat >= -90 & lat <= 90)) {
-              if (coords[1] < coords[3] && coords[2] < coords[4]) {
-                bbo <- url_query(bbox, "bbox")
-                base_url <- paste0(base_url, bbo)
-            } else {
-              stop("'bbox' must represent a valid rectangle: longitude1 < longitude2 and latitude1 < latitude2")
-            }
-          } else {
-            stop("'bbox' coordinates must be within valid ranges: longitude (-180 to 180), latitude (-90 to 90)")
-          }
-        } else {
-          stop("'bbox' must contain only numeric coordinates separated by '+'")
-        }
-      } else {
-        stop("'bbox must contain exactly 4 coordinates in format: 'longitude1+latitude1+longitude2+latitude2'")
+    if (all(!is.na(coords))) {
+      long <- coords[c(1, 3)]
+      lat <- coords[c(2, 4)]
+      if (coords[1] < coords[3] && coords[2] < coords[4]) {
+        bbo <- url_query(bbox, "bbox")
+        base_url <- paste0(base_url, bbo)
       }
+    }
   }
 
   # landuse_1
@@ -550,6 +538,9 @@ get_specieslink <- function (key = NULL, dir, filename = "output",
   if (!is.null(limit)) {
     mr <- url_query(limit, "limit")
     base_url <- paste0(base_url, mr)
+  } else {
+    mr <- url_query(5000, "limit")
+    base_url <- paste0(base_url, mr)
   }
 
   base_url <- paste0(base_url, "apikey=", key)
@@ -561,7 +552,7 @@ get_specieslink <- function (key = NULL, dir, filename = "output",
   n_records <- df_json$numberMatched
 
   if (n_records > 5000) {
-    n_requests <- 1:( ceiling(n_records/5000) - 1 )
+    n_requests <- 0:( ceiling(n_records/5000) - 1 )
 
     list_urls <- lapply(n_requests, function(x) {
       offset_x <- ifelse(x == 0, 0, (x * 5000))
@@ -580,19 +571,19 @@ get_specieslink <- function (key = NULL, dir, filename = "output",
 
     if (file.format == "csv") {
       if (compress) {
-        fullname <- paste0(dir, "/", filename, ".csv.zip")
+        fullname <- file.path(dir, paste0(filename, ".csv.zip"))
         message(paste0("Writing ", fullname, " on disk."))
         data.table::fwrite(df, file = fullname, compress = "gzip")
       }
       else {
-        fullname <- paste0(dir, "/", filename, ".csv")
+        fullname <- file.path(dir, paste0(filename, ".csv"))
         message(paste0("Writing ", fullname, " on disk."))
         data.table::fwrite(df, file = fullname)
       }
     }
 
     if (file.format == "rds") {
-      fullname <- paste0(dir, "/", filename, ".rds")
+      fullname <- file.path(dir, paste0(filename, ".rds"))
       message(paste0("Writing ", fullname, " on disk."))
       if (compress) {
         saveRDS(df, file = fullname, compress = "gzip")

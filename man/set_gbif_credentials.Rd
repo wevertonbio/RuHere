@@ -31,8 +31,8 @@ records from GBIF.
 }
 \examples{
 \dontrun{
-store_gbif_credentials(gbif_username = "my_username",
-                       gbif_email = "my_email@example.com",
-                       gbif_password = "my_password")
+set_gbif_credentials(gbif_username = "my_username",
+                     gbif_email = "my_email@example.com",
+                     gbif_password = "my_password")
 }
 }

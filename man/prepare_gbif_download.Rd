@@ -4,9 +4,10 @@
 \alias{prepare_gbif_download}
 \title{Prepare data to request GBIF download}
 \usage{
-prepare_gbif_data(species, rank = NULL, kingdom = NULL, phylum = NULL,
-                         class = NULL, order = NULL, family = NULL,
-                         genus = NULL, strict = FALSE, ...)
+prepare_gbif_download(species, rank = NULL, kingdom = NULL,
+                             phylum = NULL, class = NULL, order = NULL,
+                             family = NULL, genus = NULL, strict = FALSE,
+                             ...)
 }
 \arguments{
 \item{species}{(character) a vector of species name(s).}
@@ -51,6 +52,6 @@ This function requires an active internet connection to access GBIF data.
 }
 \examples{
 \dontrun{
-gbif_prepared <- prepare_gbif_data(species = "Araucaria angustifolia")
+gbif_prepared <- prepare_gbif_download(species = "Araucaria angustifolia")
 }
 }

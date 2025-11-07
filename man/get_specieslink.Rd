@@ -4,7 +4,7 @@
 \alias{get_specieslink}
 \title{get_specieslink}
 \usage{
-get_specieslink(key = NULL, dir, filename = "output", save = FALSE,
+get_specieslink(key = NULL, dir, filename = "specieslink_output", save = FALSE,
 basisOfRecord = NULL, family = NULL, species = NULL, institutionCode = NULL,
 collectionID = NULL, catalogNumber = NULL, kingdom = NULL, phylum = NULL,
 class = NULL, order = NULL, genus = NULL, specificEpithet = NULL,
@@ -23,7 +23,7 @@ compress = FALSE)
 
 \item{dir}{(character) directory where files will be saved (if \code{save = TRUE}).}
 
-\item{filename}{(character) name of the output file without extension. Default is \code{"output"}.}
+\item{filename}{(character) name of the output file without extension. Default is \code{"specieslink_output"}.}
 
 \item{save}{(logical) whether to save the results to file. Default is \code{FALSE}.}
 
