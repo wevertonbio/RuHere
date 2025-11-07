@@ -1,8 +1,9 @@
 #' Prepare data to request GBIF download
 #'
-#' @usage prepare_gbif_data(species, rank = NULL, kingdom = NULL, phylum = NULL,
-#'                          class = NULL, order = NULL, family = NULL,
-#'                          genus = NULL, strict = FALSE, ...)
+#' @usage prepare_gbif_download(species, rank = NULL, kingdom = NULL,
+#'                              phylum = NULL, class = NULL, order = NULL,
+#'                              family = NULL, genus = NULL, strict = FALSE,
+#'                              ...)
 #'
 #' @param species (character) a vector of species name(s).
 #' @param rank (character) optional taxonomic rank (for example, 'species' or
@@ -41,7 +42,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' gbif_prepared <- prepare_gbif_data(species = "Araucaria angustifolia")
+#' gbif_prepared <- prepare_gbif_download(species = "Araucaria angustifolia")
 #' }
 prepare_gbif_download <- function(species, rank = NULL, kingdom = NULL,
                                   phylum = NULL, class = NULL, order = NULL,

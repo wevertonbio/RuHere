@@ -111,7 +111,13 @@ import_gbif <- function(request_key,
   # Check columns to import
   if(select_columns){
     if(is.null(columns_to_import)){
-      c_imp <- getExportedValue("RuHere", "gbif_columns")
+      c_imp <- c("scientificName", "acceptedScientificName", "occurrenceID",
+                 "collectionCode", "catalogNumber", "decimalLongitude",
+                 "decimalLatitude", "coordinateUncertaintyInMeters",
+                 "elevation", "continent", "countryCode", "stateProvince",
+                 "municipality", "locality", "verbatimLocality", "year",
+                 "eventDate", "recordedBy", "identifiedBy", "basisOfRecord",
+                 "occurrenceRemarks", "habitat", "datasetName", "datasetKey")
     } else {
       c_imp <- columns_to_import
       # Check if columns exists
