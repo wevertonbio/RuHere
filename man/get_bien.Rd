@@ -4,13 +4,15 @@
 \alias{get_bien}
 \title{get_bien}
 \usage{
-get_bien <- function(by = "species", cultivated = FALSE,
+get_bien(by = "species", cultivated = FALSE,
 new.world = NULL, all.taxonomy = FALSE, native.status = FALSE,
 natives.only = TRUE, observation.type = FALSE, political.boundaries = TRUE,
 collection.info = TRUE, only.geovalid = TRUE, min.lat = NULL, max.lat = NULL,
 min.long = NULL, max.long = NULL, species = NULL, genus = NULL,
 country = NULL, country.code = NULL, state = NULL, county = NULL,
-state.code = NULL, county.code = NULL, family = NULL, sf = NULL, ...)
+state.code = NULL, county.code = NULL, family = NULL, sf = NULL, dir,
+filename = "bien_output", file.format = "csv", compress = FALSE,
+save = FALSE, ...)
 }
 \arguments{
 \item{by}{(character) type of query to perform (\code{"box"}, \code{"country"},
@@ -44,8 +46,17 @@ metadata. Default is \code{TRUE}.}
 \item{only.geovalid}{(logical) if \code{TRUE}, restricts output to
 georeferenced and spatially valid records. Default is \code{TRUE}.}
 
-\item{min.lat, }{max.lat, min.long, max.long (numeric) geographic limits
-(in decimal degrees) for bounding-box queries when \code{by = "box"}.
+\item{min.lat}{(numeric) the minimum latitude (in decimal degrees) for a
+bounding-box query when \code{by = "box"}.}
+
+\item{max.lat}{(numeric) the maximum latitude (in decimal degrees) for a
+bounding-box query when \code{by = "box"}.}
+
+\item{min.long}{(numeric) the minimum longitude (in decimal degrees) for a
+bounding-box query when \code{by = "box"}.}
+
+\item{max.long}{(numeric) the maximum longitude (in decimal degrees) for a
+bounding-box query when \code{by = "box"}.
 Ignored otherwise. Default is \code{NULL}.}
 
 \item{species}{(character) species name(s) to query when \code{by = "species"}
@@ -76,10 +87,25 @@ corresponding to \code{county}. Default is \code{NULL}.}
 \item{sf}{(object of class \code{sf}) a spatial object defining an area
 of interest when \code{by = "sf"}.  Default is \code{NULL}.}
 
+\item{dir}{(character) directory path where the file will be saved.
+Required if \code{save = TRUE}.}
+
+\item{filename}{(character) name of the output file without extension.
+Default is \code{"bien_output"}.}
+
+\item{file.format}{(character) file format for saving output (\code{"csv"}, \code{"rds"}).
+Default is \code{"csv"}.}
+
+\item{compress}{(logical) if \code{TRUE} and \code{save = TRUE}, compresses the output
+file as .csv.zip. Default is \code{FALSE}.}
+
+\item{save}{(logical) if \code{TRUE}, saves the results to a CSV file.
+Default is \code{FALSE}.}
+
 \item{...}{additional arguments passed to the underlying BIEN function.}
 }
 \value{
-A data frame containing BIEN occurrence records that match
+A \code{data.frame} containing BIEN occurrence records that match
 the specified query. The structure and available columns depend on the chosen
 \code{by} value and the corresponding BIEN function.
 }

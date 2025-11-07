@@ -1,12 +1,14 @@
 #' @title get_bien
 #'
-#' @usage get_bien <- function(by = "species", cultivated = FALSE,
+#' @usage get_bien(by = "species", cultivated = FALSE,
 #' new.world = NULL, all.taxonomy = FALSE, native.status = FALSE,
 #' natives.only = TRUE, observation.type = FALSE, political.boundaries = TRUE,
 #' collection.info = TRUE, only.geovalid = TRUE, min.lat = NULL, max.lat = NULL,
 #' min.long = NULL, max.long = NULL, species = NULL, genus = NULL,
 #' country = NULL, country.code = NULL, state = NULL, county = NULL,
-#' state.code = NULL, county.code = NULL, family = NULL, sf = NULL, ...)
+#' state.code = NULL, county.code = NULL, family = NULL, sf = NULL, dir,
+#' filename = "bien_output", file.format = "csv", compress = FALSE,
+#' save = FALSE, ...)
 #'
 #' @description
 #' Wrapper function to access and download occurrence records from the
@@ -17,70 +19,65 @@
 #' @param by (character) type of query to perform (`"box"`, `"country"`,
 #' `"county"`, `"family"`, `"genus"`, `"records_per_species"`, `"species"`,
 #' `"sf"`, or `"state"`). Default is `species`.
-#'
 #' @param cultivated (logical) whether to include cultivated records or exclude
 #' them. Default is `FALSE`.
-#'
 #' @param new.world (logical) if `TRUE`, restricts records to the New World,
 #' if `FALSE`, to the Old World, and if `NULL`, no restriction. Default is `NULL`.
-#'
 #' @param all.taxonomy (logical) if `TRUE`, returns all taxonomic levels
 #' available, otherwise, limits results to accepted names. Default is `FALSE`.
-#'
 #' @param native.status (logical) if `TRUE`, includes information about native
 #' versus non-native status of occurrences. Default is `FALSE`.
-#'
 #' @param natives.only (logical) if `TRUE`, restricts results to native species
 #' only. Default is `TRUE`.
-#'
 #' @param observation.type (logical) if `TRUE`, includes information on
 #' observation types. Default is `FALSE`.
-#'
 #' @param political.boundaries (logical) if `TRUE`, restricts the search to
 #' defined political boundaries. Default is `TRUE`.
-#'
 #' @param collection.info (logical) if `TRUE`, includes collection-level
 #' metadata. Default is `TRUE`.
-#'
 #' @param only.geovalid (logical) if `TRUE`, restricts output to
 #' georeferenced and spatially valid records. Default is `TRUE`.
-#'
-#' @param min.lat, max.lat, min.long, max.long (numeric) geographic limits
-#' (in decimal degrees) for bounding-box queries when `by = "box"`.
+#' @param min.lat (numeric) the minimum latitude (in decimal degrees) for a
+#' bounding-box query when `by = "box"`.
+#' @param max.lat (numeric) the maximum latitude (in decimal degrees) for a
+#' bounding-box query when `by = "box"`.
+#' @param min.long (numeric) the minimum longitude (in decimal degrees) for a
+#' bounding-box query when `by = "box"`.
+#' @param max.long (numeric) the maximum longitude (in decimal degrees) for a
+#' bounding-box query when `by = "box"`.
 #' Ignored otherwise. Default is `NULL`.
-#'
 #' @param species (character) species name(s) to query when `by = "species"`
 #' or `"records_per_species"`. Default is `NULL`.
-#'
 #' @param genus (character) genus name(s) to query when `by = "genus"`. Default is `NULL`.
-#'
 #' @param family (character) family name(s) to query when `by = "family"`.  Default is `NULL`.
-#'
 #' @param country (character) country name when `by = "country"`, `"state"`,
 #' or `"county"`. Default is `NULL`.
-#'
 #' @param country.code (character) two-letter ISO country code corresponding
 #' to `country`. Default is `NULL`.
-#'
 #' @param state (character) state or province name when `by = "state"` or
 #' `"county"`. Default is `NULL`.
-#'
 #' @param state.code (character) state or province code corresponding
 #' to `state`. Default is `NULL`.
-#'
 #' @param county (character) county or equivalent subdivision name
 #' when `by = "county"`. Default is `NULL`.
-#'
 #' @param county.code (character) county or equivalent subdivision code
 #' corresponding to `county`. Default is `NULL`.
-#'
 #' @param sf (object of class `sf`) a spatial object defining an area
 #' of interest when `by = "sf"`.  Default is `NULL`.
-#'
+#' @param dir (character) directory path where the file will be saved.
+#' Required if `save = TRUE`.
+#' @param filename (character) name of the output file without extension.
+#' Default is `"bien_output"`.
+#' @param save (logical) if `TRUE`, saves the results to a CSV file.
+#' Default is `FALSE`.
+#' @param file.format (character) file format for saving output (`"csv"`, `"rds"`).
+#' Default is `"csv"`.
+#' @param compress (logical) if `TRUE` and `save = TRUE`, compresses the output
+#' file as .csv.zip. Default is `FALSE`.
 #' @param ... additional arguments passed to the underlying BIEN function.
 #'
 #' @return
-#' A data frame containing BIEN occurrence records that match
+#' A \code{data.frame} containing BIEN occurrence records that match
 #' the specified query. The structure and available columns depend on the chosen
 #' `by` value and the corresponding BIEN function.
 #'
@@ -106,7 +103,6 @@
 #' )
 #' }
 #'
-#' @export
 get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
                      all.taxonomy = FALSE, native.status = FALSE,
                      natives.only = TRUE, observation.type = FALSE,
@@ -116,7 +112,7 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
                      genus = NULL, country = NULL, country.code = NULL,
                      state = NULL, county = NULL, state.code = NULL,
                      county.code = NULL, family = NULL, sf = NULL, dir,
-                     filename = "output", file.format = "csv", compress = FALSE,
+                     filename = "bien_output", file.format = "csv", compress = FALSE,
                      save = FALSE, ...) {
 
     # Botanical Information and Ecology Network Database
@@ -190,17 +186,6 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
       }
     }
 
-    if (!missing(save) && isTRUE(save)) {
-      if (missing(dir) || is.null(dir) || !inherits(dir, "character") || length(dir) != 1) {
-        stop("'dir' must be a single character string when save = TRUE, not ",
-             paste(class(dir), collapse = "/"))
-      }
-    } else {
-      if (!missing(dir) && !is.null(dir) && !inherits(dir, "character")) {
-        stop("'dir' must be a character if provided, not ", paste(class(dir), collapse = "/"))
-      }
-    }
-
     if (!inherits(filename, "character") || length(filename) != 1)
       stop("'filename' must be a single character value, not ", paste(class(filename), collapse = "/"))
 
@@ -212,6 +197,18 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
 
     if (!inherits(save, "logical") || length(save) != 1)
       stop("'save' must be a single logical (TRUE/FALSE), not ", paste(class(save), collapse = "/"))
+
+    if (isTRUE(save)) {
+      if (missing(dir) || is.null(dir)) {
+        stop("'dir' is required (must not be NULL or missing) when save = TRUE.")
+      }
+      if (!inherits(dir, "character") || length(dir) != 1) {
+        stop("'dir' must be a single character string when save = TRUE, not ", class(dir))
+      }
+      if (!dir.exists(dir)) {
+        stop(paste0("Directory '", dir, "' does not exist. It must be created before saving."))
+      }
+    }
 
     if (!inherits(compress, "logical") || length(compress) != 1)
       stop("'compress' must be a single logical (TRUE/FALSE), not ", paste(class(compress), collapse = "/"))
@@ -571,19 +568,19 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
 
       if (file.format == "csv") {
         if (compress) {
-          fullname <- paste0(dir, "/", filename, ".csv.zip")
+          fullname <- file.path(dir, paste0(filename, ".csv.zip"))
           message(paste0("Writing ", fullname, " on disk."))
           data.table::fwrite(occ_bien, file = fullname, compress = "gzip")
         }
         else {
-          fullname <- paste0(dir, "/", filename, ".csv")
+          fullname <- file.path(dir, paste0(filename, ".csv"))
           message(paste0("Writing ", fullname, " on disk."))
           data.table::fwrite(occ_bien, file = fullname)
         }
       }
 
       if (file.format == "rds") {
-        fullname <- paste0(dir, "/", filename, ".rds")
+        fullname <- file.path(dir, paste0(filename, ".rds"))
         message(paste0("Writing ", fullname, " on disk."))
         if (compress) {
           saveRDS(occ_bien, file = fullname, compress = "gzip")
