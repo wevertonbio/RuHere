@@ -126,6 +126,10 @@ standardize_states <- function(occ,
     stop("'return_dictionary' must be a single logical value (TRUE or FALSE).", call. = FALSE)
   }
 
+  # Convert to dataframe if necessary
+  if(inherits(occ, "data.table"))
+    occ <- as.data.frame(occ)
+
 
   # Get state dictionary
   ss <- getExportedValue("RuHere", "states_dictionary")
@@ -147,6 +151,9 @@ standardize_states <- function(occ,
                           !is.na(occ[[state_column]])] <- toupper(
                             occ[[state_column]][nchar(occ[[state_column]]) <= 3 &
                                                     !is.na(occ[[state_column]])])
+
+  # Replace empty values with NA
+  occ[[state_column]][occ[[state_column]] == ""] <- NA
 
   # Check state names
   unique_states <- distinct(occ[, c(state_column, country_column)])

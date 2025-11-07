@@ -133,6 +133,10 @@ standardize_countries <- function(occ,
     stop("'return_dictionary' must be a single logical value (TRUE or FALSE).", call. = FALSE)
   }
 
+  # Convert to dataframe if necessary
+  if(inherits(occ, "data.table"))
+    occ <- as.data.frame(occ)
+
 
   # Get country dictionary
   cd <- getExportedValue("RuHere", "country_dictionary")
@@ -158,6 +162,9 @@ standardize_countries <- function(occ,
                           !is.na(occ[[country_column]])] <- toupper(
                             occ[[country_column]][nchar(occ[[country_column]]) <= 3 &
                                                     !is.na(occ[[country_column]])])
+
+  # Replace empty values with NA
+  occ[[country_column]][occ[[country_column]] == ""] <- NA
 
   # Check country names
   unique_countries <- na.omit(unique(occ[[country_column]]))
@@ -203,9 +210,10 @@ standardize_countries <- function(occ,
   # Fill NA?
   if(lookup_na_country){
     occ_final <- country_from_coords(occ_final, long, lat,
-                                      country_column = "country_suggested",
-                                      output_column = "country_suggested",
-                                      from = "na_only", append_source = TRUE)
+                                     country_column = "country_suggested",
+                                     output_column = "country_suggested",
+                                     from = "na_only", append_source = TRUE)
+
     occ_final$country_source[
       is.na(occ_final$country_source) &
         !is.na(occ_final[["country_suggested"]])] <- "metadata"
