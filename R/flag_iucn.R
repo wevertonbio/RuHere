@@ -13,8 +13,13 @@ flag_iucn <- function(data_dir, occ, species = "species",
          ".\nCheck the folder or run the 'iucn_here()' function")
   }
 
+  # Force occ to be a dataframe
+  if(inherits(occ, "data.table"))
+    occ <- as.data.frame(occ)
+
   # Import data
-  d <- data.table::fread(file.path(data_dir, "iucn/iucn_distribution.gz"))
+  d <- data.table::fread(file.path(data_dir, "iucn/iucn_distribution.gz"),
+                         data.table = FALSE)
   # Import map
   m <- terra::vect(file.path(data_dir, "iucn/wgsrpd.gpkg"))
   # Get dataframe to filter levels

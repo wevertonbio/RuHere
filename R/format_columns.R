@@ -182,15 +182,16 @@ format_columns <- function(occ,
     stop("'verbose' must be a single logical value (TRUE or FALSE).", call. = FALSE)
 
 
-
   # Convert to dataframe if necessary
-  if(!inherits(occ, "data.frame")){
+  if(inherits(occ, "data.table")){
     occ <- as.data.frame(occ)}
 
 
   if(is.character(metadata)){
     prepared_d <- getExportedValue("RuHere", "prepared_metadata")
     d <- prepared_metadata[[metadata]]
+  } else {
+    d <- meta_df
   }
 
   if(is.null(numeric_columns)){
@@ -209,37 +210,44 @@ format_columns <- function(occ,
 
   #Check occ
   c_met <- setdiff(na.omit(unlist(d[1,])), colnames(occ))
+
   if(length(c_met) > 0){
     stop("The following columns are missing in occ: ",
          paste(c_met, collapse = " | "))
   }
 
   # Fix years
-  if(metadata == "bien"){
-    occ$year <- as.Date(occ$date_collected, format = "%Y-%m-%d") %>%
-      format(., "%Y")
-    d[,"year"] <- "year"
+  if(inherits(metadata, "character")){
+    if(metadata == "bien"){
+      occ$year <- as.Date(occ$date_collected, format = "%Y-%m-%d") %>%
+        format(., "%Y")
+      d[,"year"] <- "year"
+    }
+
+    if(metadata == "idigbio"){
+      occ$year <- as.Date(occ$datecollected, format = "%Y-%m-%d") %>%
+        format(., "%Y")
+      d[,"year"] <- "year"
+    }
   }
 
-  if(metadata == "idigbio"){
-    occ$year <- as.Date(occ$datecollected, format = "%Y-%m-%d") %>%
-      format(., "%Y")
-    d[,"year"] <- "year"
-  }
 
   # Column to extract binomial species from kwonw metadata
   if(extract_binomial){
-    if(is.null(binomial_from) & metadata %in% c("gbif", "specieslink", "idigbio",
-                                               "bien")){
-      binomial_from <- if(metadata == "gbif"){
-        "acceptedScientificName"
-      } else if(metadata == "specieslink"){
-        "scientificname"
-      } else if(metadata == "bien"){
-        "scrubbed_species_binomial"
-      } else if(metadata == "idigbio"){
-        "scientificname"
+    if(inherits(metadata, "character")){
+      if(is.null(binomial_from) && metadata %in% c("gbif", "specieslink", "idigbio",
+                                                  "bien")){
+        binomial_from <- if(metadata == "gbif"){
+          "acceptedScientificName"
+        } else if(metadata == "specieslink"){
+          "scientificname"
+        } else if(metadata == "bien"){
+          "scrubbed_species_binomial"
+        } else if(metadata == "idigbio"){
+          "scientificname"
+        }
       }
+
     }
 
     # Get binomial species
@@ -267,10 +275,6 @@ format_columns <- function(occ,
   to_keep <- to_keep[to_keep != "NA"]
   occ <- occ[,intersect(colnames(occ), to_keep)]
 
-  if(extract_binomial){
-    occ$species <- species
-  }
-
   #Create columns, if necessary
   absent_columns <- setdiff(to_keep, colnames(occ))
   if(length(absent_columns)>0){
@@ -285,11 +289,17 @@ format_columns <- function(occ,
   occ <- occ %>% dplyr::rename(!!!present_names) %>% as.data.frame()
 
   #Create columns with data_source
-  if(is.null(data_source)){
+  if(is.null(data_source) & inherits(metadata, "character")){
     data_source <- metadata
   }
 
   occ$data_source <- data_source
+
+  if(extract_binomial){
+    occ <- occ %>% dplyr::mutate(species = species)
+  }
+
+  #occ2 aqui
 
   if(check_numeric){
 

@@ -13,17 +13,21 @@ flag_wcvp <- function(data_dir, occ, species = "species",
          ".\nCheck the folder or run the 'iucn_here()' function")
   }
 
+  # Force occ to be a dataframe
+  if(inherits(occ, "data.table"))
+    occ <- as.data.frame(occ)
+
   # Import data
-  d <- data.table::fread(file.path(data_dir, "wcvp/wcvp.gz"))
+  d <- data.table::fread(file.path(data_dir, "wcvp/wcvp.gz"), data.table = FALSE)
   # Import map
   m <- terra::vect(file.path(data_dir, "wcvp/wgsrpd.gpkg"))
   # Get dataframe to filter levels
   dm <- terra::as.data.frame(m)
 
   # Get species in data
-  spp_in <- intersect(unique(occ[["species"]]),
+  spp_in <- intersect(unique(occ[[species]]),
                       unique(d$species))
-  spp_out <- setdiff(unique(occ[["species"]]),
+  spp_out <- setdiff(unique(occ[[species]]),
                      unique(d$species))
 
   #Warning if some species are not available

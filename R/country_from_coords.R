@@ -99,14 +99,18 @@ country_from_coords <- function(occ,
   if (!inherits(output_column, "character") || length(output_column) != 1) {
     stop("'output_column' must be a single character string specifying the name of the new column.", call. = FALSE)
   }
-  if (output_column %in% names(occ)) {
-    warning(paste0("The column '", output_column, "' already exists and will be overwritten."))
-  }
+  # if (output_column %in% names(occ)) {
+  #   warning(paste0("The column '", output_column, "' already exists and will be overwritten."))
+  # }
 
   # 7. Check append_source (default = FALSE)
   if (!inherits(append_source, "logical") || length(append_source) != 1) {
     stop("'append_source' must be a single logical value (TRUE or FALSE).", call. = FALSE)
   }
+
+  # Convert to dataframe if necessary
+  if(inherits(occ, "data.table"))
+    occ <- as.data.frame(occ)
 
 
   # Get map of world

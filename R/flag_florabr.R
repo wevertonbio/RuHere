@@ -1,6 +1,6 @@
 flag_florabr <- function(data_dir, occ, species = "species",
                          long = "decimalLongitude", lat = "decimalLatitude",
-                         verbose = TRUE, origin = NULL, 
+                         verbose = TRUE, origin = NULL,
                          by_state = TRUE, buffer_state = 20,
                          by_biome = TRUE, buffer_biome = 20, by_endemism = TRUE,
                          buffer_brazil = 20, state_vect = NULL,
@@ -15,7 +15,7 @@ flag_florabr <- function(data_dir, occ, species = "species",
   if (!is.null(verbose) && !inherits(verbose, "logical")) {
       stop("verbose must be logical")
   }
-  
+
   if (is.null(occ)) {
     stop("occ should be specified")
   } else if (!inherits(occ, "data.frame")) {
@@ -33,10 +33,14 @@ flag_florabr <- function(data_dir, occ, species = "species",
   if (!inherits(lat, "character")) {
     stop("lat should be a character")
   }
-  
-  if (!inherits(buffer, "numeric")) {
-      stop("buffer must be numeric")
-  }
+
+  # if (!inherits(buffer, "numeric")) {
+  #     stop("buffer must be numeric")
+  # }
+
+  # Force occ to be a dataframe
+  if(inherits(occ, "data.table"))
+    occ <- as.data.frame(occ)
 
   # Check if data_dir exists
   if(!file.exists(file.path(data_dir, "florabr/"))){
@@ -45,12 +49,13 @@ flag_florabr <- function(data_dir, occ, species = "species",
   }
 
   # Import data
-  d <- florabr::load_florabr(file.path(data_dir, "florabr/"), type = "complete")
-  
+  d <- florabr::load_florabr(file.path(data_dir, "florabr/"), type = "complete",
+                             verbose = FALSE)
+
   # Get species in data
-  spp_in <- intersect(unique(occ[["species"]]),
+  spp_in <- intersect(unique(occ[[species]]),
                       unique(d$species))
-  spp_out <- setdiff(unique(occ[["species"]]),
+  spp_out <- setdiff(unique(occ[[species]]),
                      unique(d$species))
 
   #Warning if some species are not available
@@ -70,12 +75,12 @@ flag_florabr <- function(data_dir, occ, species = "species",
   occ_in <- occ[occ[[species]] %in% spp_in, ]
 
   res_flag <- pbapply::pblapply(spp_in, function(i) {
-    
+
     d_i <- d %>% dplyr::filter(species == i)
 
     if(!is.null(origin)) {
 
-      if(!origin %in% c("native", "cultivated", "naturalized", "unknown", 
+      if(!origin %in% c("native", "cultivated", "naturalized", "unknown",
                         "not_found_in_brazil")) {
         stop("origin should be 'native', 'cultivated', 'naturalized', 'unknown', or 'not_found_in_brazil'.")
       }
@@ -104,16 +109,16 @@ flag_florabr <- function(data_dir, occ, species = "species",
                                      long = long,
                                      lat = lat,
                                      value = "flag",
-                                     by_state = by_state, 
+                                     by_state = by_state,
                                      buffer_state = buffer_state,
-                                     by_biome = by_biome, 
-                                     buffer_biome = buffer_biome, 
+                                     by_biome = by_biome,
+                                     buffer_biome = buffer_biome,
                                      by_endemism = by_endemism,
-                                     buffer_brazil = buffer_brazil, 
+                                     buffer_brazil = buffer_brazil,
                                      state_vect = state_vect,
-                                     state_column = state_column, 
+                                     state_column = state_column,
                                      biome_vect = biome_vect,
-                                     biome_column = biome_column, 
+                                     biome_column = biome_column,
                                      br_vect = br_vect,
                                      keep_columns = keep_columns)
 
