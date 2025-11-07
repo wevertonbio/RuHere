@@ -117,7 +117,8 @@ import_gbif <- function(request_key,
                  "elevation", "continent", "countryCode", "stateProvince",
                  "municipality", "locality", "verbatimLocality", "year",
                  "eventDate", "recordedBy", "identifiedBy", "basisOfRecord",
-                 "occurrenceRemarks", "habitat", "datasetName", "datasetKey")
+                 "occurrenceRemarks", "habitat", "datasetName", "datasetKey",
+                 "speciesKey")
     } else {
       c_imp <- columns_to_import
       # Check if columns exists
