@@ -1,3 +1,21 @@
+#' Title
+#'
+#' @param occ
+#' @param species
+#' @param long
+#' @param lat
+#' @param additional_groups
+#' @param continuous_variable
+#' @param decreasing
+#' @param categorical_variable
+#' @param priority_categories
+#' @param by_cell
+#' @param raster_variable
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 flag_duplicates <- function(occ,
                             species = "species",
                             long = "decimalLongitude",

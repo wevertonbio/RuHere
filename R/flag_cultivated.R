@@ -1,3 +1,14 @@
+#' Title
+#'
+#' @param occ
+#' @param columns
+#' @param cultivated_terms
+#' @param not_cultivated_terms
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 flag_cultivated <- function(occ,
                             columns = c("occurrenceRemarks", "habitat",
                                         "locality"),

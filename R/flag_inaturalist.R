@@ -1,3 +1,13 @@
+#' Title
+#'
+#' @param occ
+#' @param columns
+#' @param research_grade
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 flag_inaturalist <- function(occ,
                              columns = "datasetName",
                              research_grade = FALSE){

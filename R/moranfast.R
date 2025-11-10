@@ -1,3 +1,15 @@
+#' Title
+#'
+#' @param x
+#' @param weight
+#' @param na_rm
+#' @param scaled
+#' @param alternative
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 moranfast <- function(x, weight, na_rm = FALSE, scaled = FALSE,
                       alternative = c("two.sided", "less", "greater")) {
 

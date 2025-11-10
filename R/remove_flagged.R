@@ -1,3 +1,18 @@
+#' Title
+#'
+#' @param occ
+#' @param flags
+#' @param exceptions
+#' @param column_exception
+#' @param save_flagged
+#' @param output_dir
+#' @param overwrite
+#' @param output_format
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 remove_flagged <- function(occ,
                            flags = "all",
                            exceptions = NULL,
