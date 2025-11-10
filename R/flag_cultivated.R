@@ -4,6 +4,11 @@ flag_cultivated <- function(occ,
                             cultivated_terms = NULL,
                             not_cultivated_terms = NULL){
 
+  # Force occ to be a dataframe
+  if(inherits(occ, "data.table"))
+    occ <- as.data.frame(occ)
+
+
   if(!is.null(cultivated_terms)){
     cultivated <- c(RuHere::cultivated$cultivated, cultivated_terms)
   } else {
