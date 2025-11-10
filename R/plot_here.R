@@ -129,16 +129,16 @@ plot_here <- function(occ,
   if(plot_with == "mapview"){
     # Plot first map
     first_map <- names(occ_list)[1]
-    mapa <- mapview(occ_list[[first_map]],
-                    col.regions = col_points[[first_map]],
-                    cex = cex, lwd = lwd,
-                    layer.name = flag_names[[first_map]],
-                    label = label)
+    mapa <- mapview::mapview(occ_list[[first_map]],
+                             col.regions = col_points[[first_map]],
+                             cex = cex, lwd = lwd,
+                             layer.name = flag_names[[first_map]],
+                             label = label)
     # Add other maps
     if(length(flags) > 1){
       for(i in 2:length(flags)){
         flag_i <- flags[i]
-        mapa <- mapa + mapview(occ_list[[flag_i]],
+        mapa <- mapa + mapview::mapview(occ_list[[flag_i]],
                                col.regions = col_points[[flag_i]],
                                cex = cex, lwd = lwd,
                                layer.name = flag_names[[flag_i]],
