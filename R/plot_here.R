@@ -1,3 +1,18 @@
+#' Title
+#'
+#' @param occ
+#' @param flags
+#' @param show_no_flagged
+#' @param plot_with
+#' @param cex
+#' @param lwd
+#' @param col_points
+#' @param label
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 plot_here <- function(occ,
                       flags = "all",
                       show_no_flagged = TRUE,
