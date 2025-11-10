@@ -165,6 +165,10 @@ flag_faunabr <- function(dir, occ, species = "species",
          ".\nCheck the folder or run the 'faunabr_here()' function")
   }
 
+  # Force occ to be a dataframe
+  if(inherits(occ, "data.table"))
+    occ <- as.data.frame(occ)
+
   core_cols <- c(species, long, lat)
   if (!all(core_cols %in% names(occ))) {
     missing_cols <- setdiff(core_cols, names(occ))
