@@ -1,33 +1,61 @@
-create_metadata <- function(scientificName, 
-                            decimalLongitude, decimalLatitude, 
-                            collectionCode = NA, catalogNumber = NA, 
-                            coordinateUncertaintyInMeters = NA, elevation = NA, 
+#' Title
+#'
+#' @param scientificName
+#' @param decimalLongitude
+#' @param decimalLatitude
+#' @param collectionCode
+#' @param catalogNumber
+#' @param coordinateUncertaintyInMeters
+#' @param elevation
+#' @param country
+#' @param stateProvince
+#' @param municipality
+#' @param locality
+#' @param year
+#' @param eventDate
+#' @param recordedBy
+#' @param identifiedBy
+#' @param basisOfRecord
+#' @param occurrenceRemarks
+#' @param habitat
+#' @param datasetName
+#' @param datasetKey
+#' @param key
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+create_metadata <- function(scientificName,
+                            decimalLongitude, decimalLatitude,
+                            collectionCode = NA, catalogNumber = NA,
+                            coordinateUncertaintyInMeters = NA, elevation = NA,
                             country = NA, stateProvince = NA, municipality = NA,
-                            locality = NA, year = NA, 
-                            eventDate = NA, recordedBy = NA, identifiedBy = NA, 
-                            basisOfRecord = NA, occurrenceRemarks = NA, 
-                            habitat = NA, datasetName = NA, datasetKey = NA, 
+                            locality = NA, year = NA,
+                            eventDate = NA, recordedBy = NA, identifiedBy = NA,
+                            basisOfRecord = NA, occurrenceRemarks = NA,
+                            habitat = NA, datasetName = NA, datasetKey = NA,
                             key = NA){
-  d <- data.frame("scientificName" = scientificName, 
-                  "collectionCode" = collectionCode, 
-                  "catalogNumber" = catalogNumber, 
-                  "decimalLongitude" = decimalLongitude, 
+  d <- data.frame("scientificName" = scientificName,
+                  "collectionCode" = collectionCode,
+                  "catalogNumber" = catalogNumber,
+                  "decimalLongitude" = decimalLongitude,
                   "decimalLatitude" = decimalLatitude,
-                  "coordinateUncertaintyInMeters" = coordinateUncertaintyInMeters, 
-                  "elevation" = elevation, 
-                  "country" = country, 
-                  "stateProvince" = stateProvince, 
-                  "municipality" = municipality, 
-                  "locality" = locality, 
-                  "year" = year, 
-                  "eventDate" = eventDate, 
-                  "recordedBy" = recordedBy, 
-                  "identifiedBy" = identifiedBy, 
-                  "basisOfRecord" = basisOfRecord, 
+                  "coordinateUncertaintyInMeters" = coordinateUncertaintyInMeters,
+                  "elevation" = elevation,
+                  "country" = country,
+                  "stateProvince" = stateProvince,
+                  "municipality" = municipality,
+                  "locality" = locality,
+                  "year" = year,
+                  "eventDate" = eventDate,
+                  "recordedBy" = recordedBy,
+                  "identifiedBy" = identifiedBy,
+                  "basisOfRecord" = basisOfRecord,
                   "occurrenceRemarks" = occurrenceRemarks,
-                  "habitat" = habitat, 
-                  "datasetName" = datasetName, 
-                  "datasetKey" = datasetKey, 
+                  "habitat" = habitat,
+                  "datasetName" = datasetName,
+                  "datasetKey" = datasetKey,
                   "key" = key)
-  
+
 }
