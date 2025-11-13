@@ -46,14 +46,14 @@ set_iucn_credentials <- function(iucn_key,
   # Get R environment
   renviron_path <- file.path(Sys.getenv("HOME"), ".Renviron")
 
-  # Reload the .Renviron file
-  readRenviron(renviron_path)
+  # Set the key in the current session
+  Sys.setenv(IUCN_REDLIST_KEY = iucn_key)
 
   # Create R environment, if necessary
   if (file.exists(renviron_path)) {
     lines <- readLines(renviron_path, warn = FALSE)
   } else {
-    lines <- c()
+    lines <- character(0)
   }
 
   # Check if variables exist
@@ -61,8 +61,7 @@ set_iucn_credentials <- function(iucn_key,
 
   if(iucn_exists){
     if(!overwrite){
-      stop("IUCN_REDLIST_KEY already exists.
-Check your .Renviron file or set 'overwrite = TRUE")
+      stop("IUCN_REDLIST_KEY already exists. Check your .Renviron file or set 'overwrite = TRUE")
     } else {
       warning("Overwriting 'IUCN_REDLIST_KEY' in .Renviron")
       # Check lines to overwrite
@@ -73,13 +72,10 @@ Check your .Renviron file or set 'overwrite = TRUE")
   }
 
   new_lines <- c(lines,
-                 paste0("IUCN_REDLIST_KEY=", "'", iucn_key, "'"))
+                 paste0("IUCN_REDLIST_KEY=", iucn_key))
 
   # Write lines
   writeLines(new_lines, renviron_path)
-
-  # Reload the .Renviron file
-  readRenviron(renviron_path)
 
   message("IUCN credentials have been processed and added/updated in your .Renviron file\n",
           "Check your .Renviron with file.edit('", normalizePath(renviron_path, winslash = "/"), "')")
@@ -88,7 +84,3 @@ Check your .Renviron file or set 'overwrite = TRUE")
     file.edit(normalizePath(renviron_path, winslash = "/"))
   }
 }
-
-# set_iucn_credentials(iucn_key = "teste",
-#                      overwrite = FALSE, open_Renviron = TRUE)
-

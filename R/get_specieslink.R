@@ -1,5 +1,5 @@
 #' @title get_specieslink
-
+#'
 #' @usage get_specieslink(key = NULL, dir, filename = "specieslink_output", save = FALSE,
 #' basisOfRecord = NULL, family = NULL, species = NULL, institutionCode = NULL,
 #' collectionID = NULL, catalogNumber = NULL, kingdom = NULL, phylum = NULL,

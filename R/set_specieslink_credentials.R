@@ -30,7 +30,7 @@
 set_specieslink_credentials <- function(specieslink_key, overwrite = FALSE,
                                         open_Renviron = FALSE) {
   # Check arguments
-  if (!inherits(specieslink_key, "character"))
+  if (!inherits(specieslink_key, "character") || length(specieslink_key) != 1)
     stop("'specieslink_key' must be a character, not ", class(specieslink_key),
          call. = FALSE)
 
@@ -45,27 +45,26 @@ set_specieslink_credentials <- function(specieslink_key, overwrite = FALSE,
   # Get R environment
   renviron_path <- file.path(Sys.getenv("HOME"), ".Renviron")
 
-  # Reload the .Renviron file
-  readRenviron(renviron_path)
+  # Set the key in the current session
+  Sys.setenv(SPECIESLINK_KEY = specieslink_key)
 
   # Create R environment, if necessary
   if (file.exists(renviron_path)) {
     lines <- readLines(renviron_path, warn = FALSE)
   } else {
-    lines <- c()
+    lines <- character(0)
   }
 
   # Check if variables exist
-  key_exists <- any(startsWith(lines, paste0("specieslink_key", "=")))
-
+  key_exists <- any(startsWith(lines, paste0("SPECIESLINK_KEY", "=")))
 
   if(key_exists){
     if(!overwrite){
-      stop("specieslink_key already exists. Check your .Renviron file or set 'overwrite = TRUE")
+      stop("SPECIESLINK_KEY already exists. Check your .Renviron file or set 'overwrite = TRUE")
     } else {
-      warning("Overwriting variable specieslink_key in .Renviron")
+      warning("Overwriting variable SPECIESLINK_KEY in .Renviron")
       # Check lines to overwrite
-      to_overwrite <- grepl("^specieslink_key",
+      to_overwrite <- grepl("^SPECIESLINK_KEY",
                             lines)
       lines <- lines[!to_overwrite]
     }
@@ -73,13 +72,10 @@ set_specieslink_credentials <- function(specieslink_key, overwrite = FALSE,
 
   # Add/update lines
   new_lines <- c(lines,
-                 paste0("specieslink_key=", "'", specieslink_key, "'"))
+                 paste0("SPECIESLINK_KEY=", specieslink_key))
 
   # Write lines
   writeLines(new_lines, renviron_path)
-
-  # Reload the .Renviron file
-  readRenviron(renviron_path)
 
   message("speciesLink credentials have been processed and added/updated in your .Renviron file\n",
           "Check your .Renviron with file.edit('", normalizePath(renviron_path, winslash = "/"), "')")
