@@ -1,3 +1,19 @@
+#' Title
+#'
+#' @param data_dir
+#' @param occ
+#' @param species
+#' @param long
+#' @param lat
+#' @param origin
+#' @param presence
+#' @param buffer
+#' @param verbose
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 flag_bien <- function(data_dir, occ, species = "species",
                       long = "decimalLongitude", lat = "decimalLatitude",
                       origin = NULL, presence = NULL,

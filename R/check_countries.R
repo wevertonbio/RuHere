@@ -168,6 +168,7 @@ check_countries <- function(occ,
   if(try_to_fix){
     occ <- fix_countries(occ, long, lat, country_column,
                          correct_country = "correct_country", distance, verbose)
+    occ$correct_country[occ$country_issues != "incorrect"] <- TRUE
   }
 
   return(occ)

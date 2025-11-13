@@ -110,6 +110,7 @@ check_states <- function(occ,
   if(try_to_fix){
     occ <- fix_states(occ, long, lat, state_column,
                          correct_state = "correct_state", distance, verbose)
+    occ$correct_state[occ$state_issues != "incorrect"] <- TRUE
   }
 
   return(occ)

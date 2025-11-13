@@ -1,3 +1,15 @@
+#' Title
+#'
+#' @param occ
+#' @param long
+#' @param lat
+#' @param crs
+#' @param force_numeric
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 spatialize <- function(occ, long = "decimalLongitude", lat = "decimalLatitude",
                        crs = "epsg:4326", force_numeric = TRUE){
   if(force_numeric){

@@ -1,6 +1,20 @@
+#' Title
+#'
+#' @param occ
+#' @param columns
+#' @param research_grade
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 flag_inaturalist <- function(occ,
                              columns = "datasetName",
                              research_grade = FALSE){
+  # Force occ to be a dataframe
+  if(inherits(occ, "data.table"))
+    occ <- as.data.frame(occ)
+
   # First, check inaturalist
   inat_index <- lapply(columns, function(i){
     which(stringi::stri_detect_regex(occ[[i]],

@@ -1,3 +1,18 @@
+#' Title
+#'
+#' @param data_dir
+#' @param occ
+#' @param species
+#' @param long
+#' @param lat
+#' @param origin
+#' @param buffer
+#' @param verbose
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 flag_wcvp <- function(data_dir, occ, species = "species",
                       long = "decimalLongitude", lat = "decimalLatitude",
                       origin = NULL,

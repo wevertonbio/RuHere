@@ -1,3 +1,22 @@
+#' Title
+#'
+#' @param occ
+#' @param species
+#' @param long
+#' @param lat
+#' @param d
+#' @param moran_summary
+#' @param prioritary_column
+#' @param desc
+#' @param raster_variables
+#' @param do_pca
+#' @param pca_buffer
+#' @param mask
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 filter_geo_moran <- function(occ,
                              species = "species",
                              long = "decimalLongitude",

@@ -1,3 +1,17 @@
+#' Title
+#'
+#' @param occ
+#' @param species
+#' @param long
+#' @param lat
+#' @param d
+#' @param prioritary_column
+#' @param desc
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 thin_records <- function(occ,
                          species = "species",
                          long = "decimalLongitude",

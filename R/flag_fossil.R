@@ -17,6 +17,10 @@ flag_fossil <- function(occ,
     fossil <- "fossil"
   }
 
+  # Force occ to be a dataframe
+  if(inherits(occ, "data.table"))
+    occ <- as.data.frame(occ)
+
   # Combine in single vector
   fossil <- paste(fossil, collapse = "|")
 
