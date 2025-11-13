@@ -56,20 +56,22 @@ set_gbif_credentials <- function(gbif_username, gbif_email, gbif_password,
   # Get R environment
   renviron_path <- file.path(Sys.getenv("HOME"), ".Renviron")
 
-  # Reload the .Renviron file
-  readRenviron(renviron_path)
-
+  # Set the key in the current session
+  Sys.setenv(GBIF_USER = gbif_username)
+  Sys.setenv(GBIF_EMAIL = gbif_email)
+  Sys.setenv(GBIF_PWD = gbif_password)
+  
   # Create R environment, if necessary
   if (file.exists(renviron_path)) {
     lines <- readLines(renviron_path, warn = FALSE)
   } else {
-    lines <- c()
+    lines <- character(0)
   }
 
   # Check if variables exist
-  user_exists <- any(startsWith(lines, paste0("gbif_user", "=")))
-  email_exists <- any(startsWith(lines, paste0("gbif_email", "=")))
-  pwd_exists <- any(startsWith(lines, paste0("gbif_pwd", "=")))
+  user_exists <- any(startsWith(lines, paste0("GBIF_USER", "=")))
+  email_exists <- any(startsWith(lines, paste0("GBIF_EMAIL", "=")))
+  pwd_exists <- any(startsWith(lines, paste0("GBIF_PWD", "=")))
 
   if(any(c(user_exists, email_exists, pwd_exists))){
     if(!overwrite){
@@ -77,26 +79,23 @@ set_gbif_credentials <- function(gbif_username, gbif_email, gbif_password,
     } else {
       warning("Overwriting gbif_username, email and pwd in .Renviron")
       # Check lines to overwrite
-      to_overwrite <- grepl("^(gbif_user|gbif_email|gbif_pwd)",
+      to_overwrite <- grepl("^(GBIF_USER|GBIF_EMAIL|GBIF_PWD)",
                             lines)
       lines <- lines[!to_overwrite]
     }
   }
 
   # Add/update lines
-  update_lines <- paste0("gbif_user=", gbif_username, "\n",
-                         "gbif_email=", gbif_email, "\n",
-                         "gbif_pwd=", gbif_password)
+  update_lines <- paste0("GBIF_USER=", gbif_username, "\n",
+                         "GBIF_EMAIL=", gbif_email, "\n",
+                         "GBIF_PWD=", gbif_password)
   new_lines <- c(lines,
-                 paste0("gbif_user=", "'", gbif_username, "'"),
-                 paste0("gbif_email=", "'", gbif_email, "'"),
-                 paste0("gbif_pwd=", "'", gbif_password, "'"))
+                 paste0("GBIF_USER=", gbif_username),
+                 paste0("GBIF_EMAIL=", gbif_email),
+                 paste0("GBIF_PWD=", gbif_password))
 
   # Write lines
   writeLines(new_lines, renviron_path)
-
-  # Reload the .Renviron file
-  readRenviron(renviron_path)
 
   message("GBIF credentials have been processed and added/updated in your .Renviron file\n",
 "Check your .Renviron with file.edit('", normalizePath(renviron_path, winslash = "/"), "')")
