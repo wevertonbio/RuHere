@@ -65,8 +65,8 @@ fishbase_here <- function(data_dir,
   comp_list <- sp_list %>%
     dplyr::left_join(names_sp, by = "SpecCode")
 
-  data.table::fwrite(comp_list,
-                     file.path(data_dir, "fishbase/fb_species_list.gz"))
+  #data.table::fwrite(comp_list,
+  #                   file.path(data_dir, "fishbase/fb_species_list.gz"))
 
   suppressMessages(fb_country <- rfishbase::country(comp_list$Species,
                                             version = data_version))
