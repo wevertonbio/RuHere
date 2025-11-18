@@ -65,18 +65,12 @@ fishbase_here <- function(data_dir,
   comp_list <- sp_list %>%
     dplyr::left_join(names_sp, by = "SpecCode")
 
-  #data.table::fwrite(comp_list,
-  #                   file.path(data_dir, "fishbase/fb_species_list.gz"))
-
   suppressMessages(fb_country <- rfishbase::country(comp_list$Species,
                                             version = data_version))
   data.table::fwrite(fb_country,
                      file.path(data_dir, "fishbase/fb_species_country.gz"))
 
-  suppressMessages(fb_decoder <- rfishbase::c_code(version = data_version))
-  data.table::fwrite(fb_decoder,
-                     file.path(data_dir, "fishbase/fb_countries_decoder.gz"))
-
   message("Data successfully saved in ", file.path(data_dir, "fishbase"))
 
 }
+

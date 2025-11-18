@@ -48,8 +48,7 @@
 #' # You must run 'fishbase_here()' beforehand to download the necessary data
 #' # files.
 #'
-#' occ <- RuHere::occurrences
-#' occ$species <- "Thunnus thynnus"
+#' occ <- RuHere::occ_fish
 #'
 #' results <- flag_fishbase(
 #'   data_dir = "your/path/here",
@@ -116,13 +115,10 @@ flag_fishbase <- function(data_dir, occ, species = "species",
   all_species <- NULL
 
   d_country <- data.table::fread(file.path(data_dir, "fishbase/fb_species_country.gz"))
-  d_decoder <- data.table::fread(file.path(data_dir, "fishbase/fb_countries_decoder.gz"))
+  d_country$country <- tolower(d_country$country)
   all_species <- c(all_species, d_country$Species)
 
   m_country <- terra::vect(system.file("extdata/world.gpkg", package = "RuHere"))
-  decoder_map <- d_decoder[, c("C_Code", "country")]
-  decoder_map$name <- tolower(decoder_map$country)
-  decoder_map <- unique(decoder_map[, c("C_Code", "name")])
 
   d_species <- unique(all_species)
   spp_in <- intersect(unique(occ[[species]]), d_species)
@@ -150,9 +146,8 @@ flag_fishbase <- function(data_dir, occ, species = "species",
     d_i_country <- d_country[d_country$Species == i, ]
 
     if (nrow(d_i_country) > 0) {
-      sp_c_codes <- unique(d_i_country$C_Code)
-      sp_names_to_check <- decoder_map$name[decoder_map$C_Code %in% sp_c_codes]
-      m_country_sub <- m_country[m_country$name %in% sp_names_to_check, ]
+      sp_countries <- unique(d_i_country$country)
+      m_country_sub <- m_country[m_country$name %in% sp_countries, ]
 
       if (nrow(m_country_sub) > 0) {
         m_i_country <- terra::aggregate(m_country_sub)
