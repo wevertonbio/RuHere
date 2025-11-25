@@ -26,9 +26,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// kde_rcpp
+NumericVector kde_rcpp(NumericMatrix fishnet, NumericMatrix points, double bw, std::string kernel, bool scaled, double decay, NumericVector weights);
+RcppExport SEXP _RuHere_kde_rcpp(SEXP fishnetSEXP, SEXP pointsSEXP, SEXP bwSEXP, SEXP kernelSEXP, SEXP scaledSEXP, SEXP decaySEXP, SEXP weightsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type fishnet(fishnetSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type points(pointsSEXP);
+    Rcpp::traits::input_parameter< double >::type bw(bwSEXP);
+    Rcpp::traits::input_parameter< std::string >::type kernel(kernelSEXP);
+    Rcpp::traits::input_parameter< bool >::type scaled(scaledSEXP);
+    Rcpp::traits::input_parameter< double >::type decay(decaySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type weights(weightsSEXP);
+    rcpp_result_gen = Rcpp::wrap(kde_rcpp(fishnet, points, bw, kernel, scaled, decay, weights));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_RuHere_moranfast", (DL_FUNC) &_RuHere_moranfast, 5},
+    {"_RuHere_kde_rcpp", (DL_FUNC) &_RuHere_kde_rcpp, 7},
     {NULL, NULL, 0}
 };
 

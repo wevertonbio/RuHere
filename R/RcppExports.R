@@ -5,3 +5,7 @@ moranfast <- function(x, weight, scaled = FALSE, na_rm = FALSE, alternative = "t
     .Call(`_RuHere_moranfast`, x, weight, scaled, na_rm, alternative)
 }
 
+kde_rcpp <- function(fishnet, points, bw, kernel, scaled, decay, weights) {
+    .Call(`_RuHere_kde_rcpp`, fishnet, points, bw, kernel, scaled, decay, weights)
+}
+
