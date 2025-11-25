@@ -30,12 +30,14 @@ use (the corresponding data frames are available in
 columns (see \strong{Details}).}
 
 \item{extract_binomial}{(logical) whether to create a column with the
-binomial name of the species. Default is TRUE.}
+binomial name of the species. If FALSE, it will create a column "species"
+with the exact name stored in the scientificName column. Default is TRUE.}
 
-\item{binomial_from}{(character) the column name from which to extract the
-binomial name. Only applicable if \code{extract_binomial = TRUE}. If \code{metadata}
-corresponds to one of the predefined sources ('gbif', 'specieslink', 'bien',
-or 'idigbio'), predefined columns will be used automatically. Default is NULL.}
+\item{binomial_from}{(character) the column name in metadata from which to
+extract the binomial name. Only applicable if \code{extract_binomial = TRUE}.
+If \code{metadata} corresponds to one of the predefined sources ('gbif',
+specieslink', 'bien', or 'idigbio'), predefined columns will be used
+automatically. Default is "scientificName".}
 
 \item{include_subspecies}{(logical) whether to include subspecies in the
 binomial name.  Only applicable if \code{extract_binomial = TRUE}. If TRUE, the

@@ -2,7 +2,7 @@
 % Please edit documentation in R/flag_iucn.R
 \name{flag_iucn}
 \alias{flag_iucn}
-\title{Title}
+\title{Identify records outside natural ranges according to the IUCN}
 \usage{
 flag_iucn(
   data_dir,
@@ -10,15 +10,77 @@ flag_iucn(
   species = "species",
   long = "decimalLongitude",
   lat = "decimalLatitude",
-  origin = NULL,
-  presence = NULL,
-  buffer = 10,
+  origin = "native",
+  presence = "all",
+  buffer = 20,
   verbose = TRUE
 )
 }
 \arguments{
-\item{verbose}{}
+\item{data_dir}{(character) \strong{Required} directory path where the \code{IUCN}
+data is saved}
+
+\item{occ}{(data.frame or data.table) a data frame containing the occurrence
+records to be flagged. Must contain columns for species, longitude, and
+latitude.}
+
+\item{species}{(character) the name of the column in \code{occ} that contains the
+species scientific names. Default is \code{"species"}.}
+
+\item{long}{(character) the name of the column in \code{occ} that contains the
+longitude values. Default is \code{"decimalLongitude"}.}
+
+\item{lat}{(character) the name of the column in \code{occ} that contains the
+latitude values. Default is \code{"decimalLatitude"}.}
+
+\item{origin}{(character) vector specifying which origin categories should
+be considered as part of the species' range. Options are: \code{"native"},
+\code{"introduced"}, \code{"reintroduced"}, \code{"vagrant"}, \code{"origin uncertain"},
+\code{"assisted colonisation"}, and \code{"all"}. For example,
+if  \code{origin = "introduced"}, only regions where the species is considered
+introduced will be used to validate records.  Default is \code{"native"}.}
+
+\item{presence}{(character) vector specifying which presence type should
+be considered as part of the species' range. Options are: \code{"extant"},
+\code{"probably extant"}, \code{"possibly extant"}, \code{"extinct"}, \code{"possibly extinct"},
+\code{"presence uncertain"}, and \code{"all"}. For example,
+if  \code{presence = "extinct"}, only regions where the species is considered
+extinct will be used to validate records.  Default is \code{"all"}, meaning all
+regions will be considered.}
+
+\item{buffer}{(numeric) buffer distance (in kilometers) to be applied
+around the region of distribution. Default is 20 km.}
+
+\item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
+the number of species being checked. Default is \code{TRUE}.}
+}
+\value{
+A \code{data.frame} that is the original \code{occ} data frame
+augmented with a new column named \code{iucn_flag}. This column is
+logical (\code{TRUE}/\code{FALSE}) indicating whether the record falls
+within the expected distribution (plus buffer) based on the \code{IUCN}
+data. Records for species not found in the \code{IUCN} data will have
+\code{NA} in the \code{iucn_flag} column.
 }
 \description{
-Title
+Flags (validates) occurrence records based on known distribution data
+from the International Union for Conservation of Nature (IUCN) data. This
+function checks if an occurrence point for a given species falls within its
+documented distribution, allowing for user-defined buffers around the region.
+Records are flagged as valid (\code{TRUE}) if they fall inside the documented
+distribution (plus optional buffer) for the species in the IUCN dataset.
+}
+\examples{
+# Load example data
+data("occurrences", package = "RuHere")
+# Get only occurrences from Araucaria
+occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
+# Set folder where distributional datasets were saved
+# Here, just a sample provided in tha package
+# You must run 'iucn_here()' beforehand to download the necessary data files
+dataset_dir <- system.file("extdata/datasets", package = "RuHere")
+
+# Flag records using IUCN specialist information
+occ_iucn <- flag_iucn(data_dir = dataset_dir, occ = occ)
+
 }

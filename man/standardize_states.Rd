@@ -10,8 +10,8 @@ standardize_states(
   country_column = "country_suggested",
   max_distance = 0.1,
   lookup_na_state = FALSE,
-  long = NULL,
-  lat = NULL,
+  long = "decimalLongitude",
+  lat = "decimalLatitude",
   return_dictionary = TRUE
 )
 }
@@ -35,10 +35,10 @@ coordinates when the state column has missing values. If TRUE, longitude
 and latitude columns must be provided. Default is FALSE.}
 
 \item{long}{(character) column name with longitude. Only applicable if
-\code{lookup_na_state = TRUE}. Default is NULL.}
+\code{lookup_na_state = TRUE}. Default is "decimalLongitude".}
 
 \item{lat}{(character) column name with latitude. Only applicable if
-\code{lookup_na_state = TRUE}. Default is NULL.}
+\code{lookup_na_state = TRUE}. Default is "decimalLatitude".}
 
 \item{return_dictionary}{(logical) whether to return the dictionary of
 states that were (fuzzy) matched.}

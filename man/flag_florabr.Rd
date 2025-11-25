@@ -2,16 +2,33 @@
 % Please edit documentation in R/flag_florabr.R
 \name{flag_florabr}
 \alias{flag_florabr}
-\title{flag_florabr}
+\title{Identify records outside natural ranges according to Flora e Funga do Brasil}
 \usage{
-flag_florabr(dir, occ, species = "species", long = "decimalLongitude",
-lat = "decimalLatitude", verbose = TRUE, origin = NULL, by_state = TRUE,
-buffer_state = 20, by_biome = TRUE, buffer_biome = 20, by_endemism = TRUE,
-buffer_brazil = 20, state_vect = NULL, state_column = NULL, biome_vect = NULL,
-biome_column = NULL, br_vect = NULL, keep_columns = TRUE)
+flag_florabr(
+  data_dir,
+  occ,
+  species = "species",
+  long = "decimalLongitude",
+  lat = "decimalLatitude",
+  verbose = TRUE,
+  origin = NULL,
+  by_state = TRUE,
+  buffer_state = 20,
+  by_biome = TRUE,
+  buffer_biome = 20,
+  by_endemism = TRUE,
+  buffer_brazil = 20,
+  state_vect = NULL,
+  state_column = NULL,
+  biome_vect = NULL,
+  biome_column = NULL,
+  br_vect = NULL,
+  keep_columns = TRUE
+)
 }
 \arguments{
-\item{dir}{(character) directory path where the \code{florabr} data is saved \strong{Required.}}
+\item{data_dir}{(character) directory path where the \code{florabr} data is
+saved \strong{Required.}}
 
 \item{occ}{(data.frame) a data frame containing the occurrence records to be
 flagged. Must contain columns for species, longitude, and latitude.}
@@ -77,7 +94,7 @@ all original columns from \code{occ}. If \code{FALSE}, it returns only the key c
 and the flag. Default is \code{TRUE}.}
 }
 \value{
-#' A \code{data.frame} that is the original \code{occ} data frame
+A \code{data.frame} that is the original \code{occ} data frame
 augmented with a new column named \code{florabr_flag}. This column is
 logical (\code{TRUE}/\code{FALSE}) indicating whether the record falls
 within the expected distribution (plus buffer) based on the \code{florabr}
@@ -94,21 +111,16 @@ the specified range for the distribution information available in the
 \code{florabr} data.
 }
 \examples{
-\dontrun{
-# NOTE: The directory specified in 'dir' must exist and contain the florabr data
-# You must run 'florabr_here()' beforehand to download the necessary data files.
+# Load example data
+data("occurrences", package = "RuHere")
+# Get only occurrences from Araucaria
+occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
+# Set folder where distributional datasets were saved
+# Here, just a sample provided in the package
+# You must run 'florabr_here()' beforehand to download the necessary data files for your species
+dataset_dir <- system.file("extdata/datasets", package = "RuHere")
 
-occ <- RuHere::occurrences
-occ$species <- "Paubrasilia echinata"
-
-results <- flag_florabr(
-  dir = "your/path/here",
-  occ = occ,
-  species = "species",
-  long = "decimalLongitude",
-  lat = "decimalLatitude",
-  origin = "native"
-)
-}
+# Flag records using specialist information from Flora do Brasil
+occ_flora <- flag_florabr(data_dir = dataset_dir, occ = occ)
 
 }

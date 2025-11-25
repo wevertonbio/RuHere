@@ -2,13 +2,15 @@
 % Please edit documentation in R/remove_flagged.R
 \name{remove_flagged}
 \alias{remove_flagged}
-\title{Title}
+\title{Remove flagged records}
 \usage{
 remove_flagged(
   occ,
   flags = "all",
-  exceptions = NULL,
-  column_exception = NULL,
+  additional_flags = NULL,
+  force_keep = NULL,
+  force_remove = NULL,
+  column_id = "record_id",
   save_flagged = FALSE,
   output_dir = NULL,
   overwrite = FALSE,
@@ -16,8 +18,61 @@ remove_flagged(
 )
 }
 \arguments{
-\item{output_format}{}
+\item{occ}{(data.frame or data.table) a dataset with occurrence records that
+has been processed by two or more flagging functions. See details.}
+
+\item{flags}{(character) a character vector with the names of the flag
+columns to be used for filtering records. See \emph{details} for the available
+options.}
+
+\item{additional_flags}{(character) an optional named character vector with
+the names of additional logical columns to be used as flags. Default is \code{NULL}.}
+
+\item{force_keep}{(character) an optional character vector with the IDs of
+records that were flagged but should still be kept. Default is \code{NULL}.}
+
+\item{force_remove}{(character) an optional character vector with the IDs of
+records that were not flagged but should still be removed. Default is \code{NULL}.}
+
+\item{column_id}{(character) the name of the column containing unique record
+IDs. Required if \code{force_keep} or \code{force_remove} is used. Default is \code{NULL}.}
+
+\item{save_flagged}{(logical) whether to save the flagged (removed) records.
+If \code{TRUE}, an \code{output_dir} must be provided. Default is \code{FALSE}.}
+
+\item{output_dir}{(character) path to an existing directory where removed
+flagged records will be saved. Only used when \code{save_flagged = TRUE}.}
+
+\item{overwrite}{(logical)  whether to overwrite existing files in
+\code{output_dir}. Only used when \code{save_flagged = TRUE}. Default is \code{FALSE}.}
+
+\item{output_format}{(character) output format for saving removed records.
+Options are \code{".csv"} or \code{".gz"}. Only used when \code{save_flagged = TRUE}.
+Default is \code{".gz"}.}
+}
+\value{
+A \code{data.frame} containing only the valid (kept) records according to the
+flags and additional criteria.
 }
 \description{
-Title
+This function removes occurrence records flagged as invalid by one or more
+flagging functions. Additional manual control is available to force keeping
+or removing specific records, regardless of their flag values.
+}
+\examples{
+# Load example data
+data("occ_flagged", package = "RuHere")
+
+# Remove all flagged records
+occ_valid <- remove_flagged(occ = occ_flagged)
+
+# Remove flagged records and force removal of some unflagged records
+to_remove <- c("gbif_5987", "specieslink_2301", "gbif_18761")
+occ_valid2 <- remove_flagged(occ = occ_flagged,
+                             force_remove = to_remove)
+
+# Remove flagged records but keep some flagged ones
+to_keep <- c("gbif_14501", "gbif_12002", "gbif_5168")
+occ_valid3 <- remove_flagged(occ = occ_flagged,
+                            force_keep = to_keep)
 }

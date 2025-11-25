@@ -2,7 +2,7 @@
 % Please edit documentation in R/flag_fossil.R
 \name{flag_fossil}
 \alias{flag_fossil}
-\title{Flag fossil}
+\title{Flag fossil records}
 \usage{
 flag_fossil(
   occ,
@@ -11,15 +11,30 @@ flag_fossil(
 )
 }
 \arguments{
-\item{occ}{(data.frame)}
+\item{occ}{(data.frame) a data frame containing the occurrence records to be
+examined, preferably standardized using \code{format_columns()}. Must contain the
+columns specified in \code{columns}.}
 
-\item{columns}{(character)}
+\item{columns}{(character) vector of column names in \code{occ} where the function
+will search for the term \code{"fossil"} or other fossil-related expressions.
+Default is \code{c("basisOfRecord", "occurrenceRemarks")}.}
 
-\item{fossil_terms}{(character)}
+\item{fossil_terms}{(character) optional vector of additional terms that
+indicate a fossil record (e.g., \code{"paleontological"}, \code{"subfossil"}). Default
+is \code{NULL}.}
 }
 \value{
-A dataframe
+A \code{data.frame} that is the original \code{occ} data frame augmented with
+a new column named \code{fossil_flag}. Records identified as fossils receive
+\code{FALSE}, while all other records receive \code{TRUE}.
 }
 \description{
-Flag fossil
+This function identifies occurrence records that correspond to fossils,
+based on specific search terms found in selected columns.
+}
+\examples{
+# Load example data
+data("occurrences", package = "RuHere")
+# Flag fossil records
+occ_fossil <- flag_fossil(occ = occurrences)
 }

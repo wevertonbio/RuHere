@@ -2,7 +2,7 @@
 % Please edit documentation in R/available_datasets.R
 \name{available_datasets}
 \alias{available_datasets}
-\title{Title}
+\title{Check the available distribution datasets for a set of species}
 \usage{
 available_datasets(
   data_dir,
@@ -12,8 +12,51 @@ available_datasets(
 )
 }
 \arguments{
-\item{return_distribution}{}
+\item{data_dir}{(character) directory path where the datasets were saved.
+See \emph{Details} for more information.}
+
+\item{species}{(character) vector with the species names to be checked for
+the availability of distributional information.}
+
+\item{datasets}{(character) vector indicating which datasets to search.
+Options are \code{"all"}, \code{"florabr"}, \code{"wcvp"}, \code{"iucn"}, \code{"bien"}, and
+\code{"faunabr"}. Default searches all datasets.}
+
+\item{return_distribution}{(logical) whether to return the spatial objects
+(\code{SpatVector}) representing the distribution regions of the species found in
+the selected datasets. Default is \code{FALSE}.}
+}
+\value{
+If \code{return_distribution = FALSE}, a data.frame containing the species names
+and the datasets where distributional information is available.
+If \code{return_distribution = TRUE}, it also returns a list containing the
+\code{SpatVector} objects representing the species ranges.
 }
 \description{
-Title
+This function checks which datasets contain distributional information for a
+given set of species, based on expert-curated sources. It searches the
+selected datasets and reports whether each species has available distribution
+data.
+}
+\details{
+The distribution datasets can be obtained using the functions
+\code{florabr_here()}, \code{wcvp_here()}, \code{bien_here()}, and \code{faunabr_here()},
+which download and prepare the corresponding sources for use in \code{RuHere}.
+}
+\examples{
+# Set directory where datasets were saved
+# Here, we'll use the directory where the example datasets are stored
+datadir <- system.file("extdata", "datasets",  package = "RuHere")
+# Check available datasets
+d <- available_datasets(data_dir = datadir,
+                        species = c("Paubrasilia echinata",
+                                    "Handroanthus serratifolius",
+                                    "Panthera onca"))
+# Check available datasets and return distribution
+d2 <- available_datasets(data_dir = datadir,
+                         species = c("Paubrasilia echinata",
+                                     "Handroanthus serratifolius",
+                                     "Panthera onca"),
+                         return_distribution = TRUE)
+
 }

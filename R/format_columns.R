@@ -9,11 +9,13 @@
 #' `RuHere::prepared_metadata`). If a data.frame is provided, it must have 21
 #' columns (see **Details**).
 #' @param extract_binomial (logical) whether to create a column with the
-#' binomial name of the species. Default is TRUE.
-#' @param binomial_from (character) the column name from which to extract the
-#' binomial name. Only applicable if `extract_binomial = TRUE`. If `metadata`
-#' corresponds to one of the predefined sources ('gbif', 'specieslink', 'bien',
-#' or 'idigbio'), predefined columns will be used automatically. Default is NULL.
+#' binomial name of the species. If FALSE, it will create a column "species"
+#' with the exact name stored in the scientificName column. Default is TRUE.
+#' @param binomial_from (character) the column name in metadata from which to
+#' extract the binomial name. Only applicable if `extract_binomial = TRUE`.
+#' If `metadata` corresponds to one of the predefined sources ('gbif',
+#' specieslink', 'bien', or 'idigbio'), predefined columns will be used
+#' automatically. Default is "scientificName".
 #' @param include_subspecies (logical) whether to include subspecies in the
 #' binomial name.  Only applicable if `extract_binomial = TRUE`. If TRUE, the
 #' function includes any infraspecific epithet after the pattern "subsp.".
@@ -127,12 +129,14 @@ format_columns <- function(occ,
     meta_df <- metadata
 
   } else {
-    stop("'metadata' must be either a character string or a data.frame.", call. = FALSE)
+    stop("'metadata' must be either a character string or a data.frame.",
+         call. = FALSE)
   }
 
   # 3. Check extract_binomial
   if (!inherits(extract_binomial, "logical") || length(extract_binomial) != 1) {
-    stop("'extract_binomial' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+    stop("'extract_binomial' must be a single logical value (TRUE or FALSE).",
+         call. = FALSE)
   }
 
   # 4. Check binomial_from
@@ -141,6 +145,10 @@ format_columns <- function(occ,
       stop(paste0("The column specified in 'binomial_from' ('", binomial_from,
                   "') was not found in 'occ'."), call. = FALSE)
     }
+    if(!inherits(metadata, "character") && is.null(binomial_from)){
+      stop("If 'extract_binomial' is TRUE and a user-defined metadata data.frame is provided, you must specify the column to extract the binomial species name", call. = FALSE)
+    }
+
   }
 
   # 5. Check include_subspecies / include_variety
@@ -208,12 +216,21 @@ format_columns <- function(occ,
                  colnames(d))
   }
 
-  #Check occ
+  #Check columns
   c_met <- setdiff(na.omit(unlist(d[1,])), colnames(occ))
 
+  # If column is not strictly necessary, create and fill with NA
   if(length(c_met) > 0){
-    stop("The following columns are missing in occ: ",
-         paste(c_met, collapse = " | "))
+    missing_info <- d %>%
+      dplyr::select(dplyr::where(~any(. %in% c_met,
+                                             na.rm = TRUE))) %>%
+      names()
+    if(!(missing_info %in% c("scientificName", "decimalLongitude",
+                             "decimalLatitude"))){
+      occ[, c_met] <- NA
+      } else {
+        stop("The following columns are missing in occ: ",
+         paste(c_met, collapse = " | "))}
   }
 
   # Fix years
@@ -262,6 +279,8 @@ format_columns <- function(occ,
                                        include_variety = include_variety)
     }
 
+  } else {
+    species <- occ[, metadata$scientificName]
   }
 
 

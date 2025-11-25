@@ -2,7 +2,7 @@
 % Please edit documentation in R/flag_duplicates.R
 \name{flag_duplicates}
 \alias{flag_duplicates}
-\title{Title}
+\title{Flag duplicated records}
 \usage{
 flag_duplicates(
   occ,
@@ -19,8 +19,71 @@ flag_duplicates(
 )
 }
 \arguments{
-\item{raster_variable}{}
+\item{occ}{(data.frame) a data frame containing the occurrence records to be
+examined, preferably standardized using \code{format_columns()}. Must contain the
+columns specified in \code{species}, \code{long} and \code{lat} arguments.}
+
+\item{species}{(character) the name of the column containing species names.
+Default is "species".}
+
+\item{long}{(character)  the name of the column containing longitude values.
+Default is \code{"decimalLongitude"}.}
+
+\item{lat}{(character) the name of the column containing latitude values.
+Default is \code{"decimalLatitude"}.}
+
+\item{additional_groups}{(character) optional vector of additional column
+names to consider when identifying duplicates. For example, if \code{"year"} is
+included, records with the same coordinates but different collection years
+will not be flagged. Default is \code{NULL}.}
+
+\item{continuous_variable}{(character) optional name of a numeric column used
+to sort duplicated records and select one to remain unflagged. Default is
+\code{NULL}, meaning that no sorting will occur and the unflagged record will be
+selected randomly.}
+
+\item{decreasing}{(logical) whether to sort records in decreasing order using
+the \code{continuous_variable} (e.g., from most recent to oldest when the variable
+is \code{"year"}). Only applicable when \code{continuous_variable} is not \code{NULL}.
+Default is \code{TRUE}.}
+
+\item{categorical_variable}{(character) (character) optional name of a
+categorical column used to sort duplicated records and select one to remain
+unflagged. If provided, the order of priority must be specified through
+\code{priority_categories}. Default is \code{NULL}.}
+
+\item{priority_categories}{(character) vector of categories, in the desired
+order of priority, present in the column specified in \code{categorical_variable}.
+Only applicable when \code{categorical_variable} is not \code{NULL}. Default is \code{NULL}.}
+
+\item{by_cell}{(logical) whether to use raster cells instead of raw
+coordinates to identify duplicates (i.e., all records inside the same raster
+cell are treated as duplicates). If \code{TRUE}, a \code{SpatRaster} must be supplied
+in \code{raster_variable}. Default is \code{FALSE}.}
+
+\item{raster_variable}{(SpatRaster) a \code{SpatRaster} used to identify
+duplicated records by raster cell. Only applicable when \code{by_cell} is \code{TRUE}.
+Default is \code{NULL}.}
+}
+\value{
+A \code{data.frame} that is the original \code{occ} data frame augmented with
+a new column named \code{duplicated_flag}. Records identified as duplicated
+receive \code{FALSE}, while all unique retained records receive \code{TRUE}.
 }
 \description{
-Title
+This function identifies duplicated records based on species name and
+coordinates, as well as user-defined additional columns or raster cells.
+Among duplicated records, the function keeps only one unflagged record,
+chosen according to a continuous variable (e.g., keeping the most recent),
+a categorical variable (e.g., prioritizing a specific data source), or
+randomly.
+}
+\examples{
+# Load example data
+data("occurrences", package = "RuHere")
+# Duplicate some records as example
+occurrences <- rbind(occurrences, occurrences[1:100,])
+# Flag duplicates
+occ_dup <- flag_duplicates(occ = occurrences)
+sum(!occ_dup$duplicated_flag) #Number of duplicated records
 }

@@ -52,8 +52,7 @@ polygons.
 # You must run 'fishbase_here()' beforehand to download the necessary data
 # files.
 
-occ <- RuHere::occurrences
-occ$species <- "Thunnus thynnus"
+occ <- RuHere::occ_fish
 
 results <- flag_fishbase(
   data_dir = "your/path/here",

@@ -1,10 +1,4 @@
-#' @title flag_florabr
-#'
-#' @usage flag_florabr(dir, occ, species = "species", long = "decimalLongitude",
-#' lat = "decimalLatitude", verbose = TRUE, origin = NULL, by_state = TRUE,
-#' buffer_state = 20, by_biome = TRUE, buffer_biome = 20, by_endemism = TRUE,
-#' buffer_brazil = 20, state_vect = NULL, state_column = NULL, biome_vect = NULL,
-#' biome_column = NULL, br_vect = NULL, keep_columns = TRUE)
+#' Identify records outside natural ranges according to Flora e Funga do Brasil
 #'
 #' @description
 #' Flags (validates) occurrence records based on known distribution data
@@ -15,7 +9,8 @@
 #' the specified range for the distribution information available in the
 #' `florabr` data.
 #'
-#' @param dir (character) directory path where the `florabr` data is saved **Required.**
+#' @param data_dir (character) directory path where the `florabr` data is
+#' saved **Required.**
 #' @param occ (data.frame) a data frame containing the occurrence records to be
 #' flagged. Must contain columns for species, longitude, and latitude.
 #' @param species (character) the name of the column in `occ` that contains the
@@ -62,7 +57,8 @@
 #' all original columns from `occ`. If `FALSE`, it returns only the key columns
 #' and the flag. Default is `TRUE`.
 #'
-#' @return #' A \code{data.frame} that is the original \code{occ} data frame
+#' @return
+#' A \code{data.frame} that is the original \code{occ} data frame
 #' augmented with a new column named \code{florabr_flag}. This column is
 #' logical (\code{TRUE}/\code{FALSE}) indicating whether the record falls
 #' within the expected distribution (plus buffer) based on the \code{florabr}
@@ -77,24 +73,19 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # NOTE: The directory specified in 'dir' must exist and contain the florabr data
-#' # You must run 'florabr_here()' beforehand to download the necessary data files.
+#' # Load example data
+#' data("occurrences", package = "RuHere")
+#' # Get only occurrences from Araucaria
+#' occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
+#' # Set folder where distributional datasets were saved
+#' # Here, just a sample provided in the package
+#' # You must run 'florabr_here()' beforehand to download the necessary data files for your species
+#' dataset_dir <- system.file("extdata/datasets", package = "RuHere")
 #'
-#' occ <- RuHere::occurrences
-#' occ$species <- "Paubrasilia echinata"
+#' # Flag records using specialist information from Flora do Brasil
+#' occ_flora <- flag_florabr(data_dir = dataset_dir, occ = occ)
 #'
-#' results <- flag_florabr(
-#'   dir = "your/path/here",
-#'   occ = occ,
-#'   species = "species",
-#'   long = "decimalLongitude",
-#'   lat = "decimalLatitude",
-#'   origin = "native"
-#' )
-#' }
-#'
-flag_florabr <- function(dir, occ, species = "species",
+flag_florabr <- function(data_dir, occ, species = "species",
                          long = "decimalLongitude", lat = "decimalLatitude",
                          verbose = TRUE, origin = NULL,
                          by_state = TRUE, buffer_state = 20,
@@ -104,11 +95,11 @@ flag_florabr <- function(dir, occ, species = "species",
                          biome_column = NULL, br_vect = NULL,
                          keep_columns = TRUE) {
 
-  if (missing(dir) || is.null(dir)) {
-    stop("'dir' is required (must not be NULL or missing).")
+  if (missing(data_dir) || is.null(data_dir)) {
+    stop("'data_dir' is required (must not be NULL or missing).")
   }
-  if (!inherits(dir, "character")) {
-    stop("'dir' must be a character, not ", class(dir))
+  if (!inherits(data_dir, "character")) {
+    stop("'data_dir' must be a character, not ", class(data_dir))
   }
 
   if (missing(occ) || is.null(occ)) {
@@ -197,9 +188,9 @@ flag_florabr <- function(dir, occ, species = "species",
     stop("'keep_columns' must be logical, not ", class(keep_columns))
   }
 
-  # Check if dir exists
-  if(!file.exists(file.path(dir, "florabr/"))){
-    stop("Data from florabr necessary to check records is not available in ", dir,
+  # Check if data_dir exists
+  if(!file.exists(file.path(data_dir, "florabr/"))){
+    stop("Data from florabr necessary to check records is not available in ", data_dir,
          ".\nCheck the folder or run the 'florabr_here()' function")
   }
 
@@ -215,7 +206,7 @@ flag_florabr <- function(dir, occ, species = "species",
   }
 
   # Import data
-  d <- florabr::load_florabr(file.path(dir, "florabr/"), type = "complete",
+  d <- florabr::load_florabr(file.path(data_dir, "florabr/"), type = "complete",
                              verbose = FALSE)
 
   # Get species in data

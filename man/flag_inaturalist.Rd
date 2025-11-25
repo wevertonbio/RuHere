@@ -2,13 +2,50 @@
 % Please edit documentation in R/flag_inaturalist.R
 \name{flag_inaturalist}
 \alias{flag_inaturalist}
-\title{Title}
+\title{Flag occurrence records sourced from iNaturalist}
 \usage{
 flag_inaturalist(occ, columns = "datasetName", research_grade = FALSE)
 }
 \arguments{
-\item{research_grade}{}
+\item{occ}{(data.frame) a data frame containing the occurrence records to be
+examined, preferably standardized using \code{format_columns()}. Must contain the
+columns specified in \code{columns}.}
+
+\item{columns}{(character) column name in \code{occ} where the
+function will search for the term "iNaturalist". Default is "datasetName".}
+
+\item{research_grade}{(logical) whether to flag \emph{all} records from
+iNaturalist, including those with Research Grade status. Default is \code{FALSE},
+meaning that only iNaturalist records \strong{without} Research Grade will be
+flagged.}
+}
+\value{
+A \code{data.frame} that is the original \code{occ} data frame augmented with
+a new column named \code{inaturalist_flag}. Flagged records receive
+\code{FALSE}, while all other records receive \code{TRUE}.
 }
 \description{
-Title
+This function identifies and flags occurrence records sourced from
+iNaturalist. It can flag all iNaturalist records or only those that do not
+have Research Grade status.
+}
+\details{
+According to \href{https://help.inaturalist.org/en/support/solutions/articles/151000169936-what-is-the-data-quality-assessment-and-how-do-observations-qualify-to-become-research-grade-}{iNaturalist}, Observations become Research Grade when:
+\itemize{
+\item the iNaturalist community agrees on species-level ID or lower, i.e. when
+more than 2/3 of identifiers agree on a taxon;
+\item the community taxon and the observation taxon agree;
+\item or the community agrees on an ID between family and species and votes that
+the community taxon is as good as it can be.
+}
+}
+\examples{
+# Load example data
+data("occurrences", package = "RuHere")
+# Flag only iNaturalist records without Research Grade
+occ_inat <- flag_inaturalist(occ = occurrences, research_grade = FALSE)
+table(occ_inat$inaturalist_flag) # Number of records flagged (FALSE)
+# Flag all iNaturalist records (including Research Grade)
+occ_inat <- flag_inaturalist(occ = occurrences, research_grade = TRUE)
+table(occ_inat$inaturalist_flag) # Number of records flagged (FALSE)
 }

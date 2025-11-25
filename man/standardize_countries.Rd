@@ -10,8 +10,8 @@ standardize_countries(
   max_distance = 0.1,
   user_dictionary = NULL,
   lookup_na_country = FALSE,
-  long = NULL,
-  lat = NULL,
+  long = "decimalLongitude",
+  lat = "decimalLatitude",
   return_dictionary = TRUE
 )
 }
@@ -37,10 +37,10 @@ coordinates when the country column has missing values. If TRUE, longitude
 and latitude columns must be provided. Default is FALSE.}
 
 \item{long}{(character) column name with longitude. Only applicable if
-\code{lookup_na_country = TRUE}. Default is NULL.}
+\code{lookup_na_country = TRUE}. Default is "decimalLongitude".}
 
 \item{lat}{(character) column name with latitude. Only applicable if
-\code{lookup_na_country = TRUE}. Default is NULL.}
+\code{lookup_na_country = TRUE}. Default is "decimalLatitude".}
 
 \item{return_dictionary}{(logical) whether to return the dictionary of
 countries that were (fuzzy) matched.}

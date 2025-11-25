@@ -2,7 +2,7 @@
 % Please edit documentation in R/flag_cultivated.R
 \name{flag_cultivated}
 \alias{flag_cultivated}
-\title{Title}
+\title{Flag occurrence records of cultived individuals}
 \usage{
 flag_cultivated(
   occ,
@@ -12,8 +12,35 @@ flag_cultivated(
 )
 }
 \arguments{
-\item{not_cultivated_terms}{}
+\item{occ}{(data.frame) a data frame containing the occurrence records to be
+examined, preferably standardized using \code{format_columns()}. Must contain the
+columns specified in \code{columns}.}
+
+\item{columns}{columns (character) vector of column names in \code{occ} where the
+function will search for cultivated-related expressions. Default is
+\code{c("occurrenceRemarks", "habitat", "locality")}.}
+
+\item{cultivated_terms}{(character) optional vector of additional terms that
+indicate a cultivated individual. Default is NULL, meaning it will use the
+cultivated-related expressions available in \code{RuHere::cultivated$cultivated}.}
+
+\item{not_cultivated_terms}{(character) optional vector of additional terms
+that indicate a non-cultivated individual. Default is NULL, meaning it will
+use the non cultivated-related expressions available in
+\code{RuHere::cultivated$not_cultivated}.}
+}
+\value{
+A \code{data.frame} that is the original \code{occ} data frame augmented with
+a new column named \code{cultivated_flag}. Records identified as cultivated
+receive \code{FALSE}, while all other records receive \code{TRUE}.
 }
 \description{
-Title
+This function identifies records of cultivated individuals based on record
+description.
+}
+\examples{
+# Load example data
+data("occurrences", package = "RuHere")
+# Flag fossil records
+occ_cultivated <- flag_cultivated(occ = occurrences)
 }

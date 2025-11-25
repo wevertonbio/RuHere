@@ -18,9 +18,9 @@
 #' coordinates when the state column has missing values. If TRUE, longitude
 #' and latitude columns must be provided. Default is FALSE.
 #' @param long (character) column name with longitude. Only applicable if
-#' `lookup_na_state = TRUE`. Default is NULL.
+#' `lookup_na_state = TRUE`. Default is "decimalLongitude".
 #' @param lat (character) column name with latitude. Only applicable if
-#' `lookup_na_state = TRUE`. Default is NULL.
+#' `lookup_na_state = TRUE`. Default is "decimalLatitude".
 #' @param return_dictionary (logical) whether to return the dictionary of
 #' states that were (fuzzy) matched.
 #'
@@ -70,7 +70,7 @@ standardize_states <- function(occ,
                                country_column = "country_suggested",
                                max_distance = 0.1,
                                lookup_na_state = FALSE,
-                               long = NULL, lat = NULL,
+                               long = "decimalLongitude", lat = "decimalLatitude",
                                return_dictionary = TRUE){
   # ---- ARGUMENT CHECKING ----
 

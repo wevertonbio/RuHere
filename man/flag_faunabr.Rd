@@ -2,18 +2,32 @@
 % Please edit documentation in R/flag_faunabr.R
 \name{flag_faunabr}
 \alias{flag_faunabr}
-\title{flag_faunebr}
+\title{Identify records outside natural ranges according to Fauna do Brasil}
 \usage{
-flag_faunabr(dir, occ, species = "species", long = "decimalLongitude",
-lat = "decimalLatitude", verbose = TRUE, origin = NULL, by_state = TRUE,
-buffer_state = 20, by_country = TRUE, buffer_country = 20, keep_columns = TRUE,
-spat_state = NULL, spat_country = NULL)
+flag_faunabr(
+  data_dir,
+  occ,
+  species = "species",
+  long = "decimalLongitude",
+  lat = "decimalLatitude",
+  verbose = TRUE,
+  origin = NULL,
+  by_state = TRUE,
+  buffer_state = 20,
+  by_country = TRUE,
+  buffer_country = 20,
+  keep_columns = TRUE,
+  spat_state = NULL,
+  spat_country = NULL
+)
 }
 \arguments{
-\item{dir}{(character) directory path where the \code{faunabr} data is saved \strong{Required.}}
+\item{data_dir}{(character)  \strong{Required} directory path where the \code{faunabr}
+data is saved.}
 
-\item{occ}{(data.frame) a data frame containing the occurrence records to be
-flagged. Must contain columns for species, longitude, and latitude.}
+\item{occ}{(data.frame or data.table) a data frame containing the occurrence
+records to be flagged. Must contain columns for species, longitude, and
+latitude.}
 
 \item{species}{(character) the name of the column in \code{occ} that contains the
 species scientific names. Default is \code{"species"}.}
@@ -56,8 +70,9 @@ with a column called "abbrev_state" identifying the states codes.}
 
 \item{spat_country}{(SpatVector) a SpatVector of the world countries. By
 default, it uses the SpatVector provided by rnaturalearth::ne_countries. It
-can be another Spatvector, but the structure must be identical to 'faunabr::world_fauna',
-with a column called "country_code" identifying the country codes.}
+can be another Spatvector, but the structure must be identical to
+'faunabr::world_fauna', with a column called "country_code" identifying the
+country codes.}
 }
 \value{
 #' A \code{data.frame} that is the original \code{occ} data frame
@@ -77,20 +92,14 @@ within the specified range for the distribution information available in the
 \code{faunabr} data.
 }
 \examples{
-\dontrun{
-# NOTE: The directory specified in 'dir' must exist and contain the faunabr data
-# You must run 'faunabr_here()' beforehand to download the necessary data files.
-
-occ <- RuHere::occurrences
-occ$species <- "Panthera onca"
-
-results <- flag_faunabr(
-  dir = "your/path/here",
-  occ = occ,
-  species = "species",
-  long = "decimalLongitude",
-  lat = "decimalLatitude"
-)
-}
-
+# Load example data
+data("occurrences", package = "RuHere")
+# Get only occurrences from Azure Jay
+occ <- occurrences[occurrences$species == "Cyanocorax caeruleus", ]
+# Set folder where distributional datasets were saved
+# Here, just a sample provided in the package
+# You must run 'faunabr_here()' beforehand to download the necessary data files for your species
+dataset_dir <- system.file("extdata/datasets", package = "RuHere")
+# Flag records using faunabr specialist information
+occ_fauna <- flag_faunabr(data_dir = dataset_dir, occ = occ)
 }

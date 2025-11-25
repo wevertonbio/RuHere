@@ -2,9 +2,10 @@
 % Please edit documentation in R/create_metadata.R
 \name{create_metadata}
 \alias{create_metadata}
-\title{Title}
+\title{Create metadata template}
 \usage{
 create_metadata(
+  occ,
   scientificName,
   decimalLongitude,
   decimalLatitude,
@@ -29,8 +30,101 @@ create_metadata(
 )
 }
 \arguments{
-\item{key}{}
+\item{occ}{(data.frame or data.table) a dataset with occurrence records to be
+standardized.}
+
+\item{scientificName}{(character) column name in \code{occ} with the scientific
+name of the species.}
+
+\item{decimalLongitude}{(character) column name in \code{occ} with the longitude.}
+
+\item{decimalLatitude}{(character) column name in \code{occ} with the latitude.}
+
+\item{collectionCode}{(character) an optional column name in \code{occ} with the
+collection code.}
+
+\item{catalogNumber}{(character) an optional column name in \code{occ} with the
+catalog number.}
+
+\item{coordinateUncertaintyInMeters}{(character) an optional column name with
+the coordinate uncertainty in meters.}
+
+\item{elevation}{(character) an optional column name with the elevation
+information.}
+
+\item{country}{(character) an optional column name with the country of the
+record.}
+
+\item{stateProvince}{(character) an optional column name with the state or
+province of the record.}
+
+\item{municipality}{(character) an optional column name with the municipality
+of the record.}
+
+\item{locality}{(character) an optional column name with the locality
+description.}
+
+\item{year}{(character) an optional column name with the year when the
+occurrence was recorded.}
+
+\item{eventDate}{(character) an optional column name with the event date.}
+
+\item{recordedBy}{(character) an optional column name with the name of the
+collector or recorder.}
+
+\item{identifiedBy}{(character) an optional column name with the name of the
+identifier.}
+
+\item{basisOfRecord}{(character) an optional column name with the basis of
+record.}
+
+\item{occurrenceRemarks}{(character) an optional column name with remarks
+about the occurrence.}
+
+\item{habitat}{(character) an optional column name with the habitat
+description.}
+
+\item{datasetName}{(character) an optional column name with the dataset name.}
+
+\item{datasetKey}{(character) an optional column name with the dataset key.}
+
+\item{key}{(character) an optional column name with the unique occurrence
+identifier.}
+}
+\value{
+A \code{data.frame} containing a metadata template that can be directly used in
+the \code{format_columns()} function.
 }
 \description{
-Title
+This function creates a metadata template to be used in \code{format_columns()}
+for formatting and standardizing column names and classes in occurrence
+datasets.
+All column names specified as arguments must be present in the \code{occ} dataset.
+
+If you obtained data from GBIF, SpeciesLink, BIEN or iDigBio using the
+functions provided in the RuHere package, you do not need to use this
+function, as the package already includes metadata templates for these
+datasets.
+}
+\examples{
+# Load data example
+# Occurrences of Puma concolor from the atlanticr R package
+data("puma_atlanticr", package = "RuHere")
+# Create metadata to standardize the occurrences
+puma_metadata <- create_metadata(occ = puma_atlanticr,
+                                 scientificName = "actual_species_name",
+                                 decimalLongitude = "longitude",
+                                 decimalLatitude = "latitude",
+                                 elevation = "altitude",
+                                 country = "country",
+                                 stateProvince = "state",
+                                 municipality = "municipality",
+                                 locality = "study_location",
+                                 year = "year_finish",
+                                 habitat = "vegetation_type",
+                                 datasetName = "reference")
+# Now, we can use this metadata to standardize the columns
+puma_occ <- format_columns(occ = puma_atlanticr, metadata = puma_metadata,
+                           data_source = "atlanticr")
+
 }

@@ -1,9 +1,4 @@
-#' @title flag_faunebr
-#'
-#' @usage flag_faunabr(dir, occ, species = "species", long = "decimalLongitude",
-#' lat = "decimalLatitude", verbose = TRUE, origin = NULL, by_state = TRUE,
-#' buffer_state = 20, by_country = TRUE, buffer_country = 20, keep_columns = TRUE,
-#' spat_state = NULL, spat_country = NULL)
+#' Identify records outside natural ranges according to Fauna do Brasil
 #'
 #' @description
 #' Flags (validates) occurrence records based on known distribution data
@@ -14,9 +9,11 @@
 #' within the specified range for the distribution information available in the
 #' `faunabr` data.
 #'
-#' @param dir (character) directory path where the `faunabr` data is saved **Required.**
-#' @param occ (data.frame) a data frame containing the occurrence records to be
-#' flagged. Must contain columns for species, longitude, and latitude.
+#' @param data_dir (character)  **Required** directory path where the `faunabr`
+#' data is saved.
+#' @param occ (data.frame or data.table) a data frame containing the occurrence
+#' records to be flagged. Must contain columns for species, longitude, and
+#' latitude.
 #' @param species (character) the name of the column in `occ` that contains the
 #' species scientific names. Default is `"species"`.
 #' @param long (character) the name of the column in `occ` that contains the
@@ -47,8 +44,9 @@
 #' with a column called "abbrev_state" identifying the states codes.
 #' @param spat_country (SpatVector) a SpatVector of the world countries. By
 #' default, it uses the SpatVector provided by rnaturalearth::ne_countries. It
-#' can be another Spatvector, but the structure must be identical to 'faunabr::world_fauna',
-#' with a column called "country_code" identifying the country codes.
+#' can be another Spatvector, but the structure must be identical to
+#' 'faunabr::world_fauna', with a column called "country_code" identifying the
+#' country codes.
 #'
 #' @return #' A \code{data.frame} that is the original \code{occ} data frame
 #' augmented with a new column named \code{faunabr_flag}. This column is
@@ -65,41 +63,41 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # NOTE: The directory specified in 'dir' must exist and contain the faunabr data
-#' # You must run 'faunabr_here()' beforehand to download the necessary data files.
-#'
-#' occ <- RuHere::occurrences
-#' occ$species <- "Panthera onca"
-#'
-#' results <- flag_faunabr(
-#'   dir = "your/path/here",
-#'   occ = occ,
-#'   species = "species",
-#'   long = "decimalLongitude",
-#'   lat = "decimalLatitude"
-#' )
-#' }
-#'
-flag_faunabr <- function(dir, occ, species = "species",
+#' # Load example data
+#' data("occurrences", package = "RuHere")
+#' # Get only occurrences from Azure Jay
+#' occ <- occurrences[occurrences$species == "Cyanocorax caeruleus", ]
+#' # Set folder where distributional datasets were saved
+#' # Here, just a sample provided in the package
+#' # You must run 'faunabr_here()' beforehand to download the necessary data files for your species
+#' dataset_dir <- system.file("extdata/datasets", package = "RuHere")
+#' # Flag records using faunabr specialist information
+#' occ_fauna <- flag_faunabr(data_dir = dataset_dir, occ = occ)
+flag_faunabr <- function(data_dir, occ, species = "species",
                          long = "decimalLongitude", lat = "decimalLatitude",
                          verbose = TRUE, origin = NULL, by_state = TRUE,
                          buffer_state = 20, by_country = TRUE,
                          buffer_country = 20, keep_columns = TRUE,
                          spat_state = NULL, spat_country = NULL) {
 
-  if (missing(dir) || is.null(dir)) {
-    stop("'dir' is required (must not be NULL or missing).")
+
+  if (missing(data_dir) || is.null(data_dir)) {
+    stop("'data_dir' is required (must not be NULL or missing).")
   }
-  if (!inherits(dir, "character")) {
-    stop("'dir' must be a character, not ", class(dir))
+  if (!inherits(data_dir, "character")) {
+    stop("'data_dir' must be a character, not ", class(data_dir))
   }
 
   if (missing(occ) || is.null(occ)) {
     stop("'occ' should be specified (must not be NULL or missing).")
-  } else if (!inherits(occ, "data.frame")) {
-    stop("'occ' should be a data.frame, not ", class(occ))
+  } else if (!inherits(occ, c("data.frame", "data.table"))) {
+    stop("'occ' should be a data.frame or data.table, not ", class(occ))
   }
+
+  # Force occ to be a dataframe
+  if(inherits(occ, "data.table"))
+    occ <- as.data.frame(occ)
+
 
   if (!inherits(species, "character")) {
     stop("'species' should be a character, not ", class(species))
@@ -159,15 +157,11 @@ flag_faunabr <- function(dir, occ, species = "species",
     }
   }
 
-  # Check if dir exists
-  if(!file.exists(file.path(dir, "faunabr/"))){
-    stop("Data from faunabr necessary to check records is not available in ", dir,
+  # Check if data_dir exists
+  if(!file.exists(file.path(data_dir, "faunabr/"))){
+    stop("Data from faunabr necessary to check records is not available in ", data_dir,
          ".\nCheck the folder or run the 'faunabr_here()' function")
   }
-
-  # Force occ to be a dataframe
-  if(inherits(occ, "data.table"))
-    occ <- as.data.frame(occ)
 
   core_cols <- c(species, long, lat)
   if (!all(core_cols %in% names(occ))) {
@@ -176,7 +170,7 @@ flag_faunabr <- function(dir, occ, species = "species",
   }
 
   # Import data
-  d <- faunabr::load_faunabr(file.path(dir, "faunabr/"), type = "complete")
+  d <- faunabr::load_faunabr(file.path(data_dir, "faunabr/"), type = "complete")
 
   # Get species in data
   spp_in <- intersect(unique(occ[["species"]]),

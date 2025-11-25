@@ -76,6 +76,6 @@ regions.
 data_dir <- tempdir() # Here, a temporary directory
 
 # Download species distribution information from IUCN
-iucn_here(data_dir = data_dir)
+iucn_here(data_dir = data_dir, species = "Araucaria angustifolia")
 }
 }

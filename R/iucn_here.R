@@ -62,7 +62,7 @@
 #' data_dir <- tempdir() # Here, a temporary directory
 #'
 #' # Download species distribution information from IUCN
-#' iucn_here(data_dir = data_dir)
+#' iucn_here(data_dir = data_dir, species = "Araucaria angustifolia")
 #' }
 iucn_here <- function(data_dir,
                       species,
@@ -184,6 +184,23 @@ iucn_here <- function(data_dir,
   spinfo <- dplyr::distinct(data.table::rbindlist(spinfo))
 
   # Save results
+  # Check if some file exists:
+  file_exists <- file.exists(file.path(odir, "iucn_distribution.gz"))
+  if(file_exists){
+    if(!overwrite){
+      stop("IUCN dataset already exists in the '", data_dir, "'.\n",
+         "Set 'overwrite = TRUE' or change the directory specified in 'data_dir'")
+    } else {
+      warning("Appending new information to the existing IUCN dataset...")
+      #Import existing dataset
+      iucn_file <- data.table::fread(file.path(odir, "iucn_distribution.gz"))
+      #Merge and get unique results
+      spinfo <- dplyr::bind_rows(iucn_file, spinfo) %>%
+        dplyr::distinct()
+  }
+  }
+
+  # Save
   data.table::fwrite(x = spinfo,
                      file = file.path(odir, "iucn_distribution.gz"))
 

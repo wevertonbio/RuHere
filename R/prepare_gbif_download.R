@@ -108,7 +108,7 @@ prepare_gbif_download <- function(species, rank = NULL, kingdom = NULL,
 
   })
 
-  res <- as.data.frame(data.table::rbindlist(res))
+  res <- as.data.frame(data.table::rbindlist(res, fill = TRUE))
   class(res) <- c("data.frame", "gbif_info")
   return(res)
 }

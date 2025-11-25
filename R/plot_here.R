@@ -1,16 +1,23 @@
-#' Title
+#' View occurrence flags interactively or with ggplot
 #'
-#' @param occ
-#' @param flags
-#' @param show_no_flagged
-#' @param plot_with
-#' @param cex
-#' @param lwd
-#' @param col_points
-#' @param label
+#' @description
+#' This function produces an interactive os static plot of occurrence records, highlighting the flags
+#'
+#' @param occ (data.frame or data.table) a dataset with occurrence records that was passed by one or more of the flag functions. See details.
+#' @param flags (character) the flags used to color the records.
+#' @param show_no_flagged (logical) whether to show the records with no flags. Default is TRUE.
+#' @param plot_with (character)
+#' @param cex (numeric) the size of the points representing occurrences. Default is 6.
+#' @param lwd (numeric) line width of the points representing occurrences. Default is 2.
+#' @param col_points (character) a named vector with the colors of the points representing each flag. If NULL, it will use the default colors provided in (**cite object here**)
+#' @param label (character) the column name of `occ` with labels to be shown on mouseover. Default is NULL, meaning it will show the row.number of the record on mouseover.
 #'
 #' @returns
+#' If `plot_with = "mapview"`, an interactive `mapview` object.
+#' If `plot_with = "ggplot"`, a static `ggplot` object.
+#'
 #' @export
+#' @importFrom mapview mapview
 #'
 #' @examples
 plot_here <- function(occ,
@@ -35,7 +42,7 @@ plot_here <- function(occ,
                ".val", ".equ", ".zer", ".cap", ".cen", ".sea", ".urb", ".otl",
                ".gbf", ".inst", ".aohi",
                # From thin_flag
-               "thin_flag")
+               "thin_flag", "force_remove")
     flags <- intersect(flags, colnames(occ))
   }
 
@@ -62,7 +69,8 @@ plot_here <- function(occ,
                                   ".gbf",
                                   ".inst",
                                   ".aohi",
-                                  "thin_flag"),
+                                  "thin_flag",
+                                  "force_remove"),
                           new_name = c("Wrong country",
                                        "Wrong state",
                                        "Cultivated",
@@ -85,7 +93,8 @@ plot_here <- function(occ,
                                        "GBIF headquarters",
                                        "Biodiversity Institution",
                                        "Artificial Hotspot Occurrence",
-                                       "Thinned out"),
+                                       "Thinned out",
+                                       "Forcibly removed"),
                           stringsAsFactors = FALSE)
   flag_names <- stats::setNames(flag_names$new_name, flag_names$flag)
 
@@ -137,9 +146,13 @@ plot_here <- function(occ,
                     ".gbf" = "#B00068",
                     ".inst" = "firebrick",
                     ".aohi" = "#2ED9FF",
-                    "thin_flag" = "red")
+                    "thin_flag" = "red",
+                    "force_remove" = "gray25")
   }
 
+
+  # Filter maps with 0 geometries
+  occ_list <- occ_list[sapply(occ_list, function(x) length(x) > 0)]
 
   if(plot_with == "mapview"){
     # Plot first map
@@ -165,7 +178,6 @@ plot_here <- function(occ,
   return(mapa)
 
 }
-
 
 # occ = occ_iucn
 # flags = "all"
