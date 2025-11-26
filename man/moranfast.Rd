@@ -2,19 +2,79 @@
 % Please edit documentation in R/moranfast.R
 \name{moranfast}
 \alias{moranfast}
-\title{Title}
+\title{Fast Moran's I Autocorrelation Index}
 \usage{
 moranfast(
   x,
   weight,
-  na_rm = FALSE,
+  na_rm = TRUE,
   scaled = FALSE,
-  alternative = c("two.sided", "less", "greater")
+  alternative = c("two.sided")
 )
 }
 \arguments{
-\item{alternative}{}
+\item{x}{(numeric) A numeric vector (e.g., environmental values extracted
+from occurrence records).}
+
+\item{weight}{(matrix) A matrix of spatial weights (e.g., a distance or
+inverse-distance matrix). The number of rows must be equal to the length of
+\code{x}.}
+
+\item{na_rm}{(logical) whether to remove missing values from \code{x}. Default is
+\code{TRUE}.}
+
+\item{scaled}{(logical) whether to scale Moran's I so that it ranges between
+–1 and +1. Default is \code{TRUE}.}
+
+\item{alternative}{(character) The alternative hypothesis tested against
+the null hypothesis of no autocorrelation. Must be one of \code{"two.sided"},
+\code{"less"}, or \code{"greater"}. Default is \code{"two.sided"}.}
+}
+\value{
+A list with the following components:
+\itemize{
+\item \strong{observed} – The observed Moran's I.
+\item \strong{expected} – The expected value of Moran's I under the null hypothesis.
+\item \strong{sd} – The standard deviation of Moran's I under the null hypothesis.
+\item \strong{p.value} – The p-value of the test based on the chosen \code{alternative}.
+}
 }
 \description{
-Title
+This function computes Moran's I autocorrelation coefficient for a numeric
+vector \code{x} using a matrix of weights. The method follows Gittleman and Kot
+(1990). This function is an implementation of \code{ape::Moran.I()}, but rewritten
+in C++ to be substantially faster and more memory-efficient.
+}
+\examples{
+# Load example data
+data("occurrences", package = "RuHere")
+# Filter occurrences of Araucaria
+occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
+# Import environmental layers
+r <- terra::rast(system.file("extdata", "worldclim.tif",
+                             package = "RuHere"))
+# Extract values for bio_1
+bio_1 <- terra::extract(r$bio_1,
+                        occ[, c("decimalLongitude", "decimalLatitude")],
+                        ID = FALSE, xy = TRUE)
+#Remove NAs
+bio_1 <- na.omit(bio_1)
+# Convert values to numeric
+v <- as.numeric(bio_1$bio_1)
+# Compute geographic distance matrix
+d <- fields::rdist.earth(x1 = as.matrix(bio_1[, c("x", "y")]), miles = FALSE)
+# Inverse-distance weights
+d <- 1/d
+# Fill diagonal with 0
+diag(d) <- 0
+# Remove finite values
+d[is.infinite(d)] <- 0
+# Compute Moran's I
+m <- moranfast(x = v, weight = d, scale = TRUE)
+# Print results
+m
+}
+\references{
+Gittleman, J. L., & Kot, M. (1990). Adaptation: statistics and a null model
+for estimating phylogenetic effects. \emph{Systematic Zoology}, 39(3), 227–241.
 }

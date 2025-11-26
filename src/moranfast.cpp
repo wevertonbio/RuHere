@@ -4,7 +4,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List moranfast(arma::vec x, arma::mat weight, bool scaled = false, bool na_rm = false, std::string alternative = "two.sided") {
+List moranfast(arma::vec x, arma::mat weight, bool scaled = false, bool na_rm = true, std::string alternative = "two.sided") {
 
   // 1. Verificações iniciais de dimensão
   if (weight.n_rows != weight.n_cols) {

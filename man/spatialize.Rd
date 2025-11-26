@@ -2,7 +2,7 @@
 % Please edit documentation in R/spatialize.R
 \name{spatialize}
 \alias{spatialize}
-\title{Title}
+\title{Spatialize occurrence records}
 \usage{
 spatialize(
   occ,
@@ -13,8 +13,35 @@ spatialize(
 )
 }
 \arguments{
-\item{force_numeric}{}
+\item{occ}{(data.frame or data.table) a data frame containing the occurrence
+records to be flagged. Must contain columns for longitude, and latitude.}
+
+\item{long}{(character) the name of the column in \code{occ} that contains the
+longitude values. Default is \code{"decimalLongitude"}.}
+
+\item{lat}{(character) the name of the column in \code{occ} that contains the
+latitude values. Default is \code{"decimalLatitude"}.}
+
+\item{crs}{(character) the coordinate reference system in one of the
+following formats: PROJ-string notation, WKT/WKT2, or \if{html}{\out{<authority>}}:\if{html}{\out{<code>}}
+(see \code{?terra::crs}). Default is "epsg:4326".}
+
+\item{force_numeric}{(logical) whether to coerce the longitude and latitude
+columns to numeric if they are not already. Default is \code{TRUE.}}
+}
+\value{
+A \strong{SpatVector} object containing the spatialized occurrence records.
 }
 \description{
-Title
+Convert a data.frame (or data.table) of occurrence records into a
+\strong{SpatVector} object.
+}
+\examples{
+# Load example data
+data("occurrences", package = "RuHere")
+# Spatialize the occurrence records
+pts <- spatialize(occurrences)
+# Plot the resulting SpatVector
+terra::plot(pts)
+
 }

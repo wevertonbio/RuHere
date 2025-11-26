@@ -122,7 +122,8 @@ flag_duplicates <- function(occ,
   }
 
   # continuous_variable: if provided, must be character, present in occ, and numeric
-  if (!is.null(continuous_variable) && !inherits(continuous_variable, "character")) {
+  if (!is.null(continuous_variable) &&
+      !inherits(continuous_variable, "character")) {
     stop("'continuous_variable' must be a character or NULL, not ", class(continuous_variable))
   }
   if (!is.null(continuous_variable)) {
