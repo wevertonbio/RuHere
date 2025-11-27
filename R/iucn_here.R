@@ -51,7 +51,6 @@
 #'
 #' @importFrom pbapply pblapply
 #' @importFrom rredlist rl_species rl_assessment
-#' @importFrom dplyr %>% distinct mutate
 #' @importFrom data.table rbindlist fwrite
 #' @importFrom stats na.omit
 #' @export
@@ -164,9 +163,12 @@ iucn_here <- function(data_dir,
         if("locations" %in% names(assessment)){
           l <- assessment$locations
           d <- l$description$en
-          l <- l[, c("code", "origin", "presence")] %>%
-            dplyr::mutate(species = i,
-                   region = d, .before = 1)
+          l <- l[, c("code", "origin", "presence")]
+          l$species <- i
+          l$region <- d
+          l <- relocate_before(l, "species", names(l)[1])
+          l <- relocate_after(l, "region", "species")
+
         } else { #If there is no info on location
           l <- data.frame(species = i, region = NA, code = NA, origin = NA,
                           presence = NA)
@@ -181,7 +183,7 @@ iucn_here <- function(data_dir,
     return(r)
   })
 
-  spinfo <- dplyr::distinct(data.table::rbindlist(spinfo))
+  spinfo <- unique(data.table::rbindlist(spinfo))
 
   # Save results
   # Check if some file exists:
@@ -195,8 +197,7 @@ iucn_here <- function(data_dir,
       #Import existing dataset
       iucn_file <- data.table::fread(file.path(odir, "iucn_distribution.gz"))
       #Merge and get unique results
-      spinfo <- dplyr::bind_rows(iucn_file, spinfo) %>%
-        dplyr::distinct()
+      spinfo <- unique(rbind(iucn_file, spinfo))
   }
   }
 

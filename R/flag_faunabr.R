@@ -57,8 +57,7 @@
 #'
 #' @importFrom faunabr load_faunabr filter_faunabr
 #' @importFrom pbapply pblapply
-#' @importFrom dplyr filter %>% bind_rows
-#' @importFrom data.table data.table rbindlist
+#' @importFrom data.table rbindlist
 #'
 #' @export
 #'
@@ -196,7 +195,7 @@ flag_faunabr <- function(data_dir, occ, species = "species",
 
   res_flag <- pbapply::pblapply(spp_in, function(i) {
 
-    d_i <- d %>% dplyr::filter(species == i)
+    d_i <- d[d$species == i, ]
 
     if(!is.null(origin)) {
       origin <- tolower(origin)
@@ -223,13 +222,12 @@ flag_faunabr <- function(data_dir, occ, species = "species",
 
   })
 
-  res_flag <- data.table::data.table(data.table::rbindlist(res_flag)) %>%
-    as.data.frame()
+  res_flag <- as.data.frame((data.table::rbindlist(res_flag)))
 
   if (length(spp_out) > 0) {
     occ_out <- occ[occ[[species]] %in% spp_out, ]
     occ_out$faunabr_flag <- NA
-    res_flag <- dplyr::bind_rows(res_flag, occ_out)
+    res_flag <- rbind(res_flag, occ_out)
   }
 
   return(res_flag)

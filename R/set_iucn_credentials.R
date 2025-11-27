@@ -20,6 +20,9 @@
 #' @returns
 #' If `open_Renviron` is set to TRUE, it opens the .Renviron file. Otherwise,
 #' the credentials are saved silently.
+#'
+#' @importFrom utils file.edit
+#'
 #' @export
 #'
 #' @examples
@@ -81,6 +84,6 @@ set_iucn_credentials <- function(iucn_key,
           "Check your .Renviron with file.edit('", normalizePath(renviron_path, winslash = "/"), "')")
 
   if(open_Renviron){
-    file.edit(normalizePath(renviron_path, winslash = "/"))
+    utils::file.edit(normalizePath(renviron_path, winslash = "/"))
   }
 }

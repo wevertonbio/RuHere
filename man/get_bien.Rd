@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_bien.R
 \name{get_bien}
 \alias{get_bien}
-\title{get_bien}
+\title{Download occurrence records from BIEN}
 \usage{
 get_bien(by = "species", cultivated = FALSE,
 new.world = NULL, all.taxonomy = FALSE, native.status = FALSE,
@@ -62,7 +62,8 @@ Ignored otherwise. Default is \code{NULL}.}
 \item{species}{(character) species name(s) to query when \code{by = "species"}
 or \code{"records_per_species"}. Default is \code{NULL}.}
 
-\item{genus}{(character) genus name(s) to query when \code{by = "genus"}. Default is \code{NULL}.}
+\item{genus}{(character) genus name(s) to query when \code{by = "genus"}. Default
+is \code{NULL}.}
 
 \item{country}{(character) country name when \code{by = "country"}, \code{"state"},
 or \code{"county"}. Default is \code{NULL}.}
@@ -82,7 +83,8 @@ to \code{state}. Default is \code{NULL}.}
 \item{county.code}{(character) county or equivalent subdivision code
 corresponding to \code{county}. Default is \code{NULL}.}
 
-\item{family}{(character) family name(s) to query when \code{by = "family"}.  Default is \code{NULL}.}
+\item{family}{(character) family name(s) to query when \code{by = "family"}.
+Default is \code{NULL}.}
 
 \item{sf}{(object of class \code{sf}) a spatial object defining an area
 of interest when \code{by = "sf"}.  Default is \code{NULL}.}
@@ -93,7 +95,8 @@ Required if \code{save = TRUE}.}
 \item{filename}{(character) name of the output file without extension.
 Default is \code{"bien_output"}.}
 
-\item{file.format}{(character) file format for saving output (\code{"csv"}, \code{"rds"}).
+\item{file.format}{(character) file format for saving output (\code{"csv"},
+\code{"rds"}).
 Default is \code{"csv"}.}
 
 \item{compress}{(logical) if \code{TRUE} and \code{save = TRUE}, compresses the output

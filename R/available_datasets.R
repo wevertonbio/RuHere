@@ -42,14 +42,14 @@
 #' datadir <- system.file("extdata", "datasets",  package = "RuHere")
 #' # Check available datasets
 #' d <- available_datasets(data_dir = datadir,
-#'                         species = c("Paubrasilia echinata",
+#'                         species = c("Araucaria angustifolia",
 #'                                     "Handroanthus serratifolius",
-#'                                     "Panthera onca"))
+#'                                     "Cyanocorax caeruleus"))
 #' # Check available datasets and return distribution
 #' d2 <- available_datasets(data_dir = datadir,
-#'                          species = c("Paubrasilia echinata",
+#'                          species = c("Araucaria angustifolia",
 #'                                      "Handroanthus serratifolius",
-#'                                      "Panthera onca"),
+#'                                      "Cyanocorax caeruleus"),
 #'                          return_distribution = TRUE)
 #'
 available_datasets <- function(data_dir, species, datasets = "all",
@@ -77,9 +77,7 @@ available_datasets <- function(data_dir, species, datasets = "all",
   # datasets
   valid_datasets <- c("all", "florabr", "wcvp", "iucn", "bien", "faunabr")
 
-  if (missing(datasets) || is.null(datasets)) {
-    stop("'datasets' must be provided (must not be NULL or missing).")
-  } else if (!inherits(datasets, "character")) {
+  if (!inherits(datasets, "character")) {
     stop("'datasets' must be a character vector, not ", class(datasets))
   }
 
@@ -146,7 +144,8 @@ available_datasets <- function(data_dir, species, datasets = "all",
     r <- lapply(l, function(i){
 
       if(i == "bien"){
-        return(file.exists(file.path(data_dir, paste0("bien/", x, ".gpkg"))))
+        sp_bien <- gsub(" ", "_", x)
+        return(file.exists(file.path(data_dir, paste0("bien/", sp_bien, ".gpkg"))))
       }
 
       if(i == "florabr"){
@@ -181,13 +180,14 @@ available_datasets <- function(data_dir, species, datasets = "all",
   if(return_distribution){
     d_species <- lapply(species, function(x){
       #Datasets available
-      avx <- r_species$datasets[r_species == x] %>%
-        strsplit(";") %>% unlist()
+      avx <- unlist(strsplit(r_species$datasets[r_species == x], ";"))
+
       if(length(avx) > 0){
         spt <- lapply(avx, function(y){
 
           if(y == "bien"){
-            return(vect(file.path(data_dir, paste0("bien/", x, ".gpkg"))))
+            sp_bien <- gsub(" ", "_", x)
+            return(vect(file.path(data_dir, paste0("bien/", sp_bien, ".gpkg"))))
           }
 
           if(y == "florabr"){

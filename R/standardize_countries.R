@@ -44,8 +44,6 @@
 #' original country names and the suggested matches.}
 #'
 #' @importFrom florabr match_names
-#' @importFrom dplyr left_join %>% select distinct filter bind_rows all_of
-#' relocate
 #'
 #' @export
 #'
@@ -176,8 +174,11 @@ standardize_countries <- function(occ,
 
   colnames(ccn) <- c("country", "country_name", "Distance")
   # Join data
-  ccn <- dplyr::left_join(na.omit(ccn), cd$country_name, by = "country_name") %>%
-    dplyr::select(country, country_suggested) %>% dplyr::distinct()
+  ccn <- unique(
+    merge(na.omit(ccn), cd$country_name, by = "country_name", all.x = TRUE)[
+      , c("country", "country_suggested")]
+    )
+
 
   if(nrow(ccn) > 0){
     # Rename columns
@@ -186,7 +187,8 @@ standardize_countries <- function(occ,
     }
 
   # Check country codes
-  ccc <- cd$country_code %>% dplyr::filter(country_code %in% unique_countries)
+  ccc <- cd$country_code
+  ccc <- ccc[ccc$country_code %in% unique_countries, ]
 
   if(nrow(ccc) > 0){
     # Rename columns
@@ -195,18 +197,18 @@ standardize_countries <- function(occ,
     }
 
   # Join information
-  final_countries <- dplyr::bind_rows(ccn, ccc)
+  final_countries <- rbind(ccn, ccc)
 
   if(nrow(final_countries) > 0){
-  occ_final <- dplyr::left_join(occ, final_countries, by = country_column)
+  occ_final <- merge(occ, final_countries, by = country_column, all.x = TRUE)
+
   } else {
       occ_final <- occ
       occ_final$country_suggested <- NA
   }
 
   # Relocate columns
-  occ_final <- occ_final %>%
-    dplyr::relocate(country_suggested, .after = dplyr::all_of(country_column))
+  occ_final <- relocate_after(occ_final, "country_suggested", country_column)
 
   # Fill NA?
   if(lookup_na_country){
@@ -229,8 +231,7 @@ standardize_countries <- function(occ,
                                   "country_suggested" = NA) } else {
         countries_out <- NULL
       }
-      r <- dplyr::bind_rows(final_countries,
-                     countries_out)
+      r <- rbind(final_countries, countries_out)
       return(list("occ" = occ_final,
                   "report" = r))
   } else {#End of return_dictionary

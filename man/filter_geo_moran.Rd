@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter_geo_moran.R
 \name{filter_geo_moran}
 \alias{filter_geo_moran}
-\title{Title}
+\title{Select Spatially Thinned Occurrences Using Moran's I Autocorrelation}
 \usage{
 filter_geo_moran(
   occ,
@@ -10,18 +10,148 @@ filter_geo_moran(
   long = "decimalLongitude",
   lat = "decimalLatitude",
   d,
+  distance = "haversine",
   moran_summary = "mean",
+  min_records = 10,
+  min_imoran = 0.1,
   prioritary_column = NULL,
-  desc = TRUE,
-  raster_variables,
+  decreasing = TRUE,
+  env_layers,
   do_pca = FALSE,
+  mask = NULL,
   pca_buffer = 1000,
-  mask = NULL
+  return_all = FALSE
 )
 }
 \arguments{
-\item{mask}{}
+\item{occ}{(data.frame or data.table) a data frame containing the occurrence
+records for a \strong{single species}. Must contain columns for species, longitude,
+and latitude.}
+
+\item{species}{(character) the name of the column in \code{occ} that contains the
+species scientific names. Default is \code{"species"}.}
+
+\item{long}{(character) the name of the column in \code{occ} that contains the
+longitude values. Default is \code{"decimalLongitude"}.}
+
+\item{lat}{(character) the name of the column in \code{occ} that contains the
+latitude values. Default is \code{"decimalLatitude"}.}
+
+\item{d}{(numeric) vector of thinning distances in \strong{kilometers}
+(e.g., c(5, 10, 15, 20).}
+
+\item{distance}{(character) distance metric used to compute the weight matrix
+for Moran's I. One of \code{"haversine"} or \code{"euclidean"}. Default: \code{"haversine"}.}
+
+\item{moran_summary}{(character) summary statistic used to select the best
+thinning distance. One of \code{"mean"}, \code{"median"}, \code{"max"}, or \code{"min"}.
+Default: \code{"mean"}.}
+
+\item{min_records}{(numeric) minimum number of records required for a dataset
+to be considered. Default: \code{10}.}
+
+\item{min_imoran}{(numeric) minimum Moran's I required to avoid selecting
+datasets with extremely low spatial autocorrelation. Default: \code{0.1}.}
+
+\item{prioritary_column}{(character) name of a numeric columns in \code{occ}to
+define retention priority (e.g., quality score, year). See details.}
+
+\item{decreasing}{(logical) whether to sort records in decreasing order using
+the \code{prioritary_column} (e.g., from most recent to oldest when the variable
+is \code{"year"}). Only applicable when \code{prioritary_column} is not \code{NULL}.
+Default is \code{TRUE}.}
+
+\item{env_layers}{(SpatRaster) object containing environmental variables for
+computing Moran's I.}
+
+\item{do_pca}{(logical) whether environmental variables should be summarized
+using PCA before computing Moran's I. Default: \code{FALSE}. See details.}
+
+\item{mask}{(SpatVector or SpatExtent) optional spatial object to mask the \code{env_layers} before computing PCA. Only applicable if \code{do_pca = TRUE}. Default
+is NULL.}
+
+\item{pca_buffer}{(numeric) buffer width (km) used when PCA is computed from
+the convex hull of records. Ignored if \code{mask} is provided. Default: \code{1000}.}
+
+\item{return_all}{(logical) whether to return the full list of all thinned
+datasets. Default: \code{FALSE}.}
+}
+\value{
+A list with:
+\itemize{
+\item \strong{occ}: the selected thinned occurrence dataset
+\item \strong{imoran}: a table summarizing Moran's I for each thinning distance
+\item \strong{Distance}: the thinning distance that produced the selected dataset
+\item \strong{moran_summary}: the summary statistic used to select the dataset
+\item \strong{all_thined}: (optional) list of thinned datasets for all distances. Only
+returned if \code{return_all} was set to \code{TRUE}
+}
 }
 \description{
-Title
+This function evaluates multiple geographically thinned datasets (produced
+using different thinning distances) and selects the one that best balances
+\strong{low spatial autocorrelation} and \strong{number of retained records}.
+
+For each thinning distance provided in \code{d}, the function computes Moran's I
+for the selected environmental variables and summarizes autocorrelation using
+a chosen statistic (mean, median, minimum, or maximum). The best thinning
+level is then selected according to criteria described in \emph{Details}.
+
+This function is inspired by the approach used in Velazco et al. (2020), extending the procedure by allowing:
+\itemize{
+\item prioritization of records based on a user-defined variable (e.g., year)
+\item optional PCA transformation of environmental layers
+\item selection rules that prevent datasets with too few records or extremely
+low Moran's I from being chosen.
+}
+
+\strong{Procedure overview}
+\enumerate{
+\item For each distance in \code{d}, generate a spatially thinned dataset.
+\item Extract environmental values for the retained records.
+\item Compute Moran's I for each environmental variable.
+\item Summarize autocorrelation per dataset (mean, median, min, or max).
+\item Apply the selection criteria:
+\itemize{
+\item Keep only datasets with at least \code{min_records} records.
+\item Keep only datasets with Moran's I ≥ \code{min_imoran}.
+\item Round Moran's I to two decimal places and select the dataset with the
+\strong{25th lowest} autocorrelation.
+\item If more than on dataset is selected, choose the dataset retaining
+\strong{more records}.
+\item If still tied, choose the dataset with the \strong{smallest thinning distance}.
+}
+}
+
+\strong{Distance matrix for Moran's I}
+Moran's I requires a weight matrix derived from pairwise distances among
+records. Two distance types are available:
+\itemize{
+\item \code{"haversine"}: geographic distance computed with \code{fields::rdist.earth()}
+(default; recommended for longitude/latitude coordinates)
+\item \code{"euclidean"}: Euclidean distance computed with \code{stats::dist()}
+}
+
+\strong{Environmental PCA (optional)}
+If \code{do_pca = TRUE}, the environmental layers are summarized using PCA before
+Moran's I is computed.
+\itemize{
+\item If \code{mask} is provided, PCA is computed on masked layers.
+\item Otherwise, a convex hull around the records is buffered by \code{pca_buffer}
+kilometers to define the PCA area.
+\item It will select the axis that together explain more than 90\% of the
+variation.
+}
+}
+\examples{
+# Load example data
+data("occurrences", package = "RuHere")
+# Subset occurrences from Araucaria
+occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
+# Import environmental layers
+r <- terra::rast(system.file("extdata", "worldclim.tif",
+                             package = "RuHere"))
+# Select thinned occurrences
+occ_geo_moran <- filter_geo_moran(occ = occ, d = c(5, 10, 20, 30),
+                                  env_layers = r)
 }

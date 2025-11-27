@@ -30,7 +30,6 @@
 #' states extracted from coordinates.
 #'
 #' @importFrom terra vect extract
-#' @importFrom dplyr relocate all_of mutate %>%
 #' @export
 #'
 #' @examples
@@ -106,13 +105,22 @@ states_from_coords <- function(occ,
     stop("'append_source' must be a single logical value (TRUE or FALSE).", call. = FALSE)
   }
 
+  if(append_source && is.null(state_column)){
+    stop("If you set 'append_source' to TRUE, you must provide a 'state_column'")
+  }
+
+  if(append_source && from != "na_only"){
+    stop("If you set 'append_source' to TRUE, 'from' must be 'na_only'")
+  }
+
+
   # Convert to dataframe if necessary
   if(inherits(occ, "data.table"))
     occ <- as.data.frame(occ)
 
 
   # Get map of states
-  s <- terra::vect(system.file("extdata/states.gpkg", package = "RuHere"))
+  s <- terra::vect(system.file("extdata/states.shp", package = "RuHere"))
 
   # Extract
   if(from == "all"){
@@ -129,12 +137,11 @@ states_from_coords <- function(occ,
 
   #Reorder columns, if necessary
   if(state_column != output_column){
-    occ <- occ %>% dplyr::relocate(dplyr::all_of(output_column),
-                                   .after = dplyr::all_of(state_column))}
+    occ <- relocate_after(occ, output_column, state_column)}
 
   if(append_source && state_column == output_column){
-    occ <- occ %>% dplyr::mutate(state_source = NA,
-                                 .after = dplyr::all_of(output_column))
+    occ$state_source <- NA
+    occ <- relocate_after(occ, "state_source", output_column)
     to_append <- intersect(na_state, which(!is.na(occ[[output_column]])))
     occ$state_source[to_append] <- "coords"
   }

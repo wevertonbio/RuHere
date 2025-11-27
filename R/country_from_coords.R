@@ -31,7 +31,6 @@
 #' countries extracted from coordinates.
 #'
 #' @importFrom terra vect extract
-#' @importFrom dplyr relocate all_of mutate %>%
 #'
 #' @export
 #'
@@ -108,13 +107,21 @@ country_from_coords <- function(occ,
     stop("'append_source' must be a single logical value (TRUE or FALSE).", call. = FALSE)
   }
 
+  if(append_source && is.null(country_column)){
+    stop("If you set 'append_source' to TRUE, you must provide a 'country_columns'")
+  }
+
+  if(append_source && from != "na_only"){
+    stop("If you set 'append_source' to TRUE, 'from' must be 'na_only'")
+  }
+
   # Convert to dataframe if necessary
   if(inherits(occ, "data.table"))
     occ <- as.data.frame(occ)
 
 
   # Get map of world
-  w <- terra::vect(system.file("extdata/world.gpkg", package = "RuHere"))
+  w <- terra::vect(system.file("extdata/world.shp", package = "RuHere"))
 
   # Extract
   if(from == "all"){
@@ -129,14 +136,14 @@ country_from_coords <- function(occ,
                                                      c(long, lat)])[[2]]
   }
 
+
   #Reorder columns, if necessary
   if(!is.null(country_column) && country_column != output_column){
-    occ <- occ %>% dplyr::relocate(dplyr::all_of(output_column),
-                                   .after = dplyr::all_of(country_column))}
+    occ <- relocate_after(occ, output_column, country_column)}
 
   if(append_source && country_column == output_column){
-    occ <- occ %>% dplyr::mutate(country_source = NA,
-                                 .after = dplyr::all_of(output_column))
+    occ$country_source <- NA
+    occ <- relocate_after(occ, "country_source", output_column)
     to_append <- intersect(na_country, which(!is.na(occ[[output_column]])))
     occ$country_source[to_append] <- "coords"
   }

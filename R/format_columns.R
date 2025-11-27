@@ -58,7 +58,6 @@
 #' specified metadata.
 #'
 #' @importFrom florabr get_binomial
-#' @importFrom dplyr rename %>%
 #' @importFrom stringi stri_enc_detect
 #' @importFrom pbapply pbsapply
 #'
@@ -109,7 +108,8 @@ format_columns <- function(occ,
     if (!metadata %in% valid_sources) {
       stop("Invalid 'metadata' value. Must be one of: 'gbif', 'specieslink', 'bien', or 'idigbio'.", call. = FALSE)
     }
-    meta_df <- RuHere::prepared_metadata[[metadata]]
+    meta_df <- getExportedValue("RuHere", "prepared_metadata")
+    meta_df <- meta_df[[metadata]]
 
   } else if (inherits(metadata, "data.frame")) {
     # User-provided metadata
@@ -191,13 +191,13 @@ format_columns <- function(occ,
 
 
   # Convert to dataframe if necessary
-  if(inherits(occ, "data.table")){
+  if(inherits(occ, c("data.table", "tbl_df"))){
     occ <- as.data.frame(occ)}
 
 
   if(is.character(metadata)){
     prepared_d <- getExportedValue("RuHere", "prepared_metadata")
-    d <- prepared_metadata[[metadata]]
+    d <- prepared_d[[metadata]]
   } else {
     d <- meta_df
   }
@@ -221,10 +221,9 @@ format_columns <- function(occ,
 
   # If column is not strictly necessary, create and fill with NA
   if(length(c_met) > 0){
-    missing_info <- d %>%
-      dplyr::select(dplyr::where(~any(. %in% c_met,
-                                             na.rm = TRUE))) %>%
-      names()
+    missing_info <- names(d[ sapply(d, function(x) any(x %in% c_met,
+                                                       na.rm = TRUE))])
+
     if(!(missing_info %in% c("scientificName", "decimalLongitude",
                              "decimalLatitude"))){
       occ[, c_met] <- NA
@@ -236,14 +235,12 @@ format_columns <- function(occ,
   # Fix years
   if(inherits(metadata, "character")){
     if(metadata == "bien"){
-      occ$year <- as.Date(occ$date_collected, format = "%Y-%m-%d") %>%
-        format(., "%Y")
+      occ$year <- format(as.Date(occ$date_collected, format = "%Y-%m-%d"), "%Y")
       d[,"year"] <- "year"
     }
 
     if(metadata == "idigbio"){
-      occ$year <- as.Date(occ$datecollected, format = "%Y-%m-%d") %>%
-        format(., "%Y")
+      occ$year <- format(as.Date(occ$datecollected, format = "%Y-%m-%d"), "%Y")
       d[,"year"] <- "year"
     }
   }
@@ -283,8 +280,6 @@ format_columns <- function(occ,
     species <- occ[, metadata$scientificName]
   }
 
-
-
   # Rename and remove columns...
   if(verbose)
     message("Renaming columns...")
@@ -305,7 +300,9 @@ format_columns <- function(occ,
     occ[,absent_names] <- NA}
 
   # Rename columns
-  occ <- occ %>% dplyr::rename(!!!present_names) %>% as.data.frame()
+  old_names <- unlist(present_names, use.names = FALSE)
+  new_names <- names(present_names)
+  names(occ)[ match(old_names, names(occ)) ] <- new_names
 
   #Create columns with data_source
   if(is.null(data_source) & inherits(metadata, "character")){
@@ -315,7 +312,7 @@ format_columns <- function(occ,
   occ$data_source <- data_source
 
   if(extract_binomial){
-    occ <- occ %>% dplyr::mutate(species = species)
+    occ$species <- species
   }
 
   #occ2 aqui
@@ -365,7 +362,7 @@ format_columns <- function(occ,
   #Get index to fix collection code
   ind_to_fix_cc <- which(!cc_is_valid)
 
-  occ[[column]][ind_to_fix_cc] %>% unique()
+  unique(occ[[column]][ind_to_fix_cc])
 
   } #End of check encoding
   }

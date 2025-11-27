@@ -53,7 +53,6 @@
 #' @export
 #'
 #' @importFrom fields rdist.earth RdistEarth
-#' @importFrom dplyr select %>% left_join mutate
 #' @importFrom data.table rbindlist
 #'
 #' @examples
@@ -235,15 +234,12 @@ thin_geo <- function(occ,
     # --- 4. Finalization and Order Restoration ---
 
     # Select only the original ID and the calculated flag from the thinned data
-    thin_flags <- occ_thin %>%
-      dplyr::select(original_id, thin_flag)
+    thin_flags <- occ_thin[, c("original_id", "thin_flag")]
 
     # Merge the flag back to the original dataframe using the 'original_id'
-    occ_final <- occ_x %>%
-      # Use left_join to keep all rows of the original dataframe 'occ'
-      dplyr::left_join(thin_flags, by = "original_id") %>%
-      dplyr::mutate(thin_flag = ifelse(is.na(thin_flag), FALSE, thin_flag)) %>%
-      dplyr::select(-original_id)
+    occ_final <- merge(occ_x, thin_flags, by = "original_id", all.x = TRUE)
+    occ_final$thin_flag[is.na(occ_final$thin_flag)] <- FALSE
+    occ_final$original_id <- NULL
 
     return(occ_final)
   })

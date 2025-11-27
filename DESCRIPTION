@@ -8,7 +8,6 @@ Authors@R: c(
     comment = c(ORCID = "0000-0002-1884-6157")))
 Description: An R package that automatically flags common spatial errors in biological collection data using specialists' information.
 Imports:
-    dplyr (>= 1.1.4),
     Rcpp (>= 1.1.0),
     terra (>= 1.8.70),
     data.table (>= 1.17.8),
@@ -21,8 +20,10 @@ Imports:
     stringi (>= 1.8.7),
     BIEN (>= 1.2.7),
     ridigbio (>= 0.4.1),
-    CoordinateCleaner (>= 3.0.1),
-    rfishbase (>= 5.0.1)
+    fields,
+    ggplot2,
+    mapview
+Suggests: R.utils
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

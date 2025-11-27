@@ -51,8 +51,6 @@
 #'
 #' @export
 #'
-#' @importFrom dplyr group_by %>% across all_of mutate row_number ungroup
-#' arrange desc sym
 #' @importFrom terra extract
 #' @examples
 #' # Load example data
@@ -200,38 +198,49 @@ flag_duplicates <- function(occ,
     to_group <- c(to_group, additional_groups)
   }
 
-  if(is.null(continuous_variable) & is.null(categorical_variable)){
-    occ <- occ %>%
-      dplyr::group_by(dplyr::across(dplyr::all_of(to_group))) %>%
-      dplyr::mutate(duplicated_flag = (dplyr::row_number() == 1)) %>%
-      dplyr::ungroup()
+  # Check NAs
+  na_rows <- which(!stats::complete.cases(occ[to_group]))
+  if(length(na_rows) > 0){
+    na_df <- occ[na_rows, ]
+    na_df$duplicated_flag <- FALSE
+    occ <- occ[-na_rows, ]
   }
+
+  if(is.null(continuous_variable) & is.null(categorical_variable)){
+    groups <- split(seq_len(nrow(occ)), occ[to_group], drop = TRUE)
+    occ$duplicated_flag <- FALSE
+    occ$duplicated_flag[ sapply(groups, `[`, 1) ] <- TRUE
+    }
 
   if(!is.null(continuous_variable) & is.null(categorical_variable)){
-    occ <- occ %>%
-      dplyr::arrange(dplyr::desc(!!dplyr::sym(continuous_variable))) %>%
-      dplyr::group_by(dplyr::across(dplyr::all_of(to_group))) %>%
-      dplyr::mutate(duplicated_flag = (dplyr::row_number() == 1)) %>%
-      dplyr::ungroup()
-  }
+    ord <- order(occ[[continuous_variable]], decreasing = decreasing)
+    occ2 <- occ[ord, ]
+    grp <- interaction(occ2[to_group], drop = TRUE)
+    occ2$duplicated_flag <- !duplicated(grp)
+    occ2 <- occ2[order(ord), ]
+    }
 
   if(!is.null(categorical_variable) & is.null(continuous_variable)){
-    occ <- occ %>%
-      dplyr::arrange(match(!!dplyr::sym(categorical_variable),
-                           priority_categories)) %>%
-      dplyr::group_by(dplyr::across(dplyr::all_of(to_group))) %>%
-      dplyr::mutate(duplicated_flag = (dplyr::row_number() == 1)) %>%
-      dplyr::ungroup()
+    ord <- order(match(occ[[categorical_variable]], priority_categories))
+    occ2 <- occ[ord, ]
+    grp <- interaction(occ2[to_group], drop = TRUE)
+    occ2$duplicated_flag <- !duplicated(grp)
+    occ2 <- occ2[order(ord), ]
   }
 
   if(!is.null(categorical_variable) & !is.null(continuous_variable)){
-    occ <- occ %>%
-      dplyr::arrange(dplyr::desc(!!dplyr::sym(continuous_variable)),
-                     match(!!dplyr::sym(categorical_variable),
-                           priority_categories)) %>%
-      dplyr::group_by(dplyr::across(dplyr::all_of(to_group))) %>%
-      dplyr::mutate(duplicated_flag = (dplyr::row_number() == 1)) %>%
-      dplyr::ungroup()
+    ord <- order(
+      if (decreasing) -occ[[continuous_variable]] else occ[[continuous_variable]],
+      match(occ[[categorical_variable]], priority_categories)
+    )
+    occ <- occ[ord, ]
+    grp <- interaction(occ[to_group], drop = TRUE)
+    occ$duplicated_flag <- !duplicated(grp)
+
+  }
+
+  if(length(na_rows) > 0){
+   occ <- rbind(occ, na_df)
   }
 
   return(occ)

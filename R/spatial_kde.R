@@ -31,8 +31,8 @@ spatial_kde <- function(occ,
     }
 
     # Expand the extent by the bandwidth (analogous to QGIS calculateBounds)
-    adjusted_extent <- terra::convHull(pts) %>%
-      terra::buffer(width = bandwidth * 1000)
+    adjusted_extent <- terra::buffer(terra::convHull(pts),
+                                     width = bandwidth * 1000)
 
     if(!is.null(mask)){
       adjusted_extent <- terra::crop(adjusted_extent, mask)

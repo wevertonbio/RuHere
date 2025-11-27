@@ -9,7 +9,7 @@
 #' has been processed by two or more flagging functions. See details.
 #' @param flags (character) a character vector with the names of the flag
 #' columns to be used for filtering records. See *details* for the available
-#' options.
+#' options. Default is "all".
 #' @param additional_flags (character) an optional named character vector with
 #' the names of additional logical columns to be used as flags. Default is `NULL`.
 #' @param force_keep (character) an optional character vector with the IDs of
@@ -28,12 +28,17 @@
 #' Options are `".csv"` or `".gz"`. Only used when `save_flagged = TRUE`.
 #' Default is `".gz"`.
 #'
+#' @details
+#' The following flags are available: correct_country, correct_state, cultivated,
+#' fossil, inaturalist, faunabr, florabr, wcvp, iucn, duplicated, thin, .val,
+#' .equ, .zer, .cap, .cen, .sea, .urb, .otl, .gbf, .inst, and .aohi.
+#'
+#'
 #' @returns
 #' A \code{data.frame} containing only the valid (kept) records according to the
 #' flags and additional criteria.
 #'
 #' @importFrom stats setNames
-#' @importFrom dplyr filter %>% if_all all_of bind_rows
 #' @importFrom data.table fwrite
 #'
 #' @export
@@ -81,7 +86,7 @@ remove_flagged <- function(occ,
   }
 
   # if flags provided, ensure they exist in occ
-  if (!is.null(flags)) {
+  if (flags != "all") {
     missing_flags <- flags[!flags %in% names(occ)]
     if (length(missing_flags) > 0) {
       stop(
@@ -90,6 +95,15 @@ remove_flagged <- function(occ,
         call. = FALSE
       )
     }
+  }
+
+  if(flags == "all"){
+    flags <- c("correct_country", "correct_state", "florabr", "faunabr",
+               "wcvp", "iucn", "bien", "cultivated", "inaturalist",
+               "duplicated", "thin", "consensus",
+               # Froom CoordinateCleaner
+               ".val", ".equ", ".zer", ".cap", ".cen", ".sea", ".urb", ".otl",
+               ".gbf", ".inst", ".aohi")
   }
 
   # additional_flags must be NULL or a character vector
@@ -180,14 +194,7 @@ remove_flagged <- function(occ,
   }
 
 
-  if(flags == "all"){
-    flags <- c("correct_country", "correct_state", "florabr", "faunabr",
-               "wcvp", "iucn", "bien", "cultivated", "inaturalist",
-               "duplicated", "thin", "consensus",
-               # Froom CoordinateCleaner
-               ".val", ".equ", ".zer", ".cap", ".cen", ".sea", ".urb", ".otl",
-               ".gbf", ".inst", ".aohi")
-  }
+
 
   # Add _flags for some columns
   to_paste <- c("florabr", "faunabr", "wcvp", "iucn", "bien", "cultivated",
@@ -207,7 +214,7 @@ remove_flagged <- function(occ,
   }
 
   if(!is.null(force_remove)){
-    flag_names <- c(flag_names, "force_remove" = "Forcibly removed")
+    # flag_names <- c(flag_names, "force_remove" = "Forcibly removed")
     # Create columns
     occ$force_remove <- TRUE
     # Get IDs
@@ -236,12 +243,11 @@ remove_flagged <- function(occ,
 
 
   # Filter
-  occ_final <- occ %>%
-    dplyr::filter(dplyr::if_all(dplyr::all_of(flags), ~ . == TRUE))
+  occ_final <- occ[rowSums(occ[flags]) == length(flags), ]
 
   if(!is.null(force_keep)){
     if(nrow(occ_keep) > 0){
-      occ_final <- dplyr::bind_rows(occ_final, occ_keep)
+      occ_final <- rbind(occ_final, occ_keep)
     } else {
       warning("None of the IDs provided in 'force_keep' were found in the dataset.\n",
               "Keeping only unflagged records.")
@@ -261,7 +267,7 @@ remove_flagged <- function(occ,
     if(!overwrite){
       f_exists <- sapply(p, file.exists)
       if(sum(f_exists) > 0){
-        stop("Some flagged occurrences already exists in '", pasta_removidos, "'.\n",
+        stop("Some flagged occurrences already exists in '", output_dir, "'.\n",
              "Delete the file, change the folder or set 'overwrite = TRUE'")
       }
     }

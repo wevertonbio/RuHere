@@ -31,6 +31,10 @@
 #' @returns
 #' A data frame indicating whether the polygon(s) representing the species range
 #' are available in BIEN.
+#' If the range is available, a GeoPackage file (.gpkg) is saved in
+#' `data_dir/bien`. The file name corresponds to the species name, with an
+#' underscore (“_”) replacing the space between the genus and the specific
+#' epithet.
 #'
 #' @importFrom pbapply pblapply
 #' @importFrom BIEN BIEN_ranges_load_species
@@ -45,7 +49,7 @@
 #' data_dir <- tempdir() # Here, a temporary directory
 #'
 #' # Download species distribution information from BIEN
-#' bien_here(data_dir = data_dir)
+#' bien_here(data_dir = data_dir, species = "Handroanthus serratifolius")
 #' }
 bien_here <- function(data_dir,
                       species,
@@ -77,40 +81,13 @@ bien_here <- function(data_dir,
     v_i <- BIEN::BIEN_ranges_load_species(species = sp_i, fetch.query = FALSE)
     if(nrow(v_i) > 0){
       v_i <- terra::vect(v_i)
+      #Spp name can't have present spaces
+      spp_name <- gsub(" ", "_", i)
       terra::writeVector(v_i, file.path(odir,
-                                        paste0(i, ".gpkg")),
+                                        paste0(spp_name, ".gpkg")),
                          overwrite = overwrite)
       return(data.frame(species = i, range_available = TRUE))
     } else {return(data.frame(species = i, range_available = FALSE))}
   })
   return(data.table::rbindlist(res))
 }
-
-# data_dir <- "../RuHere_test/"
-# species = c("Araucaria araucana", "Araucaria angustifolia")
-# overwrite = TRUE
-# verbose = TRUE
-# bien_here(data_dir = "../RuHere_test/",
-#           species = species)
-
-
-# library(BIEN)
-# library(terra)
-#
-# l <- BIEN_ranges_list()
-#
-# a <- BIEN::BIEN_ranges_species(species = "Myrceugenia_reitzii",
-#                                directory = tempdir())
-#
-# b <- vect(file.path(tempdir(), "Myrceugenia_reitzii.shp"))
-# plot(b)
-# b
-# mapview::mapview(b)
-#
-# a <- BIEN::BIEN_ranges_load_species(species = "Araucaria_araucana")
-# class(a)
-# a <- vect(a)
-# plot(a)
-#
-# z <- vect("C:/Users/wever/Downloads/Myrceugenia_campestris_range/TP05__Myrceugenia_campestris__mean__noBias_1e.06_0_1e.06_0_all_all_none_all_maxnet_none_equalWeights.shp")
-# plot(z)

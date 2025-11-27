@@ -63,7 +63,13 @@ flag_fossil <- function(occ,
   }
 
 
-  # Combine in single vector
+  # Combine fossil terms in single vector
+  if(is.null(fossil_terms)){
+    fossil <- "fossil"
+  } else {
+    fossil <- c("fossil", fossil_terms)
+  }
+
   fossil <- paste(fossil, collapse = "|")
 
   # First, check fossil...

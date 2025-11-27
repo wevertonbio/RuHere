@@ -76,6 +76,7 @@
 #'                                  datasetName = "reference")
 #' # Now, we can use this metadata to standardize the columns
 #' puma_occ <- format_columns(occ = puma_atlanticr, metadata = puma_metadata,
+#'                            binomial_from = "actual_species_name",
 #'                            data_source = "atlanticr")
 #'
 create_metadata <- function(occ, scientificName,

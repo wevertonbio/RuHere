@@ -49,14 +49,14 @@ which download and prepare the corresponding sources for use in \code{RuHere}.
 datadir <- system.file("extdata", "datasets",  package = "RuHere")
 # Check available datasets
 d <- available_datasets(data_dir = datadir,
-                        species = c("Paubrasilia echinata",
+                        species = c("Araucaria angustifolia",
                                     "Handroanthus serratifolius",
-                                    "Panthera onca"))
+                                    "Cyanocorax caeruleus"))
 # Check available datasets and return distribution
 d2 <- available_datasets(data_dir = datadir,
-                         species = c("Paubrasilia echinata",
+                         species = c("Araucaria angustifolia",
                                      "Handroanthus serratifolius",
-                                     "Panthera onca"),
+                                     "Cyanocorax caeruleus"),
                          return_distribution = TRUE)
 
 }

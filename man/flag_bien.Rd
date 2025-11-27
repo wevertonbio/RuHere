@@ -10,8 +10,6 @@ flag_bien(
   species = "species",
   long = "decimalLongitude",
   lat = "decimalLatitude",
-  origin = NULL,
-  presence = NULL,
   buffer = 10,
   verbose = TRUE
 )

@@ -20,6 +20,7 @@
 #' If `open_Renviron` is set to TRUE, it opens the .Renviron file. Otherwise,
 #' the credentials are saved silently.
 #'
+#' @importFrom utils file.edit
 #' @export
 #'
 #' @examples
@@ -60,7 +61,7 @@ set_gbif_credentials <- function(gbif_username, gbif_email, gbif_password,
   Sys.setenv(GBIF_USER = gbif_username)
   Sys.setenv(GBIF_EMAIL = gbif_email)
   Sys.setenv(GBIF_PWD = gbif_password)
-  
+
   # Create R environment, if necessary
   if (file.exists(renviron_path)) {
     lines <- readLines(renviron_path, warn = FALSE)
@@ -101,6 +102,6 @@ set_gbif_credentials <- function(gbif_username, gbif_email, gbif_password,
 "Check your .Renviron with file.edit('", normalizePath(renviron_path, winslash = "/"), "')")
 
   if(open_Renviron){
-    file.edit(normalizePath(renviron_path, winslash = "/"))
+    utils::file.edit(normalizePath(renviron_path, winslash = "/"))
   }
 }

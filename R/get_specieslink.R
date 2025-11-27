@@ -1,43 +1,38 @@
-#' @title get_specieslink
-#'
-#' @usage get_specieslink(key = NULL, dir, filename = "specieslink_output", save = FALSE,
-#' basisOfRecord = NULL, family = NULL, species = NULL, institutionCode = NULL,
-#' collectionID = NULL, catalogNumber = NULL, kingdom = NULL, phylum = NULL,
-#' class = NULL, order = NULL, genus = NULL, specificEpithet = NULL,
-#' infraspecificEpithet = NULL, collectionCode = NULL, identifiedBy = NULL,
-#' yearIdentified = NULL, country = NULL, stateProvince = NULL, county = NULL,
-#' typeStatus = NULL, recordedBy = NULL, recordNumber = NULL,
-#' yearCollected = NULL, locality = NULL, occurrenceRemarks = NULL,
-#' barcode = NULL, bbox = NULL, landuse_1 = NULL, landuse_year_1 = NULL,
-#' landuse_2 = NULL, landuse_year_2 = NULL, phonetic = FALSE,
-#' coordinates = NULL, scope = NULL, synonyms = NULL, typus = FALSE,
-#' images = FALSE, redlist = NULL, limit = NULL, file.format = "csv",
-#' compress = FALSE)
+#' Download occurrence records from SpeciesLink
 #'
 #' @description
 #' Retrieves occurrence data from the [speciesLink](https://specieslink.net/)
 #' network using user-defined filters. The function allows querying by
 #' taxonomic, geographic, and collection-related parameters.
 #'
-#' @param key (character) API key or authentication token if required. Default is `NULL`.
+#' @param species (character) species name. Default is `NULL`.
+#' @param key (character) API key or authentication token if required. Default
+#' is `NULL`.
 #' @param dir (character) directory where files will be saved (if `save = TRUE`).
-#' @param filename (character) name of the output file without extension. Default is `"specieslink_output"`.
+#' @param filename (character) name of the output file without extension.
+#' Default is `"specieslink_output"`.
 #' @param save (logical) whether to save the results to file. Default is `FALSE`.
 #' @param basisOfRecord (character) filter by basis of record. Default is `NULL`.
 #' @param family (character) family name. Default is `NULL`.
-#' @param species (character) species name. Default is `NULL`.
-#' @param institutionCode (character) code of the institution that holds the specimen. Default is `NULL`.
-#' @param collectionID (character) unique identifier for the collection. Default is `NULL`.
-#' @param catalogNumber (character) catalog number of the specimen or record. Default is `NULL`.
+#' @param institutionCode (character) code of the institution that holds the
+#' specimen. Default is `NULL`.
+#' @param collectionID (character) unique identifier for the collection.
+#' Default is `NULL`.
+#' @param catalogNumber (character) catalog number of the specimen or record.
+#' Default is `NULL`.
 #' @param kingdom (character) kingdom name. Default is `NULL`.
 #' @param phylum (character) phylum name. Default is `NULL`.
 #' @param class (character) class name. Default is `NULL`.
 #' @param order (character) order name. Default is `NULL`.
 #' @param genus (character) genus name. Default is `NULL`.
-#' @param specificEpithet (character) specific epithet of the species. Default is `NULL`.
-#' @param infraspecificEpithet (character) infraspecific epithet. Default is `NULL`.
-#' @param collectionCode (character) code identifying the collection within an institution. Default is `NULL`.
-#' @param identifiedBy (character) name of the person who identified the specimen. Default is `NULL`.
+#' @param specificEpithet (character) specific epithet of the species. Default
+#' is `NULL`.
+#' @param infraspecificEpithet (character) infraspecific epithet. Default
+#' is `NULL`.
+#' @param collectionCode (character) code identifying the collection within an
+#' institution. Default is `NULL`.
+#' @param identifiedBy (character) name of the person who identified the
+#' specimen. Default is `NULL`.
 #' @param yearIdentified (numeric) year of identification. Default is `NULL`.
 #' @param country (character) country name. Default is `NULL`.
 #' @param stateProvince (character) state or province name. Default is `NULL`.
@@ -49,7 +44,8 @@
 #' @param locality (character) locality description. Default is `NULL`.
 #' @param occurrenceRemarks (character) text field for remarks about the
 #' occurrence. Default is `NULL`.
-#' @param barcode (character) barcode or unique specimen identifier. Default is `NULL`.
+#' @param barcode (character) barcode or unique specimen identifier. Default is
+#' `NULL`.
 #' @param bbox (character) bounding box coordinates in the format
 #' `"lon_min+lat_min+lon_max+lat_max"`. Default is `NULL`.
 #' @param landuse_1 (character) land use category for the first year.
@@ -63,18 +59,25 @@
 #' @param phonetic (logical) whether to use phonetic matching for taxon names.
 #' Default is `FALSE`.
 #' @param coordinates (character) whether to include only records with
-#' geographic coordinates (`"yes"`, `"no"`, `"original"`, `"automatic"`, `"blocked"`, `"consistent"`, `"suspect"`)). Default is `NULL`.
-#' @param scope (character) scope of the query (`"p"`, `"a"`, `"m"`, `"f"`, `"b"`).
+#' geographic coordinates (`"yes"`, `"no"`, `"original"`, `"automatic"`,
+#' `"blocked"`, `"consistent"`, `"suspect"`)). Default is `NULL`.
+#' @param scope (character) scope of the query (`"p"`, `"a"`, `"m"`, `"f"`,
+#' `"b"`).
 #' Default is `NULL`.
 #' @param synonyms (chacarter) whether to include synonyms of the specified
-#' taxon (`"sp2000"`, `"flora2020"`, `"MycoBank"`, `"algaebase"`, `"DSMZ"`, `"moure"`).
+#' taxon (`"sp2000"`, `"flora2020"`, `"MycoBank"`, `"algaebase"`, `"DSMZ"`,
+#' `"moure"`).
 #' Default is `NULL`.
-#' @param typus (logical) whether to filter only type specimens. Default is `FALSE`.
+#' @param typus (logical) whether to filter only type specimens. Default is
+#' `FALSE`.
 #' @param images (logical) whether to restrict to records with associated
 #' images. Default is `FALSE`.
-#' @param redlist (character) filter by IUCN Red List category. Default is `NULL`.
-#' @param limit (numeric) maximum number of records to return. Default is `NULL`.
-#' @param file.format (character) file format for saving output (`"csv"`, `"rds"`).
+#' @param redlist (character) filter by IUCN Red List category. Default is
+#' `NULL`.
+#' @param limit (numeric) maximum number of records to return. Default is
+#' `NULL`.
+#' @param file.format (character) file format for saving output (`"csv"`,
+#' `"rds"`).
 #' Default is `"csv"`.
 #' @param compress (logical) whether to compress the output file into `.zip`.
 #' Default is `FALSE`.
@@ -85,9 +88,9 @@
 #' set_specieslink_credentials("your_api_key")
 #' }
 #'
-#' @return A \code{data.frame} containing the occurrence data fields returned by speciesLink.
+#' @return A \code{data.frame} containing the occurrence data fields returned
+#' by speciesLink.
 #'
-#' @importFrom dplyr bind_rows
 #' @importFrom jsonlite fromJSON
 #' @importFrom data.table fwrite
 #'
@@ -118,9 +121,10 @@
 #' )
 #' }
 #'
-get_specieslink <- function (key = NULL, dir, filename = "specieslink_output",
+get_specieslink <- function(species = NULL, key = NULL, dir,
+                            filename = "specieslink_output",
                             save = FALSE, basisOfRecord = NULL, family = NULL,
-                            species = NULL, institutionCode = NULL,
+                            institutionCode = NULL,
                             collectionID = NULL, catalogNumber = NULL,
                             kingdom = NULL, phylum = NULL, class = NULL,
                             order = NULL, genus = NULL, specificEpithet = NULL,
@@ -562,7 +566,7 @@ get_specieslink <- function (key = NULL, dir, filename = "specieslink_output",
     df_lim <- lapply(list_urls,
                      function(x) jsonlite::fromJSON(x)$features$properties)
 
-    df <- dplyr::bind_rows(df_lim)
+    df <- do.call("rbind", df_lim)
   } else {
     df <- df_json$features$properties
   }

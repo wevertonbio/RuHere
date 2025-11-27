@@ -26,6 +26,10 @@ See details for more information.}
 \value{
 A data frame indicating whether the polygon(s) representing the species range
 are available in BIEN.
+If the range is available, a GeoPackage file (.gpkg) is saved in
+\code{data_dir/bien}. The file name corresponds to the species name, with an
+underscore (“_”) replacing the space between the genus and the specific
+epithet.
 }
 \description{
 This function downloads distribution information from the BIEN database,
@@ -48,6 +52,6 @@ the second. See \code{RuHere::synonys} for an example.
 data_dir <- tempdir() # Here, a temporary directory
 
 # Download species distribution information from BIEN
-bien_here(data_dir = data_dir)
+bien_here(data_dir = data_dir, species = "Handroanthus serratifolius")
 }
 }

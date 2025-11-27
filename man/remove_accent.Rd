@@ -10,7 +10,7 @@ remove_accent(s)
 \item{s}{(character) a character vector containing the strings to process.}
 }
 \value{
-A vector string without accents or special characters
+A vector string without accents or special characters.
 }
 \description{
 This function removes accents and replaces special characters from strings,

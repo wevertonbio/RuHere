@@ -23,7 +23,7 @@ has been processed by two or more flagging functions. See details.}
 
 \item{flags}{(character) a character vector with the names of the flag
 columns to be used for filtering records. See \emph{details} for the available
-options.}
+options. Default is "all".}
 
 \item{additional_flags}{(character) an optional named character vector with
 the names of additional logical columns to be used as flags. Default is \code{NULL}.}
@@ -58,6 +58,11 @@ flags and additional criteria.
 This function removes occurrence records flagged as invalid by one or more
 flagging functions. Additional manual control is available to force keeping
 or removing specific records, regardless of their flag values.
+}
+\details{
+The following flags are available: correct_country, correct_state, cultivated,
+fossil, inaturalist, faunabr, florabr, wcvp, iucn, duplicated, thin, .val,
+.equ, .zer, .cap, .cen, .sea, .urb, .otl, .gbf, .inst, and .aohi.
 }
 \examples{
 # Load example data

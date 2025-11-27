@@ -30,6 +30,8 @@
 #'
 #' @importFrom terra extract
 #'
+#' @export
+#'
 #' @examples
 #' # Load example data
 #' data("occurrences", package = "RuHere")

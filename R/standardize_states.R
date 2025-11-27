@@ -41,8 +41,6 @@
 #' original state names and the suggested matches.}
 #'
 #' @importFrom florabr match_names
-#' @importFrom dplyr left_join %>% select distinct filter bind_rows all_of
-#' relocate semi_join
 #' @export
 #'
 #' @examples
@@ -156,15 +154,16 @@ standardize_states <- function(occ,
   occ[[state_column]][occ[[state_column]] == ""] <- NA
 
   # Check state names
-  unique_states <- distinct(occ[, c(state_column, country_column)])
+  unique_states <- unique(occ[, c(state_column, country_column)])
 
   ccn <- florabr::match_names(species = na.omit(unique_states[[state_column]]),
                                species_to_match = ss$states_name$state_name,
                                max_distance = max_distance)
   colnames(ccn) <- c("state", "state_name", "Distance")
   # Join data
-  ccn <- dplyr::left_join(na.omit(ccn), ss$states_name, by = "state_name") %>%
-    dplyr::select(state, state_suggested, country) %>% dplyr::distinct()
+  ccn <-merge(na.omit(ccn), ss$states_name, by = "state_name", all.x = TRUE)
+  ccn <- unique(ccn[, c("state", "state_suggested", "country")])
+
 
   if(nrow(ccn) > 0){
     # Rename columns
@@ -175,11 +174,14 @@ standardize_states <- function(occ,
   # Check state codes
   colnames(ss$states_code) <- c("state_code", state_column, country_column)
 
-  ccc <- ss$states_code %>% dplyr::filter(state_code %in% unique_states)
+  ccc <- ss$states_code
+  ccc <- ccc[ccc$state_code %in% unique_states, ]
 
-  ccc <- ss$states_code %>%
-    dplyr::semi_join(unique_states,
-              by = c(all_of(state_column), all_of(country_column)))
+  ccc <- ss$states_code[
+    ss$states_code[[state_column]]   %in% unique_states[[state_column]] &
+      ss$states_code[[country_column]] %in% unique_states[[country_column]],
+  ]
+
 
   if(nrow(ccc) > 0){
     # Rename columns
@@ -188,12 +190,13 @@ standardize_states <- function(occ,
     }
 
   # Join information
-  final_states <- dplyr::bind_rows(ccn, ccc)
+  final_states <- rbind(ccn, ccc)
 
   if(nrow(final_states) > 0){
-    occ_final <- dplyr::left_join(occ, final_states,
-                           by = c(state_column, country_column)) %>%
-      dplyr::relocate(state_suggested, .after = state_column)} else {
+    occ_final <- merge(occ, final_states, by = c(state_column, country_column),
+                       all.x = TRUE)
+    occ_final <- relocate_after(occ_final, "state_suggested", state_column)
+    } else {
         occ_final <- occ
       }
 
@@ -218,8 +221,7 @@ standardize_states <- function(occ,
       states_out$state_suggested <- NA } else {
         states_out <- NULL
         }
-    r <- dplyr::bind_rows(final_states,
-                          states_out)
+    r <- rbind(final_states, states_out)
     return(list("occ" = occ_final,
                 "report" = r))
   } else {#End of return_dictionary

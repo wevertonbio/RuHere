@@ -52,7 +52,7 @@ be corrected.
 }
 \description{
 This function identifies and correct inverted and transposed coordinates
-based on state information
+based on state information.
 }
 \details{
 The function checks and corrects coordinate errors in occurrence records
@@ -84,9 +84,10 @@ identify and fix common coordinate errors.
 \examples{
 # Load example data
 data("occurrences", package = "RuHere") # Import example data
-
+# Subset records of Araucaria
+occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
 # Standardize country names
-occ_country <- standardize_countries(occ = occurrences,
+occ_country <- standardize_countries(occ = occ,
                                      return_dictionary = FALSE)
 
 # Standardize state names

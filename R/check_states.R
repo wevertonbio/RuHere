@@ -21,7 +21,6 @@
 #' metadata (`TRUE`) or not (`FALSE`).
 #'
 #' @importFrom terra vect aggregate buffer is.related
-#' @importFrom dplyr distinct left_join relocate all_of %>%
 #' @importFrom pbapply pbsapply
 #'
 #' @export
@@ -50,7 +49,7 @@ check_states <- function(occ,
   states <- unique(occ[[state_column]])
 
   #Get shapefile with states
-  state_shp <- terra::vect(system.file("extdata/states.gpkg",
+  state_shp <- terra::vect(system.file("extdata/states.shp",
                                          package = "RuHere"))
   #Intersect with available states to test
   states_in <- intersect(states, state_shp$name)
@@ -70,7 +69,7 @@ check_states <- function(occ,
     occ <- as.data.frame(occ)}
 
   #Get unique coordinates
-  unique_xy <- occ[,c(long, lat, state_column)] %>% dplyr::distinct()
+  unique_xy <- unique(occ[,c(long, lat, state_column)])
   # Spatialize
   dc <- terra::vect(unique_xy,
                     geom = c(x = long, y = lat),
@@ -99,9 +98,15 @@ check_states <- function(occ,
   unique_xy[as.numeric(names(test_state)), "correct_state"] <- test_state
 
   #Merge occ again
-  occ <- dplyr::left_join(occ, unique_xy, by = c(long, lat, state_column)) %>%
-    dplyr::relocate(correct_state,
-                    .after = dplyr::all_of(state_column))
+  #Merge occ again
+  occ <- merge(occ, unique_xy, by = c(long, lat, state_column), all.x = TRUE,
+               sort = FALSE)
+  # Relocate
+  nm <- names(occ)
+  i <- match(state_column, nm)
+  j <- match("correct_state", nm)
+  new_order <- append(nm[-j], nm[j], after = i)
+  occ <- occ[, new_order]
 
   if(verbose){
     message(sum(!occ$correct_state, na.rm = TRUE), " records fall in wrong states")
@@ -109,7 +114,7 @@ check_states <- function(occ,
 
   if(try_to_fix){
     occ <- fix_states(occ, long, lat, state_column,
-                         correct_state = "correct_state", distance, verbose)
+                      correct_state = "correct_state", distance, verbose)
     occ$correct_state[occ$state_issues != "incorrect"] <- TRUE
   }
 

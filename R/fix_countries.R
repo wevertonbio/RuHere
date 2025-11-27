@@ -60,7 +60,6 @@
 #'
 #' @importFrom terra vect buffer is.related
 #' @importFrom pbapply pbsapply
-#' @importFrom dplyr bind_rows %>% filter relocate all_of
 #'
 #' @export
 #'
@@ -157,20 +156,20 @@ fix_countries <- function(occ,
 
 
   #Convert to data.frame if necessary
-  if(inherits(occ, "data.table")){
+  if(inherits(occ, c("data.table", "tbl_df"))){
     occ <- as.data.frame(occ)}
 
   #Subset occ
-  occ_correct <- occ %>%
-    filter(.data[[correct_country]] | is.na(.data[[correct_country]]))
-  occ_incorrect <- occ %>% filter(!.data[[correct_country]])
+  filter_column <- occ[[correct_country]]
+  occ_correct <- occ[filter_column | is.na(filter_column), ]
+  occ_incorrect <- occ[!filter_column & !is.na(filter_column), ]
 
   #Create columns to identify problems
   occ_correct[["country_issues"]] <- "correct"
   occ_incorrect[["country_issues"]] <- "incorrect"
 
   #Get shapefile with countries
-  country_shp <- terra::vect(system.file("extdata/world.gpkg",
+  country_shp <- terra::vect(system.file("extdata/world.shp",
                                          package = "RuHere"))
 
   #Get all countries
@@ -178,7 +177,7 @@ fix_countries <- function(occ,
 
   ####1 - Inverted signal of longitude####
   d1 <- occ_incorrect[,c(long,lat, country_column)]
-  countries_1 <- base::intersect(unique(d1[,country_column]), all_countries)
+  countries_1 <- base::intersect(unique(d1[[country_column]]), all_countries)
 
   d1[, long] <- - d1[,long]
   d1 <- terra::vect(d1,
@@ -214,11 +213,10 @@ fix_countries <- function(occ,
     occ_incorrect[, "country_issues"] == "correct"] <- "inverted_long"
 
   #Update correct and incorrect occ
-  occ_correct <- dplyr::bind_rows(occ_correct,
-                                  occ_incorrect %>%
-                                    filter(country_issues != "incorrect"))
-  occ_incorrect <- occ_incorrect %>%
-    dplyr::filter(country_issues == "incorrect")
+  occ_correct <- rbind(occ_correct,
+                       occ_incorrect[occ_incorrect$country_issues != "incorrect", ])
+  occ_incorrect <- occ_incorrect[occ_incorrect$country_issues == "incorrect",]
+
 
   ####2 - Inverted signal of latitude ####
   if(nrow(occ_incorrect) > 0) {
@@ -258,11 +256,9 @@ fix_countries <- function(occ,
       occ_incorrect[, "country_issues"] == "correct"] <- "inverted_lat"
 
     #Update correct and incorrect occ
-    occ_correct <- dplyr::bind_rows(occ_correct,
-                                    occ_incorrect %>%
-                                      filter(country_issues != "incorrect"))
-    occ_incorrect <- occ_incorrect %>%
-      dplyr::filter(country_issues == "incorrect")
+    occ_correct <- rbind(occ_correct,
+                         occ_incorrect[occ_incorrect$country_issues != "incorrect", ])
+    occ_incorrect <- occ_incorrect[occ_incorrect$country_issues == "incorrect",]
   }
 
   ####3 - Inverted signal of longitude and latitude ####
@@ -308,11 +304,9 @@ fix_countries <- function(occ,
       occ_incorrect[, "country_issues"] == "correct"] <- "inverted_long_lat"
 
     #Update correct and incorrect occ
-    occ_correct <- dplyr::bind_rows(occ_correct,
-                                    occ_incorrect %>%
-                                      filter(country_issues != "incorrect"))
-    occ_incorrect <- occ_incorrect %>%
-      dplyr::filter(country_issues == "incorrect")
+    occ_correct <- rbind(occ_correct,
+                         occ_incorrect[occ_incorrect$country_issues != "incorrect", ])
+    occ_incorrect <- occ_incorrect[occ_incorrect$country_issues == "incorrect",]
   }
 
   ####4 - Swap longitude and latitude ####
@@ -356,11 +350,9 @@ fix_countries <- function(occ,
       occ_incorrect[, "country_issues"] == "correct"] <- "swapped_long_lat"
 
     #Update correct and incorrect occ
-    occ_correct <- dplyr::bind_rows(occ_correct,
-                                    occ_incorrect %>%
-                                      filter(country_issues != "incorrect"))
-    occ_incorrect <- occ_incorrect %>%
-      dplyr::filter(country_issues == "incorrect")
+    occ_correct <- rbind(occ_correct,
+                         occ_incorrect[occ_incorrect$country_issues != "incorrect", ])
+    occ_incorrect <- occ_incorrect[occ_incorrect$country_issues == "incorrect",]
   }
 
   ####5 - Swap longitude and latitude, with latitude inverted ####
@@ -406,11 +398,9 @@ fix_countries <- function(occ,
       occ_incorrect[, "country_issues"] == "correct"] <- "swapped_and_inverted_lat"
 
     #Update correct and incorrect occ
-    occ_correct <- dplyr::bind_rows(occ_correct,
-                                    occ_incorrect %>%
-                                      filter(country_issues != "incorrect"))
-    occ_incorrect <- occ_incorrect %>%
-      dplyr::filter(country_issues == "incorrect")
+    occ_correct <- rbind(occ_correct,
+                         occ_incorrect[occ_incorrect$country_issues != "incorrect", ])
+    occ_incorrect <- occ_incorrect[occ_incorrect$country_issues == "incorrect",]
     }
 
   ####6 - Swap longitude and latitude, with longitude inverted ####
@@ -456,11 +446,9 @@ fix_countries <- function(occ,
       occ_incorrect[, "country_issues"] == "correct"] <- "swapped_and_inverted_long"
 
     #Update correct and incorrect occ
-    occ_correct <- dplyr::bind_rows(occ_correct,
-                                    occ_incorrect %>%
-                                      filter(country_issues != "incorrect"))
-    occ_incorrect <- occ_incorrect %>%
-      dplyr::filter(country_issues == "incorrect")
+    occ_correct <- rbind(occ_correct,
+                         occ_incorrect[occ_incorrect$country_issues != "incorrect", ])
+    occ_incorrect <- occ_incorrect[occ_incorrect$country_issues == "incorrect",]
   }
 
   ####7 - Swap longitude and latitude, with latitude and longitude inverted ####
@@ -506,23 +494,27 @@ fix_countries <- function(occ,
       occ_incorrect[, "country_issues"] == "correct"] <- "swapped_and_inverted_long_lat"
 
     #Update correct and incorrect occ
-    occ_correct <- dplyr::bind_rows(occ_correct,
-                                    occ_incorrect %>%
-                                      filter(country_issues != "incorrect"))
-    occ_incorrect <- occ_incorrect %>%
-      dplyr::filter(country_issues == "incorrect")
+    occ_correct <- rbind(occ_correct,
+                         occ_incorrect[occ_incorrect$country_issues != "incorrect", ])
+    occ_incorrect <- occ_incorrect[occ_incorrect$country_issues == "incorrect",]
   }
 
   #Final occset
   if(nrow(occ_incorrect) == 0) {
     occ <- occ_correct
   } else {
-    occ <- bind_rows(occ_correct, occ_incorrect)
+    occ <- rbind(occ_correct, occ_incorrect)
   }
 
   # Reorder columns
-  occ <- occ %>% dplyr::relocate(country_issues,
-                                 .after = dplyr::all_of(correct_country))
+  others <- setdiff(names(occ), "country_issues")
+
+  # rebuild order:
+  ref_pos <- match(correct_country, others)
+
+  new_names <- append(others, "country_issues", after = ref_pos)
+
+  occ <- occ[, new_names]
 
   return(occ)
 }

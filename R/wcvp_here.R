@@ -20,6 +20,10 @@
 #' @returns
 #' A message indicating that the data were successfully saved in the directory
 #' specified by `data_dir`.
+#'
+#' @importFrom utils download.file unzip
+#' @importFrom data.table fread fwrite
+#'
 #' @export
 #'
 #' @examples
@@ -91,10 +95,12 @@ wcvp_here <- function(data_dir,
   wcp_dist <- data.table::fread(file.path(odir, "wcvp_distribution.csv"),
                                 select = c("plant_name_id", "area_code_l3",
                                            "introduced", "extinct",
-                                           "location_doubtful")) %>% distinct()
+                                           "location_doubtful"),
+                                data.table = FALSE)
+  wcvp_dist <- unique(wcp_dist)
   colnames(wcp_dist)[2] <- "LEVEL3_COD"
-  wcp <- left_join(wcp_names, wcp_dist, by = "plant_name_id") %>% na.omit() %>%
-    dplyr::select(-plant_name_id)
+  wcp <- na.omit(merge(wcp_names, wcp_dist, by = "plant_name_id", all.x = TRUE))
+  wcp$plant_name_id <- NULL
 
   # Save results
   data.table::fwrite(wcp,

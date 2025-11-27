@@ -2,28 +2,66 @@
 % Please edit documentation in R/get_specieslink.R
 \name{get_specieslink}
 \alias{get_specieslink}
-\title{get_specieslink}
+\title{Download occurrence records from SpeciesLink}
 \usage{
-get_specieslink(key = NULL, dir, filename = "specieslink_output", save = FALSE,
-basisOfRecord = NULL, family = NULL, species = NULL, institutionCode = NULL,
-collectionID = NULL, catalogNumber = NULL, kingdom = NULL, phylum = NULL,
-class = NULL, order = NULL, genus = NULL, specificEpithet = NULL,
-infraspecificEpithet = NULL, collectionCode = NULL, identifiedBy = NULL,
-yearIdentified = NULL, country = NULL, stateProvince = NULL, county = NULL,
-typeStatus = NULL, recordedBy = NULL, recordNumber = NULL,
-yearCollected = NULL, locality = NULL, occurrenceRemarks = NULL,
-barcode = NULL, bbox = NULL, landuse_1 = NULL, landuse_year_1 = NULL,
-landuse_2 = NULL, landuse_year_2 = NULL, phonetic = FALSE,
-coordinates = NULL, scope = NULL, synonyms = NULL, typus = FALSE,
-images = FALSE, redlist = NULL, limit = NULL, file.format = "csv",
-compress = FALSE)
+get_specieslink(
+  species = NULL,
+  key = NULL,
+  dir,
+  filename = "specieslink_output",
+  save = FALSE,
+  basisOfRecord = NULL,
+  family = NULL,
+  institutionCode = NULL,
+  collectionID = NULL,
+  catalogNumber = NULL,
+  kingdom = NULL,
+  phylum = NULL,
+  class = NULL,
+  order = NULL,
+  genus = NULL,
+  specificEpithet = NULL,
+  infraspecificEpithet = NULL,
+  collectionCode = NULL,
+  identifiedBy = NULL,
+  yearIdentified = NULL,
+  country = NULL,
+  stateProvince = NULL,
+  county = NULL,
+  typeStatus = NULL,
+  recordedBy = NULL,
+  recordNumber = NULL,
+  yearCollected = NULL,
+  locality = NULL,
+  occurrenceRemarks = NULL,
+  barcode = NULL,
+  bbox = NULL,
+  landuse_1 = NULL,
+  landuse_year_1 = NULL,
+  landuse_2 = NULL,
+  landuse_year_2 = NULL,
+  phonetic = FALSE,
+  coordinates = NULL,
+  scope = NULL,
+  synonyms = NULL,
+  typus = FALSE,
+  images = FALSE,
+  redlist = NULL,
+  limit = NULL,
+  file.format = "csv",
+  compress = FALSE
+)
 }
 \arguments{
-\item{key}{(character) API key or authentication token if required. Default is \code{NULL}.}
+\item{species}{(character) species name. Default is \code{NULL}.}
+
+\item{key}{(character) API key or authentication token if required. Default
+is \code{NULL}.}
 
 \item{dir}{(character) directory where files will be saved (if \code{save = TRUE}).}
 
-\item{filename}{(character) name of the output file without extension. Default is \code{"specieslink_output"}.}
+\item{filename}{(character) name of the output file without extension.
+Default is \code{"specieslink_output"}.}
 
 \item{save}{(logical) whether to save the results to file. Default is \code{FALSE}.}
 
@@ -31,13 +69,14 @@ compress = FALSE)
 
 \item{family}{(character) family name. Default is \code{NULL}.}
 
-\item{species}{(character) species name. Default is \code{NULL}.}
+\item{institutionCode}{(character) code of the institution that holds the
+specimen. Default is \code{NULL}.}
 
-\item{institutionCode}{(character) code of the institution that holds the specimen. Default is \code{NULL}.}
+\item{collectionID}{(character) unique identifier for the collection.
+Default is \code{NULL}.}
 
-\item{collectionID}{(character) unique identifier for the collection. Default is \code{NULL}.}
-
-\item{catalogNumber}{(character) catalog number of the specimen or record. Default is \code{NULL}.}
+\item{catalogNumber}{(character) catalog number of the specimen or record.
+Default is \code{NULL}.}
 
 \item{kingdom}{(character) kingdom name. Default is \code{NULL}.}
 
@@ -49,13 +88,17 @@ compress = FALSE)
 
 \item{genus}{(character) genus name. Default is \code{NULL}.}
 
-\item{specificEpithet}{(character) specific epithet of the species. Default is \code{NULL}.}
+\item{specificEpithet}{(character) specific epithet of the species. Default
+is \code{NULL}.}
 
-\item{infraspecificEpithet}{(character) infraspecific epithet. Default is \code{NULL}.}
+\item{infraspecificEpithet}{(character) infraspecific epithet. Default
+is \code{NULL}.}
 
-\item{collectionCode}{(character) code identifying the collection within an institution. Default is \code{NULL}.}
+\item{collectionCode}{(character) code identifying the collection within an
+institution. Default is \code{NULL}.}
 
-\item{identifiedBy}{(character) name of the person who identified the specimen. Default is \code{NULL}.}
+\item{identifiedBy}{(character) name of the person who identified the
+specimen. Default is \code{NULL}.}
 
 \item{yearIdentified}{(numeric) year of identification. Default is \code{NULL}.}
 
@@ -78,7 +121,8 @@ compress = FALSE)
 \item{occurrenceRemarks}{(character) text field for remarks about the
 occurrence. Default is \code{NULL}.}
 
-\item{barcode}{(character) barcode or unique specimen identifier. Default is \code{NULL}.}
+\item{barcode}{(character) barcode or unique specimen identifier. Default is
+\code{NULL}.}
 
 \item{bbox}{(character) bounding box coordinates in the format
 \code{"lon_min+lat_min+lon_max+lat_max"}. Default is \code{NULL}.}
@@ -99,25 +143,32 @@ Default is \code{NULL}.}
 Default is \code{FALSE}.}
 
 \item{coordinates}{(character) whether to include only records with
-geographic coordinates (\code{"yes"}, \code{"no"}, \code{"original"}, \code{"automatic"}, \code{"blocked"}, \code{"consistent"}, \code{"suspect"})). Default is \code{NULL}.}
+geographic coordinates (\code{"yes"}, \code{"no"}, \code{"original"}, \code{"automatic"},
+\code{"blocked"}, \code{"consistent"}, \code{"suspect"})). Default is \code{NULL}.}
 
-\item{scope}{(character) scope of the query (\code{"p"}, \code{"a"}, \code{"m"}, \code{"f"}, \code{"b"}).
+\item{scope}{(character) scope of the query (\code{"p"}, \code{"a"}, \code{"m"}, \code{"f"},
+\code{"b"}).
 Default is \code{NULL}.}
 
 \item{synonyms}{(chacarter) whether to include synonyms of the specified
-taxon (\code{"sp2000"}, \code{"flora2020"}, \code{"MycoBank"}, \code{"algaebase"}, \code{"DSMZ"}, \code{"moure"}).
+taxon (\code{"sp2000"}, \code{"flora2020"}, \code{"MycoBank"}, \code{"algaebase"}, \code{"DSMZ"},
+\code{"moure"}).
 Default is \code{NULL}.}
 
-\item{typus}{(logical) whether to filter only type specimens. Default is \code{FALSE}.}
+\item{typus}{(logical) whether to filter only type specimens. Default is
+\code{FALSE}.}
 
 \item{images}{(logical) whether to restrict to records with associated
 images. Default is \code{FALSE}.}
 
-\item{redlist}{(character) filter by IUCN Red List category. Default is \code{NULL}.}
+\item{redlist}{(character) filter by IUCN Red List category. Default is
+\code{NULL}.}
 
-\item{limit}{(numeric) maximum number of records to return. Default is \code{NULL}.}
+\item{limit}{(numeric) maximum number of records to return. Default is
+\code{NULL}.}
 
-\item{file.format}{(character) file format for saving output (\code{"csv"}, \code{"rds"}).
+\item{file.format}{(character) file format for saving output (\code{"csv"},
+\code{"rds"}).
 Default is \code{"csv"}.}
 
 \item{compress}{(logical) whether to compress the output file into \code{.zip}.
@@ -130,7 +181,8 @@ set_specieslink_credentials("your_api_key")
 }}
 }
 \value{
-A \code{data.frame} containing the occurrence data fields returned by speciesLink.
+A \code{data.frame} containing the occurrence data fields returned
+by speciesLink.
 }
 \description{
 Retrieves occurrence data from the \href{https://specieslink.net/}{speciesLink}

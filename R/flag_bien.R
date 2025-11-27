@@ -35,7 +35,6 @@
 #' @importFrom pbapply pblapply
 #' @importFrom terra vect buffer is.related
 #' @importFrom data.table rbindlist
-#' @importFrom dplyr bind_rows %>%
 #'
 #' @export
 #'
@@ -54,7 +53,6 @@
 #'
 flag_bien <- function(data_dir, occ, species = "species",
                       long = "decimalLongitude", lat = "decimalLatitude",
-                      origin = NULL, presence = NULL,
                       buffer = 10, verbose = TRUE){
 
   ### --- Argument checking ----------------------------------------------------
@@ -110,10 +108,12 @@ flag_bien <- function(data_dir, occ, species = "species",
 
   # Check species with data to filter
   all_spp <- unique(occ[[species]])
+  # Name vector replacing space with _
+  names(all_spp) <- gsub(" ", "_", all_spp)
   v_files <- list.files(file.path(data_dir, "bien"), pattern = ".gpkg")
   spp_files <- sub(".gpkg", "", v_files)
-  spp_in <- intersect(all_spp, spp_files)
-  spp_out <- setdiff(all_spp, spp_files)
+  spp_in <- intersect(names(all_spp), spp_files)
+  spp_out <- setdiff(names(all_spp), spp_files)
 
   #Warning if some species are not available
   if(length(spp_out) > 0){
@@ -131,6 +131,9 @@ flag_bien <- function(data_dir, occ, species = "species",
 
   # Flag
   res_flag <- pbapply::pblapply(spp_in, function(i){
+    # Get species name
+    sp_name <- gsub("_", " ", i)
+
     # Get data from bien
     spp_path <- paste0(data_dir, "/bien/", i, ".gpkg")
     m_i <- terra::vect(spp_path)
@@ -141,20 +144,20 @@ flag_bien <- function(data_dir, occ, species = "species",
     }
 
     # Check if records fall inside
-    occ_i <- occ[occ[[species]] == i, ]
+    occ_i <- occ[occ[[species]] == sp_name, ]
     pts <- terra::vect(occ_i, geom = c(x = long, y = lat), crs = "epsg:4326")
 
     occ_i$bien_flag <- terra::is.related(pts, m_i, "intersects")
     # Flags
     return(occ_i)
   })
-  res_flag <- data.table::rbindlist(res_flag) %>% as.data.frame()
+  res_flag <- as.data.frame(data.table::rbindlist(res_flag))
 
   # Append occurrences of spp_out, if exists
   if(length(spp_out) > 0){
     occ_out <- occ[occ[[species]] %in% spp_out, ]
     occ_out$bien_flag <- NA
-    res_flag <- dplyr::bind_rows(res_flag, occ_out)
+    res_flag <- rbind(res_flag, occ_out)
   }
   return(res_flag)
 }

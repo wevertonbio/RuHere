@@ -22,7 +22,6 @@
 #' metadata (`TRUE`) or not (`FALSE`).
 #'
 #' @importFrom terra vect aggregate buffer is.related
-#' @importFrom dplyr distinct left_join relocate all_of %>%
 #' @importFrom pbapply pbsapply
 #'
 #' @export
@@ -108,7 +107,7 @@ check_countries <- function(occ,
   countries <- unique(occ[[country_column]])
 
   #Get shapefile with countries
-  country_shp <- terra::vect(system.file("extdata/world.gpkg",
+  country_shp <- terra::vect(system.file("extdata/world.shp",
                                          package = "RuHere"))
   #Intersect with available countries to test
   countries_in <- intersect(countries, country_shp$name)
@@ -128,7 +127,7 @@ check_countries <- function(occ,
     occ <- as.data.frame(occ)}
 
   #Get unique coordinates
-  unique_xy <- occ[,c(long, lat, country_column)] %>% dplyr::distinct()
+  unique_xy <- unique(occ[, c(long, lat, country_column)])
   # Spatialize
   dc <- terra::vect(unique_xy,
                     geom = c(x = long, y = lat),
@@ -157,9 +156,15 @@ check_countries <- function(occ,
   unique_xy[as.numeric(names(test_country)), "correct_country"] <- test_country
 
   #Merge occ again
-  occ <- dplyr::left_join(occ, unique_xy, by = c(long, lat, country_column)) %>%
-    dplyr::relocate(correct_country,
-                    .after = dplyr::all_of(country_column))
+  occ <- merge(occ, unique_xy, by = c(long, lat, country_column), all.x = TRUE,
+               sort = FALSE)
+  # Relocate
+  nm <- names(occ)
+  i <- match(country_column, nm)
+  j <- match("correct_country", nm)
+  new_order <- append(nm[-j], nm[j], after = i)
+  occ <- occ[, new_order]
+
 
   if(verbose){
     message(sum(!occ$correct_country, na.rm = TRUE), " records fall in wrong countries")

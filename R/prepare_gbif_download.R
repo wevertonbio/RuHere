@@ -35,7 +35,6 @@
 #'
 #' @importFrom pbapply pblapply
 #' @importFrom rgbif name_backbone occ_count
-#' @importFrom dplyr mutate %>% relocate
 #' @importFrom data.table rbindlist
 #'
 #' @export
@@ -101,11 +100,11 @@ prepare_gbif_download <- function(species, rank = NULL, kingdom = NULL,
     n_with_xy <- rgbif::occ_count(taxonKey = gbif_info$usageKey,
                                   hasCoordinate = TRUE, ...)
     # Append information
-    gbif_info <- gbif_info %>% dplyr::mutate(n_records = n,
-                                             with_coordinates = n_with_xy,
-                                             .before = canonicalName) %>%
-      dplyr::relocate(species)
-
+    gbif_info$n_records <- n
+    gbif_info$with_coordinates <- n_with_xy
+    gbif_info <- relocate_before(gbif_info, "species", names(gbif_info)[1])
+    gbif_info <- relocate_before(gbif_info, "n_records", names(gbif_info)[1])
+    gbif_info <- relocate_before(gbif_info, "with_coordinates", names(gbif_info)[1])
   })
 
   res <- as.data.frame(data.table::rbindlist(res, fill = TRUE))

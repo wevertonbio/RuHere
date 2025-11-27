@@ -7,15 +7,18 @@
 #' @param s (character) a character vector containing the strings to process.
 #'
 #' @returns
-#' A vector string without accents or special characters
+#' A vector string without accents or special characters.
+#'
+#' @importFrom stringi stri_trans_general
 #'
 #' @export
 #'
 #' @examples
 #' remove_accent(c("Colômbia", "São Paulo"))
 remove_accent <- function(s) {
-  chartr(
-    "áéóūáéíóúÁÉÍÓÚýÝàèìòùÀÈÌÒÙâêîôûÂÊÎÔÛãõÃÕñÑäëïöüÄËÏÖÜÿçÇ",
-    "aeouaeiouAEIOUyYaeiouAEIOUaeiouAEIOUaoAOnNaeiouAEIOUycC",
-    s)
+  stringi::stri_trans_general(s, "Latin-ASCII")
+  # chartr(
+  #   "áéóūáéíóúÁÉÍÓÚýÝàèìòùÀÈÌÒÙâêîôûÂÊÎÔÛãõÃÕñÑäëïöüÄËÏÖÜÿçÇ",
+  #   "aeouaeiouAEIOUyYaeiouAEIOUaeiouAEIOUaoAOnNaeiouAEIOUycC",
+  #   s)
 }

@@ -37,6 +37,7 @@
 #' @importFrom ggplot2 ggplot aes geom_rect geom_point geom_vline geom_hline
 #'     labs theme_minimal theme
 #'
+#' @export
 #'
 #' @examples
 #' # Load example data
@@ -173,25 +174,30 @@ plot_env_bins <- function(env_bins, x_var, y_var,
   #  PLOT                        #
   #==============================#
 
-  p <- ggplot(df, aes(x = .data[[x_var]], y = .data[[y_var]])) +
-    geom_rect(
-      aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = block_id),
+  p <- ggplot2::ggplot(df, aes(x = .data[[x_var]],
+                               y = .data[[y_var]])) +
+    ggplot2::geom_rect(
+      ggplot2::aes(xmin = .data[["xmin"]],
+                   xmax = .data[["xmax"]],
+                   ymin = .data[["ymin"]],
+                   ymax = .data[["ymax"]],
+                   fill = .data[["block_id"]]),
       alpha = alpha_blocks, color = "black"
     ) +
-    geom_point(colour = color_points, alpha = alpha_points, size = size_points,
+    ggplot2::geom_point(colour = color_points, alpha = alpha_points, size = size_points,
                stroke = stroke_points) +
-    geom_vline(xintercept = breaks_x, linetype = "dashed", color = "gray50") +
-    geom_hline(yintercept = breaks_y, linetype = "dashed", color = "gray50") +
+    ggplot2::geom_vline(xintercept = breaks_x, linetype = "dashed", color = "gray50") +
+    ggplot2::geom_hline(yintercept = breaks_y, linetype = "dashed", color = "gray50") +
     theme_plot +
-    labs(
+    ggplot2::labs(
       title = "Environmental Blocks",
       subtitle = paste0("2D projection across '", xlab, "' and '", ylab, "'"),
       x = xlab,
       y = ylab
     ) +
-    theme(legend.position = "none",
-          plot.title = element_text(hjust = 0.5, face = "bold"),
-          plot.subtitle = element_text(hjust = 0.5, face = "italic"))
+    ggplot2::theme(legend.position = "none",
+          plot.title = ggplot2::element_text(hjust = 0.5, face = "bold"),
+          plot.subtitle = ggplot2::element_text(hjust = 0.5, face = "italic"))
 
   return(p)
 }

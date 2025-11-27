@@ -1,4 +1,4 @@
-#' @title get_bien
+#' Download occurrence records from BIEN
 #'
 #' @usage get_bien(by = "species", cultivated = FALSE,
 #' new.world = NULL, all.taxonomy = FALSE, native.status = FALSE,
@@ -48,8 +48,10 @@
 #' Ignored otherwise. Default is `NULL`.
 #' @param species (character) species name(s) to query when `by = "species"`
 #' or `"records_per_species"`. Default is `NULL`.
-#' @param genus (character) genus name(s) to query when `by = "genus"`. Default is `NULL`.
-#' @param family (character) family name(s) to query when `by = "family"`.  Default is `NULL`.
+#' @param genus (character) genus name(s) to query when `by = "genus"`. Default
+#' is `NULL`.
+#' @param family (character) family name(s) to query when `by = "family"`.
+#' Default is `NULL`.
 #' @param country (character) country name when `by = "country"`, `"state"`,
 #' or `"county"`. Default is `NULL`.
 #' @param country.code (character) two-letter ISO country code corresponding
@@ -70,7 +72,8 @@
 #' Default is `"bien_output"`.
 #' @param save (logical) if `TRUE`, saves the results to a CSV file.
 #' Default is `FALSE`.
-#' @param file.format (character) file format for saving output (`"csv"`, `"rds"`).
+#' @param file.format (character) file format for saving output (`"csv"`,
+#' `"rds"`).
 #' Default is `"csv"`.
 #' @param compress (logical) if `TRUE` and `save = TRUE`, compresses the output
 #' file as .csv.zip. Default is `FALSE`.
@@ -112,8 +115,8 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
                      genus = NULL, country = NULL, country.code = NULL,
                      state = NULL, county = NULL, state.code = NULL,
                      county.code = NULL, family = NULL, sf = NULL, dir,
-                     filename = "bien_output", file.format = "csv", compress = FALSE,
-                     save = FALSE, ...) {
+                     filename = "bien_output", file.format = "csv",
+                     compress = FALSE, save = FALSE, ...) {
 
     # Botanical Information and Ecology Network Database
     # https://bien.nceas.ucsb.edu/bien/
@@ -128,7 +131,8 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
     valid_by <- c("box", "country", "county", "family", "genus",
                 "records_per_species", "species", "sf", "state")
     if (!inherits(by, "character") || length(by) != 1 || !(by %in% valid_by)) {
-      stop("'by' must be one of: ", paste(valid_by, collapse = ", "), call. = FALSE)
+      stop("'by' must be one of: ", paste(valid_by, collapse = ", "),
+           call. = FALSE)
     }
 
     # Logical arguments
@@ -146,12 +150,14 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
     for (arg in names(logical_args)) {
       val <- logical_args[[arg]]
       if (!inherits(val, "logical") || length(val) != 1) {
-        stop("'", arg, "' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+        stop("'", arg, "' must be a single logical value (TRUE or FALSE).",
+             call. = FALSE)
       }
     }
 
     if (!is.null(new.world) && !inherits(new.world, "logical")) {
-      stop("'new.world' must be a single logical value (TRUE or FALSE) or NULL.", call. = FALSE)
+      stop("'new.world' must be a single logical value (TRUE or FALSE) or NULL.",
+           call. = FALSE)
     }
 
     text_args <- c("country", "country.code", "state", "state.code", "county",
@@ -159,7 +165,8 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
     for (nm in text_args) {
       val <- get(nm)
       if (!is.null(val) && !inherits(val, "character")) {
-        stop("'", nm, "' must be a character or NULL, not ", paste(class(val), collapse = "/"))
+        stop("'", nm, "' must be a character or NULL, not ", paste(class(val),
+                                                                   collapse = "/"))
       }
     }
 
@@ -167,43 +174,52 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
     for (nm in num_args) {
       val <- get(nm)
       if (!is.null(val) && !inherits(val, "numeric")) {
-        stop("'", nm, "' must be numeric or NULL, not ", paste(class(val), collapse = "/"))
+        stop("'", nm, "' must be numeric or NULL, not ", paste(class(val),
+                                                               collapse = "/"))
       }
     }
 
     # Taxonomic fields
     if (!is.null(species) && !inherits(species, "character"))
-      stop("'species' must be a character vector or NULL, not ", class(species), call. = FALSE)
+      stop("'species' must be a character vector or NULL, not ", class(species),
+           call. = FALSE)
     if (!is.null(genus) && !inherits(genus, "character"))
-      stop("'genus' must be a character vector or NULL, not ", class(genus), call. = FALSE)
+      stop("'genus' must be a character vector or NULL, not ", class(genus),
+           call. = FALSE)
     if (!is.null(family) && !inherits(family, "character"))
-      stop("'family' must be a character vector or NULL, not ", class(family), call. = FALSE)
+      stop("'family' must be a character vector or NULL, not ", class(family),
+           call. = FALSE)
 
     # Spatial object
     if (!is.null(sf)) {
       if (!inherits(sf, "sf")) {
-        stop("'sf' must be an object of class 'sf' or NULL, not ", class(sf), call. = FALSE)
+        stop("'sf' must be an object of class 'sf' or NULL, not ", class(sf),
+             call. = FALSE)
       }
     }
 
     if (!inherits(filename, "character") || length(filename) != 1)
-      stop("'filename' must be a single character value, not ", paste(class(filename), collapse = "/"))
+      stop("'filename' must be a single character value, not ",
+           paste(class(filename), collapse = "/"))
 
     if (!inherits(file.format, "character") || length(file.format) != 1)
-      stop("'file.format' must be a single character ('csv' or 'rds'), not ", paste(class(file.format), collapse = "/"))
+      stop("'file.format' must be a single character ('csv' or 'rds'), not ",
+           paste(class(file.format), collapse = "/"))
 
     if (!file.format %in% c("csv", "rds"))
       stop("'file.format' must be either 'csv' or 'rds'")
 
     if (!inherits(save, "logical") || length(save) != 1)
-      stop("'save' must be a single logical (TRUE/FALSE), not ", paste(class(save), collapse = "/"))
+      stop("'save' must be a single logical (TRUE/FALSE), not ",
+           paste(class(save), collapse = "/"))
 
     if (isTRUE(save)) {
       if (missing(dir) || is.null(dir)) {
         stop("'dir' is required (must not be NULL or missing) when save = TRUE.")
       }
       if (!inherits(dir, "character") || length(dir) != 1) {
-        stop("'dir' must be a single character string when save = TRUE, not ", class(dir))
+        stop("'dir' must be a single character string when save = TRUE, not ",
+             class(dir))
       }
       if (!dir.exists(dir)) {
         stop(paste0("Directory '", dir, "' does not exist. It must be created before saving."))
@@ -211,7 +227,8 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
     }
 
     if (!inherits(compress, "logical") || length(compress) != 1)
-      stop("'compress' must be a single logical (TRUE/FALSE), not ", paste(class(compress), collapse = "/"))
+      stop("'compress' must be a single logical (TRUE/FALSE), not ",
+           paste(class(compress), collapse = "/"))
 
     if (by == "box") {
 
