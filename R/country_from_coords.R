@@ -126,14 +126,16 @@ country_from_coords <- function(occ,
   # Extract
   if(from == "all"){
     occ[[output_column]] <- NA
-    occ[[output_column]] <- terra::extract(w, occ[, c(long, lat)])[[2]]
+    country_ext <- terra::extract(w, occ[, c(long, lat)])
+    country_ext <- country_ext[!duplicated(country_ext$id.y), ]
+    occ[[output_column]] <- country_ext$name
     }
 
   if(from == "na_only"){
     na_country <- which(is.na(occ[[country_column]]))
-    occ[na_country, output_column] <- terra::extract(w,
-                                                 occ[na_country,
-                                                     c(long, lat)])[[2]]
+    country_ext <- terra::extract(w, occ[na_country, c(long, lat)])
+    country_ext <- country_ext[!duplicated(country_ext$id.y), ]
+    occ[na_country, output_column] <- country_ext$name
   }
 
 

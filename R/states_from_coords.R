@@ -125,14 +125,16 @@ states_from_coords <- function(occ,
   # Extract
   if(from == "all"){
     occ[[output_column]] <- NA
-    occ[[output_column]] <- terra::extract(s, occ[, c(long, lat)])[[2]]
+    states_ext <- terra::extract(s, occ[, c(long, lat)])
+    states_ext <- states_ext[!duplicated(states_ext$id.y), ]
+    occ[[output_column]] <- states_ext$name
   }
 
   if(from == "na_only"){
     na_state <- which(is.na(occ[[state_column]]) | occ[[state_column]] == "")
-    occ[na_state, output_column] <- terra::extract(s,
-                                                   occ[na_state,
-                                                       c(long, lat)])[[2]]
+    states_ext <- terra::extract(s, occ[na_state, c(long, lat)])
+    states_ext <- states_ext[!duplicated(states_ext$id.y), ]
+    occ[na_state, output_column] <- states_ext$name
   }
 
   #Reorder columns, if necessary
