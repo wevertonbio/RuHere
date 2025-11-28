@@ -16,6 +16,8 @@
 #' records that were flagged but should still be kept. Default is `NULL`.
 #' @param force_remove (character) an optional character vector with the IDs of
 #' records that were not flagged but should still be removed. Default is `NULL`.
+#' @param remove_NA (logical) whether to remove records that have NA in the
+#' flags specified. Default is FALSE.
 #' @param column_id (character) the name of the column containing unique record
 #' IDs. Required if `force_keep` or `force_remove` is used. Default is `NULL`.
 #' @param save_flagged (logical) whether to save the flagged (removed) records.
@@ -64,6 +66,7 @@ remove_flagged <- function(occ,
                            additional_flags = NULL,
                            force_keep = NULL,
                            force_remove = NULL,
+                           remove_NA = FALSE,
                            column_id = "record_id",
                            save_flagged = FALSE,
                            output_dir = NULL,
@@ -227,6 +230,13 @@ remove_flagged <- function(occ,
     occ <- occ[!(occ[[column_id]] %in% force_keep),]
   }
 
+  # remove NAs?
+  if(remove_NA){
+    occ[, flags][is.na(occ[, flags])] <- FALSE
+  } else {
+    occ[, flags][is.na(occ[, flags])] <- TRUE
+  }
+
   # Create empty list to save flagged results
   occ_flagged <- list()
   # Identify flags
@@ -240,6 +250,7 @@ remove_flagged <- function(occ,
 
   # Remove flags with 0 records
   occ_flagged <- occ_flagged[sapply(occ_flagged, function(i) nrow(i) > 0)]
+
 
 
   # Filter

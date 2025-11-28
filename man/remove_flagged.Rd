@@ -10,6 +10,7 @@ remove_flagged(
   additional_flags = NULL,
   force_keep = NULL,
   force_remove = NULL,
+  remove_NA = FALSE,
   column_id = "record_id",
   save_flagged = FALSE,
   output_dir = NULL,
@@ -33,6 +34,9 @@ records that were flagged but should still be kept. Default is \code{NULL}.}
 
 \item{force_remove}{(character) an optional character vector with the IDs of
 records that were not flagged but should still be removed. Default is \code{NULL}.}
+
+\item{remove_NA}{(logical) whether to remove records that have NA in the
+flags specified. Default is FALSE.}
 
 \item{column_id}{(character) the name of the column containing unique record
 IDs. Required if \code{force_keep} or \code{force_remove} is used. Default is \code{NULL}.}
