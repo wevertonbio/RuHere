@@ -114,6 +114,7 @@ get_env_bins <- function(occ, species = "species",
   # ID = FALSE prevents terra from adding a row ID column
   env_values <- terra::extract(env_layers, occ[, c(long, lat)], ID = FALSE)
 
+
   # # Check for NAs (points outside raster extent)
   # na_values <- apply(env_values, 1, anyNA)
 
@@ -124,12 +125,13 @@ get_env_bins <- function(occ, species = "species",
   break_values <- list() # To store the actual numeric cut points
 
   for (var_name in names(env_values)) {
+    #print(var_name)
     x <- env_values[[var_name]]
 
     # Define breaks covering the range of the data
     # We add a tiny epsilon to the max to ensure the last point is included
-    rng <- range(x, na.rm = TRUE)
-    breaks <- seq(rng[1], rng[2], length.out = n_bins + 1)
+    rng <- range(x, na.rm = TRUE, finite = TRUE)
+    breaks <- seq(from = rng[1], to = rng[2], length.out = n_bins + 1)
 
     # Store breaks for plotting later
     break_values[[var_name]] <- breaks

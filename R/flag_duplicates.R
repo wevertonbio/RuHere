@@ -214,18 +214,18 @@ flag_duplicates <- function(occ,
 
   if(!is.null(continuous_variable) & is.null(categorical_variable)){
     ord <- order(occ[[continuous_variable]], decreasing = decreasing)
-    occ2 <- occ[ord, ]
-    grp <- interaction(occ2[to_group], drop = TRUE)
-    occ2$duplicated_flag <- !duplicated(grp)
-    occ2 <- occ2[order(ord), ]
+    occ <- occ[ord, ]
+    grp <- interaction(occ[to_group], drop = TRUE)
+    occ$duplicated_flag <- !duplicated(grp)
+    occ <- occ[order(ord), ]
     }
 
   if(!is.null(categorical_variable) & is.null(continuous_variable)){
     ord <- order(match(occ[[categorical_variable]], priority_categories))
-    occ2 <- occ[ord, ]
-    grp <- interaction(occ2[to_group], drop = TRUE)
-    occ2$duplicated_flag <- !duplicated(grp)
-    occ2 <- occ2[order(ord), ]
+    occ <- occ[ord, ]
+    grp <- interaction(occ[to_group], drop = TRUE)
+    occ$duplicated_flag <- !duplicated(grp)
+    occ <- occ[order(ord), ]
   }
 
   if(!is.null(categorical_variable) & !is.null(continuous_variable)){

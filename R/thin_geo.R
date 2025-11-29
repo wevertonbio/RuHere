@@ -46,7 +46,7 @@
 #'
 #' @return
 #' The original \code{occ} data frame augmented with a new logical column named
-#' \code{thin_flag}. Records that are retained after thinning receive
+#' \code{thin_geo_flag}. Records that are retained after thinning receive
 #' \code{TRUE}, while records identified as too close to a higher-priority
 #' record receive \code{FALSE}.
 #'
@@ -62,10 +62,10 @@
 #' occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
 #' # Thin records using a 10 km distance threshold
 #' occ_thin <- thin_geo(occ = occ, d = 10)
-#' sum(!occ_thin$thin_flag)  # Number of records flagged for removal
+#' sum(!occ_thin$thin_geo_flag)  # Number of records flagged for removal
 #' # Prioritizing more recent records within each cluster
 #' occ_thin_recent <- thin_geo(occ = occ, d = 10, prioritary_column = "year")
-#' sum(!occ_thin_recent$thin_flag)  # Number of records flagged for removal
+#' sum(!occ_thin_recent$thin_geo_flag)  # Number of records flagged for removal
 #'
 thin_geo <- function(occ,
                      species = "species",
@@ -192,7 +192,7 @@ thin_geo <- function(occ,
     }
 
     # Initialize the flag column for the data being thinned ('occ_thin')
-    occ_thin$thin_flag <- TRUE
+    occ_thin$thin_geo_flag <- TRUE
 
     # --- 2. Conversion and Distance Calculation (Optimized) ---
 
@@ -211,12 +211,12 @@ thin_geo <- function(occ,
     # The loop iterates through the prioritized data
     for (i in 1:n) {
       # If the current record was already flagged for removal, skip.
-      if (!occ_thin$thin_flag[i]) {
+      if (!occ_thin$thin_geo_flag[i]) {
         next
       }
 
       # 1. Find all remaining active points that come AFTER the current point 'i'
-      indices_posteriores <- which(occ_thin$thin_flag & (1:n) > i)
+      indices_posteriores <- which(occ_thin$thin_geo_flag & (1:n) > i)
 
       if (length(indices_posteriores) == 0) {
         next # No more records to check
@@ -227,18 +227,18 @@ thin_geo <- function(occ,
 
       # 3. Flag close records (which have lower priority) for removal.
       if (length(proximos_indices) > 0) {
-        occ_thin$thin_flag[proximos_indices] <- FALSE
+        occ_thin$thin_geo_flag[proximos_indices] <- FALSE
       }
     }
 
     # --- 4. Finalization and Order Restoration ---
 
     # Select only the original ID and the calculated flag from the thinned data
-    thin_flags <- occ_thin[, c("original_id", "thin_flag")]
+    thin_geo_flags <- occ_thin[, c("original_id", "thin_geo_flag")]
 
     # Merge the flag back to the original dataframe using the 'original_id'
-    occ_final <- merge(occ_x, thin_flags, by = "original_id", all.x = TRUE)
-    occ_final$thin_flag[is.na(occ_final$thin_flag)] <- FALSE
+    occ_final <- merge(occ_x, thin_geo_flags, by = "original_id", all.x = TRUE)
+    occ_final$thin_geo_flag[is.na(occ_final$thin_geo_flag)] <- FALSE
     occ_final$original_id <- NULL
 
     return(occ_final)

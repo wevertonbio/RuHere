@@ -51,7 +51,7 @@ Default is FALSE.}
 }
 \value{
 The original \code{occ} data frame augmented with a new logical column named
-\code{thin_flag}. Records that are retained after thinning receive
+\code{thin_geo_flag}. Records that are retained after thinning receive
 \code{TRUE}, while records identified as too close to a higher-priority
 record receive \code{FALSE}.
 }
@@ -81,9 +81,9 @@ data("occurrences", package = "RuHere")
 occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
 # Thin records using a 10 km distance threshold
 occ_thin <- thin_geo(occ = occ, d = 10)
-sum(!occ_thin$thin_flag)  # Number of records flagged for removal
+sum(!occ_thin$thin_geo_flag)  # Number of records flagged for removal
 # Prioritizing more recent records within each cluster
 occ_thin_recent <- thin_geo(occ = occ, d = 10, prioritary_column = "year")
-sum(!occ_thin_recent$thin_flag)  # Number of records flagged for removal
+sum(!occ_thin_recent$thin_geo_flag)  # Number of records flagged for removal
 
 }

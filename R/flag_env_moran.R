@@ -1,11 +1,11 @@
-#' Select Spatially Thinned Occurrences Using Moran's I Autocorrelation
+#' Select Environmentally Thinned Occurrences Using Moran's I Autocorrelation
 #'
 #' @description
-#' This function evaluates multiple geographically thinned datasets (produced
-#' using different thinning distances) and selects the one that best balances
+#' This function evaluates multiple environmentally thinned datasets (produced
+#' using different number of blocks) and selects the one that best balances
 #' **low spatial autocorrelation** and **number of retained records**.
 #'
-#' For each thinning distance provided in `d`, the function computes Moran's I
+#' For each number of bins provided in `n_bins`, the function computes Moran's I
 #' for the selected environmental variables and summarizes autocorrelation using
 #' a chosen statistic (mean, median, minimum, or maximum). The best thinning
 #' level is then selected according to criteria described in *Details*.
@@ -19,8 +19,10 @@
 #' longitude values. Default is `"decimalLongitude"`.
 #' @param lat (character) the name of the column in `occ` that contains the
 #' latitude values. Default is `"decimalLatitude"`.
-#' @param d (numeric) vector of thinning distances in \strong{kilometers}
-#' (e.g., c(5, 10, 15, 20).
+#' @param env_layers (SpatRaster) object containing environmental variables for
+#' splitting in `n_bins` and for computing Moran's I.
+#' @param n_bins (numeric) vector of number of bins into which each
+#' environmental variable will be divided (e.g., c(5, 10, 15, 20)).
 #' @param distance (character) distance metric used to compute the weight matrix
 #' for Moran's I. One of `"haversine"` or `"euclidean"`. Default: `"haversine"`.
 #' @param moran_summary (character) summary statistic used to select the best
@@ -36,26 +38,29 @@
 #' the `prioritary_column` (e.g., from most recent to oldest when the variable
 #' is `"year"`). Only applicable when `prioritary_column` is not `NULL`.
 #' Default is `TRUE`.
-#' @param env_layers (SpatRaster) object containing environmental variables for
-#' computing Moran's I.
 #' @param do_pca (logical) whether environmental variables should be summarized
 #' using PCA before computing Moran's I. Default: `FALSE`. See details.
-#' @param mask (SpatVector or SpatExtent) optional spatial object to mask the `env_layers` before computing PCA. Only applicable if `do_pca = TRUE`. Default
-#' is NULL.
+#' @param mask (SpatVector or SpatExtent) optional spatial object to mask the
+#' `env_layers` before computing PCA. Only applicable if `do_pca = TRUE`.
+#' Default is NULL.
 #' @param pca_buffer (numeric) buffer width (km) used when PCA is computed from
 #' the convex hull of records. Ignored if `mask` is provided. Default: `1000`.
+#' @param flag_for_NA (logical) whether to treat records falling in `NA` cells
+#' of `env_layers` as valid (`TRUE`) or invalid (`FALSE`). Default is `FALSE`.
 #' @param return_all (logical) whether to return the full list of all thinned
-#' datasets. Default: `FALSE`.
+#' datasets. Default is `FALSE`.
 #'
-#' @description
-#' This function is inspired by the approach used in Velazco et al. (2020), extending the procedure by allowing:
+#' @details
+#' This function is inspired by the approach used in Velazco et al. (2020),
+#' extending the procedure by allowing:
 #' - prioritization of records based on a user-defined variable (e.g., year)
 #' - optional PCA transformation of environmental layers
 #' - selection rules that prevent datasets with too few records or extremely
 #'   low Moran's I from being chosen.
 #'
 #' **Procedure overview**
-#' 1. For each distance in `d`, generate a spatially thinned dataset.
+#' 1. For each bin number in `n_bins`, generate a spatially thinned dataset
+#' using `thin_env()` function.
 #' 2. Extract environmental values for the retained records.
 #' 3. Compute Moran's I for each environmental variable.
 #' 4. Summarize autocorrelation per dataset (mean, median, min, or max).
@@ -66,7 +71,7 @@
 #'      **25th lowest** autocorrelation.
 #'    - If more than on dataset is selected, choose the dataset retaining
 #'    **more records**.
-#'    - If still tied, choose the dataset with the **smallest thinning distance**.
+#'    - If still tied, choose the dataset with the **largest number of bins**.
 #'
 #' **Distance matrix for Moran's I**
 #' Moran's I requires a weight matrix derived from pairwise distances among
@@ -86,14 +91,16 @@
 #'
 #' @returns
 #' A list with:
-#' - **occ**: the selected thinned occurrence dataset
+#' - **occ**: the selected thinned occurrence dataset with the column
+#' `thin_env_flag`indicating whether each record is retained (`TRUE`) or flagged
+#' as redundant (`FALSE`) in the environmental space .
 #' - **imoran**: a table summarizing Moran's I for each thinning distance
-#' - **Distance**: the thinning distance that produced the selected dataset
+#' - **n_bins**: the number of bins that produced the selected dataset
 #' - **moran_summary**: the summary statistic used to select the dataset
-#' - **all_thined**: (optional) list of thinned datasets for all distances. Only
-#' returned if `return_all` was set to `TRUE`
+#' - **all_thined**: (optional) list of thinned datasets for all bin numbers.
+#' Only returned if `return_all` was set to `TRUE`
 #'
-#' @importFrom terra crop vect crs convHull buffer prcomp predict extract
+#' @importFrom terra crop vect convHull buffer prcomp predict extract
 #' @importFrom fields rdist.earth
 #' @importFrom stats dist median quantile
 #'
@@ -108,23 +115,32 @@
 #' r <- terra::rast(system.file("extdata", "worldclim.tif",
 #'                              package = "RuHere"))
 #' # Select thinned occurrences
-#' occ_geo_moran <- filter_geo_moran(occ = occ, d = c(5, 10, 20, 30),
+#' occ_env_moran <- flag_env_moran(occ = occ,
+#'                                   n_bins = c(5, 10, 20, 30, 40, 50),
 #'                                   env_layers = r)
-filter_geo_moran <- function(occ,
+#' # Selected number of bins
+#' occ_env_moran$n_bins
+#' # Number of flagged and unflagged records
+#' sum(occ_env_moran$occ$thin_env_flag) #Retained
+#' sum(!occ_env_moran$occ$thin_env_flag) #Flagged for thinning out
+#' # Results os the spatial autocorrelation analysis
+#' occ_env_moran$imoran
+flag_env_moran <- function(occ,
                              species = "species",
                              long = "decimalLongitude",
                              lat = "decimalLatitude",
-                             d,
+                             env_layers,
+                             n_bins,
                              distance = "haversine",
                              moran_summary = "mean",
                              min_records = 10,
                              min_imoran = 0.1,
                              prioritary_column = NULL,
                              decreasing = TRUE,
-                             env_layers,
                              do_pca = FALSE,
                              mask = NULL,
                              pca_buffer = 1000,
+                             flag_for_NA = FALSE,
                              return_all = FALSE){
 
   # --- Argument checking -------------------------------------------------------
@@ -161,12 +177,12 @@ filter_geo_moran <- function(occ,
          paste(missing_cols, collapse = ", "), call. = FALSE)
   }
 
-  # d must be numeric vector with positive values
-  if (!inherits(d, "numeric")) {
-    stop("'d' must be a numeric vector.", call. = FALSE)
+  # n_bins must be numeric vector with positive values
+  if (!inherits(n_bins, "numeric")) {
+    stop("'n_bins' must be a numeric vector.", call. = FALSE)
   }
-  if (any(d <= 0)) {
-    stop("'d' must contain only values > 0 (in km).", call. = FALSE)
+  if (any(n_bins <= 0)) {
+    stop("'n_bins' must contain only values > 0 (in km).", call. = FALSE)
   }
 
   # distance
@@ -246,6 +262,11 @@ filter_geo_moran <- function(occ,
     stop("'return_all' must be TRUE or FALSE.", call. = FALSE)
   }
 
+  #--- flag_for_NA must be logical ---
+  if (!is.logical(flag_for_NA) || length(flag_for_NA) != 1) {
+    stop("'flag_for_NA' must be TRUE or FALSE")
+  }
+
   spp <- unique(occ[[species]])
 
 
@@ -254,7 +275,7 @@ filter_geo_moran <- function(occ,
       env_layers <- terra::crop(env_layers, mask, mask = TRUE)
     } else {
       pts <- terra::vect(occ, geom = c(x = long, y = lat),
-                       crs = terra::crs(env_layers))
+                         crs = terra::crs(env_layers))
       ca <- terra::convHull(pts)
       ca <- terra::buffer(ca, width = pca_buffer *1000)
       env_layers <- terra::crop(env_layers, ca, mask = TRUE)
@@ -272,25 +293,30 @@ filter_geo_moran <- function(occ,
 
   #Filter using distances
   message("Filtering records...")
-  filtered <- suppressMessages(lapply(d, function(x){
+  filtered <- suppressMessages(lapply(n_bins, function(x){
     set.seed(42)
-    f_x <- thin_geo(occ = occ, species = species,
-                    long = lat, lat = long,
-                    d = x,
+    f_x <- thin_env(occ = occ, species = species,
+                    long = long, lat = lat,
+                    n_bins = x,
+                    env_layers = env_layers,
                     prioritary_column = prioritary_column,
                     decreasing = decreasing,
-                    remove_invalid = TRUE)
-    return(f_x[f_x$thin_flag,])
+                    flag_for_NA = flag_for_NA)
+    return(f_x$thin_env_flag)
   }))
 
   #Rename list with distances
-  names(filtered) <- d
+  names(filtered) <- n_bins
 
   ## Calculate spatial autoccorelation (Moran I)
   message("Calculating spatial autocorrelation using Moran Index...")
   imoran <- lapply(names(filtered), function(x){
     tryCatch({ #Avoid errors
-      coord <- filtered[[x]][, c(long, lat)]
+      # Append results to occ
+      filtered_x <- cbind(occ[, c(long, lat)], "thin_env_flag" = filtered[[x]])
+      # Remove flagged
+      filtered_x <- filtered_x[filtered_x$thin_env_flag, ]
+      coord <- filtered_x[, c(long, lat)]
       # Extract data
       data <- data.frame(terra::extract(env_layers, coord, ID = FALSE))
       # Get matrix of inverse distance
@@ -307,15 +333,15 @@ filter_geo_moran <- function(occ,
       imoran_x <- apply(data, 2, function(x){
         moranfast(x = as.numeric(x), weight = distm, na_rm = TRUE,
                   scaled = TRUE)$observed})
+    })
   })
-  })
-  names(imoran) <- d
+  names(imoran) <- n_bins
   imorandf <- as.data.frame(do.call("rbind", imoran))
 
   #Get distances available
-  d_i <- as.character(d[sapply(imoran, function(i) inherits(i, "numeric"))])
-  imorandf$Distance <- d_i
-  imorandf <- relocate_before(imorandf, "Distance", names(imorandf)[1])
+  d_i <- as.character(n_bins[sapply(imoran, function(i) inherits(i, "numeric"))])
+  imorandf$n_bins <- d_i
+  imorandf <- relocate_before(imorandf, "n_bins", names(imorandf)[1])
 
 
   #Get mean, median, min and max of imoran across PCA variables
@@ -328,28 +354,32 @@ filter_geo_moran <- function(occ,
 
 
   #Get number of records remained in each distance
-  imorandf$n_filtered <- sapply(filtered[d_i], nrow)
+  imorandf$n_filtered <- sapply(filtered[d_i], sum, na.rm = TRUE)
 
   #Put name of the specie in the dataframe and total number of records
-  imorandf$species <- sp
+  imorandf$species <- spp
   imorandf <- relocate_before(imorandf, "species", names(imorandf)[1])
   imorandf$all_records <- nrow(occ)
 
   #Propotion of lost records
-  imorandf$prop_lost <- (imorandf$all_records - imorandf$n_filtered)/imorandf$all_records
+  imorandf$prop_lost <- (imorandf$all_records -
+                           imorandf$n_filtered)/imorandf$all_records
 
   # Get moran summary to filter
   moran_summary <- paste0(moran_summary, "_moran")
 
-  #Filtering distances: select lower autocorrelation (first quantile) which keeps the maximum number of occurrences
+  #Filtering distances: select lower autocorrelation (first quantile) which
+  # keeps the maximum number of occurrences
   if(min(imorandf[[moran_summary]]) > 0) {
     # 1. Create column `to_filter` based on the value in `moran_summary`
     finalfilter <- imorandf
     finalfilter$to_filter <- finalfilter[[moran_summary]]
     # 2. Filter: keep rows where to_filter > min_imoran
-    finalfilter <- finalfilter[finalfilter$to_filter > min_imoran, , drop = FALSE]
+    finalfilter <- finalfilter[finalfilter$to_filter > min_imoran, ,
+                               drop = FALSE]
     # 3. Filter: keep rows where n_filtered >= min_records
-    finalfilter <- finalfilter[finalfilter$n_filtered >= min_records, , drop = FALSE]
+    finalfilter <- finalfilter[finalfilter$n_filtered >= min_records, ,
+                               drop = FALSE]
     # 4. Round `to_filter` to 2 decimal places
     finalfilter$to_filter <- round(finalfilter$to_filter, 2)
     # 5. Filter: keep rows where to_filter <= 25th percentile
@@ -358,31 +388,36 @@ filter_geo_moran <- function(occ,
     # 6. Filter: keep only rows with the maximum n_filtered
     max_n <- max(finalfilter$n_filtered)
     finalfilter <- finalfilter[finalfilter$n_filtered == max_n, , drop = FALSE]
-    # 7. Keep only the row with the minimum Distance (equivalent to slice_min(n = 1))
-    min_dist <- min(finalfilter$Distance)
-    finalfilter <- finalfilter[finalfilter$Distance == min_dist, , drop = FALSE]
+    # 7. Keep only the row with the maximum n_bins
+    max_bins <- max(finalfilter$n_bins)
+    finalfilter <- finalfilter[finalfilter$n_bins == max_bins, , drop = FALSE]
     # 8. Remove temporary column
     finalfilter$to_filter <- NULL
-    } else {
-    finalfilter <- imorandf[imorandf$Distance  == min(imorandf$Distance), ,
+  } else {
+    finalfilter <- imorandf[imorandf$n_bins == max(imorandf$n_bins), ,
                             drop = FALSE]
   }
 
   #Get final points
-  final_points <- filtered[[as.character(finalfilter$Distance)]]
+  final_points <- filtered[[as.character(finalfilter$n_bins)]]
+  occ_final <- cbind(occ, "thin_env_flag" = final_points)
 
   #Return final points and imoran table
   if(!return_all){
-    return(list(occ = final_points,
+    return(list(occ = occ_final,
                 imoran = imorandf,
-                Distance = finalfilter$Distance,
+                n_bins = finalfilter$n_bins,
                 moran_summary = moran_summary))
   } else {
-    return(list(occ = final_points,
+    all_thinned <- lapply(names(filtered), function(x){
+      cbind(occ, "thin_env_flag" = filtered[[x]])
+    })
+    names(all_thinned) <- names(filtered)
+    return(list(occ = occ_final,
                 imoran = imorandf,
-                Distance = finalfilter$Distance,
+                n_bins = finalfilter$n_bins,
                 moran_summary = moran_summary,
-                all_thinned = filtered))
+                all_thinned = all_thinned))
   }
 
-}
+  }

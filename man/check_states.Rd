@@ -47,8 +47,10 @@ Check if the records fall in the state assigned in the metadata
 \examples{
 # Load example data
 data("occurrences", package = "RuHere") #Import data example
+# Subset occurrences for Araucaria angustifolia
+occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
 # Standardize country names
-occ_country <- standardize_countries(occ = occurrences,
+occ_country <- standardize_countries(occ = occ,
                                      return_dictionary = FALSE)
 # Standardize state names
 occ_state <- standardize_states(occ = occ_country,
