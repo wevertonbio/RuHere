@@ -32,8 +32,9 @@
 #'
 #' @details
 #' The following flags are available: correct_country, correct_state, cultivated,
-#' fossil, inaturalist, faunabr, florabr, wcvp, iucn, duplicated, thin, .val,
-#' .equ, .zer, .cap, .cen, .sea, .urb, .otl, .gbf, .inst, and .aohi.
+#' fossil, inaturalist, faunabr, florabr, wcvp, iucn, duplicated, thin_geo,
+#' thin_env, .val, .equ, .zer, .cap, .cen, .sea, .urb, .otl, .gbf, .inst, and
+#' .aohi.
 #'
 #'
 #' @returns
@@ -103,7 +104,7 @@ remove_flagged <- function(occ,
   if(flags == "all"){
     flags <- c("correct_country", "correct_state", "florabr", "faunabr",
                "wcvp", "iucn", "bien", "cultivated", "inaturalist",
-               "duplicated", "thin", "consensus",
+               "duplicated", "thin_env", "thin_geo", "consensus",
                # Froom CoordinateCleaner
                ".val", ".equ", ".zer", ".cap", ".cen", ".sea", ".urb", ".otl",
                ".gbf", ".inst", ".aohi")
@@ -197,11 +198,9 @@ remove_flagged <- function(occ,
   }
 
 
-
-
   # Add _flags for some columns
   to_paste <- c("florabr", "faunabr", "wcvp", "iucn", "bien", "cultivated",
-                "inaturalist", "duplicated", "thin", "consensus")
+                "inaturalist", "duplicated", "thin_env", "thin_geo", "consensus")
 
   flags[flags %in% to_paste] <- paste0(flags[flags %in% to_paste], "_flag")
 

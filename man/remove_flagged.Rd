@@ -65,8 +65,9 @@ or removing specific records, regardless of their flag values.
 }
 \details{
 The following flags are available: correct_country, correct_state, cultivated,
-fossil, inaturalist, faunabr, florabr, wcvp, iucn, duplicated, thin, .val,
-.equ, .zer, .cap, .cen, .sea, .urb, .otl, .gbf, .inst, and .aohi.
+fossil, inaturalist, faunabr, florabr, wcvp, iucn, duplicated, thin_geo,
+thin_env, .val, .equ, .zer, .cap, .cen, .sea, .urb, .otl, .gbf, .inst, and
+.aohi.
 }
 \examples{
 # Load example data

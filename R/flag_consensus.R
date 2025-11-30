@@ -71,7 +71,7 @@ flag_consensus <- function(occ, flags, consensus_rule = "all_true",
   allowed_flags <- c(
     "correct_country", "correct_state", "cultivated",
     "fossil", "inaturalist", "faunabr", "florabr",
-    "wcvp", "iucn", "duplicated", "thin",
+    "wcvp", "iucn", "duplicated", "thin_geo", "thin_env",
     ".val", ".equ", ".zer", ".cap", ".cen",
     ".sea", ".urb", ".otl", ".gbf", ".inst", ".aohi"
   )
@@ -89,7 +89,7 @@ flag_consensus <- function(occ, flags, consensus_rule = "all_true",
 
   # Add '_flags' for some columns
   to_paste <- c("florabr", "faunabr", "wcvp", "iucn", "bien", "cultivated",
-                "inaturalist", "duplicated", "thin")
+                "inaturalist", "duplicated", "thin_geo", "thin_env")
 
   flags[flags %in% to_paste] <- paste0(flags[flags %in% to_paste], "_flag")
 
