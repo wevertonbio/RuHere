@@ -45,6 +45,10 @@
 #' `CoordinateCleaner`workflow to identify potential data-quality issues in
 #' occurrence records.
 #'
+#' Users may also supply additional logical columns using
+#' `additional_flags`, optionally providing alternative display names
+#' (`names_additional_flags`) and colors (`col_additional_flags`).
+#'
 #' @returns
 #' An interactive mapview object displaying flagged and optionally unflagged
 #' occurrence records.

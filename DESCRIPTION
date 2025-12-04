@@ -22,8 +22,12 @@ Imports:
     ridigbio,
     fields,
     ggplot2,
-    mapview
-Suggests: R.utils
+    mapview,
+    sf
+Suggests: 
+    knitr,
+    R.utils,
+    rmarkdown
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -34,3 +38,4 @@ LazyData: true
 LinkingTo: 
     Rcpp (>= 1.1.0),
     RcppArmadillo (>= 15.0.2.2)
+VignetteBuilder: knitr

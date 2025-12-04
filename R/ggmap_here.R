@@ -1,9 +1,103 @@
-#' Static visualization of occurrence flags with ggplot2
+#' Static Visualization of Occurrence Flags with ggplot
 #'
 #' @description
-#' Produces a static map using **ggplot2**, highlighting flagged records.
+#' This function creates a static map of occurrence records using **ggplot2**,
+#' highlighting which points were flagged by data-validation functions. This
+#' visualization helps users quickly inspect spatial patterns of flagged and
+#' unflagged records and diagnose potential data-quality issues.
+#'
+#' @param occ (data.frame or data.table) a dataset containing occurrence records
+#' that has been processed by one or more flagging functions. See *Details* for
+#' available flag types.
+#' @param long (character) the name of the column in `occ` that contains the
+#' longitude values. Default is `"decimalLongitude"`.
+#' @param lat (character) the name of the column in `occ` that contains the
+#' latitude values. Default is `"decimalLatitude"`.
+#' @param flags (character) the flags to be used for coloring the records. Use
+#' `"all"` to display all available flags. See *Details* for all options.
+#' Default is `"all"`.
+#' @param additional_flags (character) an optional named character vector with
+#' the names of additional logical columns to be used as flags. Default is `NULL`.
+#' @param names_additional_flags (character) an optional different name to the
+#' flag provided in `additional_flags` to be shown in the map. Only applicable
+#' if `additional_flags` is not NULL.
+#' @param col_additional_flags (character) if `additional_flags` is provided,
+#' the color of the records flagged in this column. Obligatory if
+#' `additional_flags` is not NULL.
+#' @param show_no_flagged (logical) whether to display records that did not
+#' receive any flag.Default is TRUE.
+#' @param col_points (character) A **named vector** assigning colors to each
+#' flag. If `NULL`, default colors from the internal object
+#' `RuHere::flag_colors()` are used.
+#' @param size_points (numeric) point size for plotting occurrences.
+#' Default is 6.
+#' @param continent (SpatVector) optional polygon layer representing continent
+#' boundaries. If `NULL`, a built-in simplified world map is used (see
+#' *Details*). Default: `NULL`.
+#' @param continent_fill (character) fill color for the continent polygons.
+#' Default is "gray70".
+#' @param continent_linewidth (numeric) line width for continent boundaries.
+#' Default is 0.3.
+#' @param continent_border (character) color of the continent polygon borders.
+#' Default is "white".
+#' @param ocean_fill (character) background color used to represent the ocean.
+#' Default is "aliceblue".
+#' @param extension (SpatExtent or numeric) optional map extent specified as a
+#' `SpatExtent` or as a numeric vector of length 4 in the order:
+#' `xmin, xmax, ymin, ymax`. Default is `NULL` (computed automatically from the
+#' extent of the occurrence data).
+#' @param facet_wrap (logical) whether to plots each flag in a separate panel
+#' using `ggplot2::facet_wrap()`. Default is `FALSE`.
+#' @param theme_plot (theme) a `ggplot2` theme object. Default is
+#' `ggplot2::theme_minimal()`.
+#' @param ... additional arguments passed to `ggplot2::theme()`.
+#'
+#' @details
+#' This function expects an occurrence dataset that has already been processed
+#' by one or more flagging routines from **RuHere** or related packages such as
+#' **CoordinateCleaner**. Any logical column in `occ` can be used as a flag.
+#'
+#' The following built-in flag names are recognized:
+#' *From RuHere*:
+#' `correct_country`, `correct_state`, `cultivated`, `florabr`, `faunabr`,
+#' `wcvp`, `iucn`, `bien`, `duplicated`, `thin_geo`, `thin_env`, `consensus`
+#'
+#' *From CoordinateCleaner*:
+#' `.val`, `.equ`, `.zer`, `.cap`, `.cen`, `.sea`, `.urb`, `.otl`, `.gbf`,
+#' `.inst`, `.aohi`
+#'
+#' Users may also supply additional logical columns using
+#' `additional_flags`, optionally providing alternative display names
+#' (`names_additional_flags`) and colors (`col_additional_flags`).
+#'
+#' If `continent` is not provided, the background map is a simplified world
+#' polygon included with the package (a modified version of
+#' `rnaturalearthdata::map_units110`). To inspect this object, run:
+#'
+#' ```r
+#' terra::vect(system.file("extdata/world.shp", package = "RuHere"))
+#' ```
+#'
+#' When `facet_wrap = TRUE`, each flag is plotted in a separate panel,
+#' allowing direct comparison among different types of data issues.
+#'
+#' @returns
+#' An ggplot object displaying flagged and optionally unflagged occurrence
+#' records.
+#'
+#' @importFrom ggplot2 theme_minimal ggplot scale_color_manual coord_sf theme
+#' facet_wrap geom_sf ylab xlab geom_point aes
+#' @importFrom sf read_sf
 #'
 #' @export
+#'
+#' @examples
+#' # Load example data
+#' data("occ_flagged", package = "RuHere")
+#' # Visualize all flags with ggplot
+#' ggmap_here(occ = occ_flagged)
+#' # Visualize each flag in a separate panel
+#' ggmap_here(occ = occ_flagged, facet_wrap = TRUE)
 ggmap_here <- function(occ,
                        long = "decimalLongitude",
                        lat = "decimalLatitude",
@@ -20,8 +114,180 @@ ggmap_here <- function(occ,
                        continent_border = "white",
                        ocean_fill = "aliceblue",
                        extension = NULL,
-                       facet = FALSE,
+                       facet_wrap = FALSE,
+                       theme_plot = ggplot2::theme_minimal(),
                        ...) {
+  ##-----------------------------##
+  ##   ARGUMENT CHECKING        ##
+  ##-----------------------------##
+
+  # occ must be data.frame or data.table
+  if (!inherits(occ, "data.frame") && !inherits(occ, "data.table")) {
+    stop("'occ' must inherit from 'data.frame' or 'data.table'.")
+  }
+
+  # Force occ to be a dataframe
+  if(length(class(occ)) > 1)
+    occ <- as.data.frame(occ)
+
+  # long and lat must be character
+  if (!inherits(long, "character")) {
+    stop("'long' must be a character string indicating the longitude column.")
+  }
+  if (!inherits(lat, "character")) {
+    stop("'lat' must be a character string indicating the latitude column.")
+  }
+
+  # long/lat columns must exist
+  if (!long %in% colnames(occ)) {
+    stop("Column '", long, "' not found in 'occ'.")
+  }
+  if (!lat %in% colnames(occ)) {
+    stop("Column '", lat, "' not found in 'occ'.")
+  }
+
+  # flags must be character
+  if (!inherits(flags, "character")) {
+    stop("'flags' must be a character vector.")
+  }
+
+  recognized_flags <- c(
+    # RuHere
+    "correct_country", "correct_state", "cultivated", "florabr", "faunabr",
+    "wcvp", "iucn", "bien", "duplicated", "thin_geo", "thin_env", "consensus",
+    # CoordinateCleaner
+    ".val", ".equ", ".zer", ".cap", ".cen", ".sea", ".urb", ".otl",
+    ".gbf", ".inst", ".aohi", "all")
+
+  # Check that all provided flags are recognized
+  unrecognized <- flags[!flags %in% recognized_flags]
+
+  if (length(unrecognized) > 0) {
+    stop(
+      "The following flag names are not recognized: ",
+      paste(unrecognized, collapse = ", "),
+      ". See documentation for valid flag names.",
+      call. = FALSE
+    )
+  }
+
+  # additional_flags
+  if (!is.null(additional_flags)) {
+
+    # must be character
+    if (!inherits(additional_flags, "character")) {
+      stop("'additional_flags' must be a character vector.")
+    }
+
+    # must exist in occ
+    missing_af <- additional_flags[!additional_flags %in% colnames(occ)]
+    if (length(missing_af) > 0) {
+      stop("The following 'additional_flags' were not found in 'occ': ",
+           paste(missing_af, collapse = ", "))
+    }
+
+    # must be logical columns
+    non_logical <- vapply(additional_flags,
+                          function(x) !inherits(occ[[x]], "logical"),
+                          logical(1))
+    if (any(non_logical)) {
+      stop("All 'additional_flags' columns must be logical. Problematic: ",
+           paste(additional_flags[non_logical], collapse = ", "))
+    }
+  }
+
+  # names_additional_flags
+  if (!is.null(names_additional_flags)) {
+
+    if (!inherits(names_additional_flags, "character")) {
+      stop("'names_additional_flags' must be a character vector.")
+    }
+
+    if (length(names_additional_flags) != length(additional_flags)) {
+      stop("'names_additional_flags' must have the same length as 'additional_flags'.")
+    }
+  }
+
+  # col_additional_flags
+  if (!is.null(col_additional_flags)) {
+
+    if (!inherits(col_additional_flags, "character")) {
+      stop("'col_additional_flags' must be a character vector of colors.")
+    }
+
+    if (is.null(additional_flags)) {
+      stop("'col_additional_flags' cannot be used when 'additional_flags' is NULL.")
+    }
+
+    if (length(col_additional_flags) != length(additional_flags)) {
+      stop("'col_additional_flags' must have the same length as 'additional_flags'.")
+    }
+  }
+
+  # show_no_flagged must be logical
+  if (!inherits(show_no_flagged, "logical")) {
+    stop("'show_no_flagged' must be logical (TRUE/FALSE).")
+  }
+
+  # col_points must be character named vector if not NULL
+  if (!is.null(col_points)) {
+    if (!inherits(col_points, "character")) {
+      stop("'col_points' must be a character vector of colors.")
+    }
+    if (is.null(names(col_points))) {
+      stop("'col_points' must be a named vector, with names matching flag names.")
+    }
+  }
+
+  # size_points must be numeric
+  if (!inherits(size_points, "numeric")) {
+    stop("'size_points' must be numeric.")
+  }
+
+  # continent
+  if (!is.null(continent)) {
+    if (!inherits(continent, "SpatVector")) {
+      stop("'continent' must be a SpatVector object.")
+    }
+  }
+
+  # continent_fill / border must be character
+  if (!inherits(continent_fill, "character")) {
+    stop("'continent_fill' must be a character string (color).")
+  }
+  if (!inherits(continent_border, "character")) {
+    stop("'continent_border' must be a character string (color).")
+  }
+
+  # continent_linewidth must be numeric
+  if (!inherits(continent_linewidth, "numeric")) {
+    stop("'continent_linewidth' must be numeric.")
+  }
+
+  # ocean_fill must be character
+  if (!inherits(ocean_fill, "character")) {
+    stop("'ocean_fill' must be a character string (color).")
+  }
+
+  # extension
+  if (!is.null(extension)) {
+    if (!inherits(extension, "SpatExtent") &&
+        !(inherits(extension, "numeric") && length(extension) == 4)) {
+      stop("'extension' must be a SpatExtent or a numeric vector of length 4.")
+    }
+  }
+
+  # facet_wrap must be logical
+  if (!inherits(facet_wrap, "logical")) {
+    stop("'facet_wrap' must be logical (TRUE/FALSE).")
+  }
+
+  # theme_plot must be a ggplot theme
+  if (!inherits(theme_plot, "theme")) {
+    stop("'theme_plot' must inherit from 'ggplot2::theme'.")
+  }
+
+
 
   if(flags == "all"){
     flags <- c("correct_country", "correct_state", "florabr", "faunabr",
@@ -79,9 +345,6 @@ ggmap_here <- function(occ,
     occ_list[["No flagged"]] <- no_flagged
   }
 
-  # Spatialize
-  occ_list <- lapply(occ_list, spatialize, long = long, lat = lat)
-
   # Update flags
   flags <- names(occ_list)
 
@@ -97,51 +360,58 @@ ggmap_here <- function(occ,
     col_points <- c(col_points, col_additional)
   }
 
-  # Filter maps with 0 geometries
-  occ_list <- occ_list[sapply(occ_list, function(x) length(x) > 0)]
-
   # Import basemap
   if(is.null(continent)){
-    continent <- terra::vect(system.file("extdata/world.shp",
+    continent <- sf::read_sf(system.file("extdata/world.shp",
                                          package = "RuHere"))
   }
 
-  # Merge occ_list
+  # # Merge occ_list
   pts <- lapply(names(occ_list), function(i){
     pts_i <- occ_list[[i]]
     pts_i$Flag = i
-    pts_i[, "Flag"]
+    pts_i[, c(long, lat, "Flag")]
   })
-  pts <- vect(pts)
+
+
+  # Merge
+  pts <- do.call("rbind", args = pts)
+  # Remove invalid
+  pts <- na.omit(pts)
+  # Set levels
+  pts$Flag <- factor(x = pts$Flag, levels = unique(pts$Flag))
 
   # Define extension
   if(is.null(extension)){
-    extension <- terra::ext(pts)
-    extension <- c(extension[1] - 0.5, extension[2] + 0.5,
-                   extension[3] - 0.5, extension[4] + 0.5)
+   extension <- c(min(occ[[long]], na.rm = TRUE) - 1,
+                  max(occ[[long]], na.rm = TRUE) + 1,
+                  min(occ[[lat]], na.rm = TRUE) - 1,
+                  max(occ[[lat]], na.rm = TRUE) + 1)
   }
 
-  # Set order
-  pts$Flag <- factor(x = pts$Flag, levels = unique(pts$Flag))
-
-  # Plot using tidyterra and ggplot
+  # Plot using ggplot
   p <- ggplot2::ggplot() +
-    tidyterra::geom_spatvector(data = continent,
-                               fill = continent_fill,
-                               linewidth = continent_linewidth,
-                               col = continent_border) +
-    tidyterra::geom_spatvector(data = pts, aes(fill = Flag, col = Flag),
-                               size = size_points) +
+    ggplot2::geom_sf(data = continent,
+                     fill = continent_fill,
+                     linewidth = continent_linewidth,
+                     col = continent_border) +
+    ggplot2::geom_point(data = pts,
+                        ggplot2::aes(.data[[long]], .data[[lat]],
+                            fill = .data[["Flag"]], col = .data[["Flag"]]),
+                        size = size_points) +
     ggplot2::scale_color_manual(values = flag_colors) +
     ggplot2::coord_sf(xlim = c(extension[1], extension[2]),
              ylim = c(extension[3], extension[4]),
              expand = F) +
+    ggplot2::xlab("Longitude") + ggplot2::ylab("Latitude") +
+    theme_plot +
     ggplot2::theme(panel.background = ggplot2::element_rect(fill = ocean_fill,
-                                                   colour = NA))
+                                                   colour = NA),
+                   ...)
 
-  if(facet){
+  if(facet_wrap){
   p <- p + ggplot2::facet_wrap(.~Flag) +
-    theme(legend.position = "none")
+    ggplot2::theme(legend.position = "none")
   }
 
   return(p)

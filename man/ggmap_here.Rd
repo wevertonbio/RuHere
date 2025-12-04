@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggmap_here.R
 \name{ggmap_here}
 \alias{ggmap_here}
-\title{Static visualization of occurrence flags with ggplot2}
+\title{Static Visualization of Occurrence Flags with ggplot}
 \usage{
 ggmap_here(
   occ,
@@ -21,10 +21,119 @@ ggmap_here(
   continent_border = "white",
   ocean_fill = "aliceblue",
   extension = NULL,
-  facet = FALSE,
+  facet_wrap = FALSE,
+  theme_plot = ggplot2::theme_minimal(),
   ...
 )
 }
+\arguments{
+\item{occ}{(data.frame or data.table) a dataset containing occurrence records
+that has been processed by one or more flagging functions. See \emph{Details} for
+available flag types.}
+
+\item{long}{(character) the name of the column in \code{occ} that contains the
+longitude values. Default is \code{"decimalLongitude"}.}
+
+\item{lat}{(character) the name of the column in \code{occ} that contains the
+latitude values. Default is \code{"decimalLatitude"}.}
+
+\item{flags}{(character) the flags to be used for coloring the records. Use
+\code{"all"} to display all available flags. See \emph{Details} for all options.
+Default is \code{"all"}.}
+
+\item{additional_flags}{(character) an optional named character vector with
+the names of additional logical columns to be used as flags. Default is \code{NULL}.}
+
+\item{names_additional_flags}{(character) an optional different name to the
+flag provided in \code{additional_flags} to be shown in the map. Only applicable
+if \code{additional_flags} is not NULL.}
+
+\item{col_additional_flags}{(character) if \code{additional_flags} is provided,
+the color of the records flagged in this column. Obligatory if
+\code{additional_flags} is not NULL.}
+
+\item{show_no_flagged}{(logical) whether to display records that did not
+receive any flag.Default is TRUE.}
+
+\item{col_points}{(character) A \strong{named vector} assigning colors to each
+flag. If \code{NULL}, default colors from the internal object
+\code{RuHere::flag_colors()} are used.}
+
+\item{size_points}{(numeric) point size for plotting occurrences.
+Default is 6.}
+
+\item{continent}{(SpatVector) optional polygon layer representing continent
+boundaries. If \code{NULL}, a built-in simplified world map is used (see
+\emph{Details}). Default: \code{NULL}.}
+
+\item{continent_fill}{(character) fill color for the continent polygons.
+Default is "gray70".}
+
+\item{continent_linewidth}{(numeric) line width for continent boundaries.
+Default is 0.3.}
+
+\item{continent_border}{(character) color of the continent polygon borders.
+Default is "white".}
+
+\item{ocean_fill}{(character) background color used to represent the ocean.
+Default is "aliceblue".}
+
+\item{extension}{(SpatExtent or numeric) optional map extent specified as a
+\code{SpatExtent} or as a numeric vector of length 4 in the order:
+\verb{xmin, xmax, ymin, ymax}. Default is \code{NULL} (computed automatically from the
+extent of the occurrence data).}
+
+\item{facet_wrap}{(logical) whether to plots each flag in a separate panel
+using \code{ggplot2::facet_wrap()}. Default is \code{FALSE}.}
+
+\item{theme_plot}{(theme) a \code{ggplot2} theme object. Default is
+\code{ggplot2::theme_minimal()}.}
+
+\item{...}{additional arguments passed to \code{ggplot2::theme()}.}
+}
+\value{
+An ggplot object displaying flagged and optionally unflagged occurrence
+records.
+}
 \description{
-Produces a static map using \strong{ggplot2}, highlighting flagged records.
+This function creates a static map of occurrence records using \strong{ggplot2},
+highlighting which points were flagged by data-validation functions. This
+visualization helps users quickly inspect spatial patterns of flagged and
+unflagged records and diagnose potential data-quality issues.
+}
+\details{
+This function expects an occurrence dataset that has already been processed
+by one or more flagging routines from \strong{RuHere} or related packages such as
+\strong{CoordinateCleaner}. Any logical column in \code{occ} can be used as a flag.
+
+The following built-in flag names are recognized:
+\emph{From RuHere}:
+\code{correct_country}, \code{correct_state}, \code{cultivated}, \code{florabr}, \code{faunabr},
+\code{wcvp}, \code{iucn}, \code{bien}, \code{duplicated}, \code{thin_geo}, \code{thin_env}, \code{consensus}
+
+\emph{From CoordinateCleaner}:
+\code{.val}, \code{.equ}, \code{.zer}, \code{.cap}, \code{.cen}, \code{.sea}, \code{.urb}, \code{.otl}, \code{.gbf},
+\code{.inst}, \code{.aohi}
+
+Users may also supply additional logical columns using
+\code{additional_flags}, optionally providing alternative display names
+(\code{names_additional_flags}) and colors (\code{col_additional_flags}).
+
+If \code{continent} is not provided, the background map is a simplified world
+polygon included with the package (a modified version of
+\code{rnaturalearthdata::map_units110}). To inspect this object, run:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{terra::vect(system.file("extdata/world.shp", package = "RuHere"))
+}\if{html}{\out{</div>}}
+
+When \code{facet_wrap = TRUE}, each flag is plotted in a separate panel,
+allowing direct comparison among different types of data issues.
+}
+\examples{
+# Load example data
+data("occ_flagged", package = "RuHere")
+# Visualize all flags with ggplot
+ggmap_here(occ = occ_flagged)
+# Visualize each flag in a separate panel
+ggmap_here(occ = occ_flagged, facet_wrap = TRUE)
 }
