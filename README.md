@@ -1,3 +1,9 @@
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/wevertonbio/RuHere/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/wevertonbio/RuHere/actions/workflows/R-CMD-check.yaml)
+[![License](https://img.shields.io/badge/license-GPL%20(%3E=%203)-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
+<!-- badges: end -->
+
+
 RuHere: An R package that automatically flags common spatial errors in biological collection data using specialists' information.
 ================
 Weverton C. F. Trindade and Fernanda S. Caron
