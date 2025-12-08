@@ -6,13 +6,15 @@
 #' SpeciesLink.
 #'
 #' @usage set_specieslink_credentials(specieslink_key, overwrite = FALSE,
-#'                                    open_Renviron = FALSE)
+#'                                    open_Renviron = FALSE, verbose = TRUE)
 #'
 #' @param specieslink_key (character) your SpeciesLink API key.
 #' @param overwrite (logical) whether to overwrite SpeciesLink credential if it
 #' already exists. Default is FALSE.
 #' @param open_Renviron (logical) whether to open the .Renviron file after
 #' saving the credentials. Default is FALSE.
+#' @param verbose (logical) if `TRUE`, prints messages about the progress and
+#' the number of species being checked. Default is `TRUE`.
 #'
 #' @details
 #' To check your API key, visit: [https://specieslink.net/aut/profile/apikeys](https://specieslink.net/aut/profile/apikeys).
@@ -30,7 +32,7 @@
 #' }
 #'
 set_specieslink_credentials <- function(specieslink_key, overwrite = FALSE,
-                                        open_Renviron = FALSE) {
+                                        open_Renviron = FALSE, verbose = TRUE) {
   # Check arguments
   if (!inherits(specieslink_key, "character") || length(specieslink_key) != 1)
     stop("'specieslink_key' must be a character, not ", class(specieslink_key),
@@ -64,11 +66,13 @@ set_specieslink_credentials <- function(specieslink_key, overwrite = FALSE,
     if(!overwrite){
       stop("SPECIESLINK_KEY already exists. Check your .Renviron file or set 'overwrite = TRUE")
     } else {
-      warning("Overwriting variable SPECIESLINK_KEY in .Renviron")
-      # Check lines to overwrite
-      to_overwrite <- grepl("^SPECIESLINK_KEY",
-                            lines)
-      lines <- lines[!to_overwrite]
+      if (verbose) {
+        warning("Overwriting variable SPECIESLINK_KEY in .Renviron")
+        # Check lines to overwrite
+        to_overwrite <- grepl("^SPECIESLINK_KEY",
+                              lines)
+        lines <- lines[!to_overwrite]
+      }
     }
   }
 
@@ -79,8 +83,10 @@ set_specieslink_credentials <- function(specieslink_key, overwrite = FALSE,
   # Write lines
   writeLines(new_lines, renviron_path)
 
-  message("speciesLink credentials have been processed and added/updated in your .Renviron file\n",
-          "Check your .Renviron with file.edit('", normalizePath(renviron_path, winslash = "/"), "')")
+  if (verbose) {
+    message("speciesLink credentials have been processed and added/updated in your .Renviron file\n",
+            "Check your .Renviron with file.edit('", normalizePath(renviron_path, winslash = "/"), "')")
+  }
 
   if(open_Renviron){
     utils::file.edit(normalizePath(renviron_path, winslash = "/"))
