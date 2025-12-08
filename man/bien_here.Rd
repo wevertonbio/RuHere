@@ -4,7 +4,14 @@
 \alias{bien_here}
 \title{Download species distribution information from BIEN}
 \usage{
-bien_here(data_dir, species, synonyms = NULL, overwrite = TRUE, verbose = TRUE)
+bien_here(
+  data_dir,
+  species,
+  synonyms = NULL,
+  overwrite = TRUE,
+  progress_bar = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{data_dir}{(character) directory to save the data downloaded from BIEN.}
@@ -19,6 +26,9 @@ See details for more information.}
 
 \item{overwrite}{(logical) whether to overwrite existing files. Default is
 \code{TRUE}.}
+
+\item{progress_bar}{(logical) whether to display a progress bar during processing.
+If TRUE, the 'pbapply' package must be installed. Default is \code{FALSE}.}
 
 \item{verbose}{(logical) whether to display progress messages. Default is
 \code{TRUE}.}

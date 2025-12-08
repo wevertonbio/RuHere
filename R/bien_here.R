@@ -14,6 +14,8 @@
 #' See details for more information.
 #' @param overwrite (logical) whether to overwrite existing files. Default is
 #' `TRUE`.
+#' @param progress_bar (logical) whether to display a progress bar during processing.
+#'   If TRUE, the 'pbapply' package must be installed. Default is `FALSE`.
 #' @param verbose (logical) whether to display progress messages. Default is
 #' `TRUE`.
 #'
@@ -36,7 +38,6 @@
 #' underscore (“_”) replacing the space between the genus and the specific
 #' epithet.
 #'
-#' @importFrom pbapply pblapply
 #' @importFrom BIEN BIEN_ranges_load_species
 #' @importFrom terra vect writeVector
 #' @importFrom data.table rbindlist
@@ -55,8 +56,61 @@ bien_here <- function(data_dir,
                       species,
                       synonyms = NULL,
                       overwrite = TRUE,
+                      progress_bar = FALSE,
                       verbose = TRUE){
 
+  # --- Argument checks ----------------------------------
+
+  # data_dir
+  if (!inherits(data_dir, "character") || length(data_dir) != 1) {
+    stop("'data_dir' must be a single character string.", call. = FALSE)
+  }
+
+  # species
+  if (missing(species) || !inherits(species, "character") || length(species) == 0) {
+    stop("'species' must be a character vector with at least one species name.",
+         call. = FALSE)
+  }
+
+  # synonyms
+  if (!is.null(synonyms)) {
+
+    if (!inherits(synonyms, "data.frame")) {
+      stop("'synonyms' must be a data.frame with two columns (accepted, synonym).",
+           call. = FALSE)
+    }
+
+    if (ncol(synonyms) < 2) {
+      stop("'synonyms' must have at least two columns: accepted_name and synonym.",
+           call. = FALSE)
+    }
+
+    if (!inherits(synonyms[[1]], "character") ||
+        !inherits(synonyms[[2]], "character")) {
+      stop("The first two columns of 'synonyms' must be character vectors.",
+           call. = FALSE)
+    }
+  }
+
+  # overwrite
+  if (!inherits(overwrite, "logical") || length(overwrite) != 1) {
+    stop("'overwrite' must be a single logical value (TRUE/FALSE).",
+         call. = FALSE)
+  }
+
+  # progress_bar
+  if (!inherits(progress_bar, "logical") || length(progress_bar) != 1) {
+    stop("'progress_bar' must be a single logical value (TRUE/FALSE).",
+         call. = FALSE)
+  }
+
+  # verbose
+  if (!inherits(verbose, "logical") || length(verbose) != 1) {
+    stop("'verbose' must be a single logical value (TRUE/FALSE).",
+         call. = FALSE)
+  }
+
+  # Ensure data_dir exists
   if(!file.exists(data_dir)){
     stop(data_dir, " directory does not exist. Please create it or specify a different directory.")
   }
@@ -65,10 +119,21 @@ bien_here <- function(data_dir,
   odir <- file.path(data_dir, "bien")
   dir.create(odir, showWarnings = FALSE)
 
-  #### PARALELIZAR... ####
+  # Set progressbar
+  if (progress_bar) {
+    if (requireNamespace("pbapply", quietly = TRUE)) {
+      my_lapply <- pbapply::pblapply
+    } else {
+      stop("Package 'pbapply' is required if 'progress_bar = TRUE'.
+Run install.packages('pbapply')", call. = FALSE)
+    }
+  } else {
+    my_lapply <- base::lapply
+  }
+
 
   # Save species
-  res <- pbapply::pblapply(species, function(i){
+  res <- my_lapply(species, function(i){
     if(!is.null(synonyms)){
       s_i <- synonyms[synonyms[[1]] == i, 2]
       if(length(s_i) > 0){

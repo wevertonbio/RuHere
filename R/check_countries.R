@@ -13,8 +13,11 @@
 #' @param try_to_fix (logical) whether to check if coordinates are inverted or
 #' transposed (see `fix_countries()` for details). If `TRUE`, coordinates
 #' identified as inverted or transposed will be corrected. Default is `FALSE`.
+#' @param progress_bar (logical) whether to display a progress bar during
+#' processing. If TRUE, the 'pbapply' package must be installed. Default is
+#' `FALSE`.
 #' @param verbose (logical) whether to print messages about function progress.
-#' Default is TRUE.
+#' Default is `TRUE`.
 #'
 #' @returns
 #' The original `occ` data.frame with an additional column (`correct_country`)
@@ -22,7 +25,6 @@
 #' metadata (`TRUE`) or not (`FALSE`).
 #'
 #' @importFrom terra vect aggregate buffer is.related
-#' @importFrom pbapply pbsapply
 #'
 #' @export
 #'
@@ -41,6 +43,7 @@ check_countries <- function(occ,
                             country_column,
                             distance = 5,
                             try_to_fix = FALSE,
+                            progress_bar = FALSE,
                             verbose = TRUE){
   # ---- ARGUMENT CHECKING ----
 
@@ -102,6 +105,24 @@ check_countries <- function(occ,
          call. = FALSE)
   }
 
+  # progress_bar
+  if (!inherits(progress_bar, "logical") || length(progress_bar) != 1) {
+    stop("'progress_bar' must be a single logical value (TRUE/FALSE).",
+         call. = FALSE)
+  }
+
+
+  if (progress_bar) {
+    if (requireNamespace("pbapply", quietly = TRUE)) {
+      my_sapply <- pbapply::pbsapply
+    } else {
+      stop("Package 'pbapply' is required if 'progress_bar = TRUE'.
+Run install.packages('pbapply')", call. = FALSE)
+    }
+  } else {
+    my_sapply <- base::sapply
+  }
+
 
   #Get unique countries
   countries <- unique(occ[[country_column]])
@@ -133,11 +154,11 @@ check_countries <- function(occ,
                     geom = c(x = long, y = lat),
                     crs = "+init=epsg:4326")
 
-  #Looping with pbsapply
+  #Looping
   if(verbose){
     message("Testing countries...")}
 
-  test_country <- pbapply::pbsapply(countries_in, function(i){
+  test_country <- my_sapply(countries_in, function(i){
     country_i <- country_shp[country_shp$name == i]
     # Add buffer, if necessary
     if(distance > 0){

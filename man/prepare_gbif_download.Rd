@@ -4,10 +4,19 @@
 \alias{prepare_gbif_download}
 \title{Prepare data to request GBIF download}
 \usage{
-prepare_gbif_download(species, rank = NULL, kingdom = NULL,
-                             phylum = NULL, class = NULL, order = NULL,
-                             family = NULL, genus = NULL, strict = FALSE,
-                             ...)
+prepare_gbif_download(
+  species,
+  rank = NULL,
+  kingdom = NULL,
+  phylum = NULL,
+  class = NULL,
+  order = NULL,
+  family = NULL,
+  genus = NULL,
+  strict = FALSE,
+  progress_bar = FALSE,
+  ...
+)
 }
 \arguments{
 \item{species}{(character) a vector of species name(s).}
@@ -37,6 +46,10 @@ it will return species matched across all genus.}
 
 \item{strict}{(logical) If TRUE, it (fuzzy) matches only the given name, but
 never a taxon in the upper classification. Default is FALSE.}
+
+\item{progress_bar}{(logical) whether to display a progress bar during
+processing. If TRUE, the 'pbapply' package must be installed. Default is
+\code{FALSE}.}
 
 \item{...}{other parameters passed to \code{rgbif::occ_count()}.}
 }

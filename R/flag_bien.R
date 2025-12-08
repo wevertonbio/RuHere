@@ -21,6 +21,9 @@
 #' latitude values. Default is `"decimalLatitude"`.
 #' @param buffer (numeric) buffer distance (in kilometers) to be applied
 #' around the region of distribution. Default is 20 km.
+#' @param progress_bar (logical) whether to display a progress bar during
+#' processing. If TRUE, the 'pbapply' package must be installed. Default is
+#' `FALSE`.
 #' @param verbose (logical) if `TRUE`, prints messages about the progress and
 #' the number of species being checked. Default is `TRUE`.
 #'
@@ -32,7 +35,6 @@
 #' data. Records for species not found in the \code{BIEN} data will have
 #' \code{NA} in the \code{bien_flag} column.
 #'
-#' @importFrom pbapply pblapply
 #' @importFrom terra vect buffer is.related
 #' @importFrom data.table rbindlist
 #'
@@ -53,7 +55,7 @@
 #'
 flag_bien <- function(data_dir, occ, species = "species",
                       long = "decimalLongitude", lat = "decimalLatitude",
-                      buffer = 10, verbose = TRUE){
+                      buffer = 10, progress_bar = FALSE, verbose = TRUE){
 
   ### --- Argument checking ----------------------------------------------------
 
@@ -98,6 +100,22 @@ flag_bien <- function(data_dir, occ, species = "species",
     stop("'verbose' must be a single logical value (TRUE or FALSE).", call. = FALSE)
   }
 
+  # progress_bar
+  if (!inherits(progress_bar, "logical") || length(progress_bar) != 1) {
+    stop("'progress_bar' must be a single logical value (TRUE/FALSE).",
+         call. = FALSE)
+  }
+
+  if (progress_bar) {
+    if (requireNamespace("pbapply", quietly = TRUE)) {
+      my_lapply <- pbapply::pblapply
+    } else {
+      stop("Package 'pbapply' is required if 'progress_bar = TRUE'.
+Run install.packages('pbapply')", call. = FALSE)
+    }
+  } else {
+    my_lapply <- base::lapply
+  }
 
   # Check if data_dir exists
   if(!file.exists(data_dir)){
@@ -130,7 +148,7 @@ flag_bien <- function(data_dir, occ, species = "species",
   }
 
   # Flag
-  res_flag <- pbapply::pblapply(spp_in, function(i){
+  res_flag <- my_lapply(spp_in, function(i){
     # Get species name
     sp_name <- gsub("_", " ", i)
 

@@ -13,7 +13,8 @@ flag_iucn(
   origin = "native",
   presence = "all",
   buffer = 20,
-  verbose = TRUE
+  progress_bar = FALSE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -51,8 +52,12 @@ regions will be considered.}
 \item{buffer}{(numeric) buffer distance (in kilometers) to be applied
 around the region of distribution. Default is 20 km.}
 
+\item{progress_bar}{(logical) whether to display a progress bar during
+processing. If TRUE, the 'pbapply' package must be installed. Default is
+\code{FALSE}.}
+
 \item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
-the number of species being checked. Default is \code{TRUE}.}
+the number of species being checked. Default is \code{FALSE}.}
 }
 \value{
 A \code{data.frame} that is the original \code{occ} data frame

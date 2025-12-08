@@ -12,7 +12,8 @@ flag_wcvp(
   lat = "decimalLatitude",
   origin = "native",
   buffer = 20,
-  verbose = TRUE
+  progress_bar = FALSE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -41,8 +42,12 @@ introduced will be used to validate records.  Default is \code{"native"}.}
 \item{buffer}{(numeric) buffer distance (in kilometers) to be applied
 around the region of distribution. Default is 20 km.}
 
-\item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
-the number of species being checked. Default is \code{TRUE}.}
+\item{progress_bar}{(logical) whether to display a progress bar during
+processing. If TRUE, the 'pbapply' package must be installed. Default is
+\code{FALSE}.}
+
+\item{verbose}{(logical) if \code{FALSE}, prints messages about the progress and
+the number of species being checked. Default is \code{FALSE}.}
 }
 \value{
 A \code{data.frame} that is the original \code{occ} data frame

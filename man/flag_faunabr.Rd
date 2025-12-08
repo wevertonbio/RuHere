@@ -10,7 +10,6 @@ flag_faunabr(
   species = "species",
   long = "decimalLongitude",
   lat = "decimalLatitude",
-  verbose = TRUE,
   origin = NULL,
   by_state = TRUE,
   buffer_state = 20,
@@ -18,7 +17,9 @@ flag_faunabr(
   buffer_country = 20,
   keep_columns = TRUE,
   spat_state = NULL,
-  spat_country = NULL
+  spat_country = NULL,
+  progress_bar = FALSE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -37,9 +38,6 @@ longitude values. Default is \code{"decimalLongitude"}.}
 
 \item{lat}{(character) the name of the column in \code{occ} that contains the
 latitude values. Default is \code{"decimalLatitude"}.}
-
-\item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
-the number of species being checked. Default is \code{TRUE}.}
 
 \item{origin}{(character) filter the \code{faunabr} data by origin type
 before checking (\code{"native"}, \code{"cryptogenic"}, or \code{"exotic"}). Default is
@@ -73,6 +71,13 @@ default, it uses the SpatVector provided by rnaturalearth::ne_countries. It
 can be another Spatvector, but the structure must be identical to
 'faunabr::world_fauna', with a column called "country_code" identifying the
 country codes.}
+
+\item{progress_bar}{(logical) whether to display a progress bar during
+processing. If TRUE, the 'pbapply' package must be installed. Default is
+\code{FALSE}.}
+
+\item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
+the number of species being checked. Default is \code{FALSE}.}
 }
 \value{
 #' A \code{data.frame} that is the original \code{occ} data frame

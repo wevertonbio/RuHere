@@ -10,7 +10,8 @@ iucn_here(
   synonyms = NULL,
   iucn_credential = NULL,
   overwrite = TRUE,
-  verbose = TRUE,
+  progress_bar = FALSE,
+  verbose = FALSE,
   return_data = TRUE
 )
 }
@@ -34,8 +35,12 @@ function.}
 \item{overwrite}{(logical) whether to overwrite existing files. Default is
 \code{TRUE}.}
 
+\item{progress_bar}{(logical) whether to display a progress bar during
+processing. If TRUE, the 'pbapply' package must be installed. Default is
+\code{FALSE}.}
+
 \item{verbose}{(logical) whether to display progress messages. Default is
-\code{TRUE}.}
+\code{FALSE}.}
 
 \item{return_data}{(logical) whether to return a data frame containing the
 species distribution information downloaded from IUCN. Default is \code{TRUE}.}

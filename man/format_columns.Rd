@@ -15,6 +15,7 @@ format_columns(
   numeric_columns = NULL,
   check_encoding = TRUE,
   data_source = NULL,
+  progress_bar = FALSE,
   verbose = FALSE
 )
 }
@@ -63,6 +64,10 @@ is TRUE.}
 \item{data_source}{(character) the source of the occurrence records. Default
 is NULL, meaning it will use the same string provided in \code{metadata}. If
 \code{metadata} is a user-defined data.frame, this argument must be specified.}
+
+\item{progress_bar}{(logical) whether to display a progress bar during
+processing. If TRUE, the 'pbapply' package must be installed. Default is
+\code{FALSE}.}
 
 \item{verbose}{(logical) whether to print messages about the progress.
 Default is FALSE.}

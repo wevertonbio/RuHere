@@ -35,6 +35,9 @@
 #' @param data_source (character) the source of the occurrence records. Default
 #' is NULL, meaning it will use the same string provided in `metadata`. If
 #' `metadata` is a user-defined data.frame, this argument must be specified.
+#' @param progress_bar (logical) whether to display a progress bar during
+#' processing. If TRUE, the 'pbapply' package must be installed. Default is
+#' `FALSE`.
 #' @param verbose (logical) whether to print messages about the progress.
 #' Default is FALSE.
 #'
@@ -59,7 +62,6 @@
 #'
 #' @importFrom florabr get_binomial
 #' @importFrom stringi stri_enc_detect
-#' @importFrom pbapply pbsapply
 #'
 #' @export
 #'
@@ -87,6 +89,7 @@ format_columns <- function(occ,
                            numeric_columns = NULL,
                            check_encoding = TRUE,
                            data_source = NULL,
+                           progress_bar = FALSE,
                            verbose = FALSE) {
   # ---- ARGUMENT CHECKING ----
 
@@ -189,6 +192,23 @@ format_columns <- function(occ,
   if (!inherits(verbose, "logical") || length(verbose) != 1)
     stop("'verbose' must be a single logical value (TRUE or FALSE).", call. = FALSE)
 
+  # progress_bar
+  if (!inherits(progress_bar, "logical") || length(progress_bar) != 1) {
+    stop("'progress_bar' must be a single logical value (TRUE/FALSE).",
+         call. = FALSE)
+  }
+
+  # Progress bar
+  if (progress_bar) {
+    if (requireNamespace("pbapply", quietly = TRUE)) {
+      my_sapply <- pbapply::pbsapply
+    } else {
+      stop("Package 'pbapply' is required if 'progress_bar = TRUE'.
+Run install.packages('pbapply')", call. = FALSE)
+    }
+  } else {
+    my_sapply <- base::sapply
+  }
 
   # Convert to dataframe if necessary
   if(inherits(occ, c("data.table", "tbl_df"))){
@@ -349,7 +369,7 @@ format_columns <- function(occ,
       #Fix
       if(verbose)
         message("Fixing encoding of ", column)
-      cc_corrected <- pbapply::pbsapply(names(cc_correct), function(i){
+      cc_corrected <- my_sapply(names(cc_correct), function(i){
         try({cc_corrected_i <- iconv(i,
                                      from = cc_correct[[i]]$Encoding[1],
                                      to = "utf-8")

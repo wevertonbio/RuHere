@@ -11,6 +11,7 @@ fix_states(
   state_column,
   correct_state = "correct_state",
   distance = 5,
+  progress_bar = FALSE,
   verbose = TRUE
 )
 }
@@ -33,6 +34,10 @@ metadata. Default is 'correct_state'. See details.}
 
 \item{distance}{(numeric) maximum distance (in kilometers) a record can fall
 outside the state assigned in the \code{state_column}. Default is \code{5}.}
+
+\item{progress_bar}{(logical) whether to display a progress bar during
+processing. If TRUE, the 'pbapply' package must be installed. Default is
+\code{FALSE}.}
 
 \item{verbose}{(logical) whether to print messages about function progress.
 Default is TRUE.}

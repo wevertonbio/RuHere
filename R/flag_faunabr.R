@@ -20,8 +20,6 @@
 #' longitude values. Default is `"decimalLongitude"`.
 #' @param lat (character) the name of the column in `occ` that contains the
 #' latitude values. Default is `"decimalLatitude"`.
-#' @param verbose (logical) if `TRUE`, prints messages about the progress and
-#' the number of species being checked. Default is `TRUE`.
 #' @param origin (character) filter the `faunabr` data by origin type
 #' before checking (`"native"`, `"cryptogenic"`, or `"exotic"`). Default is
 #' `NULL` (no filtering).
@@ -47,6 +45,11 @@
 #' can be another Spatvector, but the structure must be identical to
 #' 'faunabr::world_fauna', with a column called "country_code" identifying the
 #' country codes.
+#' @param progress_bar (logical) whether to display a progress bar during
+#' processing. If TRUE, the 'pbapply' package must be installed. Default is
+#' `FALSE`.
+#' @param verbose (logical) if `TRUE`, prints messages about the progress and
+#' the number of species being checked. Default is `FALSE`.
 #'
 #' @return #' A \code{data.frame} that is the original \code{occ} data frame
 #' augmented with a new column named \code{faunabr_flag}. This column is
@@ -56,7 +59,6 @@
 #' \code{NA} in the \code{faunabr_flag} column.
 #'
 #' @importFrom faunabr load_faunabr filter_faunabr
-#' @importFrom pbapply pblapply
 #' @importFrom data.table rbindlist
 #'
 #' @export
@@ -74,10 +76,11 @@
 #' occ_fauna <- flag_faunabr(data_dir = dataset_dir, occ = occ)
 flag_faunabr <- function(data_dir, occ, species = "species",
                          long = "decimalLongitude", lat = "decimalLatitude",
-                         verbose = TRUE, origin = NULL, by_state = TRUE,
+                         origin = NULL, by_state = TRUE,
                          buffer_state = 20, by_country = TRUE,
                          buffer_country = 20, keep_columns = TRUE,
-                         spat_state = NULL, spat_country = NULL) {
+                         spat_state = NULL, spat_country = NULL,
+                         progress_bar = FALSE, verbose = FALSE) {
 
 
   if (missing(data_dir) || is.null(data_dir)) {
@@ -110,9 +113,6 @@ flag_faunabr <- function(data_dir, occ, species = "species",
     stop("'lat' should be a character, not ", class(lat))
   }
 
-  if (!inherits(verbose, "logical")) {
-    stop("'verbose' must be logical, not ", class(verbose))
-  }
 
   if (!is.null(origin)) {
     if (!inherits(origin, "character")) {
@@ -168,8 +168,32 @@ flag_faunabr <- function(data_dir, occ, species = "species",
     stop("The following columns specified by 'species', 'long', or 'lat' are missing from 'occ': ", paste(missing_cols, collapse = ", "))
   }
 
+  # progress_bar
+  if (!inherits(progress_bar, "logical") || length(progress_bar) != 1) {
+    stop("'progress_bar' must be a single logical value (TRUE/FALSE).",
+         call. = FALSE)
+  }
+
+  if (progress_bar) {
+    if (requireNamespace("pbapply", quietly = TRUE)) {
+      my_lapply <- pbapply::pblapply
+    } else {
+      stop("Package 'pbapply' is required if 'progress_bar = TRUE'.
+Run install.packages('pbapply')", call. = FALSE)
+    }
+  } else {
+    my_lapply <- base::lapply
+  }
+
+  # verbose
+  if (!inherits(verbose, "logical") || length(verbose) != 1) {
+    stop("'verbose' must be a single logical value (TRUE/FALSE).",
+         call. = FALSE)
+  }
+
   # Import data
-  d <- faunabr::load_faunabr(file.path(data_dir, "faunabr/"), type = "complete")
+  d <- faunabr::load_faunabr(file.path(data_dir, "faunabr/"),
+                             type = "complete", verbose = FALSE)
 
   # Get species in data
   spp_in <- intersect(unique(occ[["species"]]),
@@ -193,7 +217,7 @@ flag_faunabr <- function(data_dir, occ, species = "species",
 
   occ_in <- occ[occ[[species]] %in% spp_in, ]
 
-  res_flag <- pbapply::pblapply(spp_in, function(i) {
+  res_flag <- my_lapply(spp_in, function(i) {
 
     d_i <- d[d$species == i, ]
 
@@ -214,7 +238,8 @@ flag_faunabr <- function(data_dir, occ, species = "species",
                                      buffer_country = buffer_country,
                                      keep_columns = keep_columns,
                                      spat_state = spat_state,
-                                     spat_country = spat_country)
+                                     spat_country = spat_country,
+                                     verbose = verbose)
 
     colnames(occ_i)[colnames(occ_i) == "filters_ok"] <- "faunabr_flag"
 

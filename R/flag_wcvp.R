@@ -26,8 +26,11 @@
 #' introduced will be used to validate records.  Default is `"native"`.
 #' @param buffer (numeric) buffer distance (in kilometers) to be applied
 #' around the region of distribution. Default is 20 km.
-#' @param verbose (logical) if `TRUE`, prints messages about the progress and
-#' the number of species being checked. Default is `TRUE`.
+#' @param progress_bar (logical) whether to display a progress bar during
+#' processing. If TRUE, the 'pbapply' package must be installed. Default is
+#' `FALSE`.
+#' @param verbose (logical) if `FALSE`, prints messages about the progress and
+#' the number of species being checked. Default is `FALSE`.
 #'
 #' @returns
 #' A \code{data.frame} that is the original \code{occ} data frame
@@ -39,7 +42,6 @@
 #'
 #' @importFrom data.table fread rbindlist
 #' @importFrom terra vect as.data.frame aggregate buffer is.related
-#' @importFrom pbapply pblapply
 #'
 #' @export
 #'
@@ -59,7 +61,7 @@
 flag_wcvp <- function(data_dir, occ, species = "species",
                       long = "decimalLongitude", lat = "decimalLatitude",
                       origin = "native",
-                      buffer = 20, verbose = TRUE){
+                      buffer = 20, progress_bar = FALSE, verbose = FALSE){
 
   ### --- Argument checking ----------------------------------------------------
 
@@ -123,6 +125,24 @@ flag_wcvp <- function(data_dir, occ, species = "species",
          ".\nCheck the folder or run the 'wcvp_here()' function")
   }
 
+  # progress_bar
+  if (!inherits(progress_bar, "logical") || length(progress_bar) != 1) {
+    stop("'progress_bar' must be a single logical value (TRUE/FALSE).",
+         call. = FALSE)
+  }
+
+
+  if (progress_bar) {
+    if (requireNamespace("pbapply", quietly = TRUE)) {
+      my_lapply <- pbapply::pblapply
+    } else {
+      stop("Package 'pbapply' is required if 'progress_bar = TRUE'.
+Run install.packages('pbapply')", call. = FALSE)
+    }
+  } else {
+    my_lapply <- base::lapply
+  }
+
   # Force occ to be a dataframe
   if(inherits(occ, "data.table"))
     occ <- as.data.frame(occ)
@@ -155,7 +175,7 @@ flag_wcvp <- function(data_dir, occ, species = "species",
             length(unique(occ[["species"]])), " species")
   }
 
-  res_flag <- pbapply::pblapply(spp_in, function(i){
+  res_flag <- my_lapply(spp_in, function(i){
     # Get data from wcvp
     d_i <- d[d$species == i, ]
 

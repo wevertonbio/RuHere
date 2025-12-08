@@ -11,6 +11,7 @@ flag_bien(
   long = "decimalLongitude",
   lat = "decimalLatitude",
   buffer = 10,
+  progress_bar = FALSE,
   verbose = TRUE
 )
 }
@@ -33,6 +34,10 @@ latitude values. Default is \code{"decimalLatitude"}.}
 
 \item{buffer}{(numeric) buffer distance (in kilometers) to be applied
 around the region of distribution. Default is 20 km.}
+
+\item{progress_bar}{(logical) whether to display a progress bar during
+processing. If TRUE, the 'pbapply' package must be installed. Default is
+\code{FALSE}.}
 
 \item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
 the number of species being checked. Default is \code{TRUE}.}

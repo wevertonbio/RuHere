@@ -19,8 +19,11 @@
 #' function.
 #' @param overwrite (logical) whether to overwrite existing files. Default is
 #' `TRUE`.
+#' @param progress_bar (logical) whether to display a progress bar during
+#' processing. If TRUE, the 'pbapply' package must be installed. Default is
+#' `FALSE`.
 #' @param verbose (logical) whether to display progress messages. Default is
-#' `TRUE`.
+#' `FALSE`.
 #' @param return_data (logical) whether to return a data frame containing the
 #' species distribution information downloaded from IUCN. Default is `TRUE`.
 #'
@@ -49,10 +52,10 @@
 #' If `return_data = TRUE`, the function additionally returns a data frame
 #' containing the species distribution information retrieved from IUCN.
 #'
-#' @importFrom pbapply pblapply
 #' @importFrom rredlist rl_species rl_assessment
 #' @importFrom data.table rbindlist fwrite
 #' @importFrom stats na.omit
+#'
 #' @export
 #'
 #' @examples
@@ -68,7 +71,8 @@ iucn_here <- function(data_dir,
                       synonyms = NULL,
                       iucn_credential = NULL,
                       overwrite = TRUE,
-                      verbose = TRUE,
+                      progress_bar = FALSE,
+                      verbose = FALSE,
                       return_data = TRUE){
 
   # ---- ARGUMENT CHECKING ----
@@ -134,13 +138,31 @@ iucn_here <- function(data_dir,
          call. = FALSE)
   }
 
+  # progress_bar
+  if (!inherits(progress_bar, "logical") || length(progress_bar) != 1) {
+    stop("'progress_bar' must be a single logical value (TRUE/FALSE).",
+         call. = FALSE)
+  }
+
+
+  if (progress_bar) {
+    if (requireNamespace("pbapply", quietly = TRUE)) {
+      my_lapply <- pbapply::pblapply
+    } else {
+      stop("Package 'pbapply' is required if 'progress_bar = TRUE'.
+Run install.packages('pbapply')", call. = FALSE)
+    }
+  } else {
+    my_lapply <- base::lapply
+  }
+
 
   # Create directory
   odir <- file.path(data_dir, "iucn")
   dir.create(odir, showWarnings = FALSE)
 
   # Get species information
-  spinfo <- pbapply::pblapply(species, function(i){
+  spinfo <- my_lapply(species, function(i){
     if(!is.null(synonyms)){
       s_i <- synonyms[synonyms[[1]] == i, 2]
       if(length(s_i) > 0){

@@ -11,6 +11,7 @@ check_states(
   state_column,
   distance = 5,
   try_to_fix = FALSE,
+  progress_bar = FALSE,
   verbose = TRUE
 )
 }
@@ -33,8 +34,12 @@ outside the state assigned in the \code{state_column}. Default is \code{5}.}
 transposed (see \code{fix_states()} for details). If \code{TRUE}, coordinates
 identified as inverted or transposed will be corrected. Default is \code{FALSE}.}
 
+\item{progress_bar}{(logical) whether to display a progress bar during
+processing. If TRUE, the 'pbapply' package must be installed. Default is
+\code{FALSE}.}
+
 \item{verbose}{(logical) whether to print messages about function progress.
-Default is TRUE.}
+Default is \code{TRUE}.}
 }
 \value{
 The original \code{occ} data.frame with an additional column (\code{correct_state})

@@ -10,7 +10,6 @@ flag_florabr(
   species = "species",
   long = "decimalLongitude",
   lat = "decimalLatitude",
-  verbose = TRUE,
   origin = NULL,
   by_state = TRUE,
   buffer_state = 20,
@@ -23,7 +22,9 @@ flag_florabr(
   biome_vect = NULL,
   biome_column = NULL,
   br_vect = NULL,
-  keep_columns = TRUE
+  keep_columns = TRUE,
+  progress_bar = FALSE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -41,9 +42,6 @@ longitude values. Default is \code{"decimalLongitude"}.}
 
 \item{lat}{(character) the name of the column in \code{occ} that contains the
 latitude values. Default is \code{"decimalLatitude"}.}
-
-\item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
-the number of species being checked. Default is \code{TRUE}.}
 
 \item{origin}{(character or NULL) filter the \code{florabr} data by origin type
 before checking (\code{"native"}, \code{"cultivated"}, \code{"naturalized"}, \code{"unknown"},
@@ -92,6 +90,13 @@ loaded by \code{florabr}. Default is \code{NULL}.}
 \item{keep_columns}{(logical) if \code{TRUE}, the returned data frame contains
 all original columns from \code{occ}. If \code{FALSE}, it returns only the key columns
 and the flag. Default is \code{TRUE}.}
+
+\item{progress_bar}{(logical) whether to display a progress bar during
+processing. If TRUE, the 'pbapply' package must be installed. Default is
+\code{FALSE}.}
+
+\item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
+the number of species being checked. Default is \code{FALSE}.}
 }
 \value{
 A \code{data.frame} that is the original \code{occ} data frame

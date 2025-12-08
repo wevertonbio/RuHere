@@ -11,6 +11,7 @@ fix_countries(
   country_column,
   correct_country = "correct_country",
   distance = 5,
+  progress_bar = FALSE,
   verbose = TRUE
 )
 }
@@ -34,8 +35,12 @@ metadata. Default is 'correct_country'. See details.}
 \item{distance}{(numeric) maximum distance (in kilometers) a record can fall
 outside the country assigned in the \code{country_column}. Default is \code{5}.}
 
+\item{progress_bar}{(logical) whether to display a progress bar during
+processing. If TRUE, the 'pbapply' package must be installed. Default is
+\code{FALSE}.}
+
 \item{verbose}{(logical) whether to print messages about function progress.
-Default is TRUE.}
+Default is \code{TRUE}.}
 }
 \value{
 The original \code{occ} data.frame with the coordinates in the \code{long} and \code{lat}

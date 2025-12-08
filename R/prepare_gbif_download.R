@@ -1,10 +1,5 @@
 #' Prepare data to request GBIF download
 #'
-#' @usage prepare_gbif_download(species, rank = NULL, kingdom = NULL,
-#'                              phylum = NULL, class = NULL, order = NULL,
-#'                              family = NULL, genus = NULL, strict = FALSE,
-#'                              ...)
-#'
 #' @param species (character) a vector of species name(s).
 #' @param rank (character) optional taxonomic rank (for example, 'species' or
 #' 'genus'). Default is NULL, meaning it will return species matched across all
@@ -24,6 +19,9 @@
 #' it will return species matched across all genus.
 #' @param strict (logical) If TRUE, it (fuzzy) matches only the given name, but
 #' never a taxon in the upper classification. Default is FALSE.
+#' @param progress_bar (logical) whether to display a progress bar during
+#' processing. If TRUE, the 'pbapply' package must be installed. Default is
+#' `FALSE`.
 #' @param ... other parameters passed to `rgbif::occ_count()`.
 #'
 #' @note
@@ -33,7 +31,6 @@
 #' A data.frame with species information, including the number of occurrences
 #' and other related details.
 #'
-#' @importFrom pbapply pblapply
 #' @importFrom rgbif name_backbone occ_count
 #' @importFrom data.table rbindlist
 #'
@@ -46,6 +43,7 @@
 prepare_gbif_download <- function(species, rank = NULL, kingdom = NULL,
                                   phylum = NULL, class = NULL, order = NULL,
                                   family = NULL, genus = NULL, strict = FALSE,
+                                  progress_bar = FALSE,
                                   ...){
   # Check arguments
   if (!inherits(species, "character"))
@@ -87,8 +85,26 @@ prepare_gbif_download <- function(species, rank = NULL, kingdom = NULL,
     stop("'strict' must be a single logical value (TRUE or FALSE).",
          call. = FALSE)
 
+  # progress_bar
+  if (!inherits(progress_bar, "logical") || length(progress_bar) != 1) {
+    stop("'progress_bar' must be a single logical value (TRUE/FALSE).",
+         call. = FALSE)
+  }
 
-  res <- pbapply::pblapply(species, function(sp){
+
+  if (progress_bar) {
+    if (requireNamespace("pbapply", quietly = TRUE)) {
+      my_lapply <- pbapply::pblapply
+    } else {
+      stop("Package 'pbapply' is required if 'progress_bar = TRUE'.
+Run install.packages('pbapply')", call. = FALSE)
+    }
+  } else {
+    my_lapply <- base::lapply
+  }
+
+
+  res <- my_lapply(species, function(sp){
     # Get taxonomy info
     gbif_info <- rgbif::name_backbone(name = sp, rank, kingdom,
                                       phylum, class, order,

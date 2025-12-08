@@ -19,8 +19,6 @@
 #' longitude values. Default is `"decimalLongitude"`.
 #' @param lat (character) the name of the column in `occ` that contains the
 #' latitude values. Default is `"decimalLatitude"`.
-#' @param verbose (logical) if `TRUE`, prints messages about the progress and
-#' the number of species being checked. Default is `TRUE`.
 #' @param origin (character or NULL) filter the `florabr` data by origin type
 #' before checking (`"native"`, `"cultivated"`, `"naturalized"`, `"unknown"`,
 #' or `"not_found_in_brazil"`). Default is `NULL` (no filtering).
@@ -56,6 +54,11 @@
 #' @param keep_columns (logical) if `TRUE`, the returned data frame contains
 #' all original columns from `occ`. If `FALSE`, it returns only the key columns
 #' and the flag. Default is `TRUE`.
+#' @param progress_bar (logical) whether to display a progress bar during
+#' processing. If TRUE, the 'pbapply' package must be installed. Default is
+#' `FALSE`.
+#' @param verbose (logical) if `TRUE`, prints messages about the progress and
+#' the number of species being checked. Default is `FALSE`.
 #'
 #' @return
 #' A \code{data.frame} that is the original \code{occ} data frame
@@ -66,7 +69,6 @@
 #' \code{NA} in the \code{florabr_flag} column.
 #'
 #' @importFrom florabr load_florabr filter_florabr
-#' @importFrom pbapply pblapply
 #' @importFrom data.table data.table rbindlist
 #'
 #' @export
@@ -86,13 +88,14 @@
 #'
 flag_florabr <- function(data_dir, occ, species = "species",
                          long = "decimalLongitude", lat = "decimalLatitude",
-                         verbose = TRUE, origin = NULL,
+                         origin = NULL,
                          by_state = TRUE, buffer_state = 20,
                          by_biome = TRUE, buffer_biome = 20, by_endemism = TRUE,
                          buffer_brazil = 20, state_vect = NULL,
                          state_column = NULL, biome_vect = NULL,
                          biome_column = NULL, br_vect = NULL,
-                         keep_columns = TRUE) {
+                         keep_columns = TRUE, progress_bar = FALSE,
+                         verbose = FALSE) {
 
   if (missing(data_dir) || is.null(data_dir)) {
     stop("'data_dir' is required (must not be NULL or missing).")
@@ -193,6 +196,23 @@ flag_florabr <- function(data_dir, occ, species = "species",
          ".\nCheck the folder or run the 'florabr_here()' function")
   }
 
+  # progress_bar
+  if (!inherits(progress_bar, "logical") || length(progress_bar) != 1) {
+    stop("'progress_bar' must be a single logical value (TRUE/FALSE).",
+         call. = FALSE)
+  }
+
+  if (progress_bar) {
+    if (requireNamespace("pbapply", quietly = TRUE)) {
+      my_lapply <- pbapply::pblapply
+    } else {
+      stop("Package 'pbapply' is required if 'progress_bar = TRUE'.
+Run install.packages('pbapply')", call. = FALSE)
+    }
+  } else {
+    my_lapply <- base::lapply
+  }
+
   # Force occ to be a dataframe
   if(inherits(occ, "data.table"))
     occ <- as.data.frame(occ)
@@ -206,7 +226,7 @@ flag_florabr <- function(data_dir, occ, species = "species",
 
   # Import data
   d <- florabr::load_florabr(file.path(data_dir, "florabr/"), type = "complete",
-                             verbose = FALSE)
+                             verbose = verbose)
 
   # Get species in data
   spp_in <- intersect(unique(occ[[species]]),
@@ -230,7 +250,7 @@ flag_florabr <- function(data_dir, occ, species = "species",
 
   occ_in <- occ[occ[[species]] %in% spp_in, ]
 
-  res_flag <- pbapply::pblapply(spp_in, function(i) {
+  res_flag <- my_lapply(spp_in, function(i) {
 
     d_i <- d[d$species == i, ]
 

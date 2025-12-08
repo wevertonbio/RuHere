@@ -17,6 +17,9 @@
 #' metadata. Default is 'correct_state'. See details.
 #' @param distance (numeric) maximum distance (in kilometers) a record can fall
 #' outside the state assigned in the `state_column`. Default is `5`.
+#' @param progress_bar (logical) whether to display a progress bar during
+#' processing. If TRUE, the 'pbapply' package must be installed. Default is
+#' `FALSE`.
 #' @param verbose (logical) whether to print messages about function progress.
 #' Default is TRUE.
 #'
@@ -61,7 +64,6 @@
 #' @export
 #'
 #' @importFrom terra vect buffer is.related
-#' @importFrom pbapply pbsapply
 #'
 #' @examples
 #' # Load example data
@@ -90,6 +92,7 @@ fix_states <- function(occ,
                        state_column,
                        correct_state = "correct_state",
                        distance = 5,
+                       progress_bar = FALSE,
                        verbose = TRUE){
 
   # ---- ARGUMENT CHECKING ----
@@ -162,6 +165,24 @@ fix_states <- function(occ,
          call. = FALSE)
   }
 
+  # progress_bar
+  if (!inherits(progress_bar, "logical") || length(progress_bar) != 1) {
+    stop("'progress_bar' must be a single logical value (TRUE/FALSE).",
+         call. = FALSE)
+  }
+
+
+  if (progress_bar) {
+    if (requireNamespace("pbapply", quietly = TRUE)) {
+      my_sapply <- pbapply::pbsapply
+    } else {
+      stop("Package 'pbapply' is required if 'progress_bar = TRUE'.
+Run install.packages('pbapply')", call. = FALSE)
+    }
+  } else {
+    my_sapply <- base::sapply
+  }
+
   #Convert to data.frame if necessary
   if(inherits(occ, c("data.table", "tbl_df"))){
     occ <- as.data.frame(occ)}
@@ -191,7 +212,7 @@ fix_states <- function(occ,
                     geom = c(x = long, y = lat),
                     crs = "+init=epsg:4326")
   message("Task 1 of 7: testing if longitude is inverted")
-  test_1 <- pbapply::pbsapply(states_1, function(i){
+  test_1 <- my_sapply(states_1, function(i){
     state_i <- state_shp[state_shp$name == i]
     if(distance > 0){
       state_i <- terra::buffer(state_i, width = distance*1000)}
@@ -231,7 +252,7 @@ fix_states <- function(occ,
                       geom = c(x = long, y = lat),
                       crs = "+init=epsg:4326")
     message("Task 2 of 7: testing if latitude is inverted")
-    test_2 <- pbapply::pbsapply(states_2, function(i){
+    test_2 <- my_sapply(states_2, function(i){
       state_i <- state_shp[state_shp$name== i]
       state_i <- terra::buffer(state_i, width = distance*1000)
       occ_i <- which(d2[[state_column]] == i)
@@ -273,7 +294,7 @@ fix_states <- function(occ,
                       geom = c(x = long, y = lat),
                       crs = "+init=epsg:4326")
     message("Task 3 of 7: testing if longitude and latitude are inverted")
-    test_3 <- pbapply::pbsapply(states_3, function(i){
+    test_3 <- my_sapply(states_3, function(i){
       state_i <- state_shp[state_shp$name == i]
       if(distance > 0){
         state_i <- terra::buffer(state_i, width = distance*1000)}
@@ -317,7 +338,7 @@ fix_states <- function(occ,
                       geom = c(x = lat, y = long),
                       crs = "+init=epsg:4326")
     message("Task 4 of 7: testing if longitude and latitude are swapped")
-    test_4 <- pbapply::pbsapply(states_4, function(i){
+    test_4 <- my_sapply(states_4, function(i){
       state_i <- state_shp[state_shp$name == i]
       if(distance > 0){
         state_i <- terra::buffer(state_i, width = distance*1000)}
@@ -364,7 +385,7 @@ fix_states <- function(occ,
                       crs = "+init=epsg:4326")
     message("Task 5 of 7: testing if longitude and latitude are swapped -
             with latitude inverted")
-    test_5 <- pbapply::pbsapply(states_5, function(i){
+    test_5 <- my_sapply(states_5, function(i){
       state_i <- state_shp[state_shp$name == i]
       state_i <- terra::buffer(state_i, width = distance*1000)
       occ_i <- which(d5[[state_column]] == i)
@@ -409,7 +430,7 @@ fix_states <- function(occ,
                       geom = c(x = lat, y = long),
                       crs = "+init=epsg:4326")
     message("Task 6 of 7: testing if longitude and latitude are swapped - with latitude inverted")
-    test_6 <- pbapply::pbsapply(states_6, function(i){
+    test_6 <- my_sapply(states_6, function(i){
       state_i <- state_shp[state_shp$name == i]
       if(distance > 0){
         state_i <- terra::buffer(state_i, width = distance*1000)}
@@ -455,7 +476,7 @@ fix_states <- function(occ,
                       geom = c(x = lat, y = long),
                       crs = "+init=epsg:4326")
     message("Task 7 of 7: testing if longitude and latitude are swapped - with longitude latitude inverted")
-    test_7 <- pbapply::pbsapply(states_7, function(i){
+    test_7 <- my_sapply(states_7, function(i){
       #print(i)
       state_i <- state_shp[state_shp$name == i]
       state_i <- terra::buffer(state_i, width = distance*1000)
