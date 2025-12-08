@@ -34,6 +34,13 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
+      # --- NEW STEP TO INSTALL PROJ IN MAC ---
+      - name: Instalar dependências espaciais (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install gdal proj geos
+      # -------------------------------------------
+
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
