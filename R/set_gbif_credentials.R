@@ -10,7 +10,7 @@
 #'                            verbose = TRUE)
 #'
 #' @param gbif_username (character) your GBIF username.
-#' @param gbif_email (character) your GBIF email adress.
+#' @param gbif_email (character) your GBIF email address.
 #' @param gbif_password (character) your GBIF password.
 #' @param overwrite (logical) whether to overwrite GBIF credentials if they
 #' already exist. Default is FALSE.
