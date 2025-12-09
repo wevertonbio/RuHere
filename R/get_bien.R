@@ -94,7 +94,6 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' # Example: download occurrence records for a single species
 #' res_test <- get_bien(
 #'     by = "species",
@@ -104,7 +103,6 @@
 #'     observation.type = TRUE,
 #'     only.geovalid = TRUE
 #' )
-#' }
 #'
 get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
                      all.taxonomy = FALSE, native.status = FALSE,

@@ -62,24 +62,22 @@ Biocollections) database with flexible taxonomic and geographic filtering
 options.
 }
 \examples{
-\dontrun{
 ## search for a single species
 records_basic <- get_idigbio(species = "Arecaceae")
 
 ## search for multiple species
 records_multiple <- get_idigbio(
-  species = c("Araucaria angustifolia", "Paubrasilia echinata"),
+  species = c("Araucaria angustifolia"),
   limit = 100)
 
 ## save results as a compressed RDS file
 records_saved_rds <- get_idigbio(
   species = "Anacardiaceae",
   limit = 50,
-  dir = "your/path/here",
+  dir = tempdir(),
   filename = "anacardiaceae_records",
   save = TRUE,
   compress = TRUE,
   file.format = "rds")
-}
 
 }
