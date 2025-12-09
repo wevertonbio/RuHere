@@ -98,9 +98,6 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Set your API key once per session
-#' set_specieslink_credentials("your_api_key")
-#'
 #' # Retrieve records for Arecaceae in São Paulo
 #' res <- get_specieslink(
 #'   family = "Arecaceae",
@@ -119,7 +116,7 @@
 #'   filename = "arecaceae_sp",
 #'   compress = TRUE
 #' )
-#' }
+#'}
 #'
 get_specieslink <- function(species = NULL, key = NULL, dir,
                             filename = "specieslink_output",

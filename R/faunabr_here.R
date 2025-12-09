@@ -37,7 +37,7 @@
 #' # Define a directory to save the data
 #' data_dir <- tempdir() # Here, a temporary directory
 #'
-#' # Download the latest version of the Flora e Funga do BraZil database
+#' # Download the latest version of the Flora e Funga do Brazil database
 #' faunabr_here(data_dir = data_dir)
 #' }
 faunabr_here <- function(data_dir,

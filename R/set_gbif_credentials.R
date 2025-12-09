@@ -6,15 +6,20 @@
 #' records from GBIF.
 #'
 #' @usage set_gbif_credentials(gbif_username, gbif_email, gbif_password,
-#'                            overwrite = FALSE, open_Renviron = FALSE)
+#'                            overwrite = FALSE, open_Renviron = FALSE,
+#'                            verbose = TRUE)
 #'
 #' @param gbif_username (character) your GBIF username.
-#' @param gbif_email (character) your GBIF email adress.
+#' @param gbif_email (character) your GBIF email address.
 #' @param gbif_password (character) your GBIF password.
 #' @param overwrite (logical) whether to overwrite GBIF credentials if they
 #' already exist. Default is FALSE.
 #' @param open_Renviron (logical) whether to open the .Renviron file after
 #' saving the credentials. Default is FALSE.
+#' @param open_Renviron (logical) whether to open the .Renviron file after
+#' saving the credentials. Default is FALSE.
+#' @param verbose (logical) if `TRUE`, prints messages about the progress and
+#' the number of species being checked. Default is `TRUE`.
 #'
 #' @returns
 #' If `open_Renviron` is set to TRUE, it opens the .Renviron file. Otherwise,
@@ -30,7 +35,8 @@
 #'                      gbif_password = "my_password")
 #' }
 set_gbif_credentials <- function(gbif_username, gbif_email, gbif_password,
-                                 overwrite = FALSE, open_Renviron = FALSE) {
+                                 overwrite = FALSE, open_Renviron = FALSE,
+                                 verbose = TRUE) {
 
   # Check arguments
   if (!inherits(gbif_username, "character"))
@@ -78,11 +84,13 @@ set_gbif_credentials <- function(gbif_username, gbif_email, gbif_password,
     if(!overwrite){
       stop("gbif_username, email and/or pwd already exists. Check your .Renviron file or set 'overwrite = TRUE")
     } else {
-      warning("Overwriting gbif_username, email and pwd in .Renviron")
-      # Check lines to overwrite
-      to_overwrite <- grepl("^(GBIF_USER|GBIF_EMAIL|GBIF_PWD)",
-                            lines)
-      lines <- lines[!to_overwrite]
+      if (verbose) {
+        warning("Overwriting gbif_username, email and pwd in .Renviron")
+        # Check lines to overwrite
+        to_overwrite <- grepl("^(GBIF_USER|GBIF_EMAIL|GBIF_PWD)",
+                              lines)
+        lines <- lines[!to_overwrite]
+      }
     }
   }
 
@@ -98,8 +106,10 @@ set_gbif_credentials <- function(gbif_username, gbif_email, gbif_password,
   # Write lines
   writeLines(new_lines, renviron_path)
 
-  message("GBIF credentials have been processed and added/updated in your .Renviron file\n",
+  if (verbose) {
+    message("GBIF credentials have been processed and added/updated in your .Renviron file\n",
 "Check your .Renviron with file.edit('", normalizePath(renviron_path, winslash = "/"), "')")
+  }
 
   if(open_Renviron){
     utils::file.edit(normalizePath(renviron_path, winslash = "/"))

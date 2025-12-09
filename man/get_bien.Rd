@@ -119,7 +119,6 @@ unified interface to query BIEN data by species, genus, family, or by
 geographic or political boundaries.
 }
 \examples{
-\dontrun{
 # Example: download occurrence records for a single species
 res_test <- get_bien(
     by = "species",
@@ -129,6 +128,5 @@ res_test <- get_bien(
     observation.type = TRUE,
     only.geovalid = TRUE
 )
-}
 
 }
