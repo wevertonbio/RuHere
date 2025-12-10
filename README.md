@@ -4,13 +4,14 @@
 <!-- badges: end -->
 
 
-RuHere: An R package that automatically flags common spatial errors in biological collection data using specialists' information.
+RuHere: Are your species records really where they say they are? Check them using specialists’ range information
 ================
 Weverton C. F. Trindade and Fernanda S. Caron
 
 ## Package description
 
-Text in progress...
+
+
 
 ## Installing the package
 
