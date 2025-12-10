@@ -22,7 +22,8 @@ Imports:
     fields,
     ggplot2,
     mapview,
-    sf
+    sf,
+    ggnewscale
 Suggests: 
     pbapply,
     knitr,
