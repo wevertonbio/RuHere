@@ -100,7 +100,7 @@ a chosen statistic (mean, median, minimum, or maximum). The best thinning
 level is then selected according to criteria described in \emph{Details}.
 }
 \details{
-This function is inspired by the approach used in Velazco et al. (2020),
+This function is inspired by the approach used in Velazco et al. (2021),
 extending the procedure by allowing:
 \itemize{
 \item prioritization of records based on a user-defined variable (e.g., year)
@@ -119,7 +119,7 @@ low Moran's I from being chosen.
 \item Apply the selection criteria:
 \itemize{
 \item Keep only datasets with at least \code{min_records} records.
-\item Keep only datasets with Moran's I ≥ \code{min_imoran}.
+\item Keep only datasets with Moran's I higher than \code{min_imoran}.
 \item Round Moran's I to two decimal places and select the dataset with the
 \strong{25th lowest} autocorrelation.
 \item If more than on dataset is selected, choose the dataset retaining
@@ -153,9 +153,10 @@ variation.
 data("occurrences", package = "RuHere")
 # Subset occurrences from Araucaria
 occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
-# Import environmental layers
-r <- terra::rast(system.file("extdata", "worldclim.tif",
-                             package = "RuHere"))
+# Load example of raster variables
+data("worldclim", package = "RuHere")
+# Unwrap Packed raster
+r <- terra::unwrap(worldclim)
 # Select thinned occurrences
 occ_geo_moran <- flag_geo_moran(occ = occ, d = c(5, 10, 20, 30),
                                   env_layers = r)
@@ -167,4 +168,12 @@ sum(!occ_geo_moran$occ$thin_geo_flag) #Flagged for thinning out
 # Results os the spatial autocorrelation analysis
 occ_geo_moran$imoran
 
+}
+\references{
+\itemize{
+\item Velazco, S. J. E., Svenning, J. C., Ribeiro, B. R., & Laureto, L. M. O. (2021).
+On opportunities and threats to conserve the phylogenetic diversity of
+Neotropical palms. Diversity and Distributions, 27(3), 512–523.
+https://doi.org/10.1111/ddi.13215
+}
 }

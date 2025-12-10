@@ -38,6 +38,8 @@
 #' extent of the area for the heatmap. Default is NULL, in which case the
 #' extent is derived from `raster_ref` (if provided) or from the convex hull of
 #' occurrences plus `buffer_extent`.
+#' @param zero_as_NA (logical) whether to convert regions with value 0 to NA.
+#' Default is FALSE.
 #' @param weights (numeric) optional vector of weights for individual points.
 #' Must be the same length as the number of occurrences in `occ`. Default is
 #' NULL.
@@ -81,11 +83,10 @@
 #' # Generate heatmap
 #' heatmap <- spatial_kde(occ = occ, resolution = 0.25, buffer_extent = 50,
 #'                        radius = 2)
-#' # Plot heatmap
+#' # Plot heatmap with terra
 #' terra::plot(heatmap)
-#' # Add points to the plot
-#' pts <- spatialize(occ)
-#' terra::points(pts, pch = 1, cex = 0.4)
+#' # Plot heatmap with ggplot
+#' ggmap_here(occ = occ, heatmap = heatmap)
 spatial_kde <- function(occ,
                         long = "decimalLongitude",
                         lat = "decimalLatitude",
@@ -98,6 +99,7 @@ spatial_kde <- function(occ,
                         scaled = TRUE,
                         decay = 1,
                         mask = NULL,
+                        zero_as_NA = FALSE,
                         weights = NULL) {
   #==============================#
   # ARGUMENT CHECKING            #
@@ -272,5 +274,11 @@ spatial_kde <- function(occ,
   if(!is.null(mask)){
     r_base <- terra::crop(r_base, mask, mask = TRUE)
   }
+
+  # Zero to NAs?
+  if(zero_as_NA){
+    r_base[r_base == 0] <- NA
+  }
+
   return(r_base)
 }

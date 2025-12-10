@@ -61,7 +61,7 @@
 #' **incorrect**: the record falls outside the assigned country and could not
 #' be corrected.
 #'
-#' @importFrom terra vect buffer is.related
+#' @importFrom terra vect buffer is.related unwrap
 #'
 #' @export
 #'
@@ -190,8 +190,7 @@ Run install.packages('pbapply')", call. = FALSE)
   occ_incorrect[["country_issues"]] <- "incorrect"
 
   #Get shapefile with countries
-  country_shp <- terra::vect(system.file("extdata/world.shp",
-                                         package = "RuHere"))
+  country_shp <- terra::unwrap(getExportedValue("RuHere", "world"))
 
   #Get all countries
   all_countries <- unique(country_shp$name)

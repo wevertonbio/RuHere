@@ -17,6 +17,7 @@ spatial_kde(
   scaled = TRUE,
   decay = 1,
   mask = NULL,
+  zero_as_NA = FALSE,
   weights = NULL
 )
 }
@@ -66,6 +67,9 @@ extent of the area for the heatmap. Default is NULL, in which case the
 extent is derived from \code{raster_ref} (if provided) or from the convex hull of
 occurrences plus \code{buffer_extent}.}
 
+\item{zero_as_NA}{(logical) whether to convert regions with value 0 to NA.
+Default is FALSE.}
+
 \item{weights}{(numeric) optional vector of weights for individual points.
 Must be the same length as the number of occurrences in \code{occ}. Default is
 NULL.}
@@ -101,11 +105,10 @@ occ <- remove_flagged(occ_flagged)
 # Generate heatmap
 heatmap <- spatial_kde(occ = occ, resolution = 0.25, buffer_extent = 50,
                        radius = 2)
-# Plot heatmap
+# Plot heatmap with terra
 terra::plot(heatmap)
-# Add points to the plot
-pts <- spatialize(occ)
-terra::points(pts, pch = 1, cex = 0.4)
+# Plot heatmap with ggplot
+ggmap_here(occ = occ, heatmap = heatmap)
 }
 \references{
 \itemize{

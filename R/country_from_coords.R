@@ -30,7 +30,7 @@
 #' The original `occ` data.frame with an additional column containing the
 #' countries extracted from coordinates.
 #'
-#' @importFrom terra vect extract
+#' @importFrom terra unwrap extract
 #'
 #' @export
 #'
@@ -121,7 +121,7 @@ country_from_coords <- function(occ,
 
 
   # Get map of world
-  w <- terra::vect(system.file("extdata/world.shp", package = "RuHere"))
+  w <- terra::unwrap(getExportedValue("RuHere", "world"))
 
   # Extract
   if(from == "all"){

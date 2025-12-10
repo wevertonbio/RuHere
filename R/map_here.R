@@ -191,7 +191,7 @@ map_here <- function(occ,
     }
   }
 
-  if(flags == "all"){
+  if(all(flags == "all")){
     flags <- c("correct_country", "correct_state", "florabr", "faunabr",
                "wcvp", "iucn", "bien", "cultivated", "inaturalist",
                "duplicated", "thin_env", "thin_geo", "consensus",

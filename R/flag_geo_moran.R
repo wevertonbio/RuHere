@@ -49,7 +49,7 @@
 #' datasets. Default: `FALSE`.
 #'
 #' @details
-#' This function is inspired by the approach used in Velazco et al. (2020),
+#' This function is inspired by the approach used in Velazco et al. (2021),
 #' extending the procedure by allowing:
 #' - prioritization of records based on a user-defined variable (e.g., year)
 #' - optional PCA transformation of environmental layers
@@ -64,7 +64,7 @@
 #' 4. Summarize autocorrelation per dataset (mean, median, min, or max).
 #' 5. Apply the selection criteria:
 #'    - Keep only datasets with at least `min_records` records.
-#'    - Keep only datasets with Moran's I ≥ `min_imoran`.
+#'    - Keep only datasets with Moran's I higher than `min_imoran`.
 #'    - Round Moran's I to two decimal places and select the dataset with the
 #'      **25th lowest** autocorrelation.
 #'    - If more than on dataset is selected, choose the dataset retaining
@@ -97,6 +97,12 @@
 #' - **all_thined**: (optional) list of thinned datasets for all distances. Only
 #' returned if `return_all` was set to `TRUE`
 #'
+#' @references
+#' - Velazco, S. J. E., Svenning, J. C., Ribeiro, B. R., & Laureto, L. M. O. (2021).
+#' On opportunities and threats to conserve the phylogenetic diversity of
+#' Neotropical palms. Diversity and Distributions, 27(3), 512–523.
+#' https://doi.org/10.1111/ddi.13215
+#'
 #' @importFrom terra crop vect crs convHull buffer prcomp predict extract
 #' @importFrom fields rdist.earth
 #' @importFrom stats dist median quantile
@@ -108,9 +114,10 @@
 #' data("occurrences", package = "RuHere")
 #' # Subset occurrences from Araucaria
 #' occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
-#' # Import environmental layers
-#' r <- terra::rast(system.file("extdata", "worldclim.tif",
-#'                              package = "RuHere"))
+#' # Load example of raster variables
+#' data("worldclim", package = "RuHere")
+#' # Unwrap Packed raster
+#' r <- terra::unwrap(worldclim)
 #' # Select thinned occurrences
 #' occ_geo_moran <- flag_geo_moran(occ = occ, d = c(5, 10, 20, 30),
 #'                                   env_layers = r)

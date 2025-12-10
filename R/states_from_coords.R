@@ -29,7 +29,7 @@
 #' The original `occ` data.frame with an additional column containing the
 #' states extracted from coordinates.
 #'
-#' @importFrom terra vect extract
+#' @importFrom terra unwrap extract
 #' @export
 #'
 #' @examples
@@ -120,7 +120,7 @@ states_from_coords <- function(occ,
 
 
   # Get map of states
-  s <- terra::vect(system.file("extdata/states.shp", package = "RuHere"))
+  s <- terra::unwrap(getExportedValue("RuHere", "states"))
 
   # Extract
   if(from == "all"){

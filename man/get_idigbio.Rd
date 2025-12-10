@@ -62,6 +62,7 @@ Biocollections) database with flexible taxonomic and geographic filtering
 options.
 }
 \examples{
+\dontrun{
 ## search for a single species
 records_basic <- get_idigbio(species = "Arecaceae")
 
@@ -79,5 +80,6 @@ records_saved_rds <- get_idigbio(
   save = TRUE,
   compress = TRUE,
   file.format = "rds")
+}
 
 }

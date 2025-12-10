@@ -46,6 +46,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' ## search for a single species
 #' records_basic <- get_idigbio(species = "Arecaceae")
 #'
@@ -63,6 +64,7 @@
 #'   save = TRUE,
 #'   compress = TRUE,
 #'   file.format = "rds")
+#'}
 #'
 get_idigbio <- function(species = NULL, fields = "all",
                         genus = NULL, family = NULL,

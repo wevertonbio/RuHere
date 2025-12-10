@@ -23,7 +23,7 @@
 #' indicating whether each record falls within the state specified in the
 #' metadata (`TRUE`) or not (`FALSE`).
 #'
-#' @importFrom terra vect aggregate buffer is.related
+#' @importFrom terra vect aggregate buffer is.related unwrap
 #'
 #' @export
 #'
@@ -143,8 +143,7 @@ Run install.packages('pbapply')", call. = FALSE)
   states <- unique(occ[[state_column]])
 
   #Get shapefile with states
-  state_shp <- terra::vect(system.file("extdata/states.shp",
-                                         package = "RuHere"))
+  state_shp <- terra::unwrap(getExportedValue("RuHere", "states"))
   #Intersect with available states to test
   states_in <- intersect(states, state_shp$name)
 

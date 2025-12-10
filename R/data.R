@@ -521,3 +521,97 @@
 #' `create_metadata()`,
 #' `format_columns()`
 "puma_atlanticr"
+
+#' World Countries
+#'
+#' A `"PackedSpatVector"` containing country polygons from **Natural Earth**,
+#' processed and cleaned for use within the package. Country names were
+#' converted to lowercase and had accents removed.
+#'
+#' @format A `PackedSpatVector` object with country polygons and one attribute:
+#' \describe{
+#'   \item{name}{Country name.}
+#' }
+#'
+#' @details
+#' The dataset is sourced from `rnaturalearthdata::map_units110`, then:
+#' \itemize{
+#'   \item converted to a `SpatVector` using **terra**,
+#'   \item attribute `"name"` cleaned (`tolower()`, `remove_accent()`),
+#'   \item wrapped using `terra::wrap()` for robust internal storage.
+#' }
+#'
+#' @source Natural Earth data, via **rnaturalearthdata**.
+#'
+#' @examples
+#' data(world)
+#' world <- terra::unwrap(world)
+#' terra::plot(world)
+"world"
+
+#' Administrative Units (States, Provinces, and Regions)
+#'
+#' A simplified `PackedSpatVector` containing state-level polygons (e.g.,
+#' provinces, departments, regions) for countries worldwide. Names and parent
+#' countries (`geonunit`) were cleaned (lowercase, accents removed).
+#'
+#' @format A `PackedSpatVector` object with polygons of administrative divisions
+#' and one attribute:
+#' \describe{
+#'   \item{name}{State/province/region name.}
+#' }
+#'
+#' @details
+#' The dataset was generated from `rnaturalearth::ne_states()`. The following
+#' processing steps were applied:
+#' \itemize{
+#'   \item kept only administrative types: `"Province"`, `"State"`,
+#'   `"Department"`, `"Region"`, `"Federal District"`;
+#'   \item selected only `"name"` and `"geonunit"` columns;
+#'   \item both fields were cleaned via `tolower()` and `remove_accent()`;
+#'   \item records where state name = country name were removed;
+#'   \item geometries were simplified using `terra::simplifyGeom(tolerance = 0.05)`;
+#'   \item wrapped with `terra::wrap()` for internal storage.
+#' }
+#'
+#' @source Natural Earth data, via **rnaturalearth**.
+#'
+#' @examples
+#' data(states)
+#' states <- terra::unwrap(states)
+#' terra::plot(states)
+"states"
+
+#' Bioclimatic Variables from WorldClim (bio_1, bio_7, bio_12)
+#'
+#' A `PackedSpatRaster` containing three bioclimatic variables from the
+#' WorldClim, cropped to a region of interest South America.
+#'
+#' @format A `SpatRaster` with 3 layers and the following characteristics:
+#' \describe{
+#'   \item{Dimensions}{151 rows × 183 columns}
+#'   \item{Resolution}{0.08333333° × 0.08333333°}
+#'   \item{Extent}{xmin = -57.08333, xmax = -41.83333,
+#'                 ymin = -32.08333, ymax = -19.5}
+#'   \item{CRS}{WGS84 (EPSG:4326)}
+#'   \item{Layers}{
+#'     \describe{
+#'       \item{bio_1}{Mean Annual Temperature (°C × 10)}
+#'       \item{bio_7}{Temperature Annual Range (°C × 10)}
+#'       \item{bio_12}{Annual Precipitation (mm)}
+#'     }
+#'   }
+#' }
+#'
+#' @details
+#' This raster corresponds to three standard bioclimatic variables from the
+#' **WorldClim 2.1** dataset.
+#'
+#' @source \url{https://www.worldclim.org/}
+#'
+#' @examples
+#' data(worldclim)
+#' bioclim <- terra::unwrap(worldclim)
+#' terra::plot(bioclim)
+"worldclim"
+

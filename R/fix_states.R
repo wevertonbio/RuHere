@@ -63,7 +63,7 @@
 #'
 #' @export
 #'
-#' @importFrom terra vect buffer is.related
+#' @importFrom terra vect buffer is.related unwrap
 #'
 #' @examples
 #' # Load example data
@@ -197,8 +197,7 @@ Run install.packages('pbapply')", call. = FALSE)
   occ_incorrect[["state_issues"]] <- "incorrect"
 
   #Get shapefile with states
-  state_shp <- terra::vect(system.file("extdata/states.shp",
-                                       package = "RuHere"))
+  state_shp <- terra::unwrap(getExportedValue("RuHere", "states"))
 
   #Get all states
   all_states <- unique(state_shp$name)

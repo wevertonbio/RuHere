@@ -38,9 +38,10 @@
 #' data("occurrences", package = "RuHere")
 #' # Filter occurrences of Araucaria
 #' occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
-#' # Import environmental layers
-#' r <- terra::rast(system.file("extdata", "worldclim.tif",
-#'                              package = "RuHere"))
+#' # Load example of raster variables
+#' data("worldclim", package = "RuHere")
+#' # Unwrap Packed raster
+#' r <- terra::unwrap(worldclim)
 #' # Extract values for bio_1
 #' bio_1 <- terra::extract(r$bio_1,
 #'                         occ[, c("decimalLongitude", "decimalLatitude")],

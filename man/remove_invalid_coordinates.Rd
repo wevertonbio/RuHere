@@ -8,7 +8,8 @@ remove_invalid_coordinates(
   occ,
   long = "decimalLongitude",
   lat = "decimalLatitude",
-  return_invalid = TRUE
+  return_invalid = TRUE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -20,6 +21,9 @@ remove_invalid_coordinates(
 
 \item{return_invalid}{(logical) whether to return a list containing the valid
 and invalid coordinates. Default is TRUE.}
+
+\item{verbose}{(logical) whether to print messages about function progress.
+Default is \code{TRUE}.}
 }
 \value{
 If \code{return_invalid = FALSE}, returns the occurrence dataset containing only

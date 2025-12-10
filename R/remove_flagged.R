@@ -85,29 +85,30 @@ remove_flagged <- function(occ,
     occ <- as.data.frame(occ)
 
   # flags must be NULL or a character vector
-  if (!is.null(flags) && !is.character(flags)) {
-    stop("'flags' must be a character vector.", call. = FALSE)
-  }
-
-  # if flags provided, ensure they exist in occ
-  if (flags != "all") {
-    missing_flags <- flags[!flags %in% names(occ)]
-    if (length(missing_flags) > 0) {
-      stop(
-        "The following flags do not exist in 'occ': ",
-        paste(missing_flags, collapse = ", "),
-        call. = FALSE
-      )
+  if (!is.null(flags)) {
+    if(!is.character(flags)) {
+      stop("'flags' must be a character vector.", call. = FALSE)}
+    # if flags provided, ensure they exist in occ
+    if (flags != "all") {
+      missing_flags <- flags[!flags %in% names(occ)]
+      if (length(missing_flags) > 0) {
+        stop(
+          "The following flags do not exist in 'occ': ",
+          paste(missing_flags, collapse = ", "),
+          call. = FALSE
+        )
+      }
     }
-  }
 
-  if(flags == "all"){
-    flags <- c("correct_country", "correct_state", "florabr", "faunabr",
-               "wcvp", "iucn", "bien", "cultivated", "inaturalist",
-               "duplicated", "thin_env", "thin_geo", "consensus",
-               # Froom CoordinateCleaner
-               ".val", ".equ", ".zer", ".cap", ".cen", ".sea", ".urb", ".otl",
-               ".gbf", ".inst", ".aohi")
+    if(flags == "all"){
+      flags <- c("correct_country", "correct_state", "florabr", "faunabr",
+                 "wcvp", "iucn", "bien", "cultivated", "inaturalist",
+                 "duplicated", "thin_env", "thin_geo", "consensus",
+                 # Froom CoordinateCleaner
+                 ".val", ".equ", ".zer", ".cap", ".cen", ".sea", ".urb", ".otl",
+                 ".gbf", ".inst", ".aohi")
+    }
+
   }
 
   # additional_flags must be NULL or a character vector
@@ -213,6 +214,7 @@ remove_flagged <- function(occ,
   # Additional flags
   if(!is.null(additional_flags)){
     flag_names <- c(flag_names, additional_flags)
+    flags <- c(flags, additional_flags)
   }
 
   if(!is.null(force_remove)){
@@ -249,7 +251,6 @@ remove_flagged <- function(occ,
 
   # Remove flags with 0 records
   occ_flagged <- occ_flagged[sapply(occ_flagged, function(i) nrow(i) > 0)]
-
 
 
   # Filter

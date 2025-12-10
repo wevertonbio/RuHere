@@ -111,9 +111,10 @@
 #' data("occurrences", package = "RuHere")
 #' # Subset occurrences from Araucaria
 #' occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
-#' # Import environmental layers
-#' r <- terra::rast(system.file("extdata", "worldclim.tif",
-#'                              package = "RuHere"))
+#' # Load example of raster variables
+#' data("worldclim", package = "RuHere")
+#' # Unwrap Packed raster
+#' r <- terra::unwrap(worldclim)
 #' # Select thinned occurrences
 #' occ_env_moran <- flag_env_moran(occ = occ,
 #'                                   n_bins = c(5, 10, 20, 30, 40, 50),

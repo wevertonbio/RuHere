@@ -24,7 +24,7 @@
 #' indicating whether each record falls within the country specified in the
 #' metadata (`TRUE`) or not (`FALSE`).
 #'
-#' @importFrom terra vect aggregate buffer is.related
+#' @importFrom terra vect aggregate buffer is.related unwrap
 #'
 #' @export
 #'
@@ -128,8 +128,7 @@ Run install.packages('pbapply')", call. = FALSE)
   countries <- unique(occ[[country_column]])
 
   #Get shapefile with countries
-  country_shp <- terra::vect(system.file("extdata/world.shp",
-                                         package = "RuHere"))
+  country_shp <- terra::unwrap(getExportedValue("RuHere", "world"))
   #Intersect with available countries to test
   countries_in <- intersect(countries, country_shp$name)
 

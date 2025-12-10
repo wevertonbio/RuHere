@@ -10,6 +10,8 @@
 #' @param lat (character) column name in `occ` with the latitude.
 #' @param return_invalid (logical) whether to return a list containing the valid
 #' and invalid coordinates. Default is TRUE.
+#' @param verbose (logical) whether to print messages about function progress.
+#' Default is `TRUE`.
 #'
 #' @returns
 #' If `return_invalid = FALSE`, returns the occurrence dataset containing only
@@ -32,7 +34,8 @@
 remove_invalid_coordinates <- function(occ,
                                        long = "decimalLongitude",
                                        lat = "decimalLatitude",
-                                       return_invalid = TRUE){
+                                       return_invalid = TRUE,
+                                       verbose = FALSE){
   ## ---- Argument checking -----------------------------------------------------
 
   # check occ
@@ -95,7 +98,8 @@ remove_invalid_coordinates <- function(occ,
       return(occ[!invalid,])
     }
   } else {
-    message("All coordinates are valid! Returning original 'occ'.")
+    if(verbose){
+      message("All coordinates are valid! Returning original 'occ'.")}
     return(occ)
   }
 }
