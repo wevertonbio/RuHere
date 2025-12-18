@@ -173,7 +173,8 @@ Run install.packages('pbapply')", call. = FALSE)
 
   # Append occurrences of spp_out, if exists
   if(length(spp_out) > 0){
-    occ_out <- occ[occ[[species]] %in% spp_out, ]
+    spp_out_original_names <- all_spp[spp_out]
+    occ_out <- occ[occ[[species]] %in% spp_out_original_names, ]
     occ_out$bien_flag <- NA
     res_flag <- rbind(res_flag, occ_out)
   }

@@ -58,7 +58,6 @@ set_gbif_credentials(
   gbif_password = "your_password"
 )
 #> GBIF credentials have been processed and added/updated in your .Renviron file
-#> Check your .Renviron with file.edit('/Users/your_user/.Renviron')
 ```
 
 ### SpeciesLink
@@ -69,14 +68,13 @@ To retrieve records from the SpeciesLink network, an API key is required.
 # You can check your API key at: https://specieslink.net/aut/profile/apikeys
 set_specieslink_credentials(specieslink_key = "your_api_key")
 #> speciesLink credentials have been processed and added/updated in your .Renviron file
-#> Check your .Renviron with file.edit('/Users/your_user/.Renviron')
 ```
 
 > Note: Only GBIF and SpeciesLink require credentials to be configured beforehand. The BIEN and iDigBio databases do not require API authentication for retrieving occurrence data.
 
 ## Data acquisition
 
-We will download occurrence data for *Araucaria angustifolia* as example. First, we define a directory to save the files.
+We will download occurrence data for *Araucaria angustifolia* as an example. First, we define a directory to save the files.
 
 ```{r}
 # Storing the downloads in a temporary directory
@@ -96,10 +94,6 @@ occ_sl <- get_specieslink(
   save = FALSE # Doesn't save the results to a file
 )
 #> Making request to speciesLink...
-#> Warning message:
-#> In get_specieslink(key = "your_api_key", species = "Araucaria angustifolia",  :
-#>   Please make sure that the restrictions and citation indicated by
-#>   each speciesLink/CRIA data provider are observed and respected.
 
 # BIEN: Natives only, excluding cultivated records
 occ_bien <- get_bien(
@@ -125,8 +119,7 @@ To ensure access to large datasets, the GBIF download process is split into thre
 ```{r}
 # Prepare the taxonomic query
 gbif_prep <- prepare_gbif_download(species = "Araucaria angustifolia")
-#>   |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed=02s 
-  
+
 # Submit the request to GBIF
 gbif_req <- request_gbif(
   gbif_info = gbif_prep,
@@ -142,7 +135,6 @@ occ_gbif <- import_gbif(
   write_file = FALSE
 )
 #> Download file size: 2.04 MB
-#> On disk at /private/var/folders/7r/k2q5s4110l17txfjdlxwsctm0000gn/T/RtmplcyEvG/0038993-251120083545085.zip
 ```
 
 ## Standardization and unification
@@ -172,10 +164,10 @@ idig_std <- format_columns(occ_idig, metadata = "idigbio")
 
 The functions above automatically standardize your data because the package contains internal metadata templates ("presets") for GBIF, SpeciesLink, BIEN, and iDigBio. However, if you import occurrence data from an external source (e.g., a local CSV file) with different column names, you must first create a metadata template using `create_metadata()`. This maps your original column names to the package's standardized schema.
 
-The following example demonstrates how to handle occurrence data from an external source (a dataset from the `atlanticr` R package) that does not follow the package's standard column names.
+The following example demonstrates how to handle data from an external source, using a dataset originally from the `atlanticr` R package (which is included in `RuHere` for demonstration purposes)
 
 ```{r, eval = T}
-# Occurrences of Puma concolor from the atlanticr R package
+# Create metadata to standardize the occurrences
 data("puma_atlanticr", package = "RuHere")
 
 # Create metadata to standardize the occurrences
@@ -196,14 +188,13 @@ puma_metadata <- create_metadata(occ = puma_atlanticr,
 puma_occ <- format_columns(occ = puma_atlanticr, metadata = puma_metadata,
                            binomial_from = "actual_species_name",
                            data_source = "atlanticr")
-#> Warning: NAs introduced by coercion
 
 head(puma_occ[, 1:5])
 ```
 
 ### Merging datasets (`bind_here`)
 
-With standardized columns, we can merge everything into a single data frame using $\text{bind\_here()}$.
+With standardized columns, we can merge everything into a single data frame using `bind_here()`.
 
 ```{r}
 # Merging all datasets (including the external one)
@@ -233,7 +224,7 @@ occ_spatial <- spatialize(
   long = "decimalLongitude",
   lat = "decimalLatitude",
   crs = "epsg:4326" # WGS84
-) # The function automatically ensures coordinates are numeric (`force_numeric = TRUE`)
+) # The function automatically ensures coordinates are numeric (force_numeric = TRUE)
 
 # Plot the distribution
 terra::plot(occ_spatial, col = "red", main = "Species Occurrence")
