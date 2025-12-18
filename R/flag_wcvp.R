@@ -221,9 +221,9 @@ Run install.packages('pbapply')", call. = FALSE)
   res_flag <- as.data.frame(data.table::rbindlist(res_flag))
 
   # Append occurrences of spp_out, if exists
-  if(length(spp_out) > 0){
+  if(length(spp_out) > 0) {
     occ_out <- occ[occ[[species]] %in% spp_out, ]
-    occ_out$iucn_flag <- NA
+    occ_out$wcvp_flag <- NA
     res_flag <- rbind(res_flag, occ_out)
   }
   return(res_flag)

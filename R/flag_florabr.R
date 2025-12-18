@@ -250,17 +250,25 @@ Run install.packages('pbapply')", call. = FALSE)
 
   occ_in <- occ[occ[[species]] %in% spp_in, ]
 
+  origin_target <- if(!is.null(origin)) tolower(origin) else NULL
+
   res_flag <- my_lapply(spp_in, function(i) {
 
     d_i <- d[d$species == i, ]
 
-    if(!is.null(origin)) {
-      origin <- tolower(origin)
+    if(!is.null(origin_target)) {
       d_i$origin <- tolower(d_i$origin)
-      d_i <- d_i[d_i$origin %in% origin, ]
+      d_i <- d_i[d_i$origin %in% origin_target, ]
     }
 
-    occ_i <- florabr::filter_florabr(data = d_i, occ = occ_in,
+    occ_spec_i <- occ_in[occ_in[[species]] == i, ]
+
+    if(nrow(d_i) == 0) {
+      occ_spec_i$florabr_flag <- FALSE
+      return(occ_spec_i)
+    }
+
+    occ_i <- florabr::filter_florabr(data = d_i, occ = occ_spec_i,
                                      species = species,
                                      long = long,
                                      lat = lat,
@@ -288,8 +296,10 @@ Run install.packages('pbapply')", call. = FALSE)
 
   if (length(spp_out) > 0) {
     occ_out <- occ[occ[[species]] %in% spp_out, ]
-    occ_out$florabr_flag <- NA
-    res_flag <- rbind(res_flag, occ_out)
+    if(nrow(occ_out) > 0) {
+      occ_out$florabr_flag <- NA
+      res_flag <- rbind(res_flag, occ_out)
+    }
   }
 
   return(res_flag)

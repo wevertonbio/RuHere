@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-Even after initial formatting, species occurrence data often retain spatial inconsistencies that can compromise subsequent analyses. Common issues include varying spellings for the same country or state name, missing administrative information, or coordinates that fall outside the political-administrative jurisdiction assigned to the record. This vignette demonstrates how to ensure the spatial consistency of your occurrence records by addressing name standardization, data imputation, and verification and correction
+Even after initial formatting, species occurrence data often retain spatial inconsistencies that can compromise subsequent analyses. Common issues include varying spellings for the same country or state name, missing administrative information, or coordinates that fall outside the political-administrative jurisdiction assigned to the record. This vignette demonstrates how to ensure the spatial consistency of your occurrence records by addressing name standardization, data imputation, verification, and correction.
 
 ```{r}
 # Load RuHere package
@@ -79,7 +79,7 @@ occ_country_std$report[1:3, ]
 #> 3     brasil            brazil
 ```
 
-## Standardizing states (`standardize_states`)
+### Standardizing states (`standardize_states`)
 
 Similarly, this function standardizes state or province names. It uses the previously standardized country column (`country_suggested`) to disambiguate states that might share names across different countries.
 
@@ -148,7 +148,7 @@ head(occ_with_country_xy[, c("country", "country_xy")])
 Similarly, we can extract state or province names. Here, we demonstrate filling all records (`from = "all"`) and appending a source column to track where the data came from.
 
 ```{r}
-# Extract state from coordinates only where information is missing
+# Extract state from coordinates for all records
 occ_imputed <- states_from_coords(
     occ = occ_with_country_xy,
     from = "all",
@@ -182,30 +182,21 @@ occ_checked_country <- check_countries(
     distance = 5,      # Allows a 5 km buffer for border points
     try_to_fix = TRUE  # Automatically attempts to fix inverted/swapped coordinates
 )
-#> Warning: The following countries listed in the 'country_suggested' column were 
-#> absent in the world map used for validation: NATesting countries...
+#> Testing countries...
 #> 468 records fall in wrong countries
 #> Task 1 of 7: testing if longitude is inverted
-#>   |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed=00s  
 #> 0 coordinates with longitude inverted
 #> Task 2 of 7: testing if latitude is inverted
-#>   |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed=00s  
 #> 0 coordinates with latitude inverted
 #> Task 3 of 7: testing if longitude and latitude are inverted
-#>   |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed=00s  
 #> 2 coordinates with longitude and latitude inverted
 #> Task 4 of 7: testing if longitude and latitude are swapped
-#>   |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed=00s  
 #> 1 coordinates with longitude and latitude swapped
-#> Task 5 of 7: testing if longitude and latitude are swapped -
-#>             with longitude inverted
-#>   |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed=00s  
+#> Task 5 of 7: testing if longitude and latitude are swapped with longitude inverted
 #> 0 coordinates with longitude and latitude swapped and latitude inverted
 #> Task 6 of 7: testing if longitude and latitude are swapped - with latitude inverted
-#>   |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed=00s  
 #> 0 coordinates with longitude and latitude swapped and longitude inverted
 #> Task 7 of 7: testing if longitude and latitude are swapped - with longitude latitude inverted
-#>   |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed=00s  
 #> 0 coordinates with longitude and latitude swapped and inverted
 
 # The 'correct_country' column indicates validity
@@ -235,9 +226,6 @@ occ_checked_state <- check_states(
 )
 #> Testing states...
 #> 87 records fall in wrong states
-#> Warning message:
-#> In check_states(occ = occ_checked_country, state_column = "state_suggested",  :
-#>   The following states listed in the 'state_suggested' column were absent in the world map used for validation: NA, mexico
 
 head(occ_checked_state[, c("state_suggested", "correct_state")])
 #>   state_suggested correct_state
@@ -268,8 +256,7 @@ fixing_example <- fix_countries(
 #> 0 coordinates with longitude and latitude inverted
 #> Task 4 of 7: testing if longitude and latitude are swapped
 #> 0 coordinates with longitude and latitude swapped
-#> Task 5 of 7: testing if longitude and latitude are swapped -
-#>             with longitude inverted
+#> Task 5 of 7: testing if longitude and latitude are swapped with longitude inverted
 #> 0 coordinates with longitude and latitude swapped and latitude inverted
 #> Task 6 of 7: testing if longitude and latitude are swapped - with latitude inverted
 #> 0 coordinates with longitude and latitude swapped and longitude inverted

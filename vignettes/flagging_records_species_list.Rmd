@@ -1,0 +1,229 @@
+---
+title: "4. Flagging Records with Species List Information"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{4. Flagging Records with Species List Information}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE,
+  warning = FALSE
+)
+```
+
+## Introduction
+
+One of the most robust ways to validate biodiversity data is to cross-reference occurrence records with expert-curated distribution datasets. If a species is known to occur only in specific states, biomes, or countries according to an official checklist (e.g., Flora e Funga do Brasil, IUCN, WCVP), records falling outside these areas can be flagged as potential errors or introductions.
+
+RuHere streamlines this process by providing functions to:
++ Download these official datasets directly into your R environment.
++ Check availability of data for your species.
++ Flag records that fall outside the known natural range.
+
+## Overview of the functions:
++ `florabr_here()`: downloads the Flora e Funga do Brasil database.
++ `faunabr_here()`: downloads the Taxonomic Catalog of the Brazilian Fauna.
++ `wcvp_here()`: downloads the World Checklist of Vascular Plants (WCVP).
++ `iucn_here()`: downloads species distribution information from the IUCN Red List.
++ `bien_here()`: downloads range maps from the BIEN database.
++ `set_iucn_credentials()`: stores your IUCN API key securely.
++ `available_datasets()`: checks which datasets contain information for your target species.
++ `flag_florabr()`: flags records based on Brazilian state/biome distributions.
++ `flag_faunabr()`: flags animal records based on Brazilian distributions.
++ `flag_wcvp()`: flags records based on global native ranges from WCVP.
++ `flag_iucn()`: flags records based on IUCN distribution data (native, extant, etc.).
++ `flag_bien()`: flags records based on BIEN range maps.
+
+## Downloading distribution datasets
+
+Before flagging, you must download the reference datasets. These functions save the data in a structured format within your specified directory.
+
+> Note: These downloads can be large and take time. You usually only need to run them once per project.
+
+```{r}
+# Load RuHere
+library(RuHere)
+
+# Define a directory for datasets (using a temporary one for this example)
+# In a real project, use a persistent path 
+dataset_dir <- file.path(tempdir(), "datasets")
+dir.create(dataset_dir, showWarnings = FALSE)
+
+# Load example data
+data("occurrences", package = "RuHere")
+occ <- occurrences
+```
+
+WCVP (World Checklist of Vascular Plants) provides accepted taxonomy and distribution by botanical country. BIEN (Botanical Information and Ecology Network) provides modeled range maps. IUCN provides expert assessments and distribution maps.
+
+```{r}
+# Download WCVP
+wcvp_here(data_dir = dataset_dir, verbose = FALSE)
+#> trying URL 'https://sftp.kew.org/pub/data-repositories/WCVP/wcvp.zip'
+#> Content type 'application/zip' length 105093449 bytes (100.2 MB)
+#> ==================================================
+#> downloaded 100.2 MB
+#> 
+#> trying URL 'https://zenodo.org/records/17455838/files/wgsrpd.gpkg?download=1'
+#> Content type 'application/octet-stream' length 8581120 bytes (8.2 MB)
+#> ==================================================
+#> downloaded 8.2 MB
+#> 
+#> Please don't forget to cite:
+#> 
+#> Govaerts, R., Nic Lughadha, E. et al. The World Checklist of Vascular Plants, a continuously updated resource for exploring global
+#> plant diversity. Sci Data, 8, 215 (2021). https://doi.org/10.1038/s41597-021-00997-6
+
+# Download BIEN maps for your species
+bien_here(data_dir = dataset_dir, species = unique(occ$species), verbose = FALSE)
+#>                       species range_available
+#>                        <char>          <lgcl>
+#> 1:     Araucaria angustifolia           FALSE
+#> 2:       Cyanocorax caeruleus           FALSE
+#> 3: Handroanthus serratifolius            TRUE
+```
+
+To use IUCN data, you first need to register for an API key at https://api.iucnredlist.org/users/sign_up. Then, store it securely.
+
+```{r}
+# Set your key (do this once)
+set_iucn_credentials("YOUR_IUCN_KEY_HERE")
+
+# Download data for specific species
+iucn_here(data_dir = dataset_dir, species = unique(occ$species), verbose = FALSE)
+#> trying URL 'https://zenodo.org/records/17455838/files/wgsrpd.gpkg?download=1'
+#> Content type 'application/octet-stream' length 8581120 bytes (8.2 MB)
+#> ==================================================
+#> downloaded 8.2 MB
+```
+
+You can also download the official checklists for Brazil:
+
+```{r}
+florabr_here(data_dir = dataset_dir, data_version = "latest")
+#> Getting data from Flora e Funga do Brasil...
+#> Data will be saved in /var/folders/7r/k2q5s4110l17txfjdlxwsctm0000gn/T//Rtmpq7u1mg/datasets/florabr
+#> 
+#> Downloading version: 393.421
+#> 
+#> Merging data. Please wait a moment...
+#> 
+#> Data will be saved in /var/folders/7r/k2q5s4110l17txfjdlxwsctm0000gn/T//Rtmpq7u1mg/datasets/florabr
+#> 
+#> Data downloaded and merged successfully. Final data saved in /var/folders/7r/k2q5s4110l17txfjdlxwsctm0000gn/T//Rtmpq7u1mg/datasets/florabr/393.421/CompleteBrazilianFlora.rds
+#> Data successfully saved in /var/folders/7r/k2q5s4110l17txfjdlxwsctm0000gn/T//Rtmpq7u1mg/datasets/florabr
+
+# faunabr_here(data_dir = dataset_dir) # If working with animals
+```
+
+### Checking data availability
+
+Not all species are present in all databases. Use `available_datasets()` to see where your species are listed before attempting to flag them.
+
+```{r}
+# Check availability for our species
+avail <- available_datasets(
+  data_dir = dataset_dir, 
+  species = unique(occ$species),
+  datasets = "all" # Checks florabr, wcvp, iucn, bien, faunabr
+)
+
+avail
+#>                      species               datasets
+#> 1     Araucaria angustifolia      florabr;iucn;wcvp
+#> 2       Cyanocorax caeruleus                       
+#> 3 Handroanthus serratifolius bien;florabr;iucn;wcvp
+```
+
+## Flagging with expert information
+
+For a global perspective, we can validate records using WCVP, IUCN, and BIEN.
+
+### Using `flag_wcvp`
+
+This function checks if records fall within known distribution data from the World Checklist of Vascular Plants.
+
+```{r}
+occ <- flag_wcvp(
+  data_dir = dataset_dir,
+  occ = occ,
+  origin = "native", # Check against native range
+  buffer = 20        # 20 km buffer
+)
+```
+
+### Using `flag_iucn`
+
+This function validates records against the IUCN distribution data. You can be specific about which types of records to accept using the origin and presence parameters. For example, you might want to exclude records from introduced ranges or extinct populations.
+
+```{r}
+occ <- flag_iucn(
+  data_dir = dataset_dir,
+  occ = occ,
+  origin = "native",          # Only native range
+  presence = "extant",        # Only where currently extant
+  buffer = 20
+)
+```
+
+### Using `flag_bien`
+
+If BIEN range maps are available, this function checks if records fall within the modeled distribution polygons.
+
+```{r}
+occ <- flag_bien(
+  data_dir = dataset_dir,
+  occ = occ,
+  buffer = 20
+)
+#> Checking the distribution from 1 of 2 species
+```
+
+### Using `flag_florabr` and `flag_faunabr`
+
+For species occurring in Brazil, Flora e Funga do Brasil and Fauna do Brasil are often the most accurate sources.
+
+This function checks if the record falls within the States or Biomes where the species is known to occur. It allows you to filter by origin (e.g., consider only "native" occurrences) and apply a spatial buffer.
+
+```{r}
+# Flag records against Flora e Funga do Brasil
+# We check against States and Biomes, adding a 20 km buffer to account for border inaccuracies
+occ <- flag_florabr(
+  data_dir = dataset_dir,
+  occ = occ,
+  origin = "native",      # Validate only against native range
+  verbose = TRUE
+)
+#> Loading version 393.421
+#> Checking the distribution from 2 of 2 species
+#> Filtering Handroanthus serratifolius by state
+#> Filtering Handroanthus serratifolius by biome
+#> Returning dataframe with flagged occurrences
+#> Filtering Araucaria angustifolia by state
+#> Filtering Araucaria angustifolia by biome
+#> Returning dataframe with flagged occurrences
+```
+
+## Combining flags
+
+You now have multiple validation flags from different sources. You can inspect them all together to make a final decision.
+
+Use `ggmap_here()` to compare how different global datasets flagged your records (alternatively, you can use `map_here()` if you want a interactive map).
+
+
+```{r}
+# Compare validation results from all sources
+map_here(
+  occ, 
+  flags = c("wcvp", "iucn", "bien", "florabr"),
+  facet_wrap = TRUE,
+  size_points = 1.5
+)
+```
+
+Records that are flagged as `FALSE` by multiple expert sources are strong candidates for removal. You can remove these flagged records using `remove_flagged()` (see vignette `3. Flagging Records Using Record Information`).

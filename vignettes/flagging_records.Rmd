@@ -1,0 +1,176 @@
+---
+title: "3. Flagging Records Using Record Information"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{3. Flagging Records Using Record Information}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE
+)
+```
+
+## Introduction
+
+Ensuring data quality is a critical step in biodiversity analysis. This vignette demonstrates how to clean occurrence records by identifying and flagging errors derived from record metadata (such as invalid dates, fossils, or cultivated specimens) and spatial artifacts (such as coordinates that fall on capitals, biodiversity institutions, or are geographic outliers).
+
+We will use a combination of RuHere functions for flagging metadata issues and duplicates, and the CoordinateCleaner package for rigorous spatial tests.
+
+```{r}
+# Load RuHere
+library(RuHere)
+
+# Loading the example data
+data("occurrences", package = "RuHere")
+occ <- occurrences
+```
+
+## Overview of the functions:
++ `remove_invalid_coordinates()`: removes invalid geographic coordinates.
++ `flag_fossil()`: scans description columns for terms like "fossil" or "paleontological" to avoid mixing modern distribution data with fossil records.
++ `flag_cultivated()`: identifies specimens from botanical gardens, greenhouses, or plantations based on habitat and locality remarks.
++ `flag_inaturalist()`: specifically targets iNaturalist records. By setting research_grade = FALSE, we flag observations that haven't been peer-verified by the community.
++ `flag_year()`: flags records collected outside a plausible time range or those with missing dates.
++ `flag_duplicates()`: identifies and flags duplicated records.
++ `remove_flagged()`: removes flagged records.
+
+## Metadata cleaning
+
+We apply the initial flags based on record metadata.
+
+### Removing invalid coordinates (`remove_invalid_coordinates()`)
+
+Before conducting any spatial validation or modeling, it is essential to ensure the coordinates are technically sound. The `remove_invalid_coordinates()` function filters out records where coordinates are non-numeric, missing (`NA`), or fall outside the valid global range (Latitude: -90 to 90; Longitude: -180 to 180).
+
+By setting `return_invalid = TRUE`, the function returns a list containing both the clean (`$valid`) and discarded (`$invalid`) records, which is useful if you want to inspect the records that were removed. We then update our working dataset (`occ`) to keep only the valid records.
+
+```{r}
+# Remove invalid coordinates and store the result as a list to separate valid/invalid data
+occ_split <- remove_invalid_coordinates(
+  occ = occ,
+  long = "decimalLongitude",
+  lat = "decimalLatitude",
+  return_invalid = TRUE
+)
+
+# Update the main 'occ' data frame to contain only the valid records
+occ <- occ_split$valid
+```
+
+### Flagging and visualizing metadata issues
+
+After ensuring the coordinates are valid, the next step is to evaluate the quality of the record's biological and temporal information. This is done by "flagging", where logical columns are added where `TRUE` means the record passed the test and `FALSE` means it was flagged for potential removal.
+
+`RuHere` uses four specialized functions to identify common metadata issues: 
+
+```{r}
+# Apply metadata flags to identify problematic records
+occ <- flag_fossil(occ) # Scans for fossil-related terms
+occ <- flag_cultivated(occ) # Identifies cultivated specimens
+occ <- flag_inaturalist(occ, research_grade = FALSE) # Flags non-peer-verified iNaturalist records
+occ <- flag_year(occ, year_column = "year") # Flags records with implausible dates
+
+# Check the results: TRUE = Clean record; FALSE = Flagged/Problematic
+table(occ$fossil_flag)
+table(occ$cultivated_flag)
+```
+
+Once flagged, it is highly recommended to visualize these records using `map_here()` to decide if the flagging was accurate before proceeding to the final removal.
+
+```{r, fig.align = 'center', out.width = '100%'}
+# Visualizes the "cultivated" flag. The colored points (FALSE) are the flagged ones.
+map_here(occ, flags = "cultivated", label = "record_id")
+# Some flags, such as "fossil" and "year", are not in the default of the function,
+# but you can still visualize them using the argument "names_additional_flags"
+```
+
+If you prefer a non-interactive, static map you can use `ggmap_here()` instead.
+
+### Removing flagged records
+
+After flagging potential issues, we use the `remove_flagged()` function to clean the dataset. This function is highly flexible, allowing you to filter records based on the flags generated and also apply manual overrides using the `force_keep` and `force_remove` arguments.
++ `force_keep`: a vector of record IDs that you want to keep in the dataset, even if they were flagged as FALSE by one of the functions.
++ `force_remove`: a vector of record IDs that you want to exclude, even if they passed all automated tests (flagged as TRUE).
+
+```{r}
+# Suppose record "gbif_83" is a known valid herbarium specimen flagged by mistake,
+# and "gbif_85" is a record you know is wrong but wasn't caught by any flag.
+to_keep <- c("gbif_83")
+to_remove <- c("gbif_85")
+
+# Remove flagged records with manual control
+occ <- remove_flagged(
+  occ = occ,
+  force_keep = to_keep,
+  force_remove = to_remove
+)
+```
+
+This approach ensures that your expert knowledge as a researcher can complement the automated cleaning process.
+
+## Spatial cleaning (`CoordinateCleaner`)
+
+After verifying the metadata, the next step is to address spatial artifacts. For this stage, we integrate the `CoordinateCleaner` package into our workflow. This package provides a robust set of ready-to-use functions that are fully compatible with `RuHere` outputs, allowing for automated identification of common geographic errors in biodiversity data.
+
+Spatial artifacts often occur when coordinates are assigned to general locations, such as a country's capital, a state center, or a biodiversity institution, rather than the actual collection site.
+
+### Automated spatial screening
+
+The `clean_coordinates()` function adds several flag columns to your dataset (prefixed with `.`) and a summary column `.summary` (where `TRUE` means the record passed all spatial tests).
+
+```{r}
+# Loading the package
+library(CoordinateCleaner)
+
+# Run a comprehensive spatial check
+# This flags capitals, centroids, institutions, and common georeferencing errors
+results <- clean_coordinates(
+  x = occ,
+  lon = "decimalLongitude",
+  lat = "decimalLatitude",
+  species = "species",
+  tests = c("capitals", "centroids", "equal", "institutions", "zeros"),
+  value = "spatialvalid" # Returns the original data with flag columns
+)
+
+# Identify which records were flagged by ANY spatial test
+# (where .summary is FALSE)
+occ_spatial_flagged <- results[!results$.summary, ]
+```
+
+Before removing these records, it is highly recommended to visualize them. We can pass the `.summary` flag generated by `CoordinateCleaner` directly into `map_here()` to inspect where these spatial errors are occurring.
+
+```{r, fig.align = 'center', out.width = '100%'}
+# Interactively inspect records flagged by CoordinateCleaner
+# We use .summary where FALSE indicates a spatial issue found
+map_here(occ = results, label = "record_id")
+```
+
+### Final spatial removal
+
+Once you have inspected the patterns, you can proceed to filter your dataset, keeping only the records that are considered spatially valid.
+
+```{r}
+# Keep only records that passed all spatial tests
+occ_cc_clean_list <- remove_flagged(occ = results)
+
+# The function returns a list. We extract the valid (cleaned) data:
+occ <- occ_cc_clean_list$valid
+```
+
+## Removing duplicates
+
+We use `flag_duplicates()` to identify duplicates and prioritize keeping records from preferred data sources.
+
+```{r, eval = FALSE}
+# Flag duplicates
+occ <- flag_duplicates(occ = occ)
+
+# Remove duplicates
+occ <- occ[occ$duplicated_flag == FALSE, ]
+```
