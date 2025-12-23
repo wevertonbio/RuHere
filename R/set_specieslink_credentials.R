@@ -46,6 +46,11 @@ set_specieslink_credentials <- function(specieslink_key, overwrite = FALSE,
     stop("'open_Renviron' must be a single logical value (TRUE or FALSE).",
          call. = FALSE)
 
+  if (!is.logical(verbose) || length(verbose) != 1) {
+    stop("'verbose' must be a single logical value (TRUE or FALSE).",
+         call. = FALSE)
+  }
+
   # Get R environment
   renviron_path <- file.path(Sys.getenv("HOME"), ".Renviron")
 

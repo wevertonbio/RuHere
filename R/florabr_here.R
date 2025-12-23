@@ -91,6 +91,6 @@ florabr_here <- function(data_dir,
                        overwrite = overwrite,
                        verbose = verbose,
                        remove_files = remove_files)
-  message("Data sucessfuly saved in ", file.path(data_dir, "florabr"))
+  if (verbose) message("Data sucessfuly saved in ", file.path(data_dir, "florabr"))
 
 }

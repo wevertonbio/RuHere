@@ -100,6 +100,6 @@ faunabr_here <- function(data_dir,
     try(invisible(unlink(to_remove, recursive = TRUE, force = TRUE)))
   }
 
-  message("Data sucessfuly saved in ", file.path(data_dir, "faunabr"))
+  if (verbose) message("Data sucessfuly saved in ", file.path(data_dir, "faunabr"))
 
 }

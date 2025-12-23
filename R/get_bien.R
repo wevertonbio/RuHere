@@ -8,7 +8,7 @@
 #' country = NULL, country.code = NULL, state = NULL, county = NULL,
 #' state.code = NULL, county.code = NULL, family = NULL, sf = NULL, dir,
 #' filename = "bien_output", file.format = "csv", compress = FALSE,
-#' save = FALSE, ...)
+#' save = FALSE, verbose = TRUE, ...)
 #'
 #' @description
 #' Wrapper function to access and download occurrence records from the
@@ -78,6 +78,8 @@
 #' @param compress (logical) if `TRUE` and `save = TRUE`, compresses the output
 #' file as .csv.zip. Default is `FALSE`.
 #' @param ... additional arguments passed to the underlying BIEN function.
+#' @param verbose (logical) if `TRUE`, prints messages about the progress and
+#' the number of species being checked. Default is `TRUE`.
 #'
 #' @return
 #' A \code{data.frame} containing BIEN occurrence records that match
@@ -116,7 +118,7 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
                      state = NULL, county = NULL, state.code = NULL,
                      county.code = NULL, family = NULL, sf = NULL, dir,
                      filename = "bien_output", file.format = "csv",
-                     compress = FALSE, save = FALSE, ...) {
+                     compress = FALSE, save = FALSE, verbose = TRUE, ...) {
 
     # Botanical Information and Ecology Network Database
     # https://bien.nceas.ucsb.edu/bien/
@@ -230,6 +232,11 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
       stop("'compress' must be a single logical (TRUE/FALSE), not ",
            paste(class(compress), collapse = "/"))
 
+    if (!is.logical(verbose) || length(verbose) != 1) {
+      stop("'verbose' must be a single logical value (TRUE or FALSE).",
+           call. = FALSE)
+    }
+
     if (by == "box") {
 
         invalid_args <- c()
@@ -246,7 +253,7 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
         if (!is.null(family)) invalid_args <- c(invalid_args, "family")
         if (!is.null(sf)) invalid_args <- c(invalid_args, "sf")
 
-        if (length(invalid_args) > 0) {
+        if (length(invalid_args) > 0 && verbose) {
             warning("The following arguments are not valid for 'box': ",
                     paste(invalid_args, collapse = ", "))
         }
@@ -285,7 +292,7 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
         if (!is.null(family)) invalid_args <- c(invalid_args, "family")
         if (!is.null(sf)) invalid_args <- c(invalid_args, "sf")
 
-        if (length(invalid_args) > 0) {
+        if (length(invalid_args) > 0 && verbose) {
             warning("The following arguments are not valid for 'country': ",
                     paste(invalid_args, collapse = ", "))
         }
@@ -322,7 +329,7 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
         if (!is.null(family)) invalid_args <- c(invalid_args, "family")
         if (!is.null(sf)) invalid_args <- c(invalid_args, "sf")
 
-        if (length(invalid_args) > 0) {
+        if (length(invalid_args) > 0 && verbose) {
             warning("The following arguments are not valid for 'county': ",
                     paste(invalid_args, collapse = ", "))
         }
@@ -363,7 +370,7 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
                                                      "county.code")
         if (!is.null(sf)) invalid_args <- c(invalid_args, "sf")
 
-        if (length(invalid_args) > 0) {
+        if (length(invalid_args) > 0 && verbose) {
             warning("The following arguments are not valid for 'family': ",
                     paste(invalid_args, collapse = ", "))
         }
@@ -402,7 +409,7 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
         if (!is.null(family)) invalid_args <- c(invalid_args, "family")
         if (!is.null(sf)) invalid_args <- c(invalid_args, "sf")
 
-        if (length(invalid_args) > 0) {
+        if (length(invalid_args) > 0 && verbose) {
             warning("The following arguments are not valid for 'genus': ",
                     paste(invalid_args, collapse = ", "))
         }
@@ -458,7 +465,7 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
         if (!is.null(family)) invalid_args <- c(invalid_args, "family")
         if (!is.null(sf)) invalid_args <- c(invalid_args, "sf")
 
-        if (length(invalid_args) > 0) {
+        if (length(invalid_args) > 0 && verbose) {
             warning("The following arguments are not valid for 'records_per_species': ",
                     paste(invalid_args, collapse = ", "))
         }
@@ -525,7 +532,7 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
                                                      "county.code")
         if (!is.null(family)) invalid_args <- c(invalid_args, "family")
 
-        if (length(invalid_args) > 0) {
+        if (length(invalid_args) > 0 && verbose) {
             warning("The following arguments are not valid for 'sf': ",
                     paste(invalid_args, collapse = ", "))
         }
@@ -559,7 +566,7 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
         if (!is.null(family)) invalid_args <- c(invalid_args, "family")
         if (!is.null(sf)) invalid_args <- c(invalid_args, "sf")
 
-        if (length(invalid_args) > 0) {
+        if (length(invalid_args) > 0 && verbose) {
             warning("The following arguments are not valid for 'state': ",
                     paste(invalid_args, collapse = ", "))
         }
@@ -586,19 +593,19 @@ get_bien <- function(by = "species", cultivated = FALSE, new.world = NULL,
       if (file.format == "csv") {
         if (compress) {
           fullname <- file.path(dir, paste0(filename, ".csv.zip"))
-          message(paste0("Writing ", fullname, " on disk."))
+          if (verbose) message(paste0("Writing ", fullname, " on disk."))
           data.table::fwrite(occ_bien, file = fullname, compress = "gzip")
         }
         else {
           fullname <- file.path(dir, paste0(filename, ".csv"))
-          message(paste0("Writing ", fullname, " on disk."))
+          if (verbose) message(paste0("Writing ", fullname, " on disk."))
           data.table::fwrite(occ_bien, file = fullname)
         }
       }
 
       if (file.format == "rds") {
         fullname <- file.path(dir, paste0(filename, ".rds"))
-        message(paste0("Writing ", fullname, " on disk."))
+        if (verbose) message(paste0("Writing ", fullname, " on disk."))
         if (compress) {
           saveRDS(occ_bien, file = fullname, compress = "gzip")
         }

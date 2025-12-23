@@ -207,6 +207,12 @@ Run install.packages('pbapply')", call. = FALSE)
 
   spinfo <- unique(data.table::rbindlist(spinfo))
 
+  if(verbose) {
+    quiet = FALSE
+  } else {
+    quiet = TRUE
+  }
+
   # Save results
   # Check if some file exists:
   file_exists <- file.exists(file.path(odir, "iucn_distribution.gz"))
@@ -215,7 +221,7 @@ Run install.packages('pbapply')", call. = FALSE)
       stop("IUCN dataset already exists in the '", data_dir, "'.\n",
          "Set 'overwrite = TRUE' or change the directory specified in 'data_dir'")
     } else {
-      warning("Appending new information to the existing IUCN dataset...")
+      if(verbose) warning("Appending new information to the existing IUCN dataset...")
       #Import existing dataset
       iucn_file <- data.table::fread(file.path(odir, "iucn_distribution.gz"))
       #Merge and get unique results
@@ -232,7 +238,8 @@ Run install.packages('pbapply')", call. = FALSE)
                        destfile = file.path(odir, "wgsrpd.gpkg"),
                        method = "auto",
                        mode = "wb",
-                       cacheOK = TRUE)
+                       cacheOK = TRUE,
+                       quiet = quiet)
 
   # Data saved in...
   if(verbose){

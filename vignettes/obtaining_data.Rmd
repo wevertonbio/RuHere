@@ -55,9 +55,9 @@ To download data from GBIF using the asynchronous API, you must store your crede
 set_gbif_credentials(
   gbif_username = "your_username",
   gbif_email = "your_email@domain.com",
-  gbif_password = "your_password"
+  gbif_password = "your_password",
+  verbose = FALSE
 )
-#> GBIF credentials have been processed and added/updated in your .Renviron file
 ```
 
 ### SpeciesLink
@@ -65,8 +65,7 @@ set_gbif_credentials(
 To retrieve records from the SpeciesLink network, an API key is required. You can check your API key at: [https://specieslink.net/aut/profile/apikeys](https://specieslink.net/aut/profile/apikeys).
 
 ```{r}
-set_specieslink_credentials(specieslink_key = "your_api_key")
-#> speciesLink credentials have been processed and added/updated in your .Renviron file
+set_specieslink_credentials(specieslink_key = "your_api_key", verbose = FALSE)
 ```
 
 > Note: Only GBIF and SpeciesLink require credentials to be configured beforehand. The BIEN and iDigBio databases do not require API authentication for retrieving occurrence data.
@@ -117,13 +116,13 @@ These databases allow direct downloading through a single function call.
 
 ```{r}
 # SpeciesLink: Filtering by Species
-occ_sl <- get_specieslink(species = "Araucaria angustifolia")
-#> Making request to speciesLink...
+occ_sl <- get_specieslink(species = "Araucaria angustifolia", verbose = FALSE)
 
 # BIEN: Natives only, excluding cultivated records
 occ_bien <- get_bien(species = "Araucaria angustifolia",
                      cultivated = FALSE,
-                     natives.only = TRUE)
+                     natives.only = TRUE,
+                     verbose = FALSE)
 #> Getting page 1 of records
 
 # iDigBio: Limiting records for this example

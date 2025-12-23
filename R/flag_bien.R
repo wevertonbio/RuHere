@@ -134,7 +134,7 @@ Run install.packages('pbapply')", call. = FALSE)
   spp_out <- setdiff(names(all_spp), spp_files)
 
   #Warning if some species are not available
-  if(length(spp_out) > 0){
+  if(length(spp_out) > 0 && verbose){
     warning("Some species present in occ will not be checked due to absence of information in BIEN")
   }
 

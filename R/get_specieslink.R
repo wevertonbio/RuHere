@@ -1,5 +1,25 @@
 #' Download occurrence records from SpeciesLink
 #'
+#' @usage get_specieslink(species = NULL, key = NULL, dir,
+#'                        filename = "specieslink_output",save = FALSE,
+#'                        basisOfRecord = NULL, family = NULL, institutionCode = NULL,
+#'                        collectionID = NULL, catalogNumber = NULL,
+#'                        kingdom = NULL, phylum = NULL, class = NULL,
+#'                        order = NULL, genus = NULL, specificEpithet = NULL,
+#'                        infraspecificEpithet = NULL, collectionCode = NULL,
+#'                        identifiedBy = NULL, yearIdentified = NULL,
+#'                        country = NULL, stateProvince = NULL, county = NULL,
+#'                        typeStatus = NULL, recordedBy = NULL,
+#'                        recordNumber = NULL, yearCollected = NULL,
+#'                        locality = NULL, occurrenceRemarks = NULL,
+#'                        barcode = NULL, bbox = NULL, landuse_1 = NULL,
+#'                        landuse_year_1 = NULL, landuse_2 = NULL,
+#'                        landuse_year_2 = NULL, phonetic = FALSE,
+#'                        coordinates = NULL, scope = NULL, synonyms = NULL,
+#'                        typus = FALSE, images = FALSE, redlist = NULL,
+#'                        limit = NULL, file.format = "csv",
+#'                        compress = FALSE, verbose = TRUE)
+#'
 #' @description
 #' Retrieves occurrence data from the [speciesLink](https://specieslink.net/)
 #' network using user-defined filters. The function allows querying by
@@ -81,6 +101,8 @@
 #' Default is `"csv"`.
 #' @param compress (logical) whether to compress the output file into `.zip`.
 #' Default is `FALSE`.
+#' @param verbose (logical) if `TRUE`, prints messages about the progress and
+#' the number of species being checked. Default is `TRUE`.
 #'
 #'#' @details
 #' The speciesLink API key can be set permanently using:
@@ -137,7 +159,7 @@ get_specieslink <- function(species = NULL, key = NULL, dir,
                             coordinates = NULL, scope = NULL, synonyms = NULL,
                             typus = FALSE, images = FALSE, redlist = NULL,
                             limit = NULL, file.format = "csv",
-                            compress = FALSE) {
+                            compress = FALSE, verbose = TRUE) {
 
   if (!inherits(filename, "character") || length(filename) != 1)
     stop("'filename' must be a single character value, not ", paste(class(filename), collapse = "/"))
@@ -257,6 +279,11 @@ get_specieslink <- function(species = NULL, key = NULL, dir,
     }
   }
 
+  if (!is.logical(verbose) || length(verbose) != 1) {
+    stop("'verbose' must be a single logical value (TRUE or FALSE).",
+         call. = FALSE)
+  }
+
   base_url <- "https://specieslink.net/ws/1.0/search?"
 
   url_query <- function(vector, name) {
@@ -270,7 +297,7 @@ get_specieslink <- function(species = NULL, key = NULL, dir,
 
   # Get key from Renvironment
   if (is.null(key)) {
-    key <- Sys.getenv("specieslink_key")
+    key <- Sys.getenv("SPECIESLINK_KEY")
   }
 
   # Check if key exists
@@ -546,7 +573,7 @@ get_specieslink <- function(species = NULL, key = NULL, dir,
 
   base_url <- paste0(base_url, "apikey=", key)
 
-  message("Making request to speciesLink...")
+  if (verbose) message("Making request to speciesLink...")
 
   df_json <- jsonlite::fromJSON(base_url)
 
@@ -596,11 +623,11 @@ get_specieslink <- function(species = NULL, key = NULL, dir,
 
   }
 
-  if (is.null(dim(df))) {
+  if (is.null(dim(df)) && verbose) {
     warning("Output is empty. Check your request.")
   }
 
-  warning("Please make sure that the restrictions and citation indicated by\n  each speciesLink/CRIA data provider are observed and respected.")
+  if (verbose) warning("Please make sure that the restrictions and citation indicated by\n  each speciesLink/CRIA data provider are observed and respected.")
 
   return(df)
 }
