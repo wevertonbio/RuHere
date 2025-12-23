@@ -200,7 +200,7 @@ Run install.packages('pbapply')", call. = FALSE)
   spp_out <- setdiff(unique(occ[[species]]), unique(d$species))
 
   #Warning if some species are not available
-  if (length(spp_out) > 0) {
+  if (length(spp_out) > 0 && verbose) {
     warning("Some species present in occ will not be checked due to absence of information in faunabr")
   }
 
@@ -257,11 +257,18 @@ Run install.packages('pbapply')", call. = FALSE)
 
   if (length(spp_out) > 0) {
     occ_out <- occ[occ[[species]] %in% spp_out, ]
+
     if(nrow(occ_out) > 0) {
       occ_out$faunabr_flag <- NA
-      res_flag <- rbind(res_flag, occ_out)
+      if (!keep_columns) {
+        common_cols <- intersect(colnames(occ_out), colnames(res_flag))
+        occ_out <- occ_out[, common_cols, drop = FALSE]
+        res_flag <- res_flag[, common_cols, drop = FALSE]
+      }
+      res_flag <- as.data.frame(data.table::rbindlist(list(res_flag, occ_out), fill = TRUE))
     }
   }
+
 
   return(res_flag)
 

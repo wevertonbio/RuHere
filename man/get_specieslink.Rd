@@ -4,53 +4,25 @@
 \alias{get_specieslink}
 \title{Download occurrence records from SpeciesLink}
 \usage{
-get_specieslink(
-  species = NULL,
-  key = NULL,
-  dir,
-  filename = "specieslink_output",
-  save = FALSE,
-  basisOfRecord = NULL,
-  family = NULL,
-  institutionCode = NULL,
-  collectionID = NULL,
-  catalogNumber = NULL,
-  kingdom = NULL,
-  phylum = NULL,
-  class = NULL,
-  order = NULL,
-  genus = NULL,
-  specificEpithet = NULL,
-  infraspecificEpithet = NULL,
-  collectionCode = NULL,
-  identifiedBy = NULL,
-  yearIdentified = NULL,
-  country = NULL,
-  stateProvince = NULL,
-  county = NULL,
-  typeStatus = NULL,
-  recordedBy = NULL,
-  recordNumber = NULL,
-  yearCollected = NULL,
-  locality = NULL,
-  occurrenceRemarks = NULL,
-  barcode = NULL,
-  bbox = NULL,
-  landuse_1 = NULL,
-  landuse_year_1 = NULL,
-  landuse_2 = NULL,
-  landuse_year_2 = NULL,
-  phonetic = FALSE,
-  coordinates = NULL,
-  scope = NULL,
-  synonyms = NULL,
-  typus = FALSE,
-  images = FALSE,
-  redlist = NULL,
-  limit = NULL,
-  file.format = "csv",
-  compress = FALSE
-)
+get_specieslink(species = NULL, key = NULL, dir,
+                       filename = "specieslink_output",save = FALSE,
+                       basisOfRecord = NULL, family = NULL, institutionCode = NULL,
+                       collectionID = NULL, catalogNumber = NULL,
+                       kingdom = NULL, phylum = NULL, class = NULL,
+                       order = NULL, genus = NULL, specificEpithet = NULL,
+                       infraspecificEpithet = NULL, collectionCode = NULL,
+                       identifiedBy = NULL, yearIdentified = NULL,
+                       country = NULL, stateProvince = NULL, county = NULL,
+                       typeStatus = NULL, recordedBy = NULL,
+                       recordNumber = NULL, yearCollected = NULL,
+                       locality = NULL, occurrenceRemarks = NULL,
+                       barcode = NULL, bbox = NULL, landuse_1 = NULL,
+                       landuse_year_1 = NULL, landuse_2 = NULL,
+                       landuse_year_2 = NULL, phonetic = FALSE,
+                       coordinates = NULL, scope = NULL, synonyms = NULL,
+                       typus = FALSE, images = FALSE, redlist = NULL,
+                       limit = NULL, file.format = "csv",
+                       compress = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{species}{(character) species name. Default is \code{NULL}.}
@@ -172,7 +144,10 @@ images. Default is \code{FALSE}.}
 Default is \code{"csv"}.}
 
 \item{compress}{(logical) whether to compress the output file into \code{.zip}.
-Default is \code{FALSE}.
+Default is \code{FALSE}.}
+
+\item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
+the number of species being checked. Default is \code{TRUE}.
 
 #' @details
 The speciesLink API key can be set permanently using:

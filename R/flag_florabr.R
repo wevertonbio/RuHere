@@ -235,7 +235,7 @@ Run install.packages('pbapply')", call. = FALSE)
                      unique(d$species))
 
   #Warning if some species are not available
-  if (length(spp_out) > 0) {
+  if (length(spp_out) > 0 && verbose) {
     warning("Some species present in occ will not be checked due to absence of information in florabr")
   }
 
@@ -284,7 +284,8 @@ Run install.packages('pbapply')", call. = FALSE)
                                      biome_vect = biome_vect,
                                      biome_column = biome_column,
                                      br_vect = br_vect,
-                                     keep_columns = keep_columns)
+                                     keep_columns = keep_columns,
+                                     verbose = verbose)
 
     colnames(occ_i)[colnames(occ_i) == "filters_ok"] <- "florabr_flag"
 
@@ -296,9 +297,15 @@ Run install.packages('pbapply')", call. = FALSE)
 
   if (length(spp_out) > 0) {
     occ_out <- occ[occ[[species]] %in% spp_out, ]
+
     if(nrow(occ_out) > 0) {
       occ_out$florabr_flag <- NA
-      res_flag <- rbind(res_flag, occ_out)
+      if (!keep_columns) {
+        common_cols <- intersect(colnames(occ_out), colnames(res_flag))
+        occ_out <- occ_out[, common_cols, drop = FALSE]
+        res_flag <- res_flag[, common_cols, drop = FALSE]
+      }
+      res_flag <- as.data.frame(data.table::rbindlist(list(res_flag, occ_out), fill = TRUE))
     }
   }
 

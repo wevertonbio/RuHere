@@ -72,12 +72,16 @@ wcvp_here <- function(data_dir,
 
   if(verbose){
     message("Task 1 of 3: Downloading data from the World Checklist of Vascular Plants (WCVP) repository...\n")
+    quiet=FALSE
+  } else {
+    quiet=TRUE
   }
-  # Downlod file
+  # Download file
   utils::download.file(url = "https://sftp.kew.org/pub/data-repositories/WCVP/wcvp.zip",
                        destfile = file.path(odir, "wcvp.zip"),
                        method = "auto",
-                       cacheOK = TRUE)
+                       cacheOK = TRUE,
+                       quiet = quiet)
 
 
   if(verbose){
@@ -85,18 +89,27 @@ wcvp_here <- function(data_dir,
   }
 
   # Unzip file
-  utils::unzip(zipfile = file.path(odir, "wcvp.zip"),
-               exdir = file.path(odir))
+  if(verbose){
+    utils::unzip(zipfile = file.path(odir, "wcvp.zip"),
+                 exdir = file.path(odir))
+  } else {
+    options(progress_enabled = FALSE)
+    utils::unzip(zipfile = file.path(odir, "wcvp.zip"),
+                 exdir = file.path(odir))
+    options(progress_enabled = TRUE)
+  }
 
   wcp_names <- data.table::fread(file.path(odir, "wcvp_names.csv"),
-                                 select = c("plant_name_id", "taxon_name"))
+                                 select = c("plant_name_id", "taxon_name"),
+                                 showProgress = verbose)
 
   colnames(wcp_names)[2] <- "species"
   wcp_dist <- data.table::fread(file.path(odir, "wcvp_distribution.csv"),
                                 select = c("plant_name_id", "area_code_l3",
                                            "introduced", "extinct",
                                            "location_doubtful"),
-                                data.table = FALSE)
+                                data.table = FALSE,
+                                showProgress = verbose)
   wcvp_dist <- unique(wcp_dist)
   colnames(wcp_dist)[2] <- "LEVEL3_COD"
   wcp <- na.omit(merge(wcp_names, wcp_dist, by = "plant_name_id", all.x = TRUE))
@@ -115,7 +128,8 @@ wcvp_here <- function(data_dir,
                        destfile = file.path(odir, "wgsrpd.gpkg"),
                        method = "auto",
                        mode = "wb",
-                       cacheOK = TRUE)
+                       cacheOK = TRUE,
+                       quiet = quiet)
 
 
   # Remove files
@@ -136,6 +150,8 @@ wcvp_here <- function(data_dir,
     message("Data sucessfuly saved in ", file.path(data_dir, "florabr\n"))
   }
 
-  message("Please don't forget to cite:\n
+  if (verbose) {
+    message("Please don't forget to cite:\n
 Govaerts, R., Nic Lughadha, E. et al. The World Checklist of Vascular Plants, a continuously updated resource for exploring global plant diversity. Sci Data, 8, 215 (2021). https://doi.org/10.1038/s41597-021-00997-6")
+  }
 }

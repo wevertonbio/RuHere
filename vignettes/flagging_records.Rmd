@@ -135,7 +135,8 @@ results <- clean_coordinates(
   lat = "decimalLatitude",
   species = "species",
   tests = c("capitals", "centroids", "equal", "institutions", "zeros"),
-  value = "spatialvalid" # Returns the original data with flag columns
+  value = "spatialvalid", # Returns the original data with flag columns
+  verbose = FALSE
 )
 
 # Identify which records were flagged by ANY spatial test

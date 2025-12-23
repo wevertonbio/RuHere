@@ -12,7 +12,7 @@ min.long = NULL, max.long = NULL, species = NULL, genus = NULL,
 country = NULL, country.code = NULL, state = NULL, county = NULL,
 state.code = NULL, county.code = NULL, family = NULL, sf = NULL, dir,
 filename = "bien_output", file.format = "csv", compress = FALSE,
-save = FALSE, ...)
+save = FALSE, verbose = TRUE, ...)
 }
 \arguments{
 \item{by}{(character) type of query to perform (\code{"box"}, \code{"country"},
@@ -104,6 +104,9 @@ file as .csv.zip. Default is \code{FALSE}.}
 
 \item{save}{(logical) if \code{TRUE}, saves the results to a CSV file.
 Default is \code{FALSE}.}
+
+\item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
+the number of species being checked. Default is \code{TRUE}.}
 
 \item{...}{additional arguments passed to the underlying BIEN function.}
 }

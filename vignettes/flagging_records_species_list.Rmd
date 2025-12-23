@@ -64,20 +64,6 @@ WCVP (World Checklist of Vascular Plants) provides accepted taxonomy and distrib
 ```{r}
 # Download WCVP
 wcvp_here(data_dir = dataset_dir, verbose = FALSE)
-#> trying URL 'https://sftp.kew.org/pub/data-repositories/WCVP/wcvp.zip'
-#> Content type 'application/zip' length 105093449 bytes (100.2 MB)
-#> ==================================================
-#> downloaded 100.2 MB
-#> 
-#> trying URL 'https://zenodo.org/records/17455838/files/wgsrpd.gpkg?download=1'
-#> Content type 'application/octet-stream' length 8581120 bytes (8.2 MB)
-#> ==================================================
-#> downloaded 8.2 MB
-#> 
-#> Please don't forget to cite:
-#> 
-#> Govaerts, R., Nic Lughadha, E. et al. The World Checklist of Vascular Plants, a continuously updated resource for exploring global
-#> plant diversity. Sci Data, 8, 215 (2021). https://doi.org/10.1038/s41597-021-00997-6
 
 # Download BIEN maps for your species
 bien_here(data_dir = dataset_dir, species = unique(occ$species), verbose = FALSE)
@@ -95,7 +81,7 @@ To use IUCN data, you first need to register for an API key at https://api.iucnr
 set_iucn_credentials("YOUR_IUCN_KEY_HERE")
 
 # Download data for specific species
-iucn_here(data_dir = dataset_dir, species = unique(occ$species), verbose = FALSE)
+iucn_here(data_dir = dataset_dir, species = unique(occ$species), verbose = FALSE, return_data = FALSE)
 #> trying URL 'https://zenodo.org/records/17455838/files/wgsrpd.gpkg?download=1'
 #> Content type 'application/octet-stream' length 8581120 bytes (8.2 MB)
 #> ==================================================
@@ -105,18 +91,7 @@ iucn_here(data_dir = dataset_dir, species = unique(occ$species), verbose = FALSE
 You can also download the official checklists for Brazil:
 
 ```{r}
-florabr_here(data_dir = dataset_dir, data_version = "latest")
-#> Getting data from Flora e Funga do Brasil...
-#> Data will be saved in /var/folders/7r/k2q5s4110l17txfjdlxwsctm0000gn/T//Rtmpq7u1mg/datasets/florabr
-#> 
-#> Downloading version: 393.421
-#> 
-#> Merging data. Please wait a moment...
-#> 
-#> Data will be saved in /var/folders/7r/k2q5s4110l17txfjdlxwsctm0000gn/T//Rtmpq7u1mg/datasets/florabr
-#> 
-#> Data downloaded and merged successfully. Final data saved in /var/folders/7r/k2q5s4110l17txfjdlxwsctm0000gn/T//Rtmpq7u1mg/datasets/florabr/393.421/CompleteBrazilianFlora.rds
-#> Data successfully saved in /var/folders/7r/k2q5s4110l17txfjdlxwsctm0000gn/T//Rtmpq7u1mg/datasets/florabr
+florabr_here(data_dir = dataset_dir, data_version = "latest", verbose = FALSE)
 
 # faunabr_here(data_dir = dataset_dir) # If working with animals
 ```
@@ -179,9 +154,9 @@ If BIEN range maps are available, this function checks if records fall within th
 occ <- flag_bien(
   data_dir = dataset_dir,
   occ = occ,
-  buffer = 20
+  buffer = 20,
+  verbose = FALSE
 )
-#> Checking the distribution from 1 of 2 species
 ```
 
 ### Using `flag_florabr` and `flag_faunabr`
@@ -197,16 +172,8 @@ occ <- flag_florabr(
   data_dir = dataset_dir,
   occ = occ,
   origin = "native",      # Validate only against native range
-  verbose = TRUE
+  verbose = FALSE
 )
-#> Loading version 393.421
-#> Checking the distribution from 2 of 2 species
-#> Filtering Handroanthus serratifolius by state
-#> Filtering Handroanthus serratifolius by biome
-#> Returning dataframe with flagged occurrences
-#> Filtering Araucaria angustifolia by state
-#> Filtering Araucaria angustifolia by biome
-#> Returning dataframe with flagged occurrences
 ```
 
 ## Combining flags
