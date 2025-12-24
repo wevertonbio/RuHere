@@ -1,0 +1,325 @@
+# 
+
+# **RuHere: Are your species records really where they say they are?**
+
+> *Check them using metadata and specialists’ range information!*
+
+Authors: Weverton C. F. Trindade and Fernanda S. Caron
+
+## **Package overview**
+
+Primary biodiversity data documenting species distributions are central
+to understand and conserve biodiversity. A major challenge in using
+these data is the presence of erroneous or overly imprecise geographic
+coordinates associated with occurrence records. Here, we present
+**RuHere**, an R package designed to manage species occurrence data,
+flag potential errors, and support the iterative exploration of
+problematic records. The package supports robust preparation of
+occurrence datasets for ecological and conservation applications such as
+ecological niche modelling, with its main strength being the flexibility
+and control it provides to deal with and explore potentially erroneous
+records.
+
+## **Workflow in RuHere**
+
+The RuHere package facilitates several key steps in species occurrence
+data preparation and validation:
+
+- **Data Acquisition**: Download species occurrences from multiple
+  global databases.
+- **Standardization**: Merge and standardize disparate datasets into a
+  unified format.
+- **Metadata Flagging**: Identify problematic records using associated
+  metadata information.
+- **Expert Validation**: Flag records using specialist range information
+  sourced from external databases.
+- **Bias Mitigation**: Reduce spatial sampling bias through record
+  thinning.
+- **Exploration**: Visualize and investigate flagged issues within the
+  final datasets.
+
+The main functions of the package are presented in the figure below:
+
+![Figure 1. Overview of the RuHere workflow for species occurrence data
+preparation and validation](reference/figures/workflow.png)
+
+Figure 1. Overview of the RuHere workflow for species occurrence data
+preparation and validation
+
+## **Package website**
+
+See the package website (<https://wevertonbio.github.io/RuHere/>) for
+further functions explanation and vignettes.
+
+## **Installing the package**
+
+Note: Internet connection is required to install the package.
+
+To install the latest release of RuHere use the following line of code:
+
+``` r
+# Installing from CRAN 
+#install.packages("RuHere")  # in progress
+```
+
+The development version of RuHere can be installed using the code below.
+
+``` r
+# Installing and loading packages
+if(!require(remotes)){
+  install.packages("remotes")
+}
+
+# To install the package use
+remotes::install_github("wevertonbio/RuHere")
+
+# To install the package and its vignettes use (if needed use: force = TRUE)  
+# remotes::install_github("wevertonbio/RuHere", build_vignettes = TRUE) # in progress
+```
+
+# Package index
+
+## All functions
+
+- [`available_datasets()`](https://wevertonbio.github.io/RuHere/reference/available_datasets.md)
+  : Check the available distribution datasets for a set of species
+
+- [`bien_here()`](https://wevertonbio.github.io/RuHere/reference/bien_here.md)
+  : Download species distribution information from BIEN
+
+- [`bind_here()`](https://wevertonbio.github.io/RuHere/reference/bind_here.md)
+  : Bind occurrences after standardizing columns
+
+- [`check_countries()`](https://wevertonbio.github.io/RuHere/reference/check_countries.md)
+  : Check if the records fall in the country assigned in the metadata
+
+- [`check_states()`](https://wevertonbio.github.io/RuHere/reference/check_states.md)
+  : Check if the records fall in the state assigned in the metadata
+
+- [`country_dictionary`](https://wevertonbio.github.io/RuHere/reference/country_dictionary.md)
+  : Country dictionary for standardizing country names and codes
+
+- [`country_from_coords()`](https://wevertonbio.github.io/RuHere/reference/country_from_coords.md)
+  : Extract country from coordinates
+
+- [`create_metadata()`](https://wevertonbio.github.io/RuHere/reference/create_metadata.md)
+  : Create metadata template
+
+- [`cultivated`](https://wevertonbio.github.io/RuHere/reference/cultivated.md)
+  : Dictionary of terms used to flag cultivated individuals
+
+- [`fake_data`](https://wevertonbio.github.io/RuHere/reference/fake_data.md)
+  : Fake occurrence data for testing coordinate validation functions
+
+- [`faunabr_here()`](https://wevertonbio.github.io/RuHere/reference/faunabr_here.md)
+  : Download the latest version of the Fauna do Brazil (Taxonomic
+  Catalog of the Brazilian Fauna)
+
+- [`fix_countries()`](https://wevertonbio.github.io/RuHere/reference/fix_countries.md)
+  : Identify and correct coordinates based on country information
+
+- [`fix_states()`](https://wevertonbio.github.io/RuHere/reference/fix_states.md)
+  : Identify and correct coordinates based on state information
+
+- [`flag_bien()`](https://wevertonbio.github.io/RuHere/reference/flag_bien.md)
+  : Identify records outside natural ranges according to BIEN
+
+- [`flag_colors`](https://wevertonbio.github.io/RuHere/reference/flag_colors.md)
+  : Color palette for flagged records
+
+- [`flag_consensus()`](https://wevertonbio.github.io/RuHere/reference/flag_consensus.md)
+  : Get consensus across multiple flags
+
+- [`flag_cultivated()`](https://wevertonbio.github.io/RuHere/reference/flag_cultivated.md)
+  : Flag occurrence records of cultived individuals
+
+- [`flag_duplicates()`](https://wevertonbio.github.io/RuHere/reference/flag_duplicates.md)
+  : Flag duplicated records
+
+- [`flag_env_moran()`](https://wevertonbio.github.io/RuHere/reference/flag_env_moran.md)
+  : Select Environmentally Thinned Occurrences Using Moran's I
+  Autocorrelation
+
+- [`flag_faunabr()`](https://wevertonbio.github.io/RuHere/reference/flag_faunabr.md)
+  : Identify records outside natural ranges according to Fauna do Brasil
+
+- [`flag_florabr()`](https://wevertonbio.github.io/RuHere/reference/flag_florabr.md)
+  : Identify records outside natural ranges according to Flora e Funga
+  do Brasil
+
+- [`flag_fossil()`](https://wevertonbio.github.io/RuHere/reference/flag_fossil.md)
+  : Flag fossil records
+
+- [`flag_geo_moran()`](https://wevertonbio.github.io/RuHere/reference/flag_geo_moran.md)
+  : Select Spatially Thinned Occurrences Using Moran's I Autocorrelation
+
+- [`flag_inaturalist()`](https://wevertonbio.github.io/RuHere/reference/flag_inaturalist.md)
+  : Flag occurrence records sourced from iNaturalist
+
+- [`flag_iucn()`](https://wevertonbio.github.io/RuHere/reference/flag_iucn.md)
+  : Identify records outside natural ranges according to the IUCN
+
+- [`flag_names`](https://wevertonbio.github.io/RuHere/reference/flag_names.md)
+  : Flag name dictionary
+
+- [`flag_wcvp()`](https://wevertonbio.github.io/RuHere/reference/flag_wcvp.md)
+  : Identify records outside natural ranges according to the World
+  Checklist of Vascular Plants
+
+- [`flag_year()`](https://wevertonbio.github.io/RuHere/reference/flag_year.md)
+  : Flag records outside a year range
+
+- [`florabr_here()`](https://wevertonbio.github.io/RuHere/reference/florabr_here.md)
+  : Download the latest version of Flora e Funga do Brasil database
+
+- [`format_columns()`](https://wevertonbio.github.io/RuHere/reference/format_columns.md)
+  : Format and standardize column names and data types of an occurrence
+  dataset
+
+- [`get_bien()`](https://wevertonbio.github.io/RuHere/reference/get_bien.md)
+  : Download occurrence records from BIEN
+
+- [`get_env_bins()`](https://wevertonbio.github.io/RuHere/reference/get_env_bins.md)
+  : Identify Environmental Blocks and Group Nearby Records in
+  Environmental Space
+
+- [`get_idigbio()`](https://wevertonbio.github.io/RuHere/reference/get_idigbio.md)
+  : get_idigbio
+
+- [`get_specieslink()`](https://wevertonbio.github.io/RuHere/reference/get_specieslink.md)
+  : Download occurrence records from SpeciesLink
+
+- [`ggmap_here()`](https://wevertonbio.github.io/RuHere/reference/ggmap_here.md)
+  : Static Visualization of Occurrence Flags with ggplot
+
+- [`import_gbif()`](https://wevertonbio.github.io/RuHere/reference/import_gbif.md)
+  : Import a download requested from GBIF
+
+- [`iucn_here()`](https://wevertonbio.github.io/RuHere/reference/iucn_here.md)
+  : Download species distribution information from IUCN
+
+- [`map_here()`](https://wevertonbio.github.io/RuHere/reference/map_here.md)
+  : Interactive Visualization of Occurrence Flags with mapview
+
+- [`moranfast()`](https://wevertonbio.github.io/RuHere/reference/moranfast.md)
+  : Fast Moran's I Autocorrelation Index
+
+- [`occ_bien`](https://wevertonbio.github.io/RuHere/reference/occ_bien.md)
+  : Occurrence records of Yellow Trumpet Tree from BIEN
+
+- [`occ_flagged`](https://wevertonbio.github.io/RuHere/reference/occ_flagged.md)
+  :
+
+  Flagged occurrence records of *Araucaria angustifolia*
+
+- [`occ_gbif`](https://wevertonbio.github.io/RuHere/reference/occ_gbif.md)
+  :
+
+  Occurrence records of *Araucaria angustifolia* from GBIF
+
+- [`occ_idig`](https://wevertonbio.github.io/RuHere/reference/occ_idig.md)
+  : Occurrence records of azure jay from iDigBio
+
+- [`occ_splink`](https://wevertonbio.github.io/RuHere/reference/occ_splink.md)
+  : Occurrence records of azure jay from SpeciesLink
+
+- [`occurrences`](https://wevertonbio.github.io/RuHere/reference/occurrences.md)
+  : Integrated occurrence dataset for three example species
+
+- [`plot_env_bins()`](https://wevertonbio.github.io/RuHere/reference/plot_env_bins.md)
+  : Plot Environmental Bins (2D Projection)
+
+- [`prepare_gbif_download()`](https://wevertonbio.github.io/RuHere/reference/prepare_gbif_download.md)
+  : Prepare data to request GBIF download
+
+- [`prepared_metadata`](https://wevertonbio.github.io/RuHere/reference/prepared_metadata.md)
+  :
+
+  Metadata templates used internally by
+  [`format_columns()`](https://wevertonbio.github.io/RuHere/reference/format_columns.md)
+
+- [`puma_atlanticr`](https://wevertonbio.github.io/RuHere/reference/puma_atlanticr.md)
+  :
+
+  Occurrence records of *Puma concolor* from AtlanticR
+
+- [`relocate_after()`](https://wevertonbio.github.io/RuHere/reference/relocate_after.md)
+  [`relocate_before()`](https://wevertonbio.github.io/RuHere/reference/relocate_after.md)
+  : Relocate a column in a data frame
+
+- [`remove_accent()`](https://wevertonbio.github.io/RuHere/reference/remove_accent.md)
+  : Remove accents and special characters from strings
+
+- [`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md)
+  : Remove flagged records
+
+- [`remove_invalid_coordinates()`](https://wevertonbio.github.io/RuHere/reference/remove_invalid_coordinates.md)
+  : Identify and remove invalid coordinates
+
+- [`request_gbif()`](https://wevertonbio.github.io/RuHere/reference/request_gbif.md)
+  : Submit a request to download occurrence data from GBIF.
+
+- [`set_gbif_credentials()`](https://wevertonbio.github.io/RuHere/reference/set_gbif_credentials.md)
+  : Store GBIF credentials
+
+- [`set_iucn_credentials()`](https://wevertonbio.github.io/RuHere/reference/set_iucn_credentials.md)
+  : Store SpeciesLink credential
+
+- [`set_specieslink_credentials()`](https://wevertonbio.github.io/RuHere/reference/set_specieslink_credentials.md)
+  : Store SpeciesLink credential
+
+- [`spatial_kde()`](https://wevertonbio.github.io/RuHere/reference/spatial_kde.md)
+  : Kernel Density Estimation (Heatmap) for occurrence data
+
+- [`spatialize()`](https://wevertonbio.github.io/RuHere/reference/spatialize.md)
+  : Spatialize occurrence records
+
+- [`standardize_countries()`](https://wevertonbio.github.io/RuHere/reference/standardize_countries.md)
+  : Standardize country names
+
+- [`standardize_states()`](https://wevertonbio.github.io/RuHere/reference/standardize_states.md)
+  : Standardize state names
+
+- [`states`](https://wevertonbio.github.io/RuHere/reference/states.md) :
+  Administrative Units (States, Provinces, and Regions)
+
+- [`states_dictionary`](https://wevertonbio.github.io/RuHere/reference/states_dictionary.md)
+  : States dictionary for standardizing state and province names and
+  codes
+
+- [`states_from_coords()`](https://wevertonbio.github.io/RuHere/reference/states_from_coords.md)
+  : Extract state from coordinates
+
+- [`summarize_flags()`](https://wevertonbio.github.io/RuHere/reference/summarize_flags.md)
+  : Summarize flags
+
+- [`thin_env()`](https://wevertonbio.github.io/RuHere/reference/thin_env.md)
+  : Flag records that are close to each other in the enviromnetal space
+
+- [`thin_geo()`](https://wevertonbio.github.io/RuHere/reference/thin_geo.md)
+  : Flag records that are close to each other in the geographic space
+
+- [`wcvp_here()`](https://wevertonbio.github.io/RuHere/reference/wcvp_here.md)
+  : Download distribution data from the World Checklist of Vascular
+  Plants (WCVP)
+
+- [`world`](https://wevertonbio.github.io/RuHere/reference/world.md) :
+  World Countries
+
+- [`worldclim`](https://wevertonbio.github.io/RuHere/reference/worldclim.md)
+  : Bioclimatic Variables from WorldClim (bio_1, bio_7, bio_12)
+
+# Articles
+
+### All vignettes
+
+- [4. Flagging Records with Species List
+  Information](https://wevertonbio.github.io/RuHere/articles/flagging_records_species_list.md):
+- [3. Flagging Records Using Associated
+  Information](https://wevertonbio.github.io/RuHere/articles/flagging_records.md):
+- [1. Obtaining and preparing species occurrence
+  data](https://wevertonbio.github.io/RuHere/articles/obtaining_data.md):
+- [5. Reducing sampling
+  bias](https://wevertonbio.github.io/RuHere/articles/sampling_bias.md):
+- [2. Ensuring spatial consistency: countries, states, and
+  coordinates](https://wevertonbio.github.io/RuHere/articles/spatial_consistency.md):

@@ -1,0 +1,13 @@
+pandoc: 3.1.11
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  flagging_records_species_list: flagging_records_species_list.html
+  flagging_records: flagging_records.html
+  obtaining_data: obtaining_data.html
+  sampling_bias: sampling_bias.html
+  spatial_consistency: spatial_consistency.html
+last_built: 2025-12-24T20:29Z
+urls:
+  reference: https://wevertonbio.github.io/RuHere/reference
+  article: https://wevertonbio.github.io/RuHere/articles
