@@ -20,7 +20,11 @@ knitr::opts_chunk$set(
 
 Species occurrence records are the foundation of biodiversity studies. However, working with multiple data sources (such as GBIF, SpeciesLink, BIEN, and iDigBio) presents two major challenges: data acquisition and format standardization. Each database uses different column names and structures, creating a potential problem for researchers.
 
-Here, we will use as example the species *Araucaria angustifolia*, also known as the Brazilian Pine. It is an emblematic coniferous tree native to the subtropical highlands of Brazil, Argentina, and Paraguay. Due to historical overexploitation and severe habitat loss, this species is currently classified as Critically Endangered (CR) by the IUCN Red List. Its conservation status makes accurate and comprehensive occurrence data crucial for ecological modeling, understanding population decline, and guiding reforestation efforts.
+Here, we will use as example the species *Araucaria angustifolia*, also known as the Paraná Pine. It is an emblematic coniferous tree native to the subtropical highlands of Brazil, Argentina, and Paraguay. Due to historical overexploitation and severe habitat loss, this species is currently classified as Critically Endangered (CR) by the IUCN Red List. Its conservation status makes accurate and comprehensive occurrence data crucial for ecological modeling, understanding population decline, and guiding reforestation efforts.
+
+```{r, eval=T, echo=F, fig.align='center', out.width='80%', fig.cap="Araucaria forest in southern Brazil"}
+knitr::include_graphics("vignettes_img/paranapine2.jpeg")
+```
 
 This vignette demonstrates how to configure access credentials, download occurrence data from multiple sources, standardize and unify the results, and finally convert them into spatial objects ready for ecological analysis.
 
@@ -49,7 +53,7 @@ Some databases require authentication to access their API. It is recommended to 
 
 ### GBIF
 
-To download data from GBIF using the asynchronous API, you must store your credentials (username, email, and password) in your R environment. You can find your GBIF username and the e-mail address associated with your account on the GBIF website ([https://www.gbif.org/user/profile](https://www.gbif.org/user/profile)).
+To download data from [GBIF](https://www.gbif.org/) using the asynchronous API, you must have an account an store your credentials (username, email, and password) in your R environment. You can find your GBIF username and the e-mail address associated with your account on the GBIF website ([https://www.gbif.org/user/profile](https://www.gbif.org/user/profile)).
 
 ```{r}
 set_gbif_credentials(
@@ -62,7 +66,7 @@ set_gbif_credentials(
 
 ### SpeciesLink
 
-To retrieve records from the SpeciesLink network, an API key is required. You can check your API key at: [https://specieslink.net/aut/profile/apikeys](https://specieslink.net/aut/profile/apikeys).
+To retrieve records from the SpeciesLink network, an API key is required. You can create and check your API key at: [https://specieslink.net/aut/profile/apikeys](https://specieslink.net/aut/profile/apikeys).
 
 ```{r}
 set_specieslink_credentials(specieslink_key = "your_api_key", verbose = FALSE)
@@ -90,29 +94,76 @@ dir.create(output_dir)
 ```{r}
 # Prepare the taxonomic query
 gbif_prep <- prepare_gbif_download(species = "Araucaria angustifolia")
+```
 
+The function returns a `data.frame` containing information about the species in GBIF, including the total number of records, the number of records with geographic coordinates (longitude and latitude), the GBIF key (ID), and the taxonomic classification.
+
+```{r}
+gbif_prep
+#> with_coordinates n_records                species usageKey                          scientificName          canonicalName
+#> 1             3056     15696 Araucaria angustifolia  2684940 Araucaria angustifolia (Bertol.) Kuntze Araucaria angustifolia
+#>     rank   status confidence matchType kingdom       phylum   order        family     genus kingdomKey phylumKey classKey
+#> 1 SPECIES ACCEPTED         97     EXACT Plantae Tracheophyta Pinales Araucariaceae Araucaria          6   7707728      194
+#>   orderKey familyKey genusKey speciesKey     class          verbatim_name
+#> 1      640      3924  2684910    2684940 Pinopsida Araucaria angustifolia
+```
+
+After confirming that the information is correct and that this is indeed the species for which we want to download records, we can use this object to request a download from GBIF. By default, the function retrieves only records with geographic coordinates and without spatial issues, but this can be modified. 
+
+The function also supports more complex download requests by allowing predicates to be passed via the `additional_predicates` argument. See `help(rgbif::pred)` for more details.
+
+```{r}
 # Submit the request to GBIF
 gbif_req <- request_gbif(
   gbif_info = gbif_prep,
   hasCoordinate = TRUE,      # Retrieve only records with coordinates
   hasGeospatialIssue = FALSE # Exclude records with geospatial issues
 )
+```
 
-# Wait for GBIF processing (you can use rgbif::occ_download_wait(gbif_req))
+The request is processed by GBIF and may take several minutes to complete (usually less than 15 minutes, but potentially several hours depending on the number of occurrences). You can check the status of the download using the `rgbif` package. Once the process is complete, the following message is returned:
 
+```{r}
+rgbif::occ_download_wait(gbif_req)
+#> status: succeeded
+#> download is done, status: succeeded
+```
+
+Now we can download the occurrence records and import them into R:
+
+```{r}
 # Import the processed file
-occ_gbif <- import_gbif(
-  request_key = gbif_req,
-  write_file = FALSE
-)
+occ_gbif <- import_gbif(request_key = gbif_req)
 #> Download file size: 2.04 MB
+```
+
+By default, the function imports the dataset with only the 25 columns required by the other functions in the package. This behavior can be changed by setting `select_columns = FALSE` or by explicitly specifying the columns to import via the `columns_to_import` argument.
+
+```{r}
+head(occ_gbif)
+#> # A tibble: 6 × 25
+#>   scientificName                acceptedScientificName occurrenceID collectionCode catalogNumber decimalLongitude #> decimalLatitude
+#>   <chr>                         <chr>                  <chr>        <chr>          <chr>                    <dbl>           #> <dbl>
+#> 1 Araucaria angustifolia (Bert… Araucaria angustifoli… urn:catalog… ALTA-VP        74703                    -52.8          #> -26.4 
+#> 2 Araucaria angustifolia (Bert… Araucaria angustifoli… https://www… Observations   329390275                -49.2          #> -25.4 
+#> 3 Araucaria angustifolia (Bert… Araucaria angustifoli… https://www… Observations   329483122                -49.5          #> -28.0 
+#> 4 Araucaria angustifolia (Bert… Araucaria angustifoli… https://www… Observations   329455309                -74.0            #> 4.68
+#> 5 Araucaria angustifolia (Bert… Araucaria angustifoli… https://www… Observations   329576016                -45.6          #> -22.7 
+#> 6 Araucaria angustifolia (Bert… Araucaria angustifoli… https://www… Observations   329805643                175.           #> -39.9 
+#> # ℹ 18 more variables: coordinateUncertaintyInMeters <dbl>, elevation <dbl>, continent <chr>, countryCode <chr>,
+#> #   stateProvince <chr>, municipality <chr>, locality <chr>, verbatimLocality <chr>, year <int>, eventDate <chr>,
+#> #   recordedBy <chr>, identifiedBy <chr>, basisOfRecord <chr>, occurrenceRemarks <chr>, habitat <chr>, datasetName <chr>,
+#> #   datasetKey <chr>, speciesKey <int>
 ```
 
 ### SpeciesLink, BIEN, and iDigBio
 
-**Incluir breve descrição do que é SpeciesLink, BIEN e iDigBio**
+GBIF is the most used database for obtaining occurrence records. However, unique records can be found in other databases. In the RuHere package, we implement functions for downloading records from 3 other databases:
+ - SpeciesLink: a large-scale biodiversity information portal created in Brazil. Most of the records found in [SpeciesLink](https://specieslink.net/) are also found in GBIF, but it also provide unique records.
+ - BIEN: occurrence records cleaned and standardized by the [Botanical Information and Ecology Network](https://bien.nceas.ucsb.edu/bien/).
+ - iDigBio: occurrence records cleaned and standardized by the [Integrated Digitized Biocollections project](https://www.idigbio.org/).
 
-These databases allow direct downloading through a single function call.
+These databases allow direct downloading through a single function call. 
 
 ```{r}
 # SpeciesLink: Filtering by Species
@@ -125,13 +176,22 @@ occ_bien <- get_bien(species = "Araucaria angustifolia",
                      verbose = FALSE)
 #> Getting page 1 of records
 
-# iDigBio: Limiting records for this example
+# iDigBio: 
 occ_idig <- get_idigbio(species = "Araucaria angustifolia")
 ```
 
 ## Standardization and unification
 
-At this stage, we have four objects (`occ_gbif`, `occ_sl`, `occ_bien`, and `occ_idig`), each with different column names (e.g., `decimalLongitude` vs. `longitude` vs. `long`). The `format_columns()` function resolves this by applying metadata templates, ensuring all datasets have the same column names and types.
+At this stage, we have four occurrence datasets (`occ_gbif`, `occ_sl`, `occ_bien`, and `occ_idig`). We can merge these datasets using the bind_here() function. However, we get an error if we try to merge the raw datasets:
+
+```{r}
+all_occ <- bind_here(occ_gbif, occ_sl, occ_bien, occ_idig)
+#> Error: All datasets must have the same columns.
+```
+
+This occurs because each data source may provide datasets with different column names (e.g., `decimalLongitude` vs. `longitude` vs. `long`). Another common issue involves column classes. For instance, date-related fields (such as collection dates) may be stored as character vectors, numeric values, or objects of class `Date`. Special characters can also cause problems, as datasets with different text encodings may fail to bind correctly.
+
+All of these issues can be addressed using the `format_columns()` function. This function applies metadata templates to standardize column names and data types, ensuring that all datasets are consistent and can be safely combined.
 
 ### Standardizing columns (`format_columns`)
 
@@ -152,14 +212,28 @@ bien_std <- format_columns(occ_bien, metadata = "bien")
 idig_std <- format_columns(occ_idig, metadata = "idigbio")
 ```
 
+You may sometimes encounter the warning `“NAs introduced by coercion”`. This occurs when a column that is expected to store numeric values (for example, a year) contains data of another class (such as character strings) that cannot be converted to numeric. In such cases, the incompatible values are replaced with `NA`.
+
+Now, we can safelly bind the occurrences:
+
+```{r}
+all_occ <- bind_here(gbif_std, sl_std, bien_std, idig_std)
+# Number of records by database
+table(all_occ$data_source)
+#>       bien        gbif     idigbio specieslink 
+#>        137        3000        1271        1224 
+```
+
 ### Customizing Metadata (`create_metadata`)
 
 The functions above automatically standardize your data because the package contains internal metadata templates ("presets") for GBIF, SpeciesLink, BIEN, and iDigBio. However, if you import occurrence data from an external source (e.g., a local CSV file) with different column names, you must first create a metadata template using `create_metadata()`. This maps your original column names to the package's standardized schema.
 
-The following example demonstrates how to handle data from an external source, using a dataset originally from the `atlanticr` R package (which is included in `RuHere` for demonstration purposes)
+The following example demonstrates how to handle data from an external source, using occurrences of cougar (*Puma concolor*) originally from the `atlanticr` R package (which is included in `RuHere` for demonstration purposes).
 
-```{r, eval = T}
-# Create metadata to standardize the occurrences
+In summary, the arguments must be filled with the names of the columns in the occurrence dataset that are equivalent to the expected fields. For example, in the example dataset, the `scientificName` is stored in the `"actual_species_name"` column, and the coordinates are stored in the `"longitude"` and `"latitude"` columns. These three columns are the only mandatory ones, but we strongly recommend providing as many additional columns as possible in order to take full advantage of the other functions in the package.
+
+```{r, eval = TRUE}
+# Import data example
 data("puma_atlanticr", package = "RuHere")
 
 # Create metadata to standardize the occurrences
@@ -184,39 +258,34 @@ puma_occ <- format_columns(occ = puma_atlanticr, metadata = puma_metadata,
 head(puma_occ[, 1:5])
 ```
 
-### Merging datasets (`bind_here`)
-
-With standardized columns, we can merge everything into a single data frame using `bind_here()`.
+Even though this is an occurrence dataset from a different species, we can merge the cougar occurrences with those of Araucaria:
 
 ```{r}
-# Merging all datasets (including the external one)
-# fill = TRUE ensures that unique columns from one source are filled with NA in others
-all_data <- bind_here(gbif_std, sl_std, bien_std, idig_std, fill = TRUE)
-
-head(all_data[, 1:4])
-#>   record_id                species                          scientificName collectionCode
-#> 1    gbif_1 Araucaria angustifolia Araucaria angustifolia (Bertol.) Kuntze        ALTA-VP
-#> 2    gbif_2 Araucaria angustifolia Araucaria angustifolia (Bertol.) Kuntze   Observations
-#> 3    gbif_3 Araucaria angustifolia Araucaria angustifolia (Bertol.) Kuntze   Observations
-#> 4    gbif_4 Araucaria angustifolia Araucaria angustifolia (Bertol.) Kuntze   Observations
-#> 5    gbif_5 Araucaria angustifolia Araucaria angustifolia (Bertol.) Kuntze   Observations
-#> 6    gbif_6 Araucaria angustifolia Araucaria angustifolia (Bertol.) Kuntze            HCF
+occ_araucaria_cougar <- bind_here(all_occ, #Occurrences of Araucaria
+                                  puma_occ) #Occurrences of cougar
+# Number of records per species
+table(occ_araucaria_cougar$species)
+#> Araucaria angustifolia          Puma concolor 
+#>                  5632                    139 
 ```
 
 The result is a robust dataset containing essential standardized columns such as species, decimalLongitude, decimalLatitude, and year.
 
 ## Spatialization (`spatialize`)
 
-To visualize the data on a map or perform geospatial operations, we can convert the data frame into a `SpatVector` object.
+To visualize the data on a map or perform geospatial operations, we can convert the data frame into a `SpatVector` object. This object can be plotted using the **terra** package (`terra::plot`) or displayed in an interactive map using the **mapview** package:
 
 ```{r}
 # Convert to spatial object
-occ_spatial <- spatialize(occ = all_data)
+occ_spatial <- spatialize(occ = occ_araucaria_cougar)
 
-# Plot the distribution
-terra::plot(occ_spatial, col = "red", main = "Species Occurrence")
+# Load mapview
+library(mapview)
+
+# Plot the distribution using mapview
+mapview(occ_spatial, zcol = "species", layer.name = "Species", cex = 4)
 ```
 
 ```{r IMG01, eval=T, echo=F, fig.align='center', out.width='80%'}
-knitr::include_graphics("vignettes_img/IMG01.png")
+knitr::include_graphics("vignettes_img/IMG01.jpeg")
 ```

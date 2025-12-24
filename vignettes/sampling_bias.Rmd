@@ -38,6 +38,7 @@ occ <- remove_flagged(occ = occ_flagged)
 # Plot records
 ggmap_here(occ = occ)
 ```
+<br>
 
 ## Heatmap for occurrence data
 
@@ -48,12 +49,14 @@ Before starting the thinning process, let’s create a heatmap based on a kernel
 heatmap <- spatial_kde(occ = occ, resolution = 0.2, buffer_extent = 50,
                        radius = 2, zero_as_NA = TRUE)
 ```
+<br>
 
 We can use the function `ggmap_here()` to plot the occurrences and the heatmap (or use `map_here()` if you prefer an interactive version).
 
 ```{r}
 ggmap_here(occ = occ, size_points = 0.5, heatmap = heatmap)
 ```
+<br>
 
 We can observe a notable hotspot with a cluster of records around Curitiba city (capital of Paraná, southern Brazil), which indicates strong sampling bias. Let’s evaluate the effect of thinning these records in geographic space.
 
@@ -70,6 +73,7 @@ Let’s thin the records using a 10 km radius and keep the most recent record as
 occ_thin <- thin_geo(occ = occ, d = 10, prioritary_column = "year")
 sum(!occ_thin$thin_geo_flag)  # Number of records flagged for removal
 ```
+<br>
 
 The function flagged 1,860 records for removal. Let’s visualize the flagged records using `map_here()` and create a heatmap with the remaining records.
 
@@ -83,9 +87,11 @@ heatmap_thin_geo <- spatial_kde(occ = occ_thin_geo, resolution = 0.2,
 # Plot
 ggmap_here(occ_thin, size_points = 0.5, heatmap = heatmap_thin_geo)
 ```
+<br>
 
 The thinned dataset (in green) produces a more spatially uniform heatmap and reduces the strong sampling bias around Curitiba. We explore different distance thresholds in the next section.
 
+<br>
 ## Selecting the best distance to thin records
 
 A key question is determining the optimal thinning distance, since we rarely have sufficient biological justification for choosing a specific value. To address this issue, we adapted the approach of [Velazco et al. (2020)](https://onlinelibrary.wiley.com/doi/10.1111/ddi.13215), which computes spatial autocorrelation (Moran’s I) for datasets generated using different thinning distances and selects the distance that yields the lowest average spatial autocorrelation.
@@ -105,12 +111,14 @@ occ_geo_moran <- flag_geo_moran(occ = occ,
                                 prioritary_column = "year",
                                 env_layers = r)
 ```
+<br>
 
 The results for each tested distance are returned in the `imoran` data.frame. It includes Moran’s I for each variable and summary statistics across variables (mean, median, minimum, and maximum), along with the number of retained records (`n_filtered`) and the proportion of records flagged (`prop_lost`).
 
 ```{r}
 occ_geo_moran$imoran
 ```
+<br>
 
 The "best" distance that reduces the spatial autocorrelation without discarding too many records was 15km. Using this threshold, 2,040 records were flagged. 
 
@@ -120,6 +128,8 @@ occ_geo_moran$distance
 # Number of flagged records using this distance to thin
 sum(!occ_geo_moran$occ$thin_geo_flag)
 ```
+<br>
+
 Visual inspection shows an even more uniform heatmap:
 
 ```{r}
@@ -133,9 +143,10 @@ heatmap_thin_geo_moran <- spatial_kde(occ = occ_thin_geo_moran,
 ggmap_here(occ = occ_geo_moran$occ, size_points = 0.5, 
            heatmap = heatmap_thin_geo_moran)
 ```
-
+<br>
 
 A potential issue when filtering records in geographic space is that two nearby records may actually occur in distinct environmental conditions, especially in highly heterogeneous regions. This can lead to the loss of unique information about the species’ niche and environmental tolerances. To address this, we can instead apply thinning in environmental space, as explored in the next sections.
+<br>
 
 ## Thinning in environmental space
 
@@ -148,6 +159,7 @@ To illustrate how the environmental grid works, let’s use `get_env_bins()` wit
 b <- get_env_bins(occ = occ, env_layers = r, n_bins = 10)
 head(b$data)
 ```
+<br>
 
 The function returns the environmental block IDs for each record. We can visualize the grid for any two variables:
 
@@ -156,6 +168,7 @@ The function returns the environmental block IDs for each record. We can visuali
 plot_env_bins(b, x_var = "bio_1", y_var = "bio_12",
               xlab = "Temperature", ylab = "Precipitation")
 ```
+<br>
 
 We can see that Several records fall into the same block, meaning they are environmentally similar and therefore redundant. Let’s flag these redundant records using `thin_env()`:
 
@@ -166,6 +179,8 @@ occ_thin_env <- thin_env(occ = occ, env_layers = r, n_bins = 10,
 # Number of flagged (redundant) records
 sum(!occ_thin_env$thin_env_flag) #Number of flagged records
 ```
+<br>
+
 The function flagged 2,227 records. Let's visualize these and create a heatmap of the remaining data.
 
 ```{r}
@@ -177,6 +192,7 @@ heatmap_thin_env <- spatial_kde(occ = occ_thinned_env, resolution = 0.2,
                                 zero_as_NA = TRUE)
 ggmap_here(occ_thin_env, size_points = 0.5, heatmap = heatmap_thin_env)
 ```
+<br>
 
 Thinning in environmental space produces a spatial pattern that differs from the dataset filtered exclusively in geographic space.
 
@@ -196,11 +212,14 @@ occ_env_moran <- flag_env_moran(occ = occ,
                                 env_layers = r)
 ```
 
+<br>
+
 Again, results are returned in an imoran data frame. It includes Moran’s I for each variable and summary statistics across variables (mean, median, minimum, and maximum), along with the number of retained records (`n_filtered`) and the proportion of records flagged (`prop_lost`).
 
 ```{r}
 occ_env_moran$imoran
 ```
+<br>
 
 The "best" number of bins that reduces the spatial autocorrelation without discarding too many records was 70. With this threshold, 1,659 records were flagged.
 
@@ -210,6 +229,7 @@ occ_env_moran$n_bins
 # Number of flagged records using this distance to thin
 sum(!occ_env_moran$occ$thin_env_flag)
 ```
+<br>
 
 Let's check the distribution of these records and the heatmap generated with the unflagged records:
 
@@ -224,7 +244,7 @@ heatmap_thin_env_moran <- spatial_kde(occ = occ_thin_env_moran,
 ggmap_here(occ = occ_env_moran$occ, size_points = 0.5, 
            heatmap = heatmap_thin_env_moran)
 ```
-
+<br>
 
 ## Consensus between environmental and geographic thinning
 
@@ -261,6 +281,8 @@ heatmap_consensus_filtered <- spatial_kde(occ = occ_consensus_filtered,
 
 ```
 
+<br>
+
 Let’s visualize which records were flagged by geographic thinning, environmental thinning, or both:
 
 ```{r}
@@ -272,6 +294,7 @@ ggmap_here(occ = occ_consensus,
           size_points = 0.5,
           heatmap = heatmap_consensus_filtered)
 ```
+<br>
 
 Red points indicate records thinned in geographic space; yellow points indicate thinning in environmental space; and blue points indicate records thinned in both.
 
