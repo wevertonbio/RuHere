@@ -91,6 +91,12 @@ florabr_here <- function(data_dir,
                        overwrite = overwrite,
                        verbose = verbose,
                        remove_files = remove_files)
-  if (verbose) message("Data sucessfuly saved in ", file.path(data_dir, "florabr"))
+
+  if (verbose)
+    message("Data sucessfuly saved in ", file.path(data_dir, "florabr"))
+
+  message("\nPlease don't forget to cite:\n
+Trindade WCF (2024). florabr: An R package to explore and spatialize species distribution using Flora e Funga do
+  Brasil. Applications in Plant Sciences, e11616. doi:10.1002/aps3.11616 <https://doi.org/10.1002/aps3.11616>")
 
 }

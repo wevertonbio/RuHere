@@ -100,6 +100,11 @@ faunabr_here <- function(data_dir,
     try(invisible(unlink(to_remove, recursive = TRUE, force = TRUE)))
   }
 
-  if (verbose) message("Data sucessfuly saved in ", file.path(data_dir, "faunabr"))
+
+  if (verbose)
+    message("Data sucessfuly saved in ", file.path(data_dir, "faunabr"))
+
+  message("\nPlease don't forget to cite:\n
+Trindade WCF (2025) faunabr: An R package to explore taxonomic data and map species distributions using the Catalogo Taxonomico da Fauna do Brasil. Zoologia 42: e25027. <https://doi.org/10.1590/S1984-4689.v42.e25027>.")
 
 }
