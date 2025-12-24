@@ -127,13 +127,13 @@ available_datasets <- function(data_dir, species, datasets = "all",
   # Get map
   if("iucn" %in% l | "wcvp" %in% l){
     if("iucn" %in% l & "wcvp" %in% l)
-      m <- terra::vect(file.path(data_dir, "iucn/wgsrpd.gpkg"))
+      m <- terra::vect(file.path(data_dir, "wgsrpd/wgsrpd.gpkg"))
 
     if("iucn" %in% l & !("wcvp" %in% l))
-      m <- terra::vect(file.path(data_dir, "iucn/wgsrpd.gpkg"))
+      m <- terra::vect(file.path(data_dir, "wgsrpd/wgsrpd.gpkg"))
 
     if("wcvp" %in% l & !("iucn" %in% l))
-      m <- terra::vect(file.path(data_dir, "wcvp/wgsrpd.gpkg"))
+      m <- terra::vect(file.path(data_dir, "wgsrpd/wgsrpd.gpkg"))
 
     # Get dataframe to filter levels
     dm <- terra::as.data.frame(m)

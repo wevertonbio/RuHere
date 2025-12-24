@@ -124,13 +124,16 @@ wcvp_here <- function(data_dir,
   }
 
   # Get map
-  utils::download.file(url = "https://zenodo.org/records/17455838/files/wgsrpd.gpkg?download=1",
-                       destfile = file.path(odir, "wgsrpd.gpkg"),
-                       method = "auto",
-                       mode = "wb",
-                       cacheOK = TRUE,
-                       quiet = quiet)
-
+  # Check if file exists
+  if(file.exists(file.path(data_dir, "wgsrpd", "wgsrpd.gpkg"))){
+    message("WGSRPD data already exists in 'data_dir'. Skipping download.")
+  } else {
+    dir.create(file.path(data_dir, "wgsrpd"))
+    utils::download.file(url = "https://zenodo.org/records/17455838/files/wgsrpd.gpkg?download=1",
+                         destfile = file.path(data_dir, "wgsrpd", "wgsrpd.gpkg"),
+                         method = "auto",
+                         mode = "wb",
+                         cacheOK = TRUE)}
 
   # Remove files
   if(remove_files){
@@ -147,7 +150,7 @@ wcvp_here <- function(data_dir,
   }
 
   if(verbose){
-    message("Data sucessfuly saved in ", file.path(data_dir, "florabr\n"))
+    message("Data sucessfuly saved in ", file.path(data_dir, "iucn\n"))
   }
 
   if (verbose) {

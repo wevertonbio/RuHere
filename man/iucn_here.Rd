@@ -9,7 +9,7 @@ iucn_here(
   species,
   synonyms = NULL,
   iucn_credential = NULL,
-  overwrite = TRUE,
+  overwrite = FALSE,
   progress_bar = FALSE,
   verbose = FALSE,
   return_data = TRUE
@@ -33,7 +33,7 @@ environment. You can set it in advance using the \code{set_iucn_credentials()}
 function.}
 
 \item{overwrite}{(logical) whether to overwrite existing files. Default is
-\code{TRUE}.}
+\code{FALSE}.}
 
 \item{progress_bar}{(logical) whether to display a progress bar during
 processing. If TRUE, the 'pbapply' package must be installed. Default is

@@ -155,8 +155,8 @@ flag_iucn <- function(data_dir, occ, species = "species",
     stop("Data from IUCN necessary to check records is not available in ", data_dir,
          ".\nCheck the folder or run the 'iucn_here()' function")
   }
-  if(!file.exists(file.path(data_dir, "iucn/wgsrpd.gpkg"))){
-    stop("Data from IUCN necessary to check records is not available in ", data_dir,
+  if(!file.exists(file.path(data_dir, "wgsrpd/wgsrpd.gpkg"))){
+    stop("Data from WGSRPD necessary to check records is not available in ", data_dir,
          ".\nCheck the folder or run the 'iucn_here()' function")
   }
 
@@ -185,7 +185,7 @@ Run install.packages('pbapply')", call. = FALSE)
   d <- data.table::fread(file.path(data_dir, "iucn/iucn_distribution.gz"),
                          data.table = FALSE)
   # Import map
-  m <- terra::vect(file.path(data_dir, "iucn/wgsrpd.gpkg"))
+  m <- terra::vect(file.path(data_dir, "wgsrpd/wgsrpd.gpkg"))
   # Get dataframe to filter levels
   dm <- terra::as.data.frame(m)
 

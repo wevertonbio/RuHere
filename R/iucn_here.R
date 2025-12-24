@@ -18,7 +18,7 @@
 #' environment. You can set it in advance using the `set_iucn_credentials()`
 #' function.
 #' @param overwrite (logical) whether to overwrite existing files. Default is
-#' `TRUE`.
+#' `FALSE`.
 #' @param progress_bar (logical) whether to display a progress bar during
 #' processing. If TRUE, the 'pbapply' package must be installed. Default is
 #' `FALSE`.
@@ -70,7 +70,7 @@ iucn_here <- function(data_dir,
                       species,
                       synonyms = NULL,
                       iucn_credential = NULL,
-                      overwrite = TRUE,
+                      overwrite = FALSE,
                       progress_bar = FALSE,
                       verbose = FALSE,
                       return_data = TRUE){
@@ -234,12 +234,18 @@ Run install.packages('pbapply')", call. = FALSE)
                      file = file.path(odir, "iucn_distribution.gz"))
 
   # Get map
-  utils::download.file(url = "https://zenodo.org/records/17455838/files/wgsrpd.gpkg?download=1",
-                       destfile = file.path(odir, "wgsrpd.gpkg"),
+  # Check if file exists
+  if(file.exists(file.path(data_dir, "wgsrpd", "wgsrpd.gpkg"))){
+    message("WGSRPD data already exists in 'data_dir'. Skipping download.")
+  } else {
+    dir.create(file.path(data_dir, "wgsrpd"))
+    utils::download.file(url = "https://zenodo.org/records/17455838/files/wgsrpd.gpkg?download=1",
+                       destfile = file.path(data_dir, "wgsrpd", "wgsrpd.gpkg"),
                        method = "auto",
                        mode = "wb",
                        cacheOK = TRUE,
-                       quiet = quiet)
+                       quiet = quiet)}
+
 
   # Data saved in...
   if(verbose){

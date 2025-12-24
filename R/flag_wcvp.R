@@ -120,8 +120,8 @@ flag_wcvp <- function(data_dir, occ, species = "species",
     stop("Data from WCVP necessary to check records is not available in ", data_dir,
          ".\nCheck the folder or run the 'wcvp_here()' function")
   }
-  if(!file.exists(file.path(data_dir, "wcvp/wgsrpd.gpkg"))){
-    stop("Data from WCVP necessary to check records is not available in ", data_dir,
+  if(!file.exists(file.path(data_dir, "wgsrpd/wgsrpd.gpkg"))){
+    stop("Data from WGSRPD necessary to check records is not available in ", data_dir,
          ".\nCheck the folder or run the 'wcvp_here()' function")
   }
 
@@ -151,7 +151,7 @@ Run install.packages('pbapply')", call. = FALSE)
   d <- data.table::fread(file.path(data_dir, "wcvp/wcvp.gz"),
                          data.table = FALSE)
   # Import map
-  m <- terra::vect(file.path(data_dir, "wcvp/wgsrpd.gpkg"))
+  m <- terra::vect(file.path(data_dir, "wgsrpd/wgsrpd.gpkg"))
   # Get dataframe to filter levels
   dm <- terra::as.data.frame(m)
 
