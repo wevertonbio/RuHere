@@ -1,37 +1,37 @@
 url: https://wevertonbio.github.io/RuHere
 template:
   light-switch: true
-params:
-  bootswatch: united
-bootstrap: 5
-bslib:
-  bg: "#ffffff" # white background
-fg: "#212529" # black text
-primary: "#007bff" # primary elements: blue
-input-bg: "#ffffff"     # color search bar
-input-color: "#212529"  # color text search bar
-navbar-light-bg: "#007bff" #color for navbar when light
-navbar-dark-bg: "#00008B" #color for navbar when dark
+  params:
+     bootswatch: united
+  bootstrap: 5
+  bslib:
+    bg: "#ffffff" # white background
+    fg: "#212529" # black text
+    primary: "#007bff" # primary elements: blue
+    input-bg: "#ffffff"     # color search bar
+    input-color: "#212529"  # color text search bar
+    navbar-light-bg: "#007bff" #color for navbar when light
+    navbar-dark-bg: "#00008B" #color for navbar when dark
 
 # navigation bar configuration
 navbar:
   left:
-  - icon: fa-home
-href: index.html
-- text: "Functions"
-href: reference/index.html
-- icon: fas fa-book
-text: "Articles"
-menu:
-  -  text: "1. Obtaining and preparing occurrence data"
-href: articles/obtaining_data.html
--  text: "2. Ensuring spatial consistency"
-href: articles/spatial_consistency.html
--  text: "3. Flagging Records Using Metadata"
-href: articles/flagging_records.html
--  text: "4. Flagging Records with Specialists' Information"
-href: articles/flagging_records_species_list.html
--  text: "5. Reducing sampling bias"
-href: articles/sampling_bias.html
-components:
-  home: ~
+    - icon: fa-home
+      href: index.html
+    - text: "Functions"
+      href: reference/index.html
+    - icon: fas fa-book
+      text: "Articles"
+      menu:
+      -  text: "1. Obtaining and preparing occurrence data"
+      href: articles/obtaining_data.html
+      -  text: "2. Ensuring spatial consistency"
+      href: articles/spatial_consistency.html
+      -  text: "3. Flagging Records Using Metadata"
+      href: articles/flagging_records.html
+      -  text: "4. Flagging Records with Specialists' Information"
+      href: articles/flagging_records_species_list.html
+      -  text: "5. Reducing sampling bias"
+      href: articles/sampling_bias.html
+  components:
+    home: ~
