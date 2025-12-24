@@ -335,7 +335,6 @@ Run install.packages('pbapply')", call. = FALSE)
     occ$species <- species
   }
 
-  #occ2 aqui
 
   if(check_numeric){
 
@@ -391,6 +390,26 @@ Run install.packages('pbapply')", call. = FALSE)
 
   # Create ID for each records
   occ$record_id <- paste(occ$data_source, 1:nrow(occ), sep = "_")
+
+  # Fix encoding again
+  bad_cols <- names(occ)[
+    sapply(occ, function(x) {
+      if (is.character(x) || is.factor(x)) {
+        tryCatch({
+          nchar(as.character(x))
+          FALSE
+        }, error = function(e) TRUE)
+      } else {
+        FALSE
+      }
+    })
+  ]
+  if(length(bad_cols) > 0){
+    for(i in bad_cols){
+      occ[[i]] <- iconv(occ[[i]], from = "", to = "UTF-8")
+    }
+  }
+
 
   if(!extract_binomial){
     return(occ[,c("record_id", colnames(d), "data_source")])
