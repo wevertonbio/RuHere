@@ -62,6 +62,15 @@ bind_here <- function(...,
     stop("All inputs in '...' must be data.frames or data.tables.", call. = FALSE)
   }
 
+  # 4. Check if all data.frames have the same column names
+  ref_cols <- colnames(l[[1]])
+  all_same <- all(vapply(l, function(x) setequal(colnames(x), ref_cols), logical(1)))
+
+  if (!all_same && !fill) {
+    stop("All datasets must have the same columns.", call. = FALSE)
+  }
+
+
   l <- list(...)
   l <- data.table::rbindlist(l)
   if(inherits(l, "data.table"))
