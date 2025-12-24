@@ -265,10 +265,10 @@ Run install.packages('pbapply')", call. = FALSE)
         occ_out <- occ_out[, common_cols, drop = FALSE]
         res_flag <- res_flag[, common_cols, drop = FALSE]
       }
-      res_flag <- as.data.frame(data.table::rbindlist(list(res_flag, occ_out), fill = TRUE))
-    }
-  }
 
+      res_flag <- as.data.frame(data.table::rbindlist(list(res_flag, occ_out), fill = TRUE))
+      }
+  }
 
   return(res_flag)
 

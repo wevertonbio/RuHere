@@ -299,6 +299,7 @@ Run install.packages('pbapply')", call. = FALSE)
     occ_out <- occ[occ[[species]] %in% spp_out, ]
 
     if(nrow(occ_out) > 0) {
+
       occ_out$florabr_flag <- NA
       if (!keep_columns) {
         common_cols <- intersect(colnames(occ_out), colnames(res_flag))

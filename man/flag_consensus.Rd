@@ -37,7 +37,7 @@ The original \code{occ} with an additional logical column defined by
 }
 \description{
 This functions creates a new column representing the consensus across
-multiple flag columns. The consensus can be computed in two ways:#'
+multiple flag columns. The consensus can be computed in two ways:
 \itemize{
 \item \code{"all_true"}: A record is considered valid (\code{TRUE}) only if \strong{all}
 specified flag are valid (\code{TRUE}).

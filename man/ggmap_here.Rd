@@ -6,6 +6,7 @@
 \usage{
 ggmap_here(
   occ,
+  species = NULL,
   long = "decimalLongitude",
   lat = "decimalLatitude",
   flags = "all",
@@ -28,14 +29,16 @@ ggmap_here(
   ocean_fill = "aliceblue",
   extension = NULL,
   facet_wrap = FALSE,
-  theme_plot = ggplot2::theme_minimal(),
-  ...
+  theme_plot = ggplot2::theme_minimal()
 )
 }
 \arguments{
 \item{occ}{(data.frame or data.table) a dataset containing occurrence records
 that has been processed by one or more flagging functions. See \emph{Details} for
 available flag types.}
+
+\item{species}{(character) name of the species to subset and plot. Default is
+\code{NULL}, meaning that all records for all species are plotted.}
 
 \item{long}{(character) the name of the column in \code{occ} that contains the
 longitude values. Default is \code{"decimalLongitude"}.}
@@ -113,8 +116,6 @@ using \code{ggplot2::facet_wrap()}. Default is \code{FALSE}.}
 
 \item{theme_plot}{(theme) a \code{ggplot2} theme object. Default is
 \code{ggplot2::theme_minimal()}.}
-
-\item{...}{additional arguments passed to \code{ggplot2::theme()}.}
 }
 \value{
 An ggplot object displaying flagged and optionally unflagged occurrence

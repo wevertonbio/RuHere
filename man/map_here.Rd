@@ -6,6 +6,7 @@
 \usage{
 map_here(
   occ,
+  species = NULL,
   long = "decimalLongitude",
   lat = "decimalLatitude",
   flags = "all",
@@ -24,6 +25,9 @@ map_here(
 \item{occ}{(data.frame or data.table) a dataset containing occurrence records
 that has been processed by one or more flagging functions. See \emph{Details} for
 available flag types.}
+
+\item{species}{(character) name of the species to subset and plot. Default is
+\code{NULL}, meaning that all records for all species are plotted.}
 
 \item{long}{(character) the name of the column in \code{occ} that contains the
 longitude values. Default is \code{"decimalLongitude"}.}
