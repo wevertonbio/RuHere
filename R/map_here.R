@@ -9,6 +9,8 @@
 #' @param occ (data.frame or data.table) a dataset containing occurrence records
 #' that has been processed by one or more flagging functions. See *Details* for
 #' available flag types.
+#' @param species (character) name of the species to subset and plot. Default is
+#' `NULL`, meaning that all records for all species are plotted.
 #' @param long (character) the name of the column in `occ` that contains the
 #' longitude values. Default is `"decimalLongitude"`.
 #' @param lat (character) the name of the column in `occ` that contains the
@@ -64,19 +66,19 @@
 #' map_here(occ = occ_flagged, label = "record_id")
 #' }
 map_here <- function(occ,
-                         long = "decimalLongitude",
-                         lat = "decimalLatitude",
-                         flags = "all",
-                         additional_flags = NULL,
-                         names_additional_flags = NULL,
-                         col_additional_flags = NULL,
-                         show_no_flagged = TRUE,
-                         cex = 6,
-                         lwd = 2,
-                         col_points = NULL,
-                         label = NULL,
-                         ...
-                         ){
+                     species = NULL,
+                     long = "decimalLongitude",
+                     lat = "decimalLatitude",
+                     flags = "all",
+                     additional_flags = NULL,
+                     names_additional_flags = NULL,
+                     col_additional_flags = NULL,
+                     show_no_flagged = TRUE,
+                     cex = 6,
+                     lwd = 2,
+                     col_points = NULL,
+                     label = NULL,
+                     ...){
 
   # ---- Argument checking -----------------------------------------------------
 
@@ -92,6 +94,19 @@ map_here <- function(occ,
   # flags
   if (!inherits(flags, "character") || length(flags) < 1) {
     stop("`flags` must be a character vector.", call. = FALSE)
+  }
+
+  # species
+  if(!is.null(species)){
+    if (!inherits(species, "character")) {
+      stop("`species` must be a character vector.", call. = FALSE)
+    }
+
+    if(!species %in% unique(occ$species)){
+      stop("The species name provided in 'species' is not present in the 'occ' dataset. It must match a value in the species column.")
+    }
+    # Subset
+    occ <- occ[occ$species %in% species, ]
   }
 
   # additional_flags must be NULL or a character vector
@@ -195,6 +210,7 @@ map_here <- function(occ,
     flags <- c("correct_country", "correct_state", "florabr", "faunabr",
                "wcvp", "iucn", "bien", "cultivated", "inaturalist",
                "duplicated", "thin_env", "thin_geo", "consensus",
+               "fossil", "year",
                # Froom CoordinateCleaner
                ".val", ".equ", ".zer", ".cap", ".cen", ".sea", ".urb", ".otl",
                ".gbf", ".inst", ".aohi")
@@ -202,7 +218,8 @@ map_here <- function(occ,
 
   # Add _flags for some columns
   to_paste <- c("florabr", "faunabr", "wcvp", "iucn", "bien", "cultivated",
-                "inaturalist", "duplicated", "thin_env", "thin_geo", "consensus")
+                "inaturalist", "duplicated", "thin_env", "thin_geo",
+                "consensus", "fossil", "year")
 
   flags[flags %in% to_paste] <- paste0(flags[flags %in% to_paste], "_flag")
 
@@ -211,7 +228,16 @@ map_here <- function(occ,
     flags <- c(flags, additional_flags)
     }
 
+
   # Subset columns
+  flags <- intersect(flags, colnames(occ))
+
+  # Remove flags with NAs only
+  to_remove <- colSums(is.na(occ[, flags, drop = FALSE])) == nrow(occ)
+  to_remove <- names(to_remove)[to_remove]
+  occ <- occ[, !(names(occ) %in% to_remove), drop = FALSE]
+
+  #Update flags
   flags <- intersect(flags, colnames(occ))
 
   # Names of flags
@@ -241,7 +267,8 @@ map_here <- function(occ,
 
   # Add non-flagged occurrences?
   if(show_no_flagged){
-    no_flagged <- rowSums(occ[, flags, drop = FALSE], na.rm = TRUE)
+    no_flagged <- rowSums(occ[, flags, drop = FALSE] |
+                            is.na(occ[, flags, drop = FALSE]), na.rm = TRUE)
     no_flagged <- no_flagged == length(flags)
     no_flagged <- occ[no_flagged,]
     occ_list[["No flagged"]] <- no_flagged

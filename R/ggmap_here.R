@@ -12,6 +12,8 @@
 #' @param occ (data.frame or data.table) a dataset containing occurrence records
 #' that has been processed by one or more flagging functions. See *Details* for
 #' available flag types.
+#' @param species (character) name of the species to subset and plot. Default is
+#' `NULL`, meaning that all records for all species are plotted.
 #' @param long (character) the name of the column in `occ` that contains the
 #' longitude values. Default is `"decimalLongitude"`.
 #' @param lat (character) the name of the column in `occ` that contains the
@@ -66,7 +68,6 @@
 #' using `ggplot2::facet_wrap()`. Default is `FALSE`.
 #' @param theme_plot (theme) a `ggplot2` theme object. Default is
 #' `ggplot2::theme_minimal()`.
-#' @param ... additional arguments passed to `ggplot2::theme()`.
 #'
 #' @details
 #' This function expects an occurrence dataset that has already been processed
@@ -117,6 +118,7 @@
 #' # Visualize each flag in a separate panel
 #' ggmap_here(occ = occ_flagged, facet_wrap = TRUE)
 ggmap_here <- function(occ,
+                       species = NULL,
                        long = "decimalLongitude",
                        lat = "decimalLatitude",
                        flags = "all",
@@ -139,8 +141,8 @@ ggmap_here <- function(occ,
                        ocean_fill = "aliceblue",
                        extension = NULL,
                        facet_wrap = FALSE,
-                       theme_plot = ggplot2::theme_minimal(),
-                       ...) {
+                       theme_plot = ggplot2::theme_minimal()
+                       ) {
   ##-----------------------------##
   ##   ARGUMENT CHECKING        ##
   ##-----------------------------##
@@ -153,6 +155,19 @@ ggmap_here <- function(occ,
   # Force occ to be a dataframe
   if(length(class(occ)) > 1)
     occ <- as.data.frame(occ)
+
+  # species
+  if(!is.null(species)){
+    if (!inherits(species, "character")) {
+      stop("`species` must be a character vector.", call. = FALSE)
+    }
+
+    if(!species %in% unique(occ$species)){
+      stop("The species name provided in 'species' is not present in the 'occ' dataset. It must match a value in the species column.")
+    }
+    # Subset
+    occ <- occ[occ$species %in% species, ]
+  }
 
   # long and lat must be character
   if (!inherits(long, "character")) {
@@ -179,6 +194,7 @@ ggmap_here <- function(occ,
     # RuHere
     "correct_country", "correct_state", "cultivated", "florabr", "faunabr",
     "wcvp", "iucn", "bien", "duplicated", "thin_geo", "thin_env", "consensus",
+    "fossil", "year",
     # CoordinateCleaner
     ".val", ".equ", ".zer", ".cap", ".cen", ".sea", ".urb", ".otl",
     ".gbf", ".inst", ".aohi", "all")
@@ -357,7 +373,8 @@ ggmap_here <- function(occ,
 
   # Add _flags for some columns
   to_paste <- c("florabr", "faunabr", "wcvp", "iucn", "bien", "cultivated",
-                "inaturalist", "duplicated", "thin_env", "thin_geo", "consensus")
+                "inaturalist", "duplicated", "thin_env", "thin_geo",
+                "consensus", "fossil", "year")
 
   flags[flags %in% to_paste] <- paste0(flags[flags %in% to_paste], "_flag")
 
@@ -367,6 +384,14 @@ ggmap_here <- function(occ,
   }
 
   # Subset columns
+  flags <- intersect(flags, colnames(occ))
+
+  # Remove flags with NAs only
+  to_remove <- colSums(is.na(occ[, flags, drop = FALSE])) == nrow(occ)
+  to_remove <- names(to_remove)[to_remove]
+  occ <- occ[, !(names(occ) %in% to_remove), drop = FALSE]
+
+  #Update flags
   flags <- intersect(flags, colnames(occ))
 
   # Names of flags
@@ -465,8 +490,7 @@ ggmap_here <- function(occ,
       ggplot2::xlab("Longitude") + ggplot2::ylab("Latitude") +
       theme_plot +
       ggplot2::theme(panel.background = ggplot2::element_rect(fill = ocean_fill,
-                                                              colour = NA),
-                     ...)
+                                                              colour = NA))
 
     if(facet_wrap){
       p <- p + ggplot2::facet_wrap(.~Flag) +
@@ -502,8 +526,7 @@ ggmap_here <- function(occ,
       ggplot2::xlab("Longitude") + ggplot2::ylab("Latitude") +
       theme_plot +
       ggplot2::theme(panel.background = ggplot2::element_rect(fill = ocean_fill,
-                                                              colour = NA),
-                     ...)
+                                                              colour = NA))
 
     if(facet_wrap){
       p <- p + ggplot2::facet_wrap(.~Flag) +

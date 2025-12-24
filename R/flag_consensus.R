@@ -2,7 +2,7 @@
 #'
 #' @description
 #' This functions creates a new column representing the consensus across
-#' multiple flag columns. The consensus can be computed in two ways:#'
+#' multiple flag columns. The consensus can be computed in two ways:
 #' - `"all_true"`: A record is considered valid (`TRUE`) only if **all**
 #'   specified flag are valid (`TRUE`).
 #' - `"any_true"`: A record is considered valid (`TRUE`) if **at least one**
@@ -71,7 +71,7 @@ flag_consensus <- function(occ, flags, consensus_rule = "all_true",
   allowed_flags <- c(
     "correct_country", "correct_state", "cultivated",
     "fossil", "inaturalist", "faunabr", "florabr",
-    "wcvp", "iucn", "duplicated", "thin_geo", "thin_env",
+    "wcvp", "iucn", "duplicated", "thin_geo", "thin_env", "year",
     ".val", ".equ", ".zer", ".cap", ".cen",
     ".sea", ".urb", ".otl", ".gbf", ".inst", ".aohi"
   )
@@ -89,7 +89,7 @@ flag_consensus <- function(occ, flags, consensus_rule = "all_true",
 
   # Add '_flags' for some columns
   to_paste <- c("florabr", "faunabr", "wcvp", "iucn", "bien", "cultivated",
-                "inaturalist", "duplicated", "thin_geo", "thin_env")
+                "inaturalist", "duplicated", "thin_geo", "thin_env", "year")
 
   flags[flags %in% to_paste] <- paste0(flags[flags %in% to_paste], "_flag")
 
