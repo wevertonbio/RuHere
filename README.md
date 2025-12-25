@@ -1,4 +1,4 @@
-# <img src="man/figures/logo.png" align="right" height="200" />
+# **RuHere** <img src="man/figures/logo.png" align="right" height="40%" width = "40%"/>
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/wevertonbio/RuHere/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/wevertonbio/RuHere/actions/workflows/R-CMD-check.yaml)
@@ -6,7 +6,7 @@
 <!-- badges: end -->
 
 
-**RuHere: Are your species records really where they say they are?**
+**Are your species records really where they say they are?**
 ================
 > *Check them using metadata and specialists’ range information!*
 
