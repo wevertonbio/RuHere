@@ -121,7 +121,7 @@ occ_country_checked <- check_countries(occ = occ_country,
                                        country_column = "country_suggested")
 #> Warning: The following countries listed in the 'country_suggested' column were absent in the world map used for validation: NA
 #> Testing countries...
-#> 177 records fall in wrong countries
+#> 54 records fall in wrong countries
 
 # Fix records with incorrect or misassigned countries
 occ_country_fixed <- fix_countries(occ = occ_country_checked,
@@ -131,7 +131,7 @@ occ_country_fixed <- fix_countries(occ = occ_country_checked,
 #> Task 2 of 7: testing if latitude is inverted
 #> 0 coordinates with latitude inverted
 #> Task 3 of 7: testing if longitude and latitude are inverted
-#> 2 coordinates with longitude and latitude inverted
+#> 1 coordinates with longitude and latitude inverted
 #> Task 4 of 7: testing if longitude and latitude are swapped
 #> 1 coordinates with longitude and latitude swapped
 #> Task 5 of 7: testing if longitude and latitude are swapped -

@@ -192,9 +192,9 @@ the records that were removed. We then update our working dataset
 <span><span class="co"># Records with invalid coordinates</span></span>
 <span><span class="va">occ_split</span><span class="op">$</span><span class="va">invalid</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"species"</span>, <span class="st">"decimalLongitude"</span>, <span class="st">"decimalLatitude"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;                         species decimalLongitude decimalLatitude</span></span>
-<span><span class="co">#&gt; 608      Araucaria angustifolia               NA              NA</span></span>
-<span><span class="co">#&gt; 6225       Cyanocorax caeruleus               NA              NA</span></span>
-<span><span class="co">#&gt; 6493 Handroanthus serratifolius               NA              NA</span></span>
+<span><span class="co">#&gt; 376      Araucaria angustifolia               NA              NA</span></span>
+<span><span class="co">#&gt; 3606       Cyanocorax caeruleus               NA              NA</span></span>
+<span><span class="co">#&gt; 3768 Handroanthus serratifolius               NA              NA</span></span>
 <span></span>
 <span><span class="co"># Update the main 'occ' data frame to contain only the valid records</span></span>
 <span><span class="va">occ</span> <span class="op">&lt;-</span> <span class="va">occ_split</span><span class="op">$</span><span class="va">valid</span></span></code></pre></div>
@@ -236,7 +236,7 @@ the <code>plantR</code> package:</p>
 <code class="sourceCode R"><span><span class="va">occ</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/flag_cultivated.html">flag_cultivated</a></span><span class="op">(</span><span class="va">occ</span><span class="op">)</span> <span class="co"># Scan for fossil-related terms</span></span>
 <span><span class="co"># Number of records flagged as fossil</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">occ</span><span class="op">$</span><span class="va">cultivated_flag</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 24</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 14</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="records-from-inaturalist">Records from iNaturalist<a class="anchor" aria-label="anchor" href="#records-from-inaturalist"></a>
@@ -255,7 +255,7 @@ Grade:</p>
 <span><span class="va">occ_inat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/flag_inaturalist.html">flag_inaturalist</a></span><span class="op">(</span><span class="va">occ</span>, </span>
 <span>                             research_grade <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co">#Flag even when is research-grade</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">occ_inat</span><span class="op">$</span><span class="va">inaturalist_flag</span><span class="op">)</span> <span class="co">#Number of flagged records</span></span>
-<span><span class="co">#&gt; [1] 1458</span></span>
+<span><span class="co">#&gt; [1] 869</span></span>
 <span></span>
 <span><span class="co"># Flag only iNaturalist records without Research Grade</span></span>
 <span><span class="va">occ</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/flag_inaturalist.html">flag_inaturalist</a></span><span class="op">(</span><span class="va">occ</span>, </span>
@@ -276,7 +276,7 @@ records collected before 1980:</p>
 <code class="sourceCode R"><span><span class="va">occ</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/flag_year.html">flag_year</a></span><span class="op">(</span><span class="va">occ</span>, lower_limit <span class="op">=</span> <span class="fl">1980</span>, </span>
 <span>                 upper_limit <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="co">#We could specify a upper limit as well</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">occ</span><span class="op">$</span><span class="va">year_flag</span><span class="op">)</span> <span class="co">#Number of flagged records</span></span>
-<span><span class="co">#&gt; [1] 226</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 198</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -383,12 +383,12 @@ desired coordinate checks, you simply need to use the
 <span><span class="co">#&gt; Testing zero coordinates</span></span>
 <span><span class="co">#&gt; Flagged 6 records.</span></span>
 <span><span class="co">#&gt; Testing country capitals</span></span>
-<span><span class="co">#&gt; Flagged 35 records.</span></span>
+<span><span class="co">#&gt; Flagged 23 records.</span></span>
 <span><span class="co">#&gt; Testing country centroids</span></span>
-<span><span class="co">#&gt; Flagged 9 records.</span></span>
+<span><span class="co">#&gt; Flagged 7 records.</span></span>
 <span><span class="co">#&gt; Testing biodiversity institutions</span></span>
-<span><span class="co">#&gt; Flagged 12 records.</span></span>
-<span><span class="co">#&gt; Flagged 56 of 6106 records, EQ = 0.01.</span></span></code></pre></div>
+<span><span class="co">#&gt; Flagged 6 records.</span></span>
+<span><span class="co">#&gt; Flagged 39 of 4077 records, EQ = 0.01.</span></span></code></pre></div>
 <p>The final columns of the occurrence dataset contain the results of
 the <strong>CoordinateCleaner</strong> validation. The summary column
 only reports whether a record passed all applied tests, and can be
@@ -459,12 +459,10 @@ custom name can be provided. Here, we name the new flag as
 <span><span class="va">occ_consensus_flagged</span> <span class="op">&lt;-</span> <span class="va">occ_consensus</span><span class="op">[</span><span class="op">!</span><span class="va">occ_consensus</span><span class="op">$</span><span class="va">old_cultivated</span>, <span class="op">]</span></span>
 <span><span class="va">occ_consensus_flagged</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"species"</span>, <span class="st">"cultivated_flag"</span>, <span class="st">"year_flag"</span>, <span class="st">"old_cultivated"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;                         species cultivated_flag year_flag old_cultivated</span></span>
-<span><span class="co">#&gt; 2541     Araucaria angustifolia           FALSE     FALSE          FALSE</span></span>
-<span><span class="co">#&gt; 2550     Araucaria angustifolia           FALSE     FALSE          FALSE</span></span>
-<span><span class="co">#&gt; 2584     Araucaria angustifolia           FALSE     FALSE          FALSE</span></span>
-<span><span class="co">#&gt; 2623     Araucaria angustifolia           FALSE     FALSE          FALSE</span></span>
-<span><span class="co">#&gt; 7984 Handroanthus serratifolius           FALSE     FALSE          FALSE</span></span>
-<span><span class="co">#&gt; 8016 Handroanthus serratifolius           FALSE     FALSE          FALSE</span></span></code></pre></div>
+<span><span class="co">#&gt; 1381     Araucaria angustifolia           FALSE     FALSE          FALSE</span></span>
+<span><span class="co">#&gt; 1388     Araucaria angustifolia           FALSE     FALSE          FALSE</span></span>
+<span><span class="co">#&gt; 1424     Araucaria angustifolia           FALSE     FALSE          FALSE</span></span>
+<span><span class="co">#&gt; 4769 Handroanthus serratifolius           FALSE     FALSE          FALSE</span></span></code></pre></div>
 <p>We can visualize this custom flag using <code><a href="../reference/map_here.html">map_here()</a></code> or
 <code><a href="../reference/ggmap_here.html">ggmap_here()</a></code>. Because it is a user-defined flag, it must be
 specified via the <code>additional_flags</code> and
@@ -524,13 +522,13 @@ should define a permanent location:</p>
 <span></span>
 <span><span class="co"># Total number of records</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">occ</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 6106</span></span>
+<span><span class="co">#&gt; [1] 4077</span></span>
 <span><span class="co"># Number of valid records</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">occ_cleaned</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 6031</span></span>
+<span><span class="co">#&gt; [1] 4025</span></span>
 <span><span class="co"># Number of records removed</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">occ</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">occ_cleaned</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 75</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 52</span></span></code></pre></div>
 <p>We can inspect the directory specified in <code>path_to_save</code>
 to see the files containing the removed records. By default, the files
 are saved in GZIP format, which is a compressed format that can be read

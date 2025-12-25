@@ -229,19 +229,19 @@ occ_geo_moran$distance
 #> [1] "30"
 # Number of flagged and unflagged records
 sum(occ_geo_moran$occ$thin_geo_flag) #Retained
-#> [1] 298
+#> [1] 297
 sum(!occ_geo_moran$occ$thin_geo_flag) #Flagged for thinning out
-#> [1] 1146
+#> [1] 627
 # Results os the spatial autocorrelation analysis
 occ_geo_moran$imoran
 #>                   species Distance     bio_1     bio_7    bio_12 median_moran
-#> 5  Araucaria angustifolia        5 0.1750139 0.3336706 0.1758152    0.1758152
-#> 10 Araucaria angustifolia       10 0.1520137 0.3008838 0.1645596    0.1645596
-#> 20 Araucaria angustifolia       20 0.1333947 0.2732407 0.1469418    0.1469418
-#> 30 Araucaria angustifolia       30 0.1075403 0.2585121 0.1472076    0.1472076
+#> 5  Araucaria angustifolia        5 0.1678046 0.3300641 0.1719100    0.1719100
+#> 10 Araucaria angustifolia       10 0.1511561 0.3003992 0.1665782    0.1665782
+#> 20 Araucaria angustifolia       20 0.1318548 0.2699369 0.1473847    0.1473847
+#> 30 Araucaria angustifolia       30 0.1072336 0.2590974 0.1499994    0.1499994
 #>    mean_moran min_moran max_moran n_filtered all_records prop_lost
-#> 5   0.2281665 0.1750139 0.3336706        858        1444 0.4058172
-#> 10  0.2058190 0.1520137 0.3008838        629        1444 0.5644044
-#> 20  0.1845257 0.1333947 0.2732407        409        1444 0.7167590
-#> 30  0.1710867 0.1075403 0.2585121        298        1444 0.7936288
+#> 5   0.2232595 0.1678046 0.3300641        836         924 0.0952381
+#> 10  0.2060445 0.1511561 0.3003992        621         924 0.3279221
+#> 20  0.1830588 0.1318548 0.2699369        407         924 0.5595238
+#> 30  0.1721101 0.1072336 0.2590974        297         924 0.6785714
 ```

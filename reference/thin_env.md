@@ -103,5 +103,5 @@ r <- terra::unwrap(worldclim)
 occ_env_thin <- thin_env(occ = occ, env_layers = r)
 # Number of flagged (redundant) records
 sum(!occ_env_thin$thin_env_flag) #Number of flagged records
-#> [1] 1387
+#> [1] 867
 ```

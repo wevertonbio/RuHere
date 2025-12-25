@@ -105,6 +105,6 @@ b <- get_env_bins(occ = occ, env_layers = r, n_bins = 10)
 # Plot
 plot_env_bins(b, x_var = "bio_1", y_var = "bio_12",
               xlab = "Temperature", ylab = "Precipitation")
-#> Warning: Removed 168 rows containing missing values or values outside the scale range
+#> Warning: Removed 147 rows containing missing values or values outside the scale range
 #> (`geom_point()`).
 ```

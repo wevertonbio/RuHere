@@ -60,11 +60,11 @@ occ_inat <- flag_inaturalist(occ = occurrences, research_grade = FALSE)
 table(occ_inat$inaturalist_flag) # Number of records flagged (FALSE)
 #> 
 #> TRUE 
-#> 6109 
+#> 4080 
 # Flag all iNaturalist records (including Research Grade)
 occ_inat <- flag_inaturalist(occ = occurrences, research_grade = TRUE)
 table(occ_inat$inaturalist_flag) # Number of records flagged (FALSE)
 #> 
 #> FALSE  TRUE 
-#>  1458  4651 
+#>   869  3211 
 ```

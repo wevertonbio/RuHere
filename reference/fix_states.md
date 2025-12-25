@@ -126,7 +126,7 @@ occ_states_checked <- check_states(occ = occ_state,
                                    state_column = "state_suggested")
 #> Warning: The following states listed in the 'state_suggested' column were absent in the world map used for validation: NA, mexico
 #> Testing states...
-#> 11 records fall in wrong states
+#> 9 records fall in wrong states
 
 # Fix records with incorrect or misassigned states
 occ_states_fixed <- fix_states(occ = occ_states_checked,
@@ -136,7 +136,7 @@ occ_states_fixed <- fix_states(occ = occ_states_checked,
 #> Task 2 of 7: testing if latitude is inverted
 #> 0 coordinates with latitude inverted
 #> Task 3 of 7: testing if longitude and latitude are inverted
-#> 2 coordinates with longitude and latitude inverted
+#> 1 coordinates with longitude and latitude inverted
 #> Task 4 of 7: testing if longitude and latitude are swapped
 #> 0 coordinates with longitude and latitude swapped
 #> Task 5 of 7: testing if longitude and latitude are swapped -

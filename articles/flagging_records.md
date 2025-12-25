@@ -104,9 +104,9 @@ occ_split <- remove_invalid_coordinates(
 # Records with invalid coordinates
 occ_split$invalid[, c("species", "decimalLongitude", "decimalLatitude")]
 #>                         species decimalLongitude decimalLatitude
-#> 608      Araucaria angustifolia               NA              NA
-#> 6225       Cyanocorax caeruleus               NA              NA
-#> 6493 Handroanthus serratifolius               NA              NA
+#> 376      Araucaria angustifolia               NA              NA
+#> 3606       Cyanocorax caeruleus               NA              NA
+#> 3768 Handroanthus serratifolius               NA              NA
 
 # Update the main 'occ' data frame to contain only the valid records
 occ <- occ_split$valid
@@ -151,7 +151,7 @@ inspired by the `getCult()` function from the `plantR` package:
 occ <- flag_cultivated(occ) # Scan for fossil-related terms
 # Number of records flagged as fossil
 sum(!occ$cultivated_flag)
-#> [1] 24
+#> [1] 14
 ```
 
 ### Records from iNaturalist
@@ -171,7 +171,7 @@ are not classified as Research Grade:
 occ_inat <- flag_inaturalist(occ, 
                              research_grade = TRUE) #Flag even when is research-grade
 sum(!occ_inat$inaturalist_flag) #Number of flagged records
-#> [1] 1458
+#> [1] 869
 
 # Flag only iNaturalist records without Research Grade
 occ <- flag_inaturalist(occ, 
@@ -193,7 +193,7 @@ collected before 1980:
 occ <- flag_year(occ, lower_limit = 1980, 
                  upper_limit = NULL) #We could specify a upper limit as well
 sum(!occ$year_flag) #Number of flagged records
-#> [1] 226
+#> [1] 198
 ```
 
 ## Flagging duplicates
@@ -308,12 +308,12 @@ occ <- clean_coordinates(x = occ,
 #> Testing zero coordinates
 #> Flagged 6 records.
 #> Testing country capitals
-#> Flagged 35 records.
+#> Flagged 23 records.
 #> Testing country centroids
-#> Flagged 9 records.
+#> Flagged 7 records.
 #> Testing biodiversity institutions
-#> Flagged 12 records.
-#> Flagged 56 of 6106 records, EQ = 0.01.
+#> Flagged 6 records.
+#> Flagged 39 of 4077 records, EQ = 0.01.
 ```
 
 The final columns of the occurrence dataset contain the results of the
@@ -398,12 +398,10 @@ occ_consensus <- flag_consensus(occ,
 occ_consensus_flagged <- occ_consensus[!occ_consensus$old_cultivated, ]
 occ_consensus_flagged[, c("species", "cultivated_flag", "year_flag", "old_cultivated")]
 #>                         species cultivated_flag year_flag old_cultivated
-#> 2541     Araucaria angustifolia           FALSE     FALSE          FALSE
-#> 2550     Araucaria angustifolia           FALSE     FALSE          FALSE
-#> 2584     Araucaria angustifolia           FALSE     FALSE          FALSE
-#> 2623     Araucaria angustifolia           FALSE     FALSE          FALSE
-#> 7984 Handroanthus serratifolius           FALSE     FALSE          FALSE
-#> 8016 Handroanthus serratifolius           FALSE     FALSE          FALSE
+#> 1381     Araucaria angustifolia           FALSE     FALSE          FALSE
+#> 1388     Araucaria angustifolia           FALSE     FALSE          FALSE
+#> 1424     Araucaria angustifolia           FALSE     FALSE          FALSE
+#> 4769 Handroanthus serratifolius           FALSE     FALSE          FALSE
 ```
 
 We can visualize this custom flag using
@@ -471,13 +469,13 @@ occ_cleaned <- remove_flagged(
 
 # Total number of records
 nrow(occ)
-#> [1] 6106
+#> [1] 4077
 # Number of valid records
 nrow(occ_cleaned)
-#> [1] 6031
+#> [1] 4025
 # Number of records removed
 nrow(occ) - nrow(occ_cleaned)
-#> [1] 75
+#> [1] 52
 ```
 
 We can inspect the directory specified in `path_to_save` to see the

@@ -405,9 +405,9 @@ species), the function returns `NA` values for this species.
 table(occ$species, occ$wcvp_flag)
 #>                             
 #>                              FALSE TRUE
-#>   Araucaria angustifolia       124 1320
+#>   Araucaria angustifolia       111  813
 #>   Cyanocorax caeruleus           0    0
-#>   Handroanthus serratifolius    47 2316
+#>   Handroanthus serratifolius    46 2075
 ```
 
   
@@ -444,9 +444,9 @@ returns `NA` values for this species.
 table(occ$species, occ$iucn_flag)
 #>                             
 #>                              FALSE TRUE
-#>   Araucaria angustifolia       189 1255
+#>   Araucaria angustifolia       166  758
 #>   Cyanocorax caeruleus           0    0
-#>   Handroanthus serratifolius    45 2318
+#>   Handroanthus serratifolius    44 2077
 ```
 
   
@@ -478,7 +478,7 @@ table(occ$species, occ$bien_flag)
 #>                              FALSE TRUE
 #>   Araucaria angustifolia         0    0
 #>   Cyanocorax caeruleus           0    0
-#>   Handroanthus serratifolius    81 2282
+#>   Handroanthus serratifolius    69 2052
 ```
 
   
@@ -510,9 +510,9 @@ provide distributional information for *Cyanocorax caeruleus*:
 table(occ$species, occ$florabr_flag)
 #>                             
 #>                              FALSE TRUE
-#>   Araucaria angustifolia        27 1417
+#>   Araucaria angustifolia        25  899
 #>   Cyanocorax caeruleus           0    0
-#>   Handroanthus serratifolius     5 2358
+#>   Handroanthus serratifolius     5 2116
 ```
 
   
@@ -544,7 +544,7 @@ table(occ$species, occ$faunabr_flag)
 #>                             
 #>                              FALSE TRUE
 #>   Araucaria angustifolia         0    0
-#>   Cyanocorax caeruleus           4 2298
+#>   Cyanocorax caeruleus           4 1031
 #>   Handroanthus serratifolius     0    0
 ```
 

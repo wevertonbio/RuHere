@@ -80,5 +80,5 @@ occ_country_checked <- check_countries(occ = occ_country,
                                        country_column = "country_suggested")
 #> Warning: The following countries listed in the 'country_suggested' column were absent in the world map used for validation: NA
 #> Testing countries...
-#> 177 records fall in wrong countries
+#> 54 records fall in wrong countries
 ```

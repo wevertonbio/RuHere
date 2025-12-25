@@ -231,23 +231,23 @@ occ_env_moran$n_bins
 #> [1] "50"
 # Number of flagged and unflagged records
 sum(occ_env_moran$occ$thin_env_flag) #Retained
-#> [1] 757
+#> [1] 691
 sum(!occ_env_moran$occ$thin_env_flag) #Flagged for thinning out
-#> [1] 687
+#> [1] 233
 # Results os the spatial autocorrelation analysis
 occ_env_moran$imoran
 #>                   species n_bins     bio_1     bio_7    bio_12 median_moran
-#> 5  Araucaria angustifolia      5 0.2577166 0.3304537 0.1850860    0.2577166
-#> 10 Araucaria angustifolia     10 0.2096196 0.3679785 0.1804700    0.2096196
-#> 20 Araucaria angustifolia     20 0.1779664 0.3634437 0.1921568    0.1921568
-#> 30 Araucaria angustifolia     30 0.1804510 0.3634221 0.1952271    0.1952271
-#> 40 Araucaria angustifolia     40 0.1915694 0.3524565 0.1911581    0.1915694
-#> 50 Araucaria angustifolia     50 0.1882129 0.3498225 0.1909865    0.1909865
+#> 5  Araucaria angustifolia      5 0.2443818 0.3288289 0.1647230    0.2443818
+#> 10 Araucaria angustifolia     10 0.2093983 0.3634131 0.1693231    0.2093983
+#> 20 Araucaria angustifolia     20 0.1655434 0.3455124 0.1727638    0.1727638
+#> 30 Araucaria angustifolia     30 0.1723510 0.3503620 0.1751458    0.1751458
+#> 40 Araucaria angustifolia     40 0.1716318 0.3369794 0.1716155    0.1716318
+#> 50 Araucaria angustifolia     50 0.1681880 0.3367401 0.1750636    0.1750636
 #>    mean_moran min_moran max_moran n_filtered all_records prop_lost
-#> 5   0.2577521 0.1850860 0.3304537         57        1444 0.9605263
-#> 10  0.2526894 0.1804700 0.3679785        199        1444 0.8621884
-#> 20  0.2445223 0.1779664 0.3634437        508        1444 0.6481994
-#> 30  0.2463667 0.1804510 0.3634221        666        1444 0.5387812
-#> 40  0.2450613 0.1911581 0.3524565        721        1444 0.5006925
-#> 50  0.2430073 0.1882129 0.3498225        757        1444 0.4757618
+#> 5   0.2459779 0.1647230 0.3288289         57         924 0.9383117
+#> 10  0.2473782 0.1693231 0.3634131        197         924 0.7867965
+#> 20  0.2279399 0.1655434 0.3455124        478         924 0.4826840
+#> 30  0.2326196 0.1723510 0.3503620        617         924 0.3322511
+#> 40  0.2267422 0.1716155 0.3369794        660         924 0.2857143
+#> 50  0.2266639 0.1681880 0.3367401        691         924 0.2521645
 ```

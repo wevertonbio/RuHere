@@ -103,10 +103,10 @@ occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
 occ_thin <- thin_geo(occ = occ, d = 10)
 #> Removing 1 invalid records
 sum(!occ_thin$thin_geo_flag)  # Number of records flagged for removal
-#> [1] 749
+#> [1] 235
 # Prioritizing more recent records within each cluster
 occ_thin_recent <- thin_geo(occ = occ, d = 10, prioritary_column = "year")
 #> Removing 1 invalid records
 sum(!occ_thin_recent$thin_geo_flag)  # Number of records flagged for removal
-#> [1] 749
+#> [1] 235
 ```

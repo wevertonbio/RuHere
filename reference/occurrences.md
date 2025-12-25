@@ -78,7 +78,7 @@ head(occurrences)
 table(occurrences$species)
 #> 
 #>     Araucaria angustifolia       Cyanocorax caeruleus 
-#>                       1444                       2302 
+#>                        924                       1035 
 #> Handroanthus serratifolius 
-#>                       2363 
+#>                       2121 
 ```
