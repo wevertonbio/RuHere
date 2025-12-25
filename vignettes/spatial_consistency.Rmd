@@ -44,13 +44,11 @@ At this stage, you should have an occurrence dataset that has been standardized 
 
 To illustrate how the function works, we use the example occurrence dataset included in the package, which contains records for three species: the Paraná pine (*Araucaria angustifolia*), the azure jay (*Cyanocorax caeruleus*), and the yellow trumpet tree (*Handroanthus albus*).
 
-```{r}
+```{r, eval = TRUE}
 # Loading package occurrence data
 data("occurrences", package = "RuHere")
 # Number of records per species
 table(occurrences$species)
-#> Araucaria angustifolia     Cyanocorax caeruleus    Handroanthus serratifolius 
-#>                  1444                      2302                          2363 
 ```
 
 

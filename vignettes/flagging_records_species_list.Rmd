@@ -13,8 +13,9 @@ knitr::opts_chunk$set(
   comment = "#>",
   eval = TRUE,
   warning = FALSE,
-  fig.width = 6,
-  fig.height = 3.5
+  fig.width = 7,
+  fig.height = 4,
+  fig.align='center'
 )
 ```
 
@@ -252,7 +253,7 @@ avail
 
 By default, the function returns the datasets for which distributional information is available for each species. If `return_distribution = TRUE`, the function also returns a list containing `SpatVector` objects representing the species ranges:
 
-```{r}
+```{r,  out.width = "80%"}
 # Get available ranges for species
 avail_ranges <- available_datasets(data_dir = dataset_dir, species = spp, 
                                    return_distribution = TRUE)
@@ -394,7 +395,7 @@ knitr::include_graphics("vignettes_img/IMG03.jpeg")
 
 With `ggmap_here()`, we can also plot each flag in a separate panel by setting `facet_wrap = TRUE`:
 
-```{r}
+```{r,  out.width = "80%"}
 ggmap_here(occ, species = "Araucaria angustifolia", facet_wrap = TRUE)
 ```
 <br>
@@ -403,6 +404,30 @@ Records that are flagged as `FALSE` by multiple expert sources are strong candid
 
 ```{r}
 occ_cleaned <- remove_flagged(occ)
+```
+<br>
+
+
+### Summarizing flags
+
+As we did in the previous vignette (**3. Flagging Records Using Record Information**), we can create a bar plot summarizing the number of records flagged by each flagging function:
+
+```{r}
+flag_summary <- summarize_flags(occ)
+```
+<br>
+
+The function returns a `data.frame` summarizing the number of records per flag and a `ggplot2` object displaying this summary as a bar plot:
+
+```{r}
+# Data.frame summarizing the number of records per flag
+flag_summary$df_summary
+```
+<br>
+
+```{r, out.width = "80%"}
+# Bar plot
+flag_summary$plot_summary
 ```
 <br>
 
