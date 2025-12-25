@@ -100,13 +100,13 @@ m <- moranfast(x = v, weight = d, scale = TRUE)
 # Print results
 m
 #> $observed
-#> [1] 0.2977895
+#> [1] 0.296483
 #> 
 #> $expected
 #> [1] -0.0007843137
 #> 
 #> $sd
-#> [1] 0.01017309
+#> [1] 0.01014318
 #> 
 #> $p.value
 #> [1] 0

@@ -1,6 +1,6 @@
-# 
+# **RuHere**
 
-# **RuHere: Are your species records really where they say they are?**
+# **Are your species records really where they say they are?**
 
 > *Check them using metadata and specialists’ range information!*
 
