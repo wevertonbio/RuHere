@@ -6,6 +6,7 @@ Authors@R: c(
     comment = c(ORCID = "0000-0003-2045-4555")),
     person("Fernanda S.", "Caron", email = "fernandadesouzacaron@gmail.com", role = c("aut"),
     comment = c(ORCID = "0000-0002-1884-6157")))
+BugReports: https://github.com/wevertonbio/RuHere/issues
 Description: An R package that automatically flags common spatial errors in biological collection data using metadata and specialists' information.
 Imports:
     Rcpp,

@@ -2,24 +2,23 @@ url: https://wevertonbio.github.io/RuHere
 template:
   light-switch: true
   params:
-    bootswatch: united
+     bootswatch: united
   bootstrap: 5
   bslib:
-    bg: "#ffffff"
-    fg: "#212529"
-    primary: "#007bff"
-    input-bg: "#ffffff"
-    input-color: "#212529"
-    navbar-light-bg: "#007bff"
-    navbar-dark-bg: "#00008B"
-  extra_css: pkgdown/extra.css
+    bg: "#ffffff" # white background
+    fg: "#212529" # black text
+    primary: "#007bff" # primary elements: blue
+    input-bg: "#ffffff"     # color search bar
+    input-color: "#212529"  # color text search bar
+    navbar-light-bg: "#007bff" #color for navbar when light
+    navbar-dark-bg: "#00008B" #color for navbar when dark
 
 
 # navbar accessible
 navbar:
   structure:
-    left: [home, reference, articles]
-    right: [github]
+    # left: [home, reference, articles]
+    # right: [search, github]
   components:
     home:
       icon: fas fa-home
