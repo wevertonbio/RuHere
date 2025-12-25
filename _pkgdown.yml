@@ -12,11 +12,8 @@ template:
     input-color: "#212529"
     navbar-light-bg: "#007bff"
     navbar-dark-bg: "#00008B"
+  extra_css: pkgdown/extra.css
 
-# Logo
-logo:
-  src: man/figures/logo.png
-  height: 140
 
 # navbar accessible
 navbar:

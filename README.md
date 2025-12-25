@@ -1,4 +1,4 @@
-# <img src="man/figures/logo.png" align="right" width="50%" height="50%"/>
+# <img src="man/figures/logo.png" align="right" height="200" />
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/wevertonbio/RuHere/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/wevertonbio/RuHere/actions/workflows/R-CMD-check.yaml)
