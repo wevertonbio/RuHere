@@ -45,11 +45,11 @@ flag_colors
 #>                     "#CC79A7"                     "#0072B2" 
 #>                    Duplicated                    No flagged 
 #>                     "#FFFF80"                     "#009E73" 
-#>              Invalid lat/long                Equal lat/long 
+#>              Invalid lat-long                Equal lat-long 
 #>                      "gray22"                     "#F7E1A0" 
-#>                 Zero lat/long              Capital centroid 
+#>                 Zero lat-long              Capital centroid 
 #>                     "#85660d"                         "red" 
-#>                   Out of year     Country/Province centroid 
+#>                   Out of year     Country-Province centroid 
 #>                      "gray10"                     "orange3" 
 #>                      Open sea                    Urban area 
 #>                    "darkblue"                        "gray" 

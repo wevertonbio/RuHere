@@ -109,7 +109,7 @@ flagged as potentially problematic:</p>
 <span><span class="va">occ</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/remove_flagged.html">remove_flagged</a></span><span class="op">(</span>occ <span class="op">=</span> <span class="va">occ_flagged</span><span class="op">)</span></span>
 <span><span class="co"># Plot records</span></span>
 <span><span class="fu"><a href="../reference/ggmap_here.html">ggmap_here</a></span><span class="op">(</span>occ <span class="op">=</span> <span class="va">occ</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sampling_bias_files/figure-html/import%20data-1.png" class="r-plt" alt="" width="528"><br></p>
+<p><img src="sampling_bias_files/figure-html/import%20data-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"><br></p>
 </div>
 <div class="section level2">
 <h2 id="heatmap-for-occurrence-data">Heatmap for occurrence data<a class="anchor" aria-label="anchor" href="#heatmap-for-occurrence-data"></a>
@@ -126,7 +126,7 @@ occurrences and the heatmap (or use <code><a href="../reference/map_here.html">m
 prefer an interactive version).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggmap_here.html">ggmap_here</a></span><span class="op">(</span>occ <span class="op">=</span> <span class="va">occ</span>, size_points <span class="op">=</span> <span class="fl">0.5</span>, heatmap <span class="op">=</span> <span class="va">heatmap</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sampling_bias_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="528"><br></p>
+<p><img src="sampling_bias_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"><br></p>
 <p>We can observe a notable hotspot with a cluster of records around
 Curitiba city (capital of Paraná, southern Brazil), which indicates
 strong sampling bias. Let’s evaluate the effect of thinning these
@@ -169,7 +169,7 @@ the remaining records.</p>
 <span>                                zero_as_NA <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co"># Plot</span></span>
 <span><span class="fu"><a href="../reference/ggmap_here.html">ggmap_here</a></span><span class="op">(</span><span class="va">occ_thin</span>, size_points <span class="op">=</span> <span class="fl">0.5</span>, heatmap <span class="op">=</span> <span class="va">heatmap_thin_geo</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sampling_bias_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="528"><br></p>
+<p><img src="sampling_bias_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"><br></p>
 <p>The thinned dataset (in green) produces a more spatially uniform
 heatmap and reduces the strong sampling bias around Curitiba. We explore
 different distance thresholds in the next section.</p>
@@ -250,7 +250,7 @@ records were flagged.</p>
 <span>                                      zero_as_NA <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ggmap_here.html">ggmap_here</a></span><span class="op">(</span>occ <span class="op">=</span> <span class="va">occ_geo_moran</span><span class="op">$</span><span class="va">occ</span>, size_points <span class="op">=</span> <span class="fl">0.5</span>, </span>
 <span>           heatmap <span class="op">=</span> <span class="va">heatmap_thin_geo_moran</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sampling_bias_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="528"><br></p>
+<p><img src="sampling_bias_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"><br></p>
 <p>A potential issue when filtering records in geographic space is that
 two nearby records may actually occur in distinct environmental
 conditions, especially in highly heterogeneous regions. This can lead to
@@ -288,7 +288,7 @@ can visualize the grid for any two variables:</p>
 <code class="sourceCode R"><span><span class="co"># Plot</span></span>
 <span><span class="fu"><a href="../reference/plot_env_bins.html">plot_env_bins</a></span><span class="op">(</span><span class="va">b</span>, x_var <span class="op">=</span> <span class="st">"bio_1"</span>, y_var <span class="op">=</span> <span class="st">"bio_12"</span>,</span>
 <span>              xlab <span class="op">=</span> <span class="st">"Temperature"</span>, ylab <span class="op">=</span> <span class="st">"Precipitation"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sampling_bias_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="528"><br></p>
+<p><img src="sampling_bias_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"><br></p>
 <p>We can see that Several records fall into the same block, meaning
 they are environmentally similar and therefore redundant. Let’s flag
 these redundant records using <code><a href="../reference/thin_env.html">thin_env()</a></code>:</p>
@@ -310,7 +310,7 @@ a heatmap of the remaining data.</p>
 <span>                                buffer_extent <span class="op">=</span> <span class="fl">50</span>, radius <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>                                zero_as_NA <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ggmap_here.html">ggmap_here</a></span><span class="op">(</span><span class="va">occ_thin_env</span>, size_points <span class="op">=</span> <span class="fl">0.5</span>, heatmap <span class="op">=</span> <span class="va">heatmap_thin_env</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sampling_bias_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="528"><br></p>
+<p><img src="sampling_bias_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"><br></p>
 <p>Thinning in environmental space produces a spatial pattern that
 differs from the dataset filtered exclusively in geographic space.</p>
 <p>Similar to the thinning process in geographic space, we can test
@@ -386,7 +386,7 @@ generated with the unflagged records:</p>
 <span>                                      zero_as_NA <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ggmap_here.html">ggmap_here</a></span><span class="op">(</span>occ <span class="op">=</span> <span class="va">occ_env_moran</span><span class="op">$</span><span class="va">occ</span>, size_points <span class="op">=</span> <span class="fl">0.5</span>, </span>
 <span>           heatmap <span class="op">=</span> <span class="va">heatmap_thin_env_moran</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sampling_bias_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" alt="" width="528"><br></p>
+<p><img src="sampling_bias_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"><br></p>
 </div>
 <div class="section level2">
 <h2 id="consensus-between-environmental-and-geographic-thinning">Consensus between environmental and geographic thinning<a class="anchor" aria-label="anchor" href="#consensus-between-environmental-and-geographic-thinning"></a>
@@ -439,7 +439,7 @@ environmental thinning, or both:</p>
 <span>          col_additional_flags <span class="op">=</span> <span class="st">"blue"</span>,</span>
 <span>          size_points <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>          heatmap <span class="op">=</span> <span class="va">heatmap_consensus_filtered</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sampling_bias_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" alt="" width="528"><br></p>
+<p><img src="sampling_bias_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"><br></p>
 <p>Red points indicate records thinned in geographic space; yellow
 points indicate thinning in environmental space; and blue points
 indicate records thinned in both.</p>

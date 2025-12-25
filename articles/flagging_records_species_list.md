@@ -599,6 +599,42 @@ occ_cleaned <- remove_flagged(occ)
 
   
 
+### Summarizing flags
+
+As we did in the previous vignette (**3. Flagging Records Using Record
+Information**), we can create a bar plot summarizing the number of
+records flagged by each flagging function:
+
+``` r
+flag_summary <- summarize_flags(occ)
+```
+
+  
+
+The function returns a `data.frame` summarizing the number of records
+per flag and a `ggplot2` object displaying this summary as a bar plot:
+
+``` r
+# Data.frame summarizing the number of records per flag
+flag_summary$df_summary
+#>              Flag    n
+#> 2 Outside faunabr    4
+#> 1 Outside florabr   30
+#> 5    Outside BIEN   69
+#> 3    Outside WCVP  157
+#> 4    Outside IUCN  210
+#> 6           Valid 4080
+```
+
+  
+
+``` r
+# Bar plot
+flag_summary$plot_summary
+```
+
+![](flagging_records_species_list_files/figure-html/unnamed-chunk-28-1.png)  
+
 In the final vignette (**5. Reducing Sampling Bias**), we show how to
 mitigate sampling bias by thinning records in geographic and
 environmental space.

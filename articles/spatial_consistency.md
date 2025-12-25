@@ -62,8 +62,11 @@ albus*).
 data("occurrences", package = "RuHere")
 # Number of records per species
 table(occurrences$species)
-#> Araucaria angustifolia     Cyanocorax caeruleus    Handroanthus serratifolius 
-#>                  1444                      2302                          2363 
+#> 
+#>     Araucaria angustifolia       Cyanocorax caeruleus 
+#>                        924                       1035 
+#> Handroanthus serratifolius 
+#>                       2121
 ```
 
 ### Standardizing countries (`standardize_countries`)

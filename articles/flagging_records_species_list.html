@@ -408,7 +408,7 @@ ranges:</p>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ranges_araucaria</span><span class="op">$</span><span class="va">florabr</span><span class="op">$</span><span class="va">states_biomes</span>, main <span class="op">=</span> <span class="st">"florabr"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ranges_araucaria</span><span class="op">$</span><span class="va">iucn</span>, main <span class="op">=</span> <span class="st">"IUCN"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ranges_araucaria</span><span class="op">$</span><span class="va">wcvp</span>, main <span class="op">=</span> <span class="st">"WCVP"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="flagging_records_species_list_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="576"></p>
+<p><img src="flagging_records_species_list_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Reset plotting layout</span></span>
 <span><span class="co">#&gt; null device </span></span>
@@ -602,7 +602,7 @@ produced in RStudio.</p>
 separate panel by setting <code>facet_wrap = TRUE</code>:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggmap_here.html">ggmap_here</a></span><span class="op">(</span><span class="va">occ</span>, species <span class="op">=</span> <span class="st">"Araucaria angustifolia"</span>, facet_wrap <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="flagging_records_species_list_files/figure-html/unnamed-chunk-24-1.png" class="r-plt" alt="" width="576"><br></p>
+<p><img src="flagging_records_species_list_files/figure-html/unnamed-chunk-24-1.png" class="r-plt" alt="" width="80%" style="display: block; margin: auto;"><br></p>
 <p>Records that are flagged as <code>FALSE</code> by multiple expert
 sources are strong candidates for removal. You can remove these flagged
 records using <code><a href="../reference/remove_flagged.html">remove_flagged()</a></code> (for more details, see
@@ -611,9 +611,37 @@ Information</strong>):</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">occ_cleaned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/remove_flagged.html">remove_flagged</a></span><span class="op">(</span><span class="va">occ</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
+<div class="section level3">
+<h3 id="summarizing-flags">Summarizing flags<a class="anchor" aria-label="anchor" href="#summarizing-flags"></a>
+</h3>
+<p>As we did in the previous vignette (<strong>3. Flagging Records Using
+Record Information</strong>), we can create a bar plot summarizing the
+number of records flagged by each flagging function:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">flag_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_flags.html">summarize_flags</a></span><span class="op">(</span><span class="va">occ</span><span class="op">)</span></span></code></pre></div>
+<p><br></p>
+<p>The function returns a <code>data.frame</code> summarizing the number
+of records per flag and a <code>ggplot2</code> object displaying this
+summary as a bar plot:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Data.frame summarizing the number of records per flag</span></span>
+<span><span class="va">flag_summary</span><span class="op">$</span><span class="va">df_summary</span></span>
+<span><span class="co">#&gt;              Flag    n</span></span>
+<span><span class="co">#&gt; 2 Outside faunabr    4</span></span>
+<span><span class="co">#&gt; 1 Outside florabr   30</span></span>
+<span><span class="co">#&gt; 5    Outside BIEN   69</span></span>
+<span><span class="co">#&gt; 3    Outside WCVP  157</span></span>
+<span><span class="co">#&gt; 4    Outside IUCN  210</span></span>
+<span><span class="co">#&gt; 6           Valid 4080</span></span></code></pre></div>
+<p><br></p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Bar plot</span></span>
+<span><span class="va">flag_summary</span><span class="op">$</span><span class="va">plot_summary</span></span></code></pre></div>
+<p><img src="flagging_records_species_list_files/figure-html/unnamed-chunk-28-1.png" class="r-plt" alt="" width="80%" style="display: block; margin: auto;"><br></p>
 <p>In the final vignette (<strong>5. Reducing Sampling Bias</strong>),
 we show how to mitigate sampling bias by thinning records in geographic
 and environmental space.</p>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

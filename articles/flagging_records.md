@@ -78,6 +78,8 @@ library(RuHere)
 data("occurrences", package = "RuHere")
 ```
 
+  
+
 ## Removing invalid coordinates (`remove_invalid_coordinates()`)
 
 Before conducting any spatial validation or modeling, it is essential to
@@ -112,6 +114,8 @@ occ_split$invalid[, c("species", "decimalLongitude", "decimalLatitude")]
 occ <- occ_split$valid
 ```
 
+  
+
 ## Flagging based on metadata information
 
 After ensuring that the coordinates are valid, the next step is to
@@ -138,6 +142,8 @@ sum(!occ$fossil_flag) # No records flagged as fossil
 #> [1] 0
 ```
 
+  
+
 ### Cultivated individuals
 
 For plants, cultivated individuals may represent populations occurring
@@ -153,6 +159,8 @@ occ <- flag_cultivated(occ) # Scan for fossil-related terms
 sum(!occ$cultivated_flag)
 #> [1] 14
 ```
+
+  
 
 ### Records from iNaturalist
 
@@ -180,6 +188,8 @@ sum(!occ$inaturalist_flag) #All inaturalist records are classified as Research G
 #> [1] 0
 ```
 
+  
+
 ### Records outside a year range
 
 Depending on your objectives, you may wish to exclude records that fall
@@ -196,6 +206,8 @@ sum(!occ$year_flag) #Number of flagged records
 #> [1] 198
 ```
 
+  
+
 ## Flagging duplicates
 
 Some records are duplicates, that means, they have the same coordinates.
@@ -210,6 +222,8 @@ dataset with the records duplicates:
 # Duplicated records
 new_occ <- rbind(occurrences[1:1000, ], occurrences[1:100,])
 ```
+
+  
 
 RuHere provides several options to deal with duplicates:
 
@@ -230,6 +244,8 @@ sum(!occ_dup1$duplicated_flag) #Number of flagged records
 #> [1] 101
 ```
 
+  
+
 - **Flag duplicates based on coordinates and metadata**: in some cases,
   you may wish to consider duplicates only the records that were
   collected in the same place and also in the same time. That means,
@@ -240,6 +256,8 @@ sum(!occ_dup1$duplicated_flag) #Number of flagged records
 # Flag duplicates based on coordinates and year
 occ_dup2 <- flag_duplicates(occ = new_occ, additional_groups = "year")
 ```
+
+  
 
 - **Flag duplicates based on cells of a raster**: if you have a
   SpatRaster, you can consider as duplicates all the records that falls
@@ -253,6 +271,8 @@ wc <- terra::unwrap(worldclim) #Unpack raster
 occ_dup3 <- flag_duplicates(occ = new_occ, continuous_variable = "year", 
                             by_cell = TRUE, raster_variable = wc)
 ```
+
+  
 
 If you are working with a large dataset, we recommend flagging and
 removing duplicate records as a first step after data standardization.
@@ -316,6 +336,8 @@ occ <- clean_coordinates(x = occ,
 #> Flagged 39 of 4077 records, EQ = 0.01.
 ```
 
+  
+
 The final columns of the occurrence dataset contain the results of the
 **CoordinateCleaner** validation. The summary column only reports
 whether a record passed all applied tests, and can be ignored for the
@@ -331,6 +353,8 @@ head(occ[,19:25])
 #> 5 TRUE TRUE TRUE TRUE TRUE  TRUE     TRUE
 #> 6 TRUE TRUE TRUE TRUE TRUE  TRUE     TRUE
 ```
+
+  
 
 ## Map of occurrence flags
 
@@ -354,14 +378,15 @@ which uses `ggplot2`. Let’s see the flagged record of the Paraná Pine:
 map_here(occ, species = "Araucaria angustifolia", label = "record_id", cex = 4)
 ```
 
-![](vignettes_img/IMG02.jpeg)
+![](vignettes_img/IMG02.jpeg)  
 
 ``` r
 # Static map with ggplot
-ggmap_here(occ, species = "Araucaria angustifolia")
+ggmap_here(occ, species = "Araucaria angustifolia", 
+           show_no_flagged = FALSE) # Do not show unflagged records
 ```
 
-![](flagging_records_files/figure-html/unnamed-chunk-15-1.png)
+![](flagging_records_files/figure-html/unnamed-chunk-15-1.png)  
 
 With
 [`ggmap_here()`](https://wevertonbio.github.io/RuHere/reference/ggmap_here.md),
@@ -373,7 +398,7 @@ ggmap_here(occ, species = "Araucaria angustifolia",
            facet_wrap = TRUE)
 ```
 
-![](flagging_records_files/figure-html/unnamed-chunk-16-1.png)
+![](flagging_records_files/figure-html/unnamed-chunk-16-1.png)  
 
 ### Get consensus across multiple flags
 
@@ -404,6 +429,8 @@ occ_consensus_flagged[, c("species", "cultivated_flag", "year_flag", "old_cultiv
 #> 4769 Handroanthus serratifolius           FALSE     FALSE          FALSE
 ```
 
+  
+
 We can visualize this custom flag using
 [`map_here()`](https://wevertonbio.github.io/RuHere/reference/map_here.md)
 or
@@ -413,17 +440,15 @@ Because it is a user-defined flag, it must be specified via the
 must also be provided for plotting:
 
 ``` r
-ggmap_here(
-  occ_consensus, 
-  flags = c("year", "cultivated"),            # Specific flags to show
-  additional_flags = "old_cultivated",        # Column name of the custom flag
-  names_additional_flags = "Old & cultivated",# Label used in the legend
-  col_additional_flags = "red",                # Color for the custom flag
-  show_no_flagged = FALSE                      # Do not show unflagged records
-)
+ggmap_here(occ_consensus, 
+           flags = c("year", "cultivated"),            # Specific flags to show
+           additional_flags = "old_cultivated",        # Column name of the custom flag
+           names_additional_flags = "Old & cultivated",# Label used in the legend
+           col_additional_flags = "red",                # Color for the custom flag
+           show_no_flagged = FALSE)                      # Do not show unflagged records
 ```
 
-![](flagging_records_files/figure-html/unnamed-chunk-18-1.png)
+![](flagging_records_files/figure-html/unnamed-chunk-18-1.png)  
 
 ### Removing flagged records
 
@@ -457,15 +482,13 @@ to_remove <- c("gbif_5516", "specieslink_1091")
 
 # Remove flagged records with manual control
 # and save removed records to a folder
-occ_cleaned <- remove_flagged(
-  occ = occ,
-  flags = "all",
-  column_id = "record_id",
-  force_keep = to_keep,
-  force_remove = to_remove,
-  save_flagged = TRUE,
-  output_dir = path_to_save
-)
+occ_cleaned <- remove_flagged(occ = occ,
+                              flags = "all",  
+                              column_id = "record_id",
+                              force_keep = to_keep,
+                              force_remove = to_remove,
+                              save_flagged = TRUE,
+                              output_dir = path_to_save)
 
 # Total number of records
 nrow(occ)
@@ -497,6 +520,68 @@ fs::dir_tree(path_to_save)
 This approach provides a simple and transparent way to maintain control
 over the cleaning process, allowing you to incorporate your expert
 knowledge as researcher to complement automated data-quality checks.
+
+### Summarizing flags
+
+After flagging the records, we can create a bar plot summarizing the
+number of records flagged by each flagging function:
+
+``` r
+flag_summary <- summarize_flags(occ)
+```
+
+  
+
+The function returns a `data.frame` summarizing the number of records
+per flag and a `ggplot2` object displaying this summary as a bar plot:
+
+``` r
+# Data.frame summarizing the number of records per flag
+flag_summary$df_summary
+#>                        Flag    n
+#> 4            Equal lat-long    3
+#> 5             Zero lat-long    6
+#> 8  Biodiversity Institution    6
+#> 7 Country-Province centroid    7
+#> 1                Cultivated   14
+#> 6          Capital centroid   23
+#> 9                     Valid 4025
+```
+
+  
+
+``` r
+# Bar plot
+flag_summary$plot_summary
+```
+
+![](flagging_records_files/figure-html/unnamed-chunk-23-1.png)
+
+The function can also read flagged occurrence data that were saved when
+records were removed. To do so, simply specify the same directory used
+in
+[`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md):
+
+``` r
+# Summarize removed records using saved data
+flag_summary_dir <- summarize_flags(flagged_dir = path_to_save, 
+                                    show_no_flagged = FALSE, #Do not show unflagged records
+                                    fill = "firebrick") # Change color of bars
+flag_summary_dir$plot_summary
+```
+
+![](flagging_records_files/figure-html/unnamed-chunk-24-1.png)  
+
+Since the output is a `ggplot2` object, it can be saved using
+[`ggplot2::ggsave()`](https://ggplot2.tidyverse.org/reference/ggsave.html):
+
+``` r
+ggplot2::ggsave(filename = file.path(path_to_save, "Summary.png"), 
+                plot = flag_summary_dir$plot_summary, width = 8, height = 5, 
+                dpi = 600)
+```
+
+  
 
 In the next vignette, we demonstrate how to use expert-derived
 information from other biodiversity databases, such as the IUCN and the
