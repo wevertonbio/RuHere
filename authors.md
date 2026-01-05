@@ -13,14 +13,14 @@
 Source:
 [`DESCRIPTION`](https://github.com/wevertonbio/RuHere/blob/main/DESCRIPTION)
 
-Trindade W, Caron F (2025). *RuHere: Flags Spatial Errors in Biological
+Trindade W, Caron F (2026). *RuHere: Flags Spatial Errors in Biological
 Collection Data Using Specialists' Information*. R package version
 0.0.0.9000, <https://wevertonbio.github.io/RuHere/>.
 
     @Manual{,
       title = {RuHere: Flags Spatial Errors in Biological Collection Data Using Specialists' Information},
       author = {Weverton C. F. Trindade and Fernanda S. Caron},
-      year = {2025},
+      year = {2026},
       note = {R package version 0.0.0.9000},
       url = {https://wevertonbio.github.io/RuHere/},
     }
