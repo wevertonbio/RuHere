@@ -72,7 +72,7 @@ bind_here <- function(...,
 
 
   l <- list(...)
-  l <- data.table::rbindlist(l)
+  l <- data.table::rbindlist(l, fill = fill, use.names = TRUE)
   if(inherits(l, "data.table"))
     l <- as.data.frame(l)
   return(l)
