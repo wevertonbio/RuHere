@@ -168,46 +168,55 @@ standardize_countries <- function(occ,
   # Check country names
   unique_countries <- na.omit(unique(occ[[country_column]]))
 
-  ccn <- florabr::match_names(species = unique_countries,
-                               species_to_match = cd$country_name$country_name,
-                               max_distance = max_distance)
+  if(all(is.na(unique_states))){
+    ccn <- NULL
+    ccc <- NULL
+    final_states <- NULL} else {
+      ccn <- florabr::match_names(species = unique_countries,
+                                  species_to_match = cd$country_name$country_name,
+                                  max_distance = max_distance)
 
-  colnames(ccn) <- c("country", "country_name", "Distance")
-  # Join data
-  ccn <- unique(
-    merge(na.omit(ccn), cd$country_name, by = "country_name", all.x = TRUE)[
-      , c("country", "country_suggested")]
-    )
+      colnames(ccn) <- c("country", "country_name", "Distance")
+      # Join data
+      ccn <- unique(
+        merge(na.omit(ccn), cd$country_name, by = "country_name", all.x = TRUE)[
+          , c("country", "country_suggested")]
+      )
 
 
-  if(nrow(ccn) > 0){
-    # Rename columns
-    colnames(ccn) <- c(country_column, "country_suggested")} else {
-      ccn <- NULL
+      if(nrow(ccn) > 0){
+        # Rename columns
+        colnames(ccn) <- c(country_column, "country_suggested")} else {
+          ccn <- NULL
+        }
+
+      # Check country codes
+      ccc <- cd$country_code
+      ccc <- ccc[ccc$country_code %in% unique_countries, ]
+
+      if(nrow(ccc) > 0){
+        # Rename columns
+        colnames(ccc) <- c(country_column, "country_suggested")} else {
+          ccc <- NULL
+        }
+
+      # Join information
+      final_countries <- rbind(ccn, ccc)
     }
 
-  # Check country codes
-  ccc <- cd$country_code
-  ccc <- ccc[ccc$country_code %in% unique_countries, ]
-
-  if(nrow(ccc) > 0){
-    # Rename columns
-    colnames(ccc) <- c(country_column, "country_suggested")} else {
-      ccc <- NULL
+  # Merge
+  if(is.null(final_countries) || nrow(final_countries) == 0){
+    occ_final <- occ
+    occ_final$country_suggested <- NA
+    } else {
+      occ_final <- merge(occ, final_countries, by = country_column, all.x = TRUE)
     }
 
-  # Join information
-  final_countries <- rbind(ccn, ccc)
-
-  if(nrow(final_countries) > 0){
-  occ_final <- merge(occ, final_countries, by = country_column, all.x = TRUE)
-
-  } else {
-      occ_final <- occ
-      occ_final$country_suggested <- NA
-  }
 
   # Relocate columns
+  occ_final <- relocate_before(occ_final, country_column,
+                              names(occ)[which(names(occ) == country_column) - 1]
+                              )
   occ_final <- relocate_after(occ_final, "country_suggested", country_column)
 
   # Fill NA?

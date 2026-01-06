@@ -156,53 +156,63 @@ standardize_states <- function(occ,
   # Check state names
   unique_states <- unique(occ[, c(state_column, country_column)])
 
-  ccn <- florabr::match_names(species = na.omit(unique_states[[state_column]]),
-                               species_to_match = ss$states_name$state_name,
-                               max_distance = max_distance)
-  colnames(ccn) <- c("state", "state_name", "Distance")
-  # Join data
-  ccn <-merge(na.omit(ccn), ss$states_name, by = "state_name", all.x = TRUE)
-  # Remove duplicated countries
-  ccn <- ccn[ccn$country %in% unique_states$country_suggested,]
-  ccn <- unique(ccn[, c("state", "state_suggested", "country")])
+  if(all(is.na(unique_states$stateProvince))){
+    ccn <- NULL
+    ccc <- NULL
+    final_states <- NULL
+  } else {
+    ccn <- florabr::match_names(species = na.omit(unique_states[[state_column]]),
+                                species_to_match = ss$states_name$state_name,
+                                max_distance = max_distance)
+    colnames(ccn) <- c("state", "state_name", "Distance")
+    # Join data
+    ccn <-merge(na.omit(ccn), ss$states_name, by = "state_name", all.x = TRUE)
+    # Remove duplicated countries
+    ccn <- ccn[ccn$country %in% unique_states$country_suggested,]
+    ccn <- unique(ccn[, c("state", "state_suggested", "country")])
 
 
-  if(nrow(ccn) > 0){
-    # Rename columns
-    colnames(ccn) <- c(state_column, "state_suggested", country_column)} else {
-      ccn <- NULL
-    }
+    if(nrow(ccn) > 0){
+      # Rename columns
+      colnames(ccn) <- c(state_column, "state_suggested", country_column)} else {
+        ccn <- NULL
+      }
 
-  # Check state codes
-  colnames(ss$states_code) <- c("state_code", state_column, country_column)
+    # Check state codes
+    colnames(ss$states_code) <- c("state_code", state_column, country_column)
 
-  ccc <- ss$states_code
-  ccc <- ccc[ccc$state_code %in% unique_states$stateProvince, ]
+    ccc <- ss$states_code
+    ccc <- ccc[ccc$state_code %in% unique_states$stateProvince, ]
 
-  ccc <- ss$states_code[
-    ss$states_code[["state_code"]] %in% unique_states[[state_column]] &
-      ss$states_code[[country_column]] %in% unique_states[[country_column]],
-  ]
+    ccc <- ss$states_code[
+      ss$states_code[["state_code"]] %in% unique_states[[state_column]] &
+        ss$states_code[[country_column]] %in% unique_states[[country_column]],
+    ]
 
 
-  if(nrow(ccc) > 0){
-    # Rename columns
-    colnames(ccc) <- c(state_column, "state_suggested", country_column)} else {
-      ccc <- NULL
-    }
+    if(nrow(ccc) > 0){
+      # Rename columns
+      colnames(ccc) <- c(state_column, "state_suggested", country_column)} else {
+        ccc <- NULL
+      }
 
-  # Join information
-  final_states <- rbind(ccn, ccc)
+    # Join information
+    final_states <- rbind(ccn, ccc)
+  }
 
-  if(nrow(final_states) > 0 || is.null(final_states)){
+
+  if(is.null(final_states) || nrow(final_states) == 0){
+    occ_final <- occ
+    occ_final$state_suggested <- NA } else {
     occ_final <- merge(occ, final_states, by = c(state_column, country_column),
                        all.x = TRUE)
-    occ_final <- relocate_after(occ_final, "state_suggested", state_column)
-    } else {
-        occ_final <- occ
-        occ_final$state_suggested <- NA
-        occ_final <- relocate_after(occ_final, "state_suggested", state_column)
-      }
+  }
+
+  # Relocate columns
+  occ_final <- relocate_before(occ_final, state_column,
+                               names(occ)[which(names(occ) == state_column) - 1]
+                               )
+  occ_final <- relocate_after(occ_final, "state_suggested", state_column)
 
   # Fill NA?
   if(lookup_na_state){
