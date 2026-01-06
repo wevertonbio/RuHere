@@ -77,14 +77,14 @@ occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
 # Standardize country names
 occ_country <- standardize_countries(occ = occ,
                                      return_dictionary = FALSE)
+#> Error in standardize_countries(occ = occ, return_dictionary = FALSE): object 'unique_states' not found
 # Standardize state names
 occ_state <- standardize_states(occ = occ_country,
                                 country_column = "country_suggested",
                                 return_dictionary = FALSE)
+#> Error: object 'occ_country' not found
 # Check whether records fall within assigned states
 occ_state_checked <- check_states(occ = occ_state,
                                     state_column = "state_suggested")
-#> Warning: The following states listed in the 'state_suggested' column were absent in the world map used for validation: NA, mexico
-#> Testing states...
-#> 13 records fall in wrong states
+#> Error: object 'occ_state' not found
 ```
