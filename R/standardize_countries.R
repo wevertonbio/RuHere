@@ -168,7 +168,7 @@ standardize_countries <- function(occ,
   # Check country names
   unique_countries <- na.omit(unique(occ[[country_column]]))
 
-  if(all(is.na(unique_states))){
+  if(all(is.na(unique_countries))){
     ccn <- NULL
     ccc <- NULL
     final_states <- NULL} else {
