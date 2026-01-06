@@ -162,6 +162,8 @@ standardize_states <- function(occ,
   colnames(ccn) <- c("state", "state_name", "Distance")
   # Join data
   ccn <-merge(na.omit(ccn), ss$states_name, by = "state_name", all.x = TRUE)
+  # Remove duplicated countries
+  ccn <- ccn[ccn$country %in% unique_states$country_suggested,]
   ccn <- unique(ccn[, c("state", "state_suggested", "country")])
 
 
@@ -175,10 +177,10 @@ standardize_states <- function(occ,
   colnames(ss$states_code) <- c("state_code", state_column, country_column)
 
   ccc <- ss$states_code
-  ccc <- ccc[ccc$state_code %in% unique_states, ]
+  ccc <- ccc[ccc$state_code %in% unique_states$stateProvince, ]
 
   ccc <- ss$states_code[
-    ss$states_code[[state_column]]   %in% unique_states[[state_column]] &
+    ss$states_code[["state_code"]] %in% unique_states[[state_column]] &
       ss$states_code[[country_column]] %in% unique_states[[country_column]],
   ]
 
@@ -192,12 +194,14 @@ standardize_states <- function(occ,
   # Join information
   final_states <- rbind(ccn, ccc)
 
-  if(nrow(final_states) > 0){
+  if(nrow(final_states) > 0 || is.null(final_states)){
     occ_final <- merge(occ, final_states, by = c(state_column, country_column),
                        all.x = TRUE)
     occ_final <- relocate_after(occ_final, "state_suggested", state_column)
     } else {
         occ_final <- occ
+        occ_final$state_suggested <- NA
+        occ_final <- relocate_after(occ_final, "state_suggested", state_column)
       }
 
   # Fill NA?
