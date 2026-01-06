@@ -115,21 +115,35 @@ occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
 # Standardize country names
 occ_country <- standardize_countries(occ = occ,
                                      return_dictionary = FALSE)
-#> Error in standardize_countries(occ = occ, return_dictionary = FALSE): object 'unique_states' not found
 
 # Standardize state names
 occ_state <- standardize_states(occ = occ_country,
                                 country_column = "country_suggested",
                                 return_dictionary = FALSE)
-#> Error: object 'occ_country' not found
 
 # Check whether records fall within the assigned states
 occ_states_checked <- check_states(occ = occ_state,
                                    state_column = "state_suggested")
-#> Error: object 'occ_state' not found
+#> Warning: The following states listed in the 'state_suggested' column were absent in the world map used for validation: NA, mexico
+#> Testing states...
+#> 13 records fall in wrong states
 
 # Fix records with incorrect or misassigned states
 occ_states_fixed <- fix_states(occ = occ_states_checked,
                                state_column = "state_suggested")
-#> Error: object 'occ_states_checked' not found
+#> Task 1 of 7: testing if longitude is inverted
+#> 0 coordinates with longitude inverted
+#> Task 2 of 7: testing if latitude is inverted
+#> 0 coordinates with latitude inverted
+#> Task 3 of 7: testing if longitude and latitude are inverted
+#> 1 coordinates with longitude and latitude inverted
+#> Task 4 of 7: testing if longitude and latitude are swapped
+#> 0 coordinates with longitude and latitude swapped
+#> Task 5 of 7: testing if longitude and latitude are swapped -
+#>             with latitude inverted
+#> 0 coordinates with longitude and latitude swapped and latitude inverted
+#> Task 6 of 7: testing if longitude and latitude are swapped - with latitude inverted
+#> 0 coordinates with longitude and latitude swapped and longitude inverted
+#> Task 7 of 7: testing if longitude and latitude are swapped - with longitude latitude inverted
+#> 0 coordinates with longitude and latitude swapped and inverted
 ```

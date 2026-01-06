@@ -107,8 +107,6 @@ all_occ <- bind_here(gbif_standardized, splink_standardized,
                      bien_standardized, idig_standardized)
 # Standardize countries
 occ_standardized <- standardize_countries(occ = all_occ)
-#> Error in standardize_countries(occ = all_occ): object 'unique_states' not found
 # Standardize states
 occ_standardized2 <- standardize_states(occ = occ_standardized$occ)
-#> Error: object 'occ_standardized' not found
 ```

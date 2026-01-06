@@ -155,10 +155,8 @@ coordinates using a map retrieved from <code>rnaturalearthdata::states50</code>.
 <span class="r-in"><span>                     <span class="va">bien_standardized</span>, <span class="va">idig_standardized</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Standardize countries</span></span></span>
 <span class="r-in"><span><span class="va">occ_standardized</span> <span class="op">&lt;-</span> <span class="fu"><a href="standardize_countries.html">standardize_countries</a></span><span class="op">(</span>occ <span class="op">=</span> <span class="va">all_occ</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in standardize_countries(occ = all_occ):</span> object 'unique_states' not found</span>
 <span class="r-in"><span><span class="co"># Standardize states</span></span></span>
 <span class="r-in"><span><span class="va">occ_standardized2</span> <span class="op">&lt;-</span> <span class="fu">standardize_states</span><span class="op">(</span>occ <span class="op">=</span> <span class="va">occ_standardized</span><span class="op">$</span><span class="va">occ</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'occ_standardized' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

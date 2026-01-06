@@ -75,9 +75,10 @@ data("occurrences", package = "RuHere") #Import data example
 # Standardize country names
 occ_country <- standardize_countries(occ = occurrences,
                                      return_dictionary = FALSE)
-#> Error in standardize_countries(occ = occurrences, return_dictionary = FALSE): object 'unique_states' not found
 # Check whether records fall within assigned countries
 occ_country_checked <- check_countries(occ = occ_country,
                                        country_column = "country_suggested")
-#> Error: object 'occ_country' not found
+#> Warning: The following countries listed in the 'country_suggested' column were absent in the world map used for validation: NA
+#> Testing countries...
+#> 54 records fall in wrong countries
 ```

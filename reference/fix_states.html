@@ -156,23 +156,37 @@ identify and fix common coordinate errors.</p>
 <span class="r-in"><span><span class="co"># Standardize country names</span></span></span>
 <span class="r-in"><span><span class="va">occ_country</span> <span class="op">&lt;-</span> <span class="fu"><a href="standardize_countries.html">standardize_countries</a></span><span class="op">(</span>occ <span class="op">=</span> <span class="va">occ</span>,</span></span>
 <span class="r-in"><span>                                     return_dictionary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in standardize_countries(occ = occ, return_dictionary = FALSE):</span> object 'unique_states' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Standardize state names</span></span></span>
 <span class="r-in"><span><span class="va">occ_state</span> <span class="op">&lt;-</span> <span class="fu"><a href="standardize_states.html">standardize_states</a></span><span class="op">(</span>occ <span class="op">=</span> <span class="va">occ_country</span>,</span></span>
 <span class="r-in"><span>                                country_column <span class="op">=</span> <span class="st">"country_suggested"</span>,</span></span>
 <span class="r-in"><span>                                return_dictionary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'occ_country' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Check whether records fall within the assigned states</span></span></span>
 <span class="r-in"><span><span class="va">occ_states_checked</span> <span class="op">&lt;-</span> <span class="fu"><a href="check_states.html">check_states</a></span><span class="op">(</span>occ <span class="op">=</span> <span class="va">occ_state</span>,</span></span>
 <span class="r-in"><span>                                   state_column <span class="op">=</span> <span class="st">"state_suggested"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'occ_state' not found</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following states listed in the 'state_suggested' column were absent in the world map used for validation: NA, mexico</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Testing states...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13 records fall in wrong states</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Fix records with incorrect or misassigned states</span></span></span>
 <span class="r-in"><span><span class="va">occ_states_fixed</span> <span class="op">&lt;-</span> <span class="fu">fix_states</span><span class="op">(</span>occ <span class="op">=</span> <span class="va">occ_states_checked</span>,</span></span>
 <span class="r-in"><span>                               state_column <span class="op">=</span> <span class="st">"state_suggested"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'occ_states_checked' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Task 1 of 7: testing if longitude is inverted</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 coordinates with longitude inverted</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Task 2 of 7: testing if latitude is inverted</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 coordinates with latitude inverted</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Task 3 of 7: testing if longitude and latitude are inverted</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 1 coordinates with longitude and latitude inverted</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Task 4 of 7: testing if longitude and latitude are swapped</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 coordinates with longitude and latitude swapped</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Task 5 of 7: testing if longitude and latitude are swapped -</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>             with latitude inverted</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 coordinates with longitude and latitude swapped and latitude inverted</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Task 6 of 7: testing if longitude and latitude are swapped - with latitude inverted</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 coordinates with longitude and latitude swapped and longitude inverted</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Task 7 of 7: testing if longitude and latitude are swapped - with longitude latitude inverted</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 coordinates with longitude and latitude swapped and inverted</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

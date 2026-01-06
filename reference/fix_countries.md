@@ -115,15 +115,30 @@ data("occurrences", package = "RuHere") # Import example data
 # Standardize country names
 occ_country <- standardize_countries(occ = occurrences,
                                      return_dictionary = FALSE)
-#> Error in standardize_countries(occ = occurrences, return_dictionary = FALSE): object 'unique_states' not found
 
 # Check whether records fall within the assigned countries
 occ_country_checked <- check_countries(occ = occ_country,
                                        country_column = "country_suggested")
-#> Error: object 'occ_country' not found
+#> Warning: The following countries listed in the 'country_suggested' column were absent in the world map used for validation: NA
+#> Testing countries...
+#> 54 records fall in wrong countries
 
 # Fix records with incorrect or misassigned countries
 occ_country_fixed <- fix_countries(occ = occ_country_checked,
                                    country_column = "country_suggested")
-#> Error: object 'occ_country_checked' not found
+#> Task 1 of 7: testing if longitude is inverted
+#> 0 coordinates with longitude inverted
+#> Task 2 of 7: testing if latitude is inverted
+#> 0 coordinates with latitude inverted
+#> Task 3 of 7: testing if longitude and latitude are inverted
+#> 1 coordinates with longitude and latitude inverted
+#> Task 4 of 7: testing if longitude and latitude are swapped
+#> 1 coordinates with longitude and latitude swapped
+#> Task 5 of 7: testing if longitude and latitude are swapped -
+#>             with longitude inverted
+#> 0 coordinates with longitude and latitude swapped and latitude inverted
+#> Task 6 of 7: testing if longitude and latitude are swapped - with latitude inverted
+#> 0 coordinates with longitude and latitude swapped and longitude inverted
+#> Task 7 of 7: testing if longitude and latitude are swapped - with longitude latitude inverted
+#> 0 coordinates with longitude and latitude swapped and inverted
 ```
