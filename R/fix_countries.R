@@ -185,6 +185,11 @@ Run install.packages('pbapply')", call. = FALSE)
   occ_correct <- occ[filter_column | is.na(filter_column), ]
   occ_incorrect <- occ[!filter_column & !is.na(filter_column), ]
 
+  if(nrow(occ_incorrect) == 0){
+    occ[["country_issues"]] <- "correct"
+    occ <- relocate_after(occ, "country_issues", correct_country)
+  } else {
+
   #Create columns to identify problems
   occ_correct[["country_issues"]] <- "correct"
   occ_incorrect[["country_issues"]] <- "incorrect"
@@ -519,11 +524,14 @@ Run install.packages('pbapply')", call. = FALSE)
     occ_incorrect <- occ_incorrect[occ_incorrect$country_issues == "incorrect",]
   }
 
-  #Final occset
-  if(nrow(occ_incorrect) == 0) {
-    occ <- occ_correct
+
+  #Final occ
+  if(nrow(occ_correct) == 0) {
+    occ <- occ_incorrect
   } else {
     occ <- rbind(occ_correct, occ_incorrect)
+  }
+
   }
 
   # Reorder columns
