@@ -126,7 +126,7 @@ occ_states_checked <- check_states(occ = occ_state,
                                    state_column = "state_suggested")
 #> Warning: The following states listed in the 'state_suggested' column were absent in the world map used for validation: NA, mexico
 #> Testing states...
-#> 9 records fall in wrong states
+#> 13 records fall in wrong states
 
 # Fix records with incorrect or misassigned states
 occ_states_fixed <- fix_states(occ = occ_states_checked,
