@@ -114,5 +114,5 @@ occurrences <- rbind(occurrences[1:1000, ], occurrences[1:100,])
 # Flag duplicates
 occ_dup <- flag_duplicates(occ = occurrences)
 sum(!occ_dup$duplicated_flag) #Number of duplicated records
-#> [1] 101
+#> [1] 100
 ```

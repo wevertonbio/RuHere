@@ -241,7 +241,7 @@ occ_dup1 <- flag_duplicates(occ = new_occ, continuous_variable = "year",
                             categorical_variable = "data_source", 
                             priority_categories = preferable_datasource)
 sum(!occ_dup1$duplicated_flag) #Number of flagged records
-#> [1] 101
+#> [1] 100
 ```
 
   

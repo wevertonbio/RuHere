@@ -210,14 +210,17 @@ head(occ_gbif)
 GBIF is the most used database for obtaining occurrence records.
 However, unique records can be found in other databases. In the RuHere
 package, we implement functions for downloading records from 3 other
-databases: - SpeciesLink: a large-scale biodiversity information portal
-created in Brazil. Most of the records found in
-[SpeciesLink](https://specieslink.net/) are also found in GBIF, but it
-also provide unique records. - BIEN: occurrence records cleaned and
-standardized by the [Botanical Information and Ecology
-Network](https://bien.nceas.ucsb.edu/bien/). - iDigBio: occurrence
-records cleaned and standardized by the [Integrated Digitized
-Biocollections project](https://www.idigbio.org/).
+databases:
+
+- SpeciesLink: a large-scale biodiversity information portal created in
+  Brazil. Most of the records found in
+  [SpeciesLink](https://specieslink.net/) are also found in GBIF, but it
+  also provide unique records.
+- BIEN: occurrence records cleaned and standardized by the [Botanical
+  Information and Ecology Network](https://bien.nceas.ucsb.edu/bien/).
+- iDigBio: occurrence records cleaned and standardized by the
+  [Integrated Digitized Biocollections
+  project](https://www.idigbio.org/).
 
 These databases allow direct downloading through a single function call.
 

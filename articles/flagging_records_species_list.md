@@ -82,7 +82,7 @@ albus*).
 # Load RuHere and terra
 library(RuHere)
 library(terra)
-#> terra 1.8.86
+#> terra 1.8.93
 
 # Loading the example data
 data("occurrences", package = "RuHere")
