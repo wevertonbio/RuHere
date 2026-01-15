@@ -13,7 +13,8 @@ thin_geo(
   prioritary_column = NULL,
   decreasing = TRUE,
   remove_invalid = TRUE,
-  optimize_memory = FALSE
+  optimize_memory = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -48,6 +49,10 @@ Default is \code{TRUE}.}
 using a C++ implementation that reduces memory usage at the cost of
 increased computation time. Recommended for large datasets (> 10,000 records).
 Default is FALSE.}
+
+\item{verbose}{(logical) whether to display messages during function
+execution. Set to TRUE to enable display, or FALSE to run silently. Default
+is TRUE.}
 }
 \value{
 The original \code{occ} data frame augmented with a new logical column named

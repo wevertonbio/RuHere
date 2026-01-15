@@ -125,7 +125,7 @@ wcvp_here <- function(data_dir,
 
   # Get map
   # Check if file exists
-  if(file.exists(file.path(data_dir, "wgsrpd", "wgsrpd.gpkg"))){
+  if(file.exists(file.path(data_dir, "wgsrpd", "wgsrpd.gpkg")) && verbose){
     message("WGSRPD data already exists in 'data_dir'. Skipping download.")
   } else {
     dir.create(file.path(data_dir, "wgsrpd"))
@@ -133,7 +133,8 @@ wcvp_here <- function(data_dir,
                          destfile = file.path(data_dir, "wgsrpd", "wgsrpd.gpkg"),
                          method = "auto",
                          mode = "wb",
-                         cacheOK = TRUE)}
+                         cacheOK = TRUE,
+                         quiet = quiet)}
 
   # Remove files
   if(remove_files){
