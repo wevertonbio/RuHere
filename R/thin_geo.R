@@ -153,6 +153,10 @@ thin_geo <- function(occ,
     stop("'optimize_memory' must be TRUE or FALSE")
   }
 
+  if (!is.logical(verbose) || length(verbose) != 1) {
+    stop("'verbose' must be a single logical value (TRUE or FALSE).",
+         call. = FALSE)
+  }
 
 
   # Split by species

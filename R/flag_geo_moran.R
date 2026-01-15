@@ -47,6 +47,8 @@
 #' the convex hull of records. Ignored if `mask` is provided. Default: `1000`.
 #' @param return_all (logical) whether to return the full list of all thinned
 #' datasets. Default: `FALSE`.
+#' @param verbose (logical) whether to print messages about the progress.
+#' Default is `TRUE`
 #'
 #' @details
 #' This function is inspired by the approach used in Velazco et al. (2021),
@@ -144,7 +146,8 @@ flag_geo_moran <- function(occ,
                              do_pca = FALSE,
                              mask = NULL,
                              pca_buffer = 1000,
-                             return_all = FALSE){
+                             return_all = FALSE,
+                             verbose = TRUE){
 
   # --- Argument checking -------------------------------------------------------
 
@@ -265,6 +268,9 @@ flag_geo_moran <- function(occ,
     stop("'return_all' must be TRUE or FALSE.", call. = FALSE)
   }
 
+  if (!inherits(verbose, "logical") || length(verbose) != 1)
+    stop("'verbose' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+
   spp <- unique(occ[[species]])
 
 
@@ -290,7 +296,7 @@ flag_geo_moran <- function(occ,
   } #End of PCA
 
   #Filter using distances
-  message("Filtering records...")
+  if (verbose) message("Filtering records...")
   filtered <- suppressMessages(lapply(d, function(x){
     set.seed(42)
     f_x <- thin_geo(occ = occ, species = species,
@@ -306,7 +312,7 @@ flag_geo_moran <- function(occ,
   names(filtered) <- d
 
   ## Calculate spatial autoccorelation (Moran I)
-  message("Calculating spatial autocorrelation using Moran Index...")
+  if (verbose) message("Calculating spatial autocorrelation using Moran Index...")
   imoran <- lapply(names(filtered), function(x){
     tryCatch({ #Avoid errors
       # Append results to occ

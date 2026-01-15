@@ -216,7 +216,7 @@ Run install.packages('pbapply')", call. = FALSE)
   d1 <- terra::vect(d1,
                     geom = c(x = long, y = lat),
                     crs = "+init=epsg:4326")
-  message("Task 1 of 7: testing if longitude is inverted")
+  if(verbose) message("Task 1 of 7: testing if longitude is inverted")
   test_1 <- my_sapply(states_1, function(i){
     state_i <- state_shp[state_shp$name == i]
     if(distance > 0){
@@ -229,7 +229,7 @@ Run install.packages('pbapply')", call. = FALSE)
   })
   names(test_1) <- NULL
   test_1 <- unlist(test_1)
-  message(sum(test_1), " coordinates with longitude inverted")
+  if(verbose) message(sum(test_1), " coordinates with longitude inverted")
   test_1 <- ifelse(test_1, "correct", "incorrect")
 
   #Update occ
@@ -256,7 +256,7 @@ Run install.packages('pbapply')", call. = FALSE)
     d2 <- terra::vect(d2,
                       geom = c(x = long, y = lat),
                       crs = "+init=epsg:4326")
-    message("Task 2 of 7: testing if latitude is inverted")
+    if(verbose) message("Task 2 of 7: testing if latitude is inverted")
     test_2 <- my_sapply(states_2, function(i){
       state_i <- state_shp[state_shp$name== i]
       state_i <- terra::buffer(state_i, width = distance*1000)
@@ -268,7 +268,7 @@ Run install.packages('pbapply')", call. = FALSE)
     })
     names(test_2) <- NULL
     test_2 <- unlist(test_2)
-    message(sum(test_2), " coordinates with latitude inverted")
+    if(verbose) message(sum(test_2), " coordinates with latitude inverted")
 
     test_2 <- ifelse(test_2, "correct", "incorrect")
 
@@ -298,7 +298,7 @@ Run install.packages('pbapply')", call. = FALSE)
     d3 <- terra::vect(d3,
                       geom = c(x = long, y = lat),
                       crs = "+init=epsg:4326")
-    message("Task 3 of 7: testing if longitude and latitude are inverted")
+    if(verbose) message("Task 3 of 7: testing if longitude and latitude are inverted")
     test_3 <- my_sapply(states_3, function(i){
       state_i <- state_shp[state_shp$name == i]
       if(distance > 0){
@@ -311,7 +311,7 @@ Run install.packages('pbapply')", call. = FALSE)
     })
     names(test_3) <- NULL
     test_3 <- unlist(test_3)
-    message(sum(test_3), " coordinates with longitude and latitude inverted")
+    if(verbose) message(sum(test_3), " coordinates with longitude and latitude inverted")
 
     test_3 <- ifelse(test_3, "correct", "incorrect")
 
@@ -342,7 +342,7 @@ Run install.packages('pbapply')", call. = FALSE)
     d4 <- terra::vect(d4,
                       geom = c(x = lat, y = long),
                       crs = "+init=epsg:4326")
-    message("Task 4 of 7: testing if longitude and latitude are swapped")
+    if(verbose) message("Task 4 of 7: testing if longitude and latitude are swapped")
     test_4 <- my_sapply(states_4, function(i){
       state_i <- state_shp[state_shp$name == i]
       if(distance > 0){
@@ -355,7 +355,7 @@ Run install.packages('pbapply')", call. = FALSE)
     })
     names(test_4) <- NULL
     test_4 <- unlist(test_4)
-    message(sum(test_4), " coordinates with longitude and latitude swapped")
+    if(verbose) message(sum(test_4), " coordinates with longitude and latitude swapped")
     test_4 <- ifelse(test_4, "correct", "incorrect")
 
     #Update occ
@@ -388,7 +388,7 @@ Run install.packages('pbapply')", call. = FALSE)
     d5 <- terra::vect(d5,
                       geom = c(x = lat, y = long),
                       crs = "+init=epsg:4326")
-    message("Task 5 of 7: testing if longitude and latitude are swapped -
+    if(verbose) message("Task 5 of 7: testing if longitude and latitude are swapped -
             with latitude inverted")
     test_5 <- my_sapply(states_5, function(i){
       state_i <- state_shp[state_shp$name == i]
@@ -401,7 +401,7 @@ Run install.packages('pbapply')", call. = FALSE)
     })
     names(test_5) <- NULL
     test_5 <- unlist(test_5)
-    message(sum(test_5), " coordinates with longitude and latitude swapped and latitude inverted")
+    if(verbose) message(sum(test_5), " coordinates with longitude and latitude swapped and latitude inverted")
     test_5 <- ifelse(test_5, "correct", "incorrect")
 
     #Update occ
@@ -434,7 +434,7 @@ Run install.packages('pbapply')", call. = FALSE)
     d6 <- terra::vect(d6,
                       geom = c(x = lat, y = long),
                       crs = "+init=epsg:4326")
-    message("Task 6 of 7: testing if longitude and latitude are swapped - with latitude inverted")
+    if(verbose) message("Task 6 of 7: testing if longitude and latitude are swapped - with latitude inverted")
     test_6 <- my_sapply(states_6, function(i){
       state_i <- state_shp[state_shp$name == i]
       if(distance > 0){
@@ -447,7 +447,7 @@ Run install.packages('pbapply')", call. = FALSE)
     })
     names(test_6) <- NULL
     test_6 <- unlist(test_6)
-    message(sum(test_6), " coordinates with longitude and latitude swapped and longitude inverted")
+    if(verbose) message(sum(test_6), " coordinates with longitude and latitude swapped and longitude inverted")
     test_6 <- ifelse(test_6, "correct", "incorrect")
 
     #Update occ
@@ -480,7 +480,7 @@ Run install.packages('pbapply')", call. = FALSE)
     d7 <- terra::vect(d7,
                       geom = c(x = lat, y = long),
                       crs = "+init=epsg:4326")
-    message("Task 7 of 7: testing if longitude and latitude are swapped - with longitude latitude inverted")
+    if(verbose) message("Task 7 of 7: testing if longitude and latitude are swapped - with longitude latitude inverted")
     test_7 <- my_sapply(states_7, function(i){
       #print(i)
       state_i <- state_shp[state_shp$name == i]
@@ -493,7 +493,7 @@ Run install.packages('pbapply')", call. = FALSE)
     })
     names(test_7) <- NULL
     test_7 <- unlist(test_7)
-    message(sum(test_7), " coordinates with longitude and latitude swapped and inverted")
+    if(verbose) message(sum(test_7), " coordinates with longitude and latitude swapped and inverted")
     test_7 <- ifelse(test_7, "correct", "incorrect")
 
     #Update occ

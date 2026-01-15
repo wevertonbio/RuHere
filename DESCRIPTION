@@ -24,7 +24,8 @@ Imports:
     ggplot2,
     mapview,
     sf,
-    ggnewscale
+    ggnewscale,
+    maps
 Suggests: 
     pbapply,
     knitr,

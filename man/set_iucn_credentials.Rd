@@ -5,7 +5,7 @@
 \title{Store SpeciesLink credential}
 \usage{
 set_iucn_credentials(iucn_key, overwrite = FALSE,
-                            open_Renviron = FALSE)
+                            open_Renviron = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{iucn_key}{(character) your IUCN API key. See Details.}
@@ -15,6 +15,9 @@ already exists. Default is FALSE.}
 
 \item{open_Renviron}{(logical) whether to open the .Renviron file after
 saving the credentials. Default is FALSE.}
+
+\item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
+the number of species being checked. Default is \code{TRUE}.}
 }
 \value{
 If \code{open_Renviron} is set to TRUE, it opens the .Renviron file. Otherwise,
