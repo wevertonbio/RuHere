@@ -52,6 +52,7 @@
 #' @export
 #'
 #' @importFrom terra extract
+#' @importFrom data.table setDT setorderv fifelse
 #' @examples
 #' # Load example data
 #' data("occurrences", package = "RuHere")
@@ -82,8 +83,8 @@ flag_duplicates <- function(occ,
   }
 
   # Force occ to be a dataframe
-  if(inherits(occ, "data.table"))
-    occ <- as.data.frame(occ)
+  if(!inherits(occ, "data.table"))
+    data.table::setDT(occ)
 
   # basic column names (species, long, lat) must be character and exist in occ
   if (!inherits(species, "character")) {
@@ -128,8 +129,8 @@ flag_duplicates <- function(occ,
     if (!continuous_variable %in% names(occ)) {
       stop("The column specified in 'continuous_variable' ('", continuous_variable, "') was not found in 'occ'.")
     }
-    if (!inherits(occ[[continuous_variable]], "numeric")) {
-      stop("The column specified in 'continuous_variable' ('", continuous_variable, "') must be numeric.")
+    if (!is.numeric(occ[[continuous_variable]])) {
+      stop("The column specified in 'continuous_variable' ('", continuous_variable, "') must be numeric or integer.")
     }
   }
 
@@ -186,8 +187,9 @@ flag_duplicates <- function(occ,
            class(raster_variable))
     }
 
-    occ$cell_id <- terra::extract(raster_variable[[1]],
-                              occ[, c(long, lat)], cells = TRUE)[["cell"]]
+    occ$cell_id <- terra::extract(x = raster_variable[[1]],
+                                  occ[, c(long, lat), with = FALSE],
+                                  cells = TRUE)[["cell"]]
 
     to_group <- c(species, "cell_id")
   } else {
@@ -198,50 +200,49 @@ flag_duplicates <- function(occ,
     to_group <- c(to_group, additional_groups)
   }
 
-  # Check NAs
-  na_rows <- which(!stats::complete.cases(occ[to_group]))
-  if(length(na_rows) > 0){
-    na_df <- occ[na_rows, ]
-    na_df$duplicated_flag <- FALSE
-    occ <- occ[-na_rows, ]
-  }
+  # ----------------------------- #
+  # Ordering logic (NA last)
+  # ----------------------------- #
 
-  if(is.null(continuous_variable) & is.null(categorical_variable)){
-    groups <- split(seq_len(nrow(occ)), occ[to_group], drop = TRUE)
-    occ$duplicated_flag <- FALSE
-    occ$duplicated_flag[ sapply(groups, `[`, 1) ] <- TRUE
-    }
-
-  if(!is.null(continuous_variable) & is.null(categorical_variable)){
-    ord <- order(occ[[continuous_variable]], decreasing = decreasing)
-    occ <- occ[ord, ]
-    grp <- interaction(occ[to_group], drop = TRUE)
-    occ$duplicated_flag <- !duplicated(grp)
-    occ <- occ[order(ord), ]
-    }
-
-  if(!is.null(categorical_variable) & is.null(continuous_variable)){
-    ord <- order(match(occ[[categorical_variable]], priority_categories))
-    occ <- occ[ord, ]
-    grp <- interaction(occ[to_group], drop = TRUE)
-    occ$duplicated_flag <- !duplicated(grp)
-    occ <- occ[order(ord), ]
-  }
-
-  if(!is.null(categorical_variable) & !is.null(continuous_variable)){
-    ord <- order(
-      if (decreasing) -occ[[continuous_variable]] else occ[[continuous_variable]],
-      match(occ[[categorical_variable]], priority_categories)
+  # Continuous variable first
+  if (!is.null(continuous_variable)) {
+    data.table::setorderv(
+      occ,
+      cols = continuous_variable,
+      order = if (decreasing) -1 else 1,
+      na.last = TRUE
     )
-    occ <- occ[ord, ]
-    grp <- interaction(occ[to_group], drop = TRUE)
-    occ$duplicated_flag <- !duplicated(grp)
-
   }
 
-  if(length(na_rows) > 0){
-   occ <- rbind(occ, na_df)
+  # Categorical variable second
+  if (!is.null(categorical_variable)) {
+
+    occ[, cat_rank := data.table::fifelse(
+      is.na(get(categorical_variable)),
+      length(priority_categories) + 1L,
+      match(get(categorical_variable), priority_categories)
+    )]
+
+    data.table::setorderv(occ, "cat_rank", na.last = TRUE)
   }
+
+  # ----------------------------- #
+  # Flag duplicates
+  # ----------------------------- #
+
+  occ[, duplicated_flag := FALSE]
+
+  occ[
+    occ[, .I[1], by = to_group]$V1,
+    duplicated_flag := TRUE
+  ]
+
+  # ----------------------------- #
+  # Cleanup
+  # ----------------------------- #
+
+  if ("cat_rank" %in% names(occ))
+    occ[, cat_rank := NULL]
 
   return(occ)
 }
