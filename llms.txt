@@ -259,6 +259,9 @@ remotes::install_github("wevertonbio/RuHere")
 - [`request_gbif()`](https://wevertonbio.github.io/RuHere/reference/request_gbif.md)
   : Submit a request to download occurrence data from GBIF.
 
+- [`richness_here()`](https://wevertonbio.github.io/RuHere/reference/richness_here.md)
+  : Species Richness and Occurrence Summary Mapping
+
 - [`set_gbif_credentials()`](https://wevertonbio.github.io/RuHere/reference/set_gbif_credentials.md)
   : Store GBIF credentials
 

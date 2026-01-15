@@ -10,7 +10,7 @@ geographic filtering options.
 get_idigbio(species = NULL, fields = "all", genus = NULL,
 family = NULL, order = NULL, phylum = NULL, kingdom = NULL, country = NULL,
 county = NULL, limit = NULL, offset = NULL, dir, filename = "idigbio_output",
-save = FALSE, compress = FALSE, file.format = "csv", ...)
+save = FALSE, compress = FALSE, file.format = "csv", verbose = TRUE, ...)
 ```
 
 ## Arguments
@@ -86,6 +86,11 @@ save = FALSE, compress = FALSE, file.format = "csv", ...)
 
   (character) file format for saving output (`"csv"`, `"rds"`). Default
   is `"csv"`
+
+- verbose:
+
+  (logical) if `TRUE`, prints messages about the progress and the number
+  of species being checked. Default is `TRUE`.
 
 - ...:
 

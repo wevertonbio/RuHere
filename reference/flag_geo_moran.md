@@ -30,7 +30,8 @@ flag_geo_moran(
   do_pca = FALSE,
   mask = NULL,
   pca_buffer = 1000,
-  return_all = FALSE
+  return_all = FALSE,
+  verbose = TRUE
 )
 ```
 
@@ -121,6 +122,11 @@ flag_geo_moran(
 
   (logical) whether to return the full list of all thinned datasets.
   Default: `FALSE`.
+
+- verbose:
+
+  (logical) whether to print messages about the progress. Default is
+  `TRUE`
 
 ## Value
 

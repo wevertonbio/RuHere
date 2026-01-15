@@ -31,7 +31,8 @@ flag_env_moran(
   mask = NULL,
   pca_buffer = 1000,
   flag_for_NA = FALSE,
-  return_all = FALSE
+  return_all = FALSE,
+  verbose = TRUE
 )
 ```
 
@@ -128,6 +129,11 @@ flag_env_moran(
 
   (logical) whether to return the full list of all thinned datasets.
   Default is `FALSE`.
+
+- verbose:
+
+  (logical) whether to print messages about the progress. Default is
+  `TRUE`
 
 ## Value
 

@@ -15,7 +15,8 @@ thin_geo(
   prioritary_column = NULL,
   decreasing = TRUE,
   remove_invalid = TRUE,
-  optimize_memory = FALSE
+  optimize_memory = FALSE,
+  verbose = TRUE
 )
 ```
 
@@ -68,6 +69,11 @@ thin_geo(
   implementation that reduces memory usage at the cost of increased
   computation time. Recommended for large datasets (\> 10,000 records).
   Default is FALSE.
+
+- verbose:
+
+  (logical) whether to display messages during function execution. Set
+  to TRUE to enable display, or FALSE to run silently. Default is TRUE.
 
 ## Value
 

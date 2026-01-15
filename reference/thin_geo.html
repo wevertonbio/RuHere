@@ -63,7 +63,8 @@ within a radius of 'd' kilometers.</p>
 <span>  prioritary_column <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  decreasing <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  remove_invalid <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  optimize_memory <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  optimize_memory <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -119,6 +120,12 @@ Default is <code>TRUE</code>.</p></dd>
 using a C++ implementation that reduces memory usage at the cost of
 increased computation time. Recommended for large datasets (&gt; 10,000 records).
 Default is FALSE.</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>(logical) whether to display messages during function
+execution. Set to TRUE to enable display, or FALSE to run silently. Default
+is TRUE.</p></dd>
 
 </dl></div>
     <div class="section level2">

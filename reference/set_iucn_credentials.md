@@ -7,7 +7,7 @@ This API key is required to obtain distributional data from IUCN.
 
 ``` r
 set_iucn_credentials(iucn_key, overwrite = FALSE,
-                            open_Renviron = FALSE)
+                            open_Renviron = FALSE, verbose = TRUE)
 ```
 
 ## Arguments
@@ -25,6 +25,11 @@ set_iucn_credentials(iucn_key, overwrite = FALSE,
 
   (logical) whether to open the .Renviron file after saving the
   credentials. Default is FALSE.
+
+- verbose:
+
+  (logical) if `TRUE`, prints messages about the progress and the number
+  of species being checked. Default is `TRUE`.
 
 ## Value
 

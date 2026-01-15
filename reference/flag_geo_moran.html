@@ -85,7 +85,8 @@ level is then selected according to criteria described in <em>Details</em>.</p>
 <span>  do_pca <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  mask <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pca_buffer <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span>  return_all <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  return_all <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -176,6 +177,11 @@ the convex hull of records. Ignored if <code>mask</code> is provided. Default: <
 <dt id="arg-return-all">return_all<a class="anchor" aria-label="anchor" href="#arg-return-all"></a></dt>
 <dd><p>(logical) whether to return the full list of all thinned
 datasets. Default: <code>FALSE</code>.</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>(logical) whether to print messages about the progress.
+Default is <code>TRUE</code></p></dd>
 
 </dl></div>
     <div class="section level2">
