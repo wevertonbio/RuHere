@@ -49,6 +49,8 @@
 #' of `env_layers` as valid (`TRUE`) or invalid (`FALSE`). Default is `FALSE`.
 #' @param return_all (logical) whether to return the full list of all thinned
 #' datasets. Default is `FALSE`.
+#' @param verbose (logical) whether to print messages about the progress.
+#' Default is `TRUE`
 #'
 #' @details
 #' This function is inspired by the approach used in Velazco et al. (2020),
@@ -142,7 +144,8 @@ flag_env_moran <- function(occ,
                              mask = NULL,
                              pca_buffer = 1000,
                              flag_for_NA = FALSE,
-                             return_all = FALSE){
+                             return_all = FALSE,
+                             verbose = TRUE){
 
   # --- Argument checking -------------------------------------------------------
 
@@ -268,6 +271,9 @@ flag_env_moran <- function(occ,
     stop("'flag_for_NA' must be TRUE or FALSE")
   }
 
+  if (!inherits(verbose, "logical") || length(verbose) != 1)
+    stop("'verbose' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+
   spp <- unique(occ[[species]])
 
 
@@ -293,7 +299,7 @@ flag_env_moran <- function(occ,
   } #End of PCA
 
   #Filter using distances
-  message("Filtering records...")
+  if(verbose) message("Filtering records...")
   filtered <- suppressMessages(lapply(n_bins, function(x){
     set.seed(42)
     f_x <- thin_env(occ = occ, species = species,
@@ -310,7 +316,7 @@ flag_env_moran <- function(occ,
   names(filtered) <- n_bins
 
   ## Calculate spatial autoccorelation (Moran I)
-  message("Calculating spatial autocorrelation using Moran Index...")
+  if(verbose) message("Calculating spatial autocorrelation using Moran Index...")
   imoran <- lapply(names(filtered), function(x){
     tryCatch({ #Avoid errors
       # Append results to occ

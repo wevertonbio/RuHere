@@ -20,7 +20,8 @@ flag_geo_moran(
   do_pca = FALSE,
   mask = NULL,
   pca_buffer = 1000,
-  return_all = FALSE
+  return_all = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -76,6 +77,9 @@ the convex hull of records. Ignored if \code{mask} is provided. Default: \code{1
 
 \item{return_all}{(logical) whether to return the full list of all thinned
 datasets. Default: \code{FALSE}.}
+
+\item{verbose}{(logical) whether to print messages about the progress.
+Default is \code{TRUE}}
 }
 \value{
 A list with:

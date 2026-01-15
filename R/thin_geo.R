@@ -27,6 +27,9 @@
 #' using a C++ implementation that reduces memory usage at the cost of
 #' increased computation time. Recommended for large datasets (> 10,000 records).
 #' Default is FALSE.
+#' @param verbose (logical) whether to display messages during function
+#' execution. Set to TRUE to enable display, or FALSE to run silently. Default
+#' is TRUE.
 #'
 #' @details
 #' This function is similar to the `thin()` function from the **spThin** package,
@@ -75,7 +78,8 @@ thin_geo <- function(occ,
                      prioritary_column = NULL,
                      decreasing = TRUE,
                      remove_invalid = TRUE,
-                     optimize_memory = FALSE) {
+                     optimize_memory = FALSE,
+                     verbose = TRUE) {
   #==============================#
   #      ARGUMENT CHECKING       #
   #==============================#
@@ -149,6 +153,10 @@ thin_geo <- function(occ,
     stop("'optimize_memory' must be TRUE or FALSE")
   }
 
+  if (!is.logical(verbose) || length(verbose) != 1) {
+    stop("'verbose' must be a single logical value (TRUE or FALSE).",
+         call. = FALSE)
+  }
 
 
   # Split by species
@@ -171,7 +179,7 @@ thin_geo <- function(occ,
                                               long = long, lat = lat,
                                               return_invalid = FALSE)
       if (n_all > nrow(occ_valid)) {
-        message("Removing ", n_all - nrow(occ_valid), " invalid records")
+        if (verbose) message("Removing ", n_all - nrow(occ_valid), " invalid records")
         # Use only valid records for thinning
         occ_thin <- occ_valid
       } else {

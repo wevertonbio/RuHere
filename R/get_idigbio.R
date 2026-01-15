@@ -3,7 +3,7 @@
 #' @usage get_idigbio(species = NULL, fields = "all", genus = NULL,
 #' family = NULL, order = NULL, phylum = NULL, kingdom = NULL, country = NULL,
 #' county = NULL, limit = NULL, offset = NULL, dir, filename = "idigbio_output",
-#' save = FALSE, compress = FALSE, file.format = "csv", ...)
+#' save = FALSE, compress = FALSE, file.format = "csv", verbose = TRUE, ...)
 #'
 #' @description
 #' Downloads species occurrence records from the iDigBio (Integrated Digitized
@@ -34,6 +34,8 @@
 #' file as .csv.zip. Default is `FALSE`.
 #' @param file.format (character) file format for saving output (`"csv"`, `"rds"`).
 #' Default is `"csv"`
+#' @param verbose (logical) if `TRUE`, prints messages about the progress and
+#' the number of species being checked. Default is `TRUE`.
 #' @param ... additional arguments passed to `ridigbio::idig_search_records()`.
 #'
 #' @return
@@ -72,6 +74,7 @@ get_idigbio <- function(species = NULL, fields = "all",
                         country = NULL, county = NULL, limit = NULL,
                         offset = NULL, dir, filename = "idigbio_output",
                         save = FALSE, compress = FALSE, file.format = "csv",
+                        verbose = TRUE,
                         ...) {
 
   if (!is.null(species) && !inherits(species, "character")) {
@@ -142,6 +145,11 @@ get_idigbio <- function(species = NULL, fields = "all",
     }
   }
 
+  if (!is.logical(verbose) || length(verbose) != 1) {
+    stop("'verbose' must be a single logical value (TRUE or FALSE).",
+         call. = FALSE)
+  }
+
   if (!file.format %in% c("csv", "rds"))
     stop("'file.format' must be either 'csv' or 'rds'")
 
@@ -190,19 +198,19 @@ get_idigbio <- function(species = NULL, fields = "all",
     if (file.format == "csv") {
       if (compress) {
         fullname <- file.path(dir, paste0(filename, ".csv.zip"))
-        message(paste0("Writing ", fullname, " on disk."))
+        if(verbose) message(paste0("Writing ", fullname, " on disk."))
         data.table::fwrite(df, file = fullname, compress = "gzip")
       }
       else {
         fullname <- file.path(dir, paste0(filename, ".csv"))
-        message(paste0("Writing ", fullname, " on disk."))
+        if(verbose) message(paste0("Writing ", fullname, " on disk."))
         data.table::fwrite(df, file = fullname)
       }
     }
 
     if (file.format == "rds") {
       fullname <- file.path(dir, paste0(filename, ".rds"))
-      message(paste0("Writing ", fullname, " on disk."))
+      if(verbose) message(paste0("Writing ", fullname, " on disk."))
       if (compress) {
         saveRDS(df, file = fullname, compress = "gzip")
       }

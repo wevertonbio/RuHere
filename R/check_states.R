@@ -151,9 +151,9 @@ Run install.packages('pbapply')", call. = FALSE)
     stop("None of the states listed in the '", state_column, "' column were found in the world map used for validation. Please check the column or run the 'standardize_states()' function.")
   }
 
-  if(length(states_in) != length(states) && verbose){
+  if(length(states_in) != length(states)){
     states_out <- setdiff(states, states_in)
-    warning("The following states listed in the '", state_column, "' column were absent in the world map used for validation: ",
+    if(verbose) warning("The following states listed in the '", state_column, "' column were absent in the world map used for validation: ",
             paste(states_out, collapse = ", "))
   }
 

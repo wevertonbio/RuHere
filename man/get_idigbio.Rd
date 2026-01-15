@@ -7,7 +7,7 @@
 get_idigbio(species = NULL, fields = "all", genus = NULL,
 family = NULL, order = NULL, phylum = NULL, kingdom = NULL, country = NULL,
 county = NULL, limit = NULL, offset = NULL, dir, filename = "idigbio_output",
-save = FALSE, compress = FALSE, file.format = "csv", ...)
+save = FALSE, compress = FALSE, file.format = "csv", verbose = TRUE, ...)
 }
 \arguments{
 \item{species}{(character) scientific name(s) of species to search for.
@@ -49,6 +49,9 @@ file as .csv.zip. Default is \code{FALSE}.}
 
 \item{file.format}{(character) file format for saving output (\code{"csv"}, \code{"rds"}).
 Default is \code{"csv"}}
+
+\item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
+the number of species being checked. Default is \code{TRUE}.}
 
 \item{...}{additional arguments passed to \code{ridigbio::idig_search_records()}.}
 }

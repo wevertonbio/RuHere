@@ -5,13 +5,15 @@
 #' API key is required to obtain distributional data from IUCN.
 #'
 #' @usage set_iucn_credentials(iucn_key, overwrite = FALSE,
-#'                             open_Renviron = FALSE)
+#'                             open_Renviron = FALSE, verbose = TRUE)
 #'
 #' @param iucn_key (character) your IUCN API key. See Details.
 #' @param overwrite (logical) whether to overwrite IUCN credential if it
 #' already exists. Default is FALSE.
 #' @param open_Renviron (logical) whether to open the .Renviron file after
 #' saving the credentials. Default is FALSE.
+#' @param verbose (logical) if `TRUE`, prints messages about the progress and
+#' the number of species being checked. Default is `TRUE`.
 #'
 #' @details
 #' To check your API key, visit: [https://api.iucnredlist.org/users/edit](https://api.iucnredlist.org/users/edit).
@@ -31,7 +33,8 @@
 #' }
 #'
 set_iucn_credentials <- function(iucn_key,
-                                 overwrite = FALSE, open_Renviron = FALSE) {
+                                 overwrite = FALSE, open_Renviron = FALSE,
+                                 verbose = TRUE) {
 
   # Check arguments
   if (!inherits(iucn_key, "character"))
@@ -80,7 +83,7 @@ set_iucn_credentials <- function(iucn_key,
   # Write lines
   writeLines(new_lines, renviron_path)
 
-  message("IUCN credentials have been processed and added/updated in your .Renviron file\n",
+  if (verbose) message("IUCN credentials have been processed and added/updated in your .Renviron file\n",
           "Check your .Renviron with file.edit('", normalizePath(renviron_path, winslash = "/"), "')")
 
   if(open_Renviron){

@@ -21,7 +21,8 @@ flag_env_moran(
   mask = NULL,
   pca_buffer = 1000,
   flag_for_NA = FALSE,
-  return_all = FALSE
+  return_all = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -80,6 +81,9 @@ of \code{env_layers} as valid (\code{TRUE}) or invalid (\code{FALSE}). Default i
 
 \item{return_all}{(logical) whether to return the full list of all thinned
 datasets. Default is \code{FALSE}.}
+
+\item{verbose}{(logical) whether to print messages about the progress.
+Default is \code{TRUE}}
 }
 \value{
 A list with:
