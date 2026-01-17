@@ -101,9 +101,10 @@ remove_flagged <- function(occ,
     }
 
     if(flags == "all"){
-      flags <- c("correct_country", "correct_state", "florabr", "faunabr",
-                 "wcvp", "iucn", "bien", "cultivated", "inaturalist",
-                 "duplicated", "thin_env", "thin_geo", "consensus",
+      flags <- c("correct_country", "correct_state",
+                 "year", "duplicated", "fossil", "cultivated", "inaturalist",
+                 "florabr", "faunabr", "wcvp", "iucn", "bien",
+                 "thin_env", "thin_geo", "consensus",
                  # Froom CoordinateCleaner
                  ".val", ".equ", ".zer", ".cap", ".cen", ".sea", ".urb", ".otl",
                  ".gbf", ".inst", ".aohi")
@@ -200,7 +201,7 @@ remove_flagged <- function(occ,
 
 
   # Add _flags for some columns
-  to_paste <- c("florabr", "faunabr", "wcvp", "iucn", "bien", "cultivated",
+  to_paste <- c("florabr", "faunabr", "wcvp", "iucn", "bien", "cultivated", "fossil", "year",
                 "inaturalist", "duplicated", "thin_env", "thin_geo", "consensus")
 
   flags[flags %in% to_paste] <- paste0(flags[flags %in% to_paste], "_flag")
