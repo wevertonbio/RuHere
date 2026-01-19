@@ -67,6 +67,7 @@ reprojection to match reference rasters.</p>
 <span>  lat <span class="op">=</span> <span class="st">"decimalLatitude"</span>,</span>
 <span>  raster_base <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  res <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  crs <span class="op">=</span> <span class="st">"epsg:4326"</span>,</span>
 <span>  mask <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  summary <span class="op">=</span> <span class="st">"records"</span>,</span>
 <span>  field <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -109,10 +110,15 @@ the output will match its resolution, extent, and CRS. Default is <code>NULL</co
 for the output grid. Only used if <code>raster_base</code> is <code>NULL</code>.</p></dd>
 
 
+<dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
+<dd><p>(character) the coordinate reference system of the raster.
+(see ?terra::crs). Default is "epsg:4326". Only applicable if <code>raster_base</code>
+is not provided.</p></dd>
+
+
 <dt id="arg-mask">mask<a class="anchor" aria-label="anchor" href="#arg-mask"></a></dt>
 <dd><p>(SpatRaster or SpatVector) an optional layer to mask the
-final output. If the CRS differs from the output, it will be
-automatically reprojected. Default is <code>NULL</code>.</p></dd>
+final output. Default is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-summary">summary<a class="anchor" aria-label="anchor" href="#arg-summary"></a></dt>
@@ -151,17 +157,24 @@ density, or trait summary.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Record density map</span></span></span>
 <span class="r-in"><span><span class="va">r_records</span> <span class="op">&lt;-</span> <span class="fu">richness_here</span><span class="op">(</span><span class="va">occ</span>, res <span class="op">=</span> <span class="fl">0.5</span>, summary <span class="op">=</span> <span class="st">"records"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r_records</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="richness_here-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Species richness map masked by Brazil's border</span></span></span>
-<span class="r-in"><span><span class="va">brazil_sf</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="fu">maps</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/maps/man/map.html" class="external-link">map</a></span><span class="op">(</span><span class="st">"world"</span>, <span class="st">"Brazil"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span>, fill <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">brazil_mask</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">brazil_sf</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">r_richness</span> <span class="op">&lt;-</span> <span class="fu">richness_here</span><span class="op">(</span><span class="va">occ</span>, res <span class="op">=</span> <span class="fl">1</span>, mask <span class="op">=</span> <span class="va">brazil_mask</span>, summary <span class="op">=</span> <span class="st">"species"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">world</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/wrap.html" class="external-link">unwrap</a></span><span class="op">(</span><span class="fu">RuHere</span><span class="fu">::</span><span class="va"><a href="world.html">world</a></span><span class="op">)</span> <span class="co"># Import world map</span></span></span>
+<span class="r-in"><span><span class="va">brazil</span> <span class="op">&lt;-</span> <span class="va">world</span><span class="op">[</span><span class="va">world</span><span class="op">$</span><span class="va">name</span> <span class="op">==</span> <span class="st">"brazil"</span>,<span class="op">]</span> <span class="co"># Subset Brazil</span></span></span>
+<span class="r-in"><span><span class="va">r_richness</span> <span class="op">&lt;-</span> <span class="fu">richness_here</span><span class="op">(</span><span class="va">occ</span>, res <span class="op">=</span> <span class="fl">1</span>, mask <span class="op">=</span> <span class="va">brazil</span>, summary <span class="op">=</span> <span class="st">"species"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r_richness</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="richness_here-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Average trait value per cell</span></span></span>
 <span class="r-in"><span><span class="va">sim_mass</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">occ</span><span class="op">$</span><span class="va">species</span><span class="op">)</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sim_mass</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">occ</span><span class="op">$</span><span class="va">species</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">r_trait</span> <span class="op">&lt;-</span> <span class="fu">richness_here</span><span class="op">(</span><span class="va">occ</span>, res <span class="op">=</span> <span class="fl">0.5</span>, summary <span class="op">=</span> <span class="st">"species"</span>, field <span class="op">=</span> <span class="va">sim_mass</span>, fun <span class="op">=</span> <span class="va">mean</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r_trait</span> <span class="op">&lt;-</span> <span class="fu">richness_here</span><span class="op">(</span><span class="va">occ</span>, res <span class="op">=</span> <span class="fl">0.5</span>, summary <span class="op">=</span> <span class="st">"species"</span>, mask <span class="op">=</span> <span class="va">brazil</span>,</span></span>
+<span class="r-in"><span>                         field <span class="op">=</span> <span class="va">sim_mass</span>, fun <span class="op">=</span> <span class="va">mean</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r_trait</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="richness_here-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
