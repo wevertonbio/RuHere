@@ -37,7 +37,7 @@
 #' @return A `SpatRaster` object representing the calculated richness,
 #' density, or trait summary.
 #'
-#' @importFrom terra rast vect project crs ext rasterize geom cellFromXY xyFromCell mask
+#' @importFrom terra rast vect project crs ext rasterize geom cellFromXY xyFromCell mask crop
 #' @importFrom maps map
 #'
 #' @export
