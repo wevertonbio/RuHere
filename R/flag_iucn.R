@@ -214,12 +214,12 @@ Run install.packages('pbapply')", call. = FALSE)
     # Get data from iucn
     d_i <- d[d$species == i, ]
     # Filter by origin and presence
-    if(origin != "all"){
+    if(all(origin != "all")){
       d_i$origin <- tolower(d_i$origin)
       d_i <- d_i[d_i$origin %in% origin, ]
     }
 
-    if(presence != "all"){
+    if(all(presence != "all")){
       d_i$presence <- tolower(d_i$presence)
       d_i <- d_i[d_i$presence %in% presence, ]
     }

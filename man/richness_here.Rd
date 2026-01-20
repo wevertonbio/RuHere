@@ -11,6 +11,7 @@ richness_here(
   lat = "decimalLatitude",
   raster_base = NULL,
   res = NULL,
+  crs = "epsg:4326",
   mask = NULL,
   summary = "records",
   field = NULL,
@@ -37,9 +38,12 @@ the output will match its resolution, extent, and CRS. Default is \code{NULL}.}
 \item{res}{(numeric) the desired resolution (in decimal degrees if WGS84)
 for the output grid. Only used if \code{raster_base} is \code{NULL}.}
 
+\item{crs}{(character) the coordinate reference system of the raster.
+(see ?terra::crs). Default is "epsg:4326". Only applicable if \code{raster_base}
+is not provided.}
+
 \item{mask}{(SpatRaster or SpatVector) an optional layer to mask the
-final output. If the CRS differs from the output, it will be
-automatically reprojected. Default is \code{NULL}.}
+final output. Default is \code{NULL}.}
 
 \item{summary}{(character) the type of summary to calculate.
 Either \code{"records"} (number of occurrences per cell) or \code{"species"}
@@ -72,16 +76,20 @@ occ <- occurrences
 
 # Record density map
 r_records <- richness_here(occ, res = 0.5, summary = "records")
+terra::plot(r_records)
 
 # Species richness map masked by Brazil's border
-brazil_sf <- sf::st_as_sf(maps::map("world", "Brazil", plot = FALSE, fill = TRUE))
-brazil_mask <- terra::vect(brazil_sf)
-r_richness <- richness_here(occ, res = 1, mask = brazil_mask, summary = "species")
+world <- terra::unwrap(RuHere::world) # Import world map
+brazil <- world[world$name == "brazil",] # Subset Brazil
+r_richness <- richness_here(occ, res = 1, mask = brazil, summary = "species")
+terra::plot(r_richness)
 
 # Average trait value per cell
 sim_mass <- c(runif(length(unique(occ$species)), 10, 20))
 names(sim_mass) <- unique(occ$species)
 
-r_trait <- richness_here(occ, res = 0.5, summary = "species", field = sim_mass, fun = mean)
+r_trait <- richness_here(occ, res = 0.5, summary = "species", mask = brazil,
+                         field = sim_mass, fun = mean)
+terra::plot(r_trait)
 
 }
