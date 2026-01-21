@@ -14,6 +14,8 @@
 #' longitude values. Default is `"decimalLongitude"`.
 #' @param lat (character) the name of the column in `occ` that contains the
 #' latitude values. Default is `"decimalLatitude"`.
+#' @param records (character) the name of the column in `occ` that contains the
+#' record names. Default is `"record_id"`.
 #' @param raster_base (SpatRaster) an optional reference raster. If provided,
 #' the output will match its resolution, extent, and CRS. Default is `NULL`.
 #' @param res (numeric) the desired resolution (in decimal degrees if WGS84)
@@ -28,11 +30,12 @@
 #' (number of unique species per cell). Default is `"records"`.
 #' @param field (character or named vector) columns in `occ` to summarize
 #' (e.g., traits). If a named vector is provided, names must match species
-#' in `occ`. Only used when `summary = "species"`. Default is `NULL`.
+#' in `occ`. Used to summarize traits or flags in both 'species' and 'records'
+#' modes. Default is `NULL`.
 #' @param fun (function) the function to aggregate `field` values
 #' (e.g., `mean`, `max`, `sum`). Default is `mean`.
 #' @param verbose (logical) whether to print messages about the progress.
-#' Default is `TRUE`
+#' Default is `TRUE`.
 #'
 #' @return A `SpatRaster` object representing the calculated richness,
 #' density, or trait summary.
@@ -43,36 +46,50 @@
 #'
 #' @examples
 #' # Load example data
-#' data("occurrences", package = "RuHere")
-#' occ <- occurrences
+#' data("occ_flagged", package = "RuHere")
 #'
-#' # Record density map
-#' r_records <- richness_here(occ, res = 0.5, summary = "records")
-#' terra::plot(r_records)
+#' # Mapping the density of records
+#' r_density <- richness_here(occ_flagged, summary = "records", res = 0.5)
+#' ggrid_here(r_density)
 #'
-#' # Species richness map masked by Brazil's border
-#' world <- terra::unwrap(RuHere::world) # Import world map
-#' brazil <- world[world$name == "brazil",] # Subset Brazil
-#' r_richness <- richness_here(occ, res = 1, mask = brazil, summary = "species")
-#' terra::plot(r_richness)
+#' # We can also summarize key features:
+#' # 1. Identifying problematic regions by summing error flags
+#' # We create a variable to store the sum of logical flags (TRUE = 1, FALSE = 0)
+#' total_flags <- occ_flagged$florabr_flag +
+#'                occ_flagged$wcvp_flag +
+#'                occ_flagged$iucn_flag +
+#'                occ_flagged$cultivated_flag +
+#'                occ_flagged$inaturalist_flag +
+#'                occ_flagged$duplicated_flag
+#' names(total_flags) <- occ_flagged$record_id
 #'
-#' # Average trait value per cell
-#' sim_mass <- c(runif(length(unique(occ$species)), 10, 20))
-#' names(sim_mass) <- unique(occ$species)
+#' # Using summary = "records" with to see the average accumulation of errors
+#' # with fun = mean to see the average accumulation
+#' r_flags <- richness_here(occ_flagged, summary = "records",
+#'                          field = total_flags,
+#'                          fun = mean, res = 0.5)
+#' ggrid_here(r_flags)
 #'
-#' r_trait <- richness_here(occ, res = 0.5, summary = "species", mask = brazil,
-#'                          field = sim_mass, fun = mean)
-#' terra::plot(r_trait)
+#' # 2. Or we can summarize organisms traits spatially
+#' # Simulating a trait (e.g., mass) for each unique record
+#' spp <- unique(occ_flagged$record_id)
+#' sim_mass <- setNames(runif(length(spp), 10, 50), spp)
+#'
+#' r_trait <- richness_here(occ_flagged, summary = "records",
+#'                          field = sim_mass, fun = mean, res = 0.5)
+#' ggrid_here(r_trait)
 #'
 richness_here <- function(occ, species = "species", long = "decimalLongitude",
-                          lat = "decimalLatitude", raster_base = NULL,
-                          res = NULL, crs = "epsg:4326",
-                          mask = NULL, summary = "records",
-                          field = NULL, fun = mean, verbose = TRUE) {
+                          lat = "decimalLatitude", records = "record_id",
+                          raster_base = NULL, res = NULL, crs = "epsg:4326",
+                          mask = NULL, summary = "records", field = NULL,
+                          fun = mean, verbose = TRUE) {
 
   if (!inherits(occ, "data.frame")) stop("`occ` must be a data.frame.", call. = FALSE)
   if (!is.null(species) && !inherits(species, "character"))
     stop("`species` must be a character vector.", call. = FALSE)
+  if (!is.null(records) && !inherits(records, "character"))
+    stop("`records` must be a character vector.", call. = FALSE)
   if (!inherits(long, "character"))
     stop("`long` must be a character vector.", call. = FALSE)
   if (!inherits(lat, "character"))
@@ -95,15 +112,21 @@ richness_here <- function(occ, species = "species", long = "decimalLongitude",
     stop("`crs` must be a single character string.", call. = FALSE)
   }
 
-
-  required_cols <- c(species, long, lat)
+  required_cols <- c(long, lat)
   if (!all(required_cols %in% names(occ))) {
     missing <- required_cols[!required_cols %in% names(occ)]
     stop("The following columns are missing in `occ`: ",
          paste(missing, collapse = ", "), call. = FALSE)
   }
 
+  if (!(species %in% names(occ)) && !(records %in% names(occ))) {
+    stop("The dataset must contain at least a '", species, "' column or a '", records, "' column.",
+         call. = FALSE)
+  }
+
+
   occ <- occ[!is.na(occ[[long]]) & !is.na(occ[[lat]]), ]
+  occ <- as.data.frame(occ)
 
   if (!is.null(raster_base)) {
     r_template <- raster_base
@@ -123,8 +146,51 @@ richness_here <- function(occ, species = "species", long = "decimalLongitude",
   # }
 
   if (summary == "records") {
-    r_final <- terra::rasterize(pts, r_template, fun = length)
-    names(r_final) <- "n_records"
+
+    trait_cols <- NULL
+    occ_internal <- occ
+
+    if (!is.null(field)) {
+      if (!is.null(names(field))) {
+        rec_in_df <- unique(occ_internal[[records]])
+        if (!all(rec_in_df %in% names(field))) {
+          if(verbose)
+            warning("Some records in `occ` do not have a match in the `field` names. Values will be set to NA.")
+        }
+        occ_internal$trait_val <- field[occ_internal[[records]]]
+        trait_cols <- "trait_val"
+      } else {
+        if (!all(field %in% names(occ_internal))) {
+          missing_f <- field[!field %in% names(occ_internal)]
+          stop("The following `field` columns are missing in `occ`: ",
+               paste(missing_f, collapse = ", "), call. = FALSE)
+        }
+        trait_cols <- field
+      }
+    }
+
+    occ_coords <- terra::geom(pts)[, c("x", "y")]
+    cell_ids <- terra::cellFromXY(r_template, occ_coords)
+
+    temp_data <- data.frame(cell_id = cell_ids, records = occ_internal[[records]])
+
+    if (!is.null(trait_cols)) temp_data <- cbind(temp_data,
+                                                 occ_internal[, trait_cols,
+                                                              drop = FALSE])
+
+    occ_unique <- unique(temp_data)
+    pts_unique <- terra::vect(terra::xyFromCell(r_template,
+                                                occ_unique$cell_id), crs = crs)
+
+    if (is.null(field)) {
+      r_final <- terra::rasterize(pts_unique, r_template, fun = length)
+      names(r_final) <- "n_records"
+    } else {
+      for(col in trait_cols) pts_unique[[col]] <- occ_unique[[col]]
+      r_final <- terra::rasterize(pts_unique, r_template, field = trait_cols,
+                                  fun = fun, na.rm = TRUE)
+      names(r_final) <- trait_cols
+    }
 
   } else if (summary == "species") {
 
