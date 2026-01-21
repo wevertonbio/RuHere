@@ -9,6 +9,7 @@ richness_here(
   species = "species",
   long = "decimalLongitude",
   lat = "decimalLatitude",
+  records = "record_id",
   raster_base = NULL,
   res = NULL,
   crs = "epsg:4326",
@@ -32,6 +33,9 @@ longitude values. Default is \code{"decimalLongitude"}.}
 \item{lat}{(character) the name of the column in \code{occ} that contains the
 latitude values. Default is \code{"decimalLatitude"}.}
 
+\item{records}{(character) the name of the column in \code{occ} that contains the
+record names. Default is \code{"record_id"}.}
+
 \item{raster_base}{(SpatRaster) an optional reference raster. If provided,
 the output will match its resolution, extent, and CRS. Default is \code{NULL}.}
 
@@ -51,13 +55,14 @@ Either \code{"records"} (number of occurrences per cell) or \code{"species"}
 
 \item{field}{(character or named vector) columns in \code{occ} to summarize
 (e.g., traits). If a named vector is provided, names must match species
-in \code{occ}. Only used when \code{summary = "species"}. Default is \code{NULL}.}
+in \code{occ}. Used to summarize traits or flags in both 'species' and 'records'
+modes. Default is \code{NULL}.}
 
 \item{fun}{(function) the function to aggregate \code{field} values
 (e.g., \code{mean}, \code{max}, \code{sum}). Default is \code{mean}.}
 
 \item{verbose}{(logical) whether to print messages about the progress.
-Default is \code{TRUE}}
+Default is \code{TRUE}.}
 }
 \value{
 A \code{SpatRaster} object representing the calculated richness,
@@ -71,25 +76,37 @@ reprojection to match reference rasters.
 }
 \examples{
 # Load example data
-data("occurrences", package = "RuHere")
-occ <- occurrences
+data("occ_flagged", package = "RuHere")
 
-# Record density map
-r_records <- richness_here(occ, res = 0.5, summary = "records")
-terra::plot(r_records)
+# Mapping the density of records
+r_density <- richness_here(occ_flagged, summary = "records", res = 0.5)
+ggrid_here(r_density)
 
-# Species richness map masked by Brazil's border
-world <- terra::unwrap(RuHere::world) # Import world map
-brazil <- world[world$name == "brazil",] # Subset Brazil
-r_richness <- richness_here(occ, res = 1, mask = brazil, summary = "species")
-terra::plot(r_richness)
+# We can also summarize key features:
+# 1. Identifying problematic regions by summing error flags
+# We create a variable to store the sum of logical flags (TRUE = 1, FALSE = 0)
+total_flags <- occ_flagged$florabr_flag +
+               occ_flagged$wcvp_flag +
+               occ_flagged$iucn_flag +
+               occ_flagged$cultivated_flag +
+               occ_flagged$inaturalist_flag +
+               occ_flagged$duplicated_flag
+names(total_flags) <- occ_flagged$record_id
 
-# Average trait value per cell
-sim_mass <- c(runif(length(unique(occ$species)), 10, 20))
-names(sim_mass) <- unique(occ$species)
+# Using summary = "records" with to see the average accumulation of errors
+# with fun = mean to see the average accumulation
+r_flags <- richness_here(occ_flagged, summary = "records",
+                         field = total_flags,
+                         fun = mean, res = 0.5)
+ggrid_here(r_flags)
 
-r_trait <- richness_here(occ, res = 0.5, summary = "species", mask = brazil,
-                         field = sim_mass, fun = mean)
-terra::plot(r_trait)
+# 2. Or we can summarize organisms traits spatially
+# Simulating a trait (e.g., mass) for each unique record
+spp <- unique(occ_flagged$record_id)
+sim_mass <- setNames(runif(length(spp), 10, 50), spp)
+
+r_trait <- richness_here(occ_flagged, summary = "records",
+                         field = sim_mass, fun = mean, res = 0.5)
+ggrid_here(r_trait)
 
 }

@@ -25,7 +25,7 @@ Imports:
     mapview,
     sf,
     ggnewscale,
-    maps
+    patchwork
 Suggests: 
     pbapply,
     knitr,
