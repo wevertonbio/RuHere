@@ -113,6 +113,9 @@
 - [`ggmap_here()`](https://wevertonbio.github.io/RuHere/reference/ggmap_here.md)
   : Static Visualization of Occurrence Flags with ggplot
 
+- [`ggrid_here()`](https://wevertonbio.github.io/RuHere/reference/ggrid_here.md)
+  : Static Visualization of Richness and Trait Maps
+
 - [`import_gbif()`](https://wevertonbio.github.io/RuHere/reference/import_gbif.md)
   : Import a download requested from GBIF
 

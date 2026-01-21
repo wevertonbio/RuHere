@@ -65,6 +65,7 @@ reprojection to match reference rasters.</p>
 <span>  species <span class="op">=</span> <span class="st">"species"</span>,</span>
 <span>  long <span class="op">=</span> <span class="st">"decimalLongitude"</span>,</span>
 <span>  lat <span class="op">=</span> <span class="st">"decimalLatitude"</span>,</span>
+<span>  records <span class="op">=</span> <span class="st">"record_id"</span>,</span>
 <span>  raster_base <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  res <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  crs <span class="op">=</span> <span class="st">"epsg:4326"</span>,</span>
@@ -100,6 +101,11 @@ longitude values. Default is <code>"decimalLongitude"</code>.</p></dd>
 latitude values. Default is <code>"decimalLatitude"</code>.</p></dd>
 
 
+<dt id="arg-records">records<a class="anchor" aria-label="anchor" href="#arg-records"></a></dt>
+<dd><p>(character) the name of the column in <code>occ</code> that contains the
+record names. Default is <code>"record_id"</code>.</p></dd>
+
+
 <dt id="arg-raster-base">raster_base<a class="anchor" aria-label="anchor" href="#arg-raster-base"></a></dt>
 <dd><p>(SpatRaster) an optional reference raster. If provided,
 the output will match its resolution, extent, and CRS. Default is <code>NULL</code>.</p></dd>
@@ -130,7 +136,8 @@ Either <code>"records"</code> (number of occurrences per cell) or <code>"species
 <dt id="arg-field">field<a class="anchor" aria-label="anchor" href="#arg-field"></a></dt>
 <dd><p>(character or named vector) columns in <code>occ</code> to summarize
 (e.g., traits). If a named vector is provided, names must match species
-in <code>occ</code>. Only used when <code>summary = "species"</code>. Default is <code>NULL</code>.</p></dd>
+in <code>occ</code>. Used to summarize traits or flags in both 'species' and 'records'
+modes. Default is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-fun">fun<a class="anchor" aria-label="anchor" href="#arg-fun"></a></dt>
@@ -140,7 +147,7 @@ in <code>occ</code>. Only used when <code>summary = "species"</code>. Default is
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>(logical) whether to print messages about the progress.
-Default is <code>TRUE</code></p></dd>
+Default is <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -152,28 +159,40 @@ density, or trait summary.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Load example data</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"occurrences"</span>, package <span class="op">=</span> <span class="st">"RuHere"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">occ</span> <span class="op">&lt;-</span> <span class="va">occurrences</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"occ_flagged"</span>, package <span class="op">=</span> <span class="st">"RuHere"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Record density map</span></span></span>
-<span class="r-in"><span><span class="va">r_records</span> <span class="op">&lt;-</span> <span class="fu">richness_here</span><span class="op">(</span><span class="va">occ</span>, res <span class="op">=</span> <span class="fl">0.5</span>, summary <span class="op">=</span> <span class="st">"records"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r_records</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Mapping the density of records</span></span></span>
+<span class="r-in"><span><span class="va">r_density</span> <span class="op">&lt;-</span> <span class="fu">richness_here</span><span class="op">(</span><span class="va">occ_flagged</span>, summary <span class="op">=</span> <span class="st">"records"</span>, res <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ggrid_here.html">ggrid_here</a></span><span class="op">(</span><span class="va">r_density</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="richness_here-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Species richness map masked by Brazil's border</span></span></span>
-<span class="r-in"><span><span class="va">world</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/wrap.html" class="external-link">unwrap</a></span><span class="op">(</span><span class="fu">RuHere</span><span class="fu">::</span><span class="va"><a href="world.html">world</a></span><span class="op">)</span> <span class="co"># Import world map</span></span></span>
-<span class="r-in"><span><span class="va">brazil</span> <span class="op">&lt;-</span> <span class="va">world</span><span class="op">[</span><span class="va">world</span><span class="op">$</span><span class="va">name</span> <span class="op">==</span> <span class="st">"brazil"</span>,<span class="op">]</span> <span class="co"># Subset Brazil</span></span></span>
-<span class="r-in"><span><span class="va">r_richness</span> <span class="op">&lt;-</span> <span class="fu">richness_here</span><span class="op">(</span><span class="va">occ</span>, res <span class="op">=</span> <span class="fl">1</span>, mask <span class="op">=</span> <span class="va">brazil</span>, summary <span class="op">=</span> <span class="st">"species"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r_richness</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># We can also summarize key features:</span></span></span>
+<span class="r-in"><span><span class="co"># 1. Identifying problematic regions by summing error flags</span></span></span>
+<span class="r-in"><span><span class="co"># We create a variable to store the sum of logical flags (TRUE = 1, FALSE = 0)</span></span></span>
+<span class="r-in"><span><span class="va">total_flags</span> <span class="op">&lt;-</span> <span class="va">occ_flagged</span><span class="op">$</span><span class="va">florabr_flag</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>               <span class="va">occ_flagged</span><span class="op">$</span><span class="va">wcvp_flag</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>               <span class="va">occ_flagged</span><span class="op">$</span><span class="va">iucn_flag</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>               <span class="va">occ_flagged</span><span class="op">$</span><span class="va">cultivated_flag</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>               <span class="va">occ_flagged</span><span class="op">$</span><span class="va">inaturalist_flag</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>               <span class="va">occ_flagged</span><span class="op">$</span><span class="va">duplicated_flag</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">total_flags</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">occ_flagged</span><span class="op">$</span><span class="va">record_id</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Using summary = "records" with to see the average accumulation of errors</span></span></span>
+<span class="r-in"><span><span class="co"># with fun = mean to see the average accumulation</span></span></span>
+<span class="r-in"><span><span class="va">r_flags</span> <span class="op">&lt;-</span> <span class="fu">richness_here</span><span class="op">(</span><span class="va">occ_flagged</span>, summary <span class="op">=</span> <span class="st">"records"</span>,</span></span>
+<span class="r-in"><span>                         field <span class="op">=</span> <span class="va">total_flags</span>,</span></span>
+<span class="r-in"><span>                         fun <span class="op">=</span> <span class="va">mean</span>, res <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ggrid_here.html">ggrid_here</a></span><span class="op">(</span><span class="va">r_flags</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="richness_here-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Average trait value per cell</span></span></span>
-<span class="r-in"><span><span class="va">sim_mass</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">occ</span><span class="op">$</span><span class="va">species</span><span class="op">)</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sim_mass</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">occ</span><span class="op">$</span><span class="va">species</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># 2. Or we can summarize organisms traits spatially</span></span></span>
+<span class="r-in"><span><span class="co"># Simulating a trait (e.g., mass) for each unique record</span></span></span>
+<span class="r-in"><span><span class="va">spp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">occ_flagged</span><span class="op">$</span><span class="va">record_id</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sim_mass</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">spp</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">50</span><span class="op">)</span>, <span class="va">spp</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">r_trait</span> <span class="op">&lt;-</span> <span class="fu">richness_here</span><span class="op">(</span><span class="va">occ</span>, res <span class="op">=</span> <span class="fl">0.5</span>, summary <span class="op">=</span> <span class="st">"species"</span>, mask <span class="op">=</span> <span class="va">brazil</span>,</span></span>
-<span class="r-in"><span>                         field <span class="op">=</span> <span class="va">sim_mass</span>, fun <span class="op">=</span> <span class="va">mean</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r_trait</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r_trait</span> <span class="op">&lt;-</span> <span class="fu">richness_here</span><span class="op">(</span><span class="va">occ_flagged</span>, summary <span class="op">=</span> <span class="st">"records"</span>,</span></span>
+<span class="r-in"><span>                         field <span class="op">=</span> <span class="va">sim_mass</span>, fun <span class="op">=</span> <span class="va">mean</span>, res <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ggrid_here.html">ggrid_here</a></span><span class="op">(</span><span class="va">r_trait</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="richness_here-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
