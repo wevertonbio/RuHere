@@ -118,7 +118,8 @@ and reduces the strong sampling bias around Curitiba. We explore
 different distance thresholds in the next section.
 
   
-\## Selecting the best distance to thin records
+
+## Selecting the best distance to thin records
 
 A key question is determining the optimal thinning distance, since we
 rarely have sufficient biological justification for choosing a specific
@@ -263,7 +264,7 @@ plot_env_bins(b, x_var = "bio_1", y_var = "bio_12",
 
 ![](sampling_bias_files/figure-html/unnamed-chunk-11-1.png)  
 
-We can see that Several records fall into the same block, meaning they
+We can see that several records fall into the same block, meaning they
 are environmentally similar and therefore redundant. Let’s flag these
 redundant records using
 [`thin_env()`](https://wevertonbio.github.io/RuHere/reference/thin_env.md):

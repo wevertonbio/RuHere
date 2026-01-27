@@ -173,7 +173,11 @@ the remaining records.</p>
 <p>The thinned dataset (in green) produces a more spatially uniform
 heatmap and reduces the strong sampling bias around Curitiba. We explore
 different distance thresholds in the next section.</p>
-<p><br> ## Selecting the best distance to thin records</p>
+<p><br></p>
+</div>
+<div class="section level2">
+<h2 id="selecting-the-best-distance-to-thin-records">Selecting the best distance to thin records<a class="anchor" aria-label="anchor" href="#selecting-the-best-distance-to-thin-records"></a>
+</h2>
 <p>A key question is determining the optimal thinning distance, since we
 rarely have sufficient biological justification for choosing a specific
 value. To address this issue, we adapted the approach of <a href="https://onlinelibrary.wiley.com/doi/10.1111/ddi.13215" class="external-link">Velazco et
@@ -289,7 +293,7 @@ can visualize the grid for any two variables:</p>
 <span><span class="fu"><a href="../reference/plot_env_bins.html">plot_env_bins</a></span><span class="op">(</span><span class="va">b</span>, x_var <span class="op">=</span> <span class="st">"bio_1"</span>, y_var <span class="op">=</span> <span class="st">"bio_12"</span>,</span>
 <span>              xlab <span class="op">=</span> <span class="st">"Temperature"</span>, ylab <span class="op">=</span> <span class="st">"Precipitation"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_bias_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"><br></p>
-<p>We can see that Several records fall into the same block, meaning
+<p>We can see that several records fall into the same block, meaning
 they are environmentally similar and therefore redundant. Let’s flag
 these redundant records using <code><a href="../reference/thin_env.html">thin_env()</a></code>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">

@@ -451,11 +451,13 @@ separate panel by setting <code>facet_wrap = TRUE</code>:</p>
 <h3 id="get-consensus-across-multiple-flags">Get consensus across multiple flags<a class="anchor" aria-label="anchor" href="#get-consensus-across-multiple-flags"></a>
 </h3>
 <p>We can obtain a consensus across multiple flags. The consensus can be
-computed in two ways: - A record is considered valid (<code>TRUE</code>)
-<strong>only if all specified flags are valid</strong>
-(<code>TRUE</code>). - A record is considered valid (<code>TRUE</code>)
-<strong>if at least one specified flag is valid</strong>
-(<code>TRUE</code>).</p>
+computed in two ways:</p>
+<ul>
+<li>A record is considered valid (<code>TRUE</code>) <strong>only if all
+specified flags are valid</strong> (<code>TRUE</code>).</li>
+<li>A record is considered valid (<code>TRUE</code>) <strong>if at least
+one specified flag is valid</strong> (<code>TRUE</code>).</li>
+</ul>
 <p>As an example, we compute a consensus using the <em>cultivated</em>
 and <em>year</em> flags. In this case, cultivated records are flagged as
 invalid only if they were also collected before 1980. By default, the
@@ -498,11 +500,15 @@ provided for plotting:</p>
 <code><a href="../reference/remove_flagged.html">remove_flagged()</a></code> function to clean the dataset. This
 function is highly flexible, allowing you to filter records based on the
 flags generated and also apply manual overrides using the
-<code>force_keep</code> and <code>force_remove</code> arguments. +
-<code>force_keep</code>: a vector of record IDs that you want to keep in
-the dataset, even if they were flagged as FALSE by one of the functions.
-+ <code>force_remove</code>: a vector of record IDs that you want to
-exclude, even if they passed all automated tests (flagged as TRUE).</p>
+<code>force_keep</code> and <code>force_remove</code> arguments:</p>
+<ul>
+<li><p><code>force_keep</code>: a vector of record IDs that you want to
+keep in the dataset, even if they were flagged as FALSE by one of the
+functions.</p></li>
+<li><p><code>force_remove</code>: a vector of record IDs that you want
+to exclude, even if they passed all automated tests (flagged as
+TRUE).</p></li>
+</ul>
 <p>As an example, suppose that the records <code>"gbif_17175"</code> and
 <code>"gbif_6108"</code> are known, valid herbarium specimens that were
 mistakenly flagged as cultivated, while <code>"gbif_5516"</code> and

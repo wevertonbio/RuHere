@@ -403,9 +403,12 @@ ggmap_here(occ, species = "Araucaria angustifolia",
 ### Get consensus across multiple flags
 
 We can obtain a consensus across multiple flags. The consensus can be
-computed in two ways: - A record is considered valid (`TRUE`) **only if
-all specified flags are valid** (`TRUE`). - A record is considered valid
-(`TRUE`) **if at least one specified flag is valid** (`TRUE`).
+computed in two ways:
+
+- A record is considered valid (`TRUE`) **only if all specified flags
+  are valid** (`TRUE`).
+- A record is considered valid (`TRUE`) **if at least one specified flag
+  is valid** (`TRUE`).
 
 As an example, we compute a consensus using the *cultivated* and *year*
 flags. In this case, cultivated records are flagged as invalid only if
@@ -457,10 +460,13 @@ After flagging potential issues, we can use the
 function to clean the dataset. This function is highly flexible,
 allowing you to filter records based on the flags generated and also
 apply manual overrides using the `force_keep` and `force_remove`
-arguments. + `force_keep`: a vector of record IDs that you want to keep
-in the dataset, even if they were flagged as FALSE by one of the
-functions. + `force_remove`: a vector of record IDs that you want to
-exclude, even if they passed all automated tests (flagged as TRUE).
+arguments:
+
+- `force_keep`: a vector of record IDs that you want to keep in the
+  dataset, even if they were flagged as FALSE by one of the functions.
+
+- `force_remove`: a vector of record IDs that you want to exclude, even
+  if they passed all automated tests (flagged as TRUE).
 
 As an example, suppose that the records `"gbif_17175"` and `"gbif_6108"`
 are known, valid herbarium specimens that were mistakenly flagged as

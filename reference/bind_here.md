@@ -33,7 +33,7 @@ A `data.frame` containing all occurrence records combined.
 When `fill = TRUE`, columns not shared among the input data frames are
 added and filled with `NA`, ensuring that all columns align before
 binding. Internally, this function uses
-[`data.table::rbindlist()`](https://rdatatable.gitlab.io/data.table/reference/rbindlist.html)
+[`data.table::rbindlist()`](https://rdrr.io/pkg/data.table/man/rbindlist.html)
 for efficient row binding.
 
 ## Examples
