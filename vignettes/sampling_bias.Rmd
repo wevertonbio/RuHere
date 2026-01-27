@@ -93,6 +93,7 @@ ggmap_here(occ_thin, size_points = 0.5, heatmap = heatmap_thin_geo)
 The thinned dataset (in green) produces a more spatially uniform heatmap and reduces the strong sampling bias around Curitiba. We explore different distance thresholds in the next section.
 
 <br>
+
 ## Selecting the best distance to thin records
 
 A key question is determining the optimal thinning distance, since we rarely have sufficient biological justification for choosing a specific value. To address this issue, we adapted the approach of [Velazco et al. (2020)](https://onlinelibrary.wiley.com/doi/10.1111/ddi.13215), which computes spatial autocorrelation (Moran’s I) for datasets generated using different thinning distances and selects the distance that yields the lowest average spatial autocorrelation.
@@ -171,7 +172,7 @@ plot_env_bins(b, x_var = "bio_1", y_var = "bio_12",
 ```
 <br>
 
-We can see that Several records fall into the same block, meaning they are environmentally similar and therefore redundant. Let’s flag these redundant records using `thin_env()`:
+We can see that several records fall into the same block, meaning they are environmentally similar and therefore redundant. Let’s flag these redundant records using `thin_env()`:
 
 ```{r}
 # Flag records that are close to each other in the enviromnetal space
