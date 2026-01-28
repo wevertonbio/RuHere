@@ -268,6 +268,13 @@ Run install.packages('pbapply')", call. = FALSE)
       return(occ_spec_i)
     }
 
+    # Remove columns, if it alrady exists
+    to_remove <- intersect(c("states", "inside_br", "inside_state"),
+                           colnames(occ_spec_i))
+    if(length(to_remove) > 0){
+      occ_spec_i[, to_remove] <- NULL
+    }
+
     occ_i <- florabr::filter_florabr(data = d_i, occ = occ_spec_i,
                                      species = species,
                                      long = long,

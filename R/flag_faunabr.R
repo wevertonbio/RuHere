@@ -228,6 +228,14 @@ Run install.packages('pbapply')", call. = FALSE)
 
     occ_spec_i <- occ_in[occ_in[[species]] == i, ]
 
+    # Remove columns, if it alrady exists
+    to_remove <- intersect(c("states", "inside_br", "inside_state"),
+                           colnames(occ_spec_i))
+    if(length(to_remove) > 0){
+      occ_spec_i[, to_remove] <- NULL
+    }
+
+
     if(nrow(d_i) == 0) {
       occ_spec_i$faunabr_flag <- FALSE
       return(occ_spec_i)
