@@ -57,9 +57,11 @@ should have the accepted species in the first column and their synonyms in
 the second. See \code{RuHere::synonys} for an example.
 }
 \examples{
+\dontrun{
 # Define a directory to save the data
 data_dir <- tempdir() # Here, a temporary directory
 
 # Download species distribution information from BIEN
 bien_here(data_dir = data_dir, species = "Handroanthus serratifolius")
+}
 }

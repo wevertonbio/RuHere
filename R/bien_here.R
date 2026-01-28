@@ -45,11 +45,13 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' # Define a directory to save the data
 #' data_dir <- tempdir() # Here, a temporary directory
 #'
 #' # Download species distribution information from BIEN
 #' bien_here(data_dir = data_dir, species = "Handroanthus serratifolius")
+#' }
 bien_here <- function(data_dir,
                       species,
                       synonyms = NULL,
