@@ -526,7 +526,7 @@ by federal states (`by_state = TRUE`, default) and/or countries
 (`by_country= TRUE`, default).
 
 ``` r
-# Flag using florabr-defined range
+# Flag using faunabr-defined range
 occ <- flag_faunabr(data_dir = dataset_dir, #Directory where dataset was saved
                     occ = occ)
 ```

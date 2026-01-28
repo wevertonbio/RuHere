@@ -13,6 +13,10 @@ remove_invalid_coordinates(
   long = "decimalLongitude",
   lat = "decimalLatitude",
   return_invalid = TRUE,
+  save_invalid = FALSE,
+  output_dir = NULL,
+  overwrite = FALSE,
+  output_format = ".gz",
   verbose = FALSE
 )
 ```
@@ -35,6 +39,27 @@ remove_invalid_coordinates(
 
   (logical) whether to return a list containing the valid and invalid
   coordinates. Default is TRUE.
+
+- save_invalid:
+
+  (logical) whether to save the invalid (removed) records. If `TRUE`, an
+  `output_dir` must be provided. Default is `FALSE`.
+
+- output_dir:
+
+  (character) path to an existing directory where records with invalid
+  coordinates will be saved. Only used when `save_invalid = TRUE`.
+
+- overwrite:
+
+  (logical) whether to overwrite existing files in `output_dir`. Only
+  used when `save_invalid = TRUE`. Default is `FALSE`.
+
+- output_format:
+
+  (character) output format for saving removed records. Options are
+  `".csv"` or `".gz"`. Only used when `save_invalid = TRUE`. Default is
+  `".gz"`.
 
 - verbose:
 
