@@ -10,6 +10,15 @@
 #' @param lat (character) column name in `occ` with the latitude.
 #' @param return_invalid (logical) whether to return a list containing the valid
 #' and invalid coordinates. Default is TRUE.
+#' @param save_invalid (logical) whether to save the invalid (removed) records.
+#' If `TRUE`, an `output_dir` must be provided. Default is `FALSE`.
+#' @param output_dir (character) path to an existing directory where records with
+#' invalid coordinates will be saved. Only used when `save_invalid = TRUE`.
+#' @param overwrite (logical)  whether to overwrite existing files in
+#' `output_dir`. Only used when `save_invalid = TRUE`. Default is `FALSE`.
+#' @param output_format (character) output format for saving removed records.
+#' Options are `".csv"` or `".gz"`. Only used when `save_invalid = TRUE`.
+#' Default is `".gz"`.
 #' @param verbose (logical) whether to print messages about function progress.
 #' Default is `TRUE`.
 #'
@@ -24,6 +33,8 @@
 #'
 #' @export
 #'
+#' @importFrom data.table fwrite
+#'
 #' @examples
 #' # Create fake data example
 #' occ <- data.frame("species" = "spp",
@@ -35,6 +46,10 @@ remove_invalid_coordinates <- function(occ,
                                        long = "decimalLongitude",
                                        lat = "decimalLatitude",
                                        return_invalid = TRUE,
+                                       save_invalid = FALSE,
+                                       output_dir = NULL,
+                                       overwrite = FALSE,
+                                       output_format = ".gz",
                                        verbose = FALSE){
   ## ---- Argument checking -----------------------------------------------------
 
@@ -74,6 +89,33 @@ remove_invalid_coordinates <- function(occ,
          call. = FALSE)
   }
 
+  # save_invalid must be logical
+  if (!is.logical(save_invalid) || length(save_invalid) != 1) {
+    stop("'save_invalid' must be TRUE or FALSE.", call. = FALSE)
+  }
+
+  # check saving options
+  if (save_invalid) {
+
+    # output_dir must exist
+    if (is.null(output_dir) || !is.character(output_dir)) {
+      stop("You must provide a valid 'output_dir' when 'save_invalid = TRUE'.", call. = FALSE)
+    }
+    if (!dir.exists(output_dir)) {
+      stop("'output_dir' does not exist: ", output_dir, call. = FALSE)
+    }
+
+    # check output_format
+    if (!output_format %in% c(".csv", ".gz")) {
+      stop("'output_format' must be either '.csv' or '.gz'.", call. = FALSE)
+    }
+
+    # overwrite must be logical
+    if (!is.logical(overwrite) || length(overwrite) != 1) {
+      stop("'overwrite' must be TRUE or FALSE.", call. = FALSE)
+    }
+  }
+
 
   # Force numeric
   if(!inherits(occ[[long]], "numeric"))
@@ -90,7 +132,25 @@ remove_invalid_coordinates <- function(occ,
     stop("All coordinates are invalid!")
   }
 
+
   if(sum(invalid) > 0){
+    # Save invalid?
+    if(save_invalid){
+      # Build path to sabe
+      p <- file.path(output_dir, paste0("Invalid coordinates", output_format))
+      #Check if files exists
+      if(!overwrite){
+        f_exists <- file.exists(p)
+        if(f_exists){
+          stop("'Invalid coordinates' already exists in '", output_dir, "'.\n",
+               "Delete the file, change the folder or set 'overwrite = TRUE'")
+        }
+      }
+      # Save
+      data.table::fwrite(x = occ[invalid,], file = p)
+    }
+
+    # Return?
     if(return_invalid){
       return(list(valid = occ[!invalid,],
                   invalid = occ[invalid,]))

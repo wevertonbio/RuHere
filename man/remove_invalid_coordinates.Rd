@@ -9,6 +9,10 @@ remove_invalid_coordinates(
   long = "decimalLongitude",
   lat = "decimalLatitude",
   return_invalid = TRUE,
+  save_invalid = FALSE,
+  output_dir = NULL,
+  overwrite = FALSE,
+  output_format = ".gz",
   verbose = FALSE
 )
 }
@@ -21,6 +25,19 @@ remove_invalid_coordinates(
 
 \item{return_invalid}{(logical) whether to return a list containing the valid
 and invalid coordinates. Default is TRUE.}
+
+\item{save_invalid}{(logical) whether to save the invalid (removed) records.
+If \code{TRUE}, an \code{output_dir} must be provided. Default is \code{FALSE}.}
+
+\item{output_dir}{(character) path to an existing directory where records with
+invalid coordinates will be saved. Only used when \code{save_invalid = TRUE}.}
+
+\item{overwrite}{(logical)  whether to overwrite existing files in
+\code{output_dir}. Only used when \code{save_invalid = TRUE}. Default is \code{FALSE}.}
+
+\item{output_format}{(character) output format for saving removed records.
+Options are \code{".csv"} or \code{".gz"}. Only used when \code{save_invalid = TRUE}.
+Default is \code{".gz"}.}
 
 \item{verbose}{(logical) whether to print messages about function progress.
 Default is \code{TRUE}.}
