@@ -360,7 +360,7 @@ table(occ$species, occ$florabr_flag)
 When flagging records using *faunabr*, you can specify the origin (`"native"`, `"cryptogenic"`, or `"exotic"`, default is `NULL`, meaning all origins are considered), as well as whether to validate occurrences by federal states (`by_state = TRUE`, default) and/or countries (`by_country= TRUE`, default). 
 
 ```{r}
-# Flag using florabr-defined range
+# Flag using faunabr-defined range
 occ <- flag_faunabr(data_dir = dataset_dir, #Directory where dataset was saved
                     occ = occ)
 ```
