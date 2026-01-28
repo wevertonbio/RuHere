@@ -198,7 +198,7 @@ summarize_flags <- function(occ = NULL,
     }
 
     occ_list <- lapply(occ_list, data.table::fread)
-    occ <- data.frame(data.table::rbindlist(occ_list))
+    occ <- data.frame(data.table::rbindlist(occ_list, fill = TRUE))
   }
 
 
@@ -206,6 +206,7 @@ summarize_flags <- function(occ = NULL,
     flags <- c("correct_country", "correct_state", "florabr", "faunabr",
                "wcvp", "iucn", "bien", "cultivated", "inaturalist",
                "duplicated", "thin_env", "thin_geo", "consensus",
+               "Invalid coordinates",
                # Froom CoordinateCleaner
                ".val", ".equ", ".zer", ".cap", ".cen", ".sea", ".urb", ".otl",
                ".gbf", ".inst", ".aohi")
