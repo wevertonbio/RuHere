@@ -52,7 +52,7 @@
 #' @export
 #'
 #' @importFrom terra extract
-#' @importFrom data.table setDT setorderv fifelse
+#' @importFrom data.table as.data.table copy setorderv fifelse
 #' @examples
 #' # Load example data
 #' data("occurrences", package = "RuHere")
@@ -83,8 +83,13 @@ flag_duplicates <- function(occ,
   }
 
   # Force occ to be a dataframe
-  if(!inherits(occ, "data.table"))
-    data.table::setDT(occ)
+  if (inherits(occ, "data.table")) {
+    occ <- data.table::copy(occ)
+  } else if (inherits(occ, "data.frame")) {
+    occ <- data.table::as.data.table(occ)
+  } else {
+    stop("'occ' must be a data.frame or data.table")
+  }
 
   # basic column names (species, long, lat) must be character and exist in occ
   if (!inherits(species, "character")) {
