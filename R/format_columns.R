@@ -228,8 +228,8 @@ Run install.packages('pbapply')", call. = FALSE)
             colnames(d))
   }
 
-  if(is.null(check_encoding)){
-    check_encoding <- intersect(c("collectionCode", "catalogNumber",
+  if(check_encoding){
+    to_check <- intersect(c("collectionCode", "catalogNumber",
                  "country", "stateProvince", "municipality",
                  "locality", "eventDate", "recordedBy", "identifiedBy",
                  "basisOfRecord", "datasetName"),
@@ -348,11 +348,11 @@ Run install.packages('pbapply')", call. = FALSE)
   }
 
   #Fix encoding
-  if(!is.null(check_encoding)){
+  if(check_encoding){
     if(verbose)
       message("Fixing encoding of character columns...")
 
-  for (column in check_encoding){
+  for (column in to_check){
     if(verbose)
       message("Checking encoding of ", column)
     #Check if is valid
