@@ -213,6 +213,11 @@ standardize_states <- function(occ,
                                names(occ)[which(names(occ) == state_column) - 1]
                                )
   occ_final <- relocate_after(occ_final, "state_suggested", state_column)
+  occ_final <- relocate_after(occ_final, "state_suggested", state_column)
+  occ_final <- relocate_before(occ_final, country_column,
+                               names(occ)[which(names(occ) == country_column) - 1]
+                               )
+
 
   # Fill NA?
   if(lookup_na_state){

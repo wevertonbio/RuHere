@@ -187,11 +187,12 @@ Run install.packages('pbapply')", call. = FALSE)
   unique_xy[as.numeric(names(test_state)), "correct_state"] <- test_state
 
   #Merge occ again
-  #Merge occ again
+  nm <- names(occ) # Get column names to sort columns
+  # Merge
   occ <- merge(occ, unique_xy, by = c(long, lat, state_column), all.x = TRUE,
                sort = FALSE)
   # Relocate
-  nm <- names(occ)
+  nm <- unique(c(nm, names(occ)))
   i <- match(state_column, nm)
   j <- match("correct_state", nm)
   new_order <- append(nm[-j], nm[j], after = i)

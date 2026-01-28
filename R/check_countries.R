@@ -176,15 +176,16 @@ Run install.packages('pbapply')", call. = FALSE)
   unique_xy[as.numeric(names(test_country)), "correct_country"] <- test_country
 
   #Merge occ again
+  nm <- names(occ) # Get column names to sort columns
+  # Merge
   occ <- merge(occ, unique_xy, by = c(long, lat, country_column), all.x = TRUE,
-               sort = FALSE)
+                sort = FALSE)
   # Relocate
-  nm <- names(occ)
+  nm <- unique(c(nm, names(occ)))
   i <- match(country_column, nm)
   j <- match("correct_country", nm)
   new_order <- append(nm[-j], nm[j], after = i)
   occ <- occ[, new_order]
-
 
   if(verbose){
     message(sum(!occ$correct_country, na.rm = TRUE), " records fall in wrong countries")
