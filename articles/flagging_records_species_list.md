@@ -544,7 +544,7 @@ table(occ$species, occ$faunabr_flag)
 #>                             
 #>                              FALSE TRUE
 #>   Araucaria angustifolia         0    0
-#>   Cyanocorax caeruleus           4 1031
+#>   Cyanocorax caeruleus           8 1027
 #>   Handroanthus serratifolius     0    0
 ```
 
@@ -618,7 +618,7 @@ per flag and a `ggplot2` object displaying this summary as a bar plot:
 # Data.frame summarizing the number of records per flag
 flag_summary$df_summary
 #>              Flag    n
-#> 2 Outside faunabr    4
+#> 2 Outside faunabr    8
 #> 1 Outside florabr   30
 #> 5    Outside BIEN   69
 #> 3    Outside WCVP  157

@@ -61,4 +61,6 @@ flag_colors
 #>                         "red"                        "gold" 
 #>              Forcibly removed                     consensus 
 #>                      "gray25"                   "chocolate" 
+#>           Invalid coordinates 
+#>                     "#8B0A50" 
 ```
