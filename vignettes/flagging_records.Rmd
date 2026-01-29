@@ -368,7 +368,7 @@ The function can also read flagged occurrence data that were saved when records 
 ```{r, out.width = "80%"}
 # Summarize removed records using saved data
 flag_summary_dir <- summarize_flags(flagged_dir = path_to_save, 
-                                    show_no_flagged = FALSE, #Do not show unflagged records
+                                    show_unflagged = FALSE, # Do not show unflagged records
                                     fill = "firebrick") # Change color of bars
 flag_summary_dir$plot_summary
 ```

@@ -12,7 +12,8 @@ summarize_flags(
   additional_flags = NULL,
   names_additional_flags = NULL,
   plot = TRUE,
-  show_no_flagged = TRUE,
+  show_unflagged = TRUE,
+  occ_unflagged = NULL,
   fill = "#0072B2",
   sort = TRUE,
   decreasing = TRUE,
@@ -48,8 +49,12 @@ if \code{additional_flags} is not NULL.}
 \item{plot}{(logical) whether to return a \code{ggplot2} bar plot showing the
 number of flagged records. Default is \code{TRUE}.}
 
-\item{show_no_flagged}{(logical) whether to include the number of unflagged
+\item{show_unflagged}{(logical) whether to include the number of unflagged
 records in the plot. Default is \code{TRUE}.}
+
+\item{occ_unflagged}{(data.frame or data.table) an optional dataset
+containing unflagged occurrence records. Only applicable if \code{occ} is NULL and
+\code{show_unflagged} is \code{TRUE}.}
 
 \item{fill}{(character) fill color for the bar plot. Default is \code{"#0072B2"}.}
 

@@ -23,8 +23,11 @@
 #' if `additional_flags` is not NULL.
 #' @param plot (logical) whether to return a `ggplot2` bar plot showing the
 #' number of flagged records. Default is `TRUE`.
-#' @param show_no_flagged (logical) whether to include the number of unflagged
+#' @param show_unflagged (logical) whether to include the number of unflagged
 #' records in the plot. Default is `TRUE`.
+#' @param occ_unflagged (data.frame or data.table) an optional dataset
+#' containing unflagged occurrence records. Only applicable if `occ` is NULL and
+#' `show_unflagged` is `TRUE`.
 #' @param fill (character) fill color for the bar plot. Default is `"#0072B2"`.
 #' @param sort (logical) whether to sort bars according to the number of records.
 #' Default is `TRUE`.
@@ -84,7 +87,8 @@ summarize_flags <- function(occ = NULL,
                             additional_flags = NULL,
                             names_additional_flags = NULL,
                             plot = TRUE,
-                            show_no_flagged = TRUE,
+                            show_unflagged = TRUE,
+                            occ_unflagged = NULL,
                             fill = "#0072B2",
                             sort = TRUE,
                             decreasing = TRUE,
@@ -160,7 +164,7 @@ summarize_flags <- function(occ = NULL,
   # logical arguments
   logical_args <- list(
     plot = plot,
-    show_no_flagged = show_no_flagged,
+    show_unflagged = show_unflagged,
     sort = sort,
     decreasing = decreasing,
     add_n = add_n
@@ -189,24 +193,21 @@ summarize_flags <- function(occ = NULL,
     stop("`theme_plot` must be a ggplot2 theme object.", call. = FALSE)
   }
 
+  if(!is.null(flagged_dir) && show_unflagged && is.null(occ_unflagged))
+    stop("Missing 'occ_unflagged'. When 'show_unflagged' is TRUE and a 'flagged_dir' is provided, you must supply the data.frame with unflagged records.")
 
-  if(is.null(occ) & !is.null(flagged_dir)){
-    occ_list <- list.files(flagged_dir, pattern = output_format,
-                           full.names = TRUE)
-    if(length(occ_list) == 0){
-      stop("There are no files with the ", output_format, " format in the specified 'flagged_dir' directory")
-    }
+  # occ_unflagged
+  if(!is.null(occ_unflagged)){
+    if (!inherits(occ_unflagged, c("data.frame", "data.table"))) {
+      stop("`occ_unflagged` must be a data.frame or data.table.", call. = FALSE)
+      }}
 
-    occ_list <- lapply(occ_list, data.table::fread)
-    occ <- data.frame(data.table::rbindlist(occ_list, fill = TRUE))
-  }
-
-
+  # Set flags
   if(all(flags == "all")){
     flags <- c("correct_country", "correct_state", "florabr", "faunabr",
                "wcvp", "iucn", "bien", "cultivated", "inaturalist",
                "duplicated", "thin_env", "thin_geo", "consensus",
-               "Invalid coordinates",
+               "fossil", "year", "invalid_coordinates",
                # Froom CoordinateCleaner
                ".val", ".equ", ".zer", ".cap", ".cen", ".sea", ".urb", ".otl",
                ".gbf", ".inst", ".aohi")
@@ -214,7 +215,8 @@ summarize_flags <- function(occ = NULL,
 
   # Add _flags for some columns
   to_paste <- c("florabr", "faunabr", "wcvp", "iucn", "bien", "cultivated",
-                "inaturalist", "duplicated", "thin_env", "thin_geo", "consensus")
+                "inaturalist", "duplicated", "thin_env", "thin_geo",
+                "consensus", "fossil", "year")
 
   flags[flags %in% to_paste] <- paste0(flags[flags %in% to_paste], "_flag")
 
@@ -222,9 +224,6 @@ summarize_flags <- function(occ = NULL,
   if(!is.null(additional_flags)){
     flags <- c(flags, additional_flags)
   }
-
-  # Subset columns
-  flags <- intersect(flags, colnames(occ))
 
   # Names of flags
   flag_names <- getExportedValue("RuHere", "flag_names")
@@ -239,26 +238,57 @@ summarize_flags <- function(occ = NULL,
     flag_names <- c(flag_names, names_additional_flags)
   }
 
-  # Create dataframe with flags
-  d <- data.frame(
-    Flag = flags,
-    n = colSums(!occ[, flags], na.rm = TRUE),
-    row.names = NULL)
+  # Get n records from directory
+  if(is.null(occ) & !is.null(flagged_dir)){
+    occ_files <- list.files(flagged_dir, pattern = output_format,
+                           full.names = TRUE)
+    if(length(occ_files) == 0){
+      stop("There are no files with the ", output_format, " format in the specified 'flagged_dir' directory")
+    }
+    occ_list <- lapply(occ_files, function(x) nrow(data.table::fread(x)))
+    names(occ_list) <- sub(output_format, "", basename(occ_files))
+
+    # Subset flags
+    flags <- intersect(names(occ_list), flag_names)
+    occ_list <- occ_list[flags]
+    d <- data.frame(Flag = names(occ_list),
+                    n = unlist(occ_list), row.names = NULL)
+
+    if(show_unflagged){
+      d <- rbind(d,
+                 data.frame(Flag = "Valid",
+                            n = nrow(occ_unflagged)))
+      flag_names <- c(flag_names, "Unflagged" = "Valid")
+    }
 
 
-  if(show_no_flagged){
-    d <- rbind(d,
-               data.frame(Flag = "Unflagged",
-                          n = nrow(occ[rowSums(occ[flags]) == length(flags), ])))
-    flag_names <- c(flag_names, "Unflagged" = "Valid")
+    # Get n records from occurrences
+  } else if(!is.null(occ) & is.null(flagged_dir)){
+    # Subset columns
+    flags <- intersect(flags, colnames(occ))
+
+    # Create dataframe with flags
+    d <- data.frame(
+      Flag = flags,
+      n = colSums(!occ[, flags], na.rm = TRUE),
+      row.names = NULL)
+
+
+    if(show_unflagged){
+      occ[, flags][is.na(occ[, flags])] <- TRUE
+      d <- rbind(d,
+                 data.frame(Flag = "Unflagged",
+                            n = nrow(occ[rowSums(occ[flags]) == length(flags), ])))
+      flag_names <- c(flag_names, "Unflagged" = "Valid")
+    }
+
+    # Remove flags with 0 records
+    d <- d[d$n > 0,]
+
+    # Update flag names
+    match_flags <- flag_names[match(unique(d$Flag), names(flag_names))]
+    d$Flag <- match_flags[d$Flag]
   }
-
-  # Remove flags with 0 records
-  d <- d[d$n > 0,]
-
-  # Update flag names
-  match_flags <- flag_names[match(unique(d$Flag), names(flag_names))]
-  d$Flag <- match_flags[d$Flag]
 
   # Sort
   if(sort){
