@@ -544,14 +544,15 @@ per flag and a `ggplot2` object displaying this summary as a bar plot:
 ``` r
 # Data.frame summarizing the number of records per flag
 flag_summary$df_summary
-#>                        Flag    n
-#> 4            Equal lat-long    3
-#> 5             Zero lat-long    6
-#> 8  Biodiversity Institution    6
-#> 7 Country-Province centroid    7
-#> 1                Cultivated   14
-#> 6          Capital centroid   23
-#> 9                     Valid 4025
+#>                         Flag    n
+#> 6             Equal lat-long    3
+#> 7              Zero lat-long    6
+#> 10  Biodiversity Institution    6
+#> 9  Country-Province centroid    7
+#> 1                 Cultivated   14
+#> 8           Capital centroid   23
+#> 4                Out of year  198
+#> 11                     Valid 3837
 ```
 
   
@@ -571,7 +572,7 @@ in
 ``` r
 # Summarize removed records using saved data
 flag_summary_dir <- summarize_flags(flagged_dir = path_to_save, 
-                                    show_no_flagged = FALSE, #Do not show unflagged records
+                                    show_unflagged = FALSE, # Do not show unflagged records
                                     fill = "firebrick") # Change color of bars
 flag_summary_dir$plot_summary
 ```

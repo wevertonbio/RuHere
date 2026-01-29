@@ -62,7 +62,8 @@ records flagged by each flagging function.</p>
 <span>  additional_flags <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  names_additional_flags <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  show_no_flagged <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show_unflagged <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  occ_unflagged <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  fill <span class="op">=</span> <span class="st">"#0072B2"</span>,</span>
 <span>  sort <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  decreasing <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -116,9 +117,15 @@ if <code>additional_flags</code> is not NULL.</p></dd>
 number of flagged records. Default is <code>TRUE</code>.</p></dd>
 
 
-<dt id="arg-show-no-flagged">show_no_flagged<a class="anchor" aria-label="anchor" href="#arg-show-no-flagged"></a></dt>
+<dt id="arg-show-unflagged">show_unflagged<a class="anchor" aria-label="anchor" href="#arg-show-unflagged"></a></dt>
 <dd><p>(logical) whether to include the number of unflagged
 records in the plot. Default is <code>TRUE</code>.</p></dd>
+
+
+<dt id="arg-occ-unflagged">occ_unflagged<a class="anchor" aria-label="anchor" href="#arg-occ-unflagged"></a></dt>
+<dd><p>(data.frame or data.table) an optional dataset
+containing unflagged occurrence records. Only applicable if <code>occ</code> is NULL and
+<code>show_unflagged</code> is <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-fill">fill<a class="anchor" aria-label="anchor" href="#arg-fill"></a></dt>

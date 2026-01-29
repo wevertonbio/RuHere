@@ -623,7 +623,7 @@ flag_summary$df_summary
 #> 5    Outside BIEN   69
 #> 3    Outside WCVP  157
 #> 4    Outside IUCN  210
-#> 6           Valid 4080
+#> 6           Valid 3799
 ```
 
   

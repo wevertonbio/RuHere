@@ -14,7 +14,8 @@ summarize_flags(
   additional_flags = NULL,
   names_additional_flags = NULL,
   plot = TRUE,
-  show_no_flagged = TRUE,
+  show_unflagged = TRUE,
+  occ_unflagged = NULL,
   fill = "#0072B2",
   sort = TRUE,
   decreasing = TRUE,
@@ -67,10 +68,16 @@ summarize_flags(
   (logical) whether to return a `ggplot2` bar plot showing the number of
   flagged records. Default is `TRUE`.
 
-- show_no_flagged:
+- show_unflagged:
 
   (logical) whether to include the number of unflagged records in the
   plot. Default is `TRUE`.
+
+- occ_unflagged:
+
+  (data.frame or data.table) an optional dataset containing unflagged
+  occurrence records. Only applicable if `occ` is NULL and
+  `show_unflagged` is `TRUE`.
 
 - fill:
 
