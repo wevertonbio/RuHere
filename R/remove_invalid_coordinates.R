@@ -146,8 +146,12 @@ remove_invalid_coordinates <- function(occ,
                "Delete the file, change the folder or set 'overwrite = TRUE'")
         }
       }
+      # Subset
+      occ_invalid <- occ[invalid,]
+      # Create column
+      occ_invalid$invalid_coordinates <-  FALSE
       # Save
-      data.table::fwrite(x = occ[invalid,], file = p)
+      data.table::fwrite(x = occ_invalid, file = p)
     }
 
     # Return?
