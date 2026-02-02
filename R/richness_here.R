@@ -28,10 +28,14 @@
 #' @param summary (character) the type of summary to calculate.
 #' Either `"records"` (number of occurrences per cell) or `"species"`
 #' (number of unique species per cell). Default is `"records"`.
-#' @param field (character or named vector) columns in `occ` to summarize
+#' @param field (character or named vector) column in `occ` to summarize
 #' (e.g., traits). If a named vector is provided, names must match species
 #' in `occ`. Used to summarize traits or flags in both 'species' and 'records'
 #' modes. Default is `NULL`.
+#' @param field_name (character) a custom name used to build the legend when
+#' plotting the result with `ggrid_here()`. Only applicable if `field` is
+#' provided. Default is NULL, meaning it will use the same column name provided
+#' in `field`.
 #' @param fun (function) the function to aggregate `field` values
 #' (e.g., `mean`, `max`, `sum`). Default is `mean`.
 #' @param verbose (logical) whether to print messages about the progress.
@@ -45,44 +49,46 @@
 #' @export
 #'
 #' @examples
-#' # Load example data
-#' data("occ_flagged", package = "RuHere")
+#'# Load example data
+#'data("occ_flagged", package = "RuHere")
 #'
-#' # Mapping the density of records
-#' r_density <- richness_here(occ_flagged, summary = "records", res = 0.5)
-#' ggrid_here(r_density)
+#'# Mapping the density of records
+#'r_density <- richness_here(occ_flagged, summary = "records", res = 0.5)
+#'ggrid_here(r_density)
 #'
-#' # We can also summarize key features:
-#' # 1. Identifying problematic regions by summing error flags
-#' # We create a variable to store the sum of logical flags (TRUE = 1, FALSE = 0)
-#' total_flags <- occ_flagged$florabr_flag +
-#'                occ_flagged$wcvp_flag +
-#'                occ_flagged$iucn_flag +
-#'                occ_flagged$cultivated_flag +
-#'                occ_flagged$inaturalist_flag +
-#'                occ_flagged$duplicated_flag
-#' names(total_flags) <- occ_flagged$record_id
+#'# We can also summarize key features:
+#'# 1. Identifying problematic regions by summing error flags
+#'# We create a variable to store the sum of logical flags (TRUE = 1, FALSE = 0)
+#'total_flags <- occ_flagged$florabr_flag +
+#'  occ_flagged$wcvp_flag +
+#'  occ_flagged$iucn_flag +
+#'  occ_flagged$cultivated_flag +
+#'  occ_flagged$inaturalist_flag +
+#'  occ_flagged$duplicated_flag
+#'names(total_flags) <- occ_flagged$record_id
 #'
-#' # Using summary = "records" with to see the average accumulation of errors
-#' # with fun = mean to see the average accumulation
-#' r_flags <- richness_here(occ_flagged, summary = "records",
-#'                          field = total_flags,
-#'                          fun = mean, res = 0.5)
-#' ggrid_here(r_flags)
+#'# Using summary = "records" with to see the average accumulation of errors
+#'# with fun = mean to see the average accumulation
+#'r_flags <- richness_here(occ_flagged, summary = "records",
+#'                         field = total_flags,
+#'                         field_name = "Number of flags",
+#'                         fun = mean, res = 0.5)
+#'ggrid_here(r_flags)
 #'
-#' # 2. Or we can summarize organisms traits spatially
-#' # Simulating a trait (e.g., mass) for each unique record
-#' spp <- unique(occ_flagged$record_id)
-#' sim_mass <- setNames(runif(length(spp), 10, 50), spp)
+#'# 2. Or we can summarize organisms traits spatially
+#'# Simulating a trait (e.g., mass) for each unique record
+#'spp <- unique(occ_flagged$record_id)
+#'sim_mass <- setNames(runif(length(spp), 10, 50), spp)
 #'
-#' r_trait <- richness_here(occ_flagged, summary = "records",
-#'                          field = sim_mass, fun = mean, res = 0.5)
-#' ggrid_here(r_trait)
-#'
+#'r_trait <- richness_here(occ_flagged, summary = "records",
+#'                         field = sim_mass, field_name = "Mass",
+#'                         fun = mean, res = 0.5)
+#'ggrid_here(r_trait)
 richness_here <- function(occ, species = "species", long = "decimalLongitude",
                           lat = "decimalLatitude", records = "record_id",
                           raster_base = NULL, res = NULL, crs = "epsg:4326",
                           mask = NULL, summary = "records", field = NULL,
+                          field_name = NULL,
                           fun = mean, verbose = TRUE) {
 
   if (!inherits(occ, "data.frame")) stop("`occ` must be a data.frame.", call. = FALSE)
@@ -167,6 +173,10 @@ richness_here <- function(occ, species = "species", long = "decimalLongitude",
         }
         trait_cols <- field
       }
+
+      if(is.null(field_name)){
+        field_name <- field
+        }
     }
 
     occ_coords <- terra::geom(pts)[, c("x", "y")]
@@ -189,7 +199,7 @@ richness_here <- function(occ, species = "species", long = "decimalLongitude",
       for(col in trait_cols) pts_unique[[col]] <- occ_unique[[col]]
       r_final <- terra::rasterize(pts_unique, r_template, field = trait_cols,
                                   fun = fun, na.rm = TRUE)
-      names(r_final) <- trait_cols
+      names(r_final) <- field_name
     }
 
   } else if (summary == "species") {
