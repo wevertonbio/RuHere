@@ -38,7 +38,8 @@ ggmap_here(
   ocean_fill = "aliceblue",
   extension = NULL,
   facet_wrap = FALSE,
-  theme_plot = ggplot2::theme_minimal()
+  theme_plot = ggplot2::theme_minimal(),
+  ...
 )
 ```
 
@@ -178,6 +179,11 @@ ggmap_here(
 
   (theme) a `ggplot2` theme object. Default is
   [`ggplot2::theme_minimal()`](https://ggplot2.tidyverse.org/reference/ggtheme.html).
+
+- ...:
+
+  other arguments passed to
+  [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html).
 
 ## Value
 

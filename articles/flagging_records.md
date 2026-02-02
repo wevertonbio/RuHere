@@ -629,20 +629,21 @@ ggrid_here(r_records)
 ### Mapping data quality flags
 
 You can use the `field` argument to summarize specific quality flags. In
-this example, we create a density map of records flagged by year. This
-helps identify if certain regions have a higher prevalence of cultivated
-specimens.
+this example, we create a density map of records flagged because they
+are cultivated. This helps identify if certain regions have a higher
+prevalence of cultivated specimens.
 
 ``` r
 # Converting flag columns to numeric for plotting
 # We invert the logic so that errors (FALSE) become 1 and clean data (TRUE) become 0
-occ$year_flag_num <- as.numeric(!occ$year_flag)
+occ$cultivated_flag_num <- as.numeric(!occ$cultivated_flag)
 
 # Create the grid 
 r_flagged <- richness_here(occ, 
                            summary = "records", 
-                           field = "year_flag_num", 
-                           fun = mean,
+                           field = "cultivated_flag_num", 
+                           field_name = "Cultivated records",
+                           fun = sum,
                            res = 2)
 
 # Plot with ggrid_here
@@ -659,11 +660,6 @@ can replace the flag column with any numeric trait (e.g., plant height,
 seed mass) or environmental variable. By changing the fun argument to
 mean or median, you can easily generate maps of average trait values
 across space.
-
-Additionally, if you provide a vector of multiple column names to the
-`field` argument,
-[`ggrid_here()`](https://wevertonbio.github.io/RuHere/reference/ggrid_here.md)
-will automatically generate a multi-panel plot.
 
 In the next vignette, we demonstrate how to use expert-derived
 information from other biodiversity databases, such as the IUCN and the

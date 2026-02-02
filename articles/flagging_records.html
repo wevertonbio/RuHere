@@ -645,18 +645,19 @@ resolution in decimal degrees.</p>
 </h3>
 <p>You can use the <code>field</code> argument to summarize specific
 quality flags. In this example, we create a density map of records
-flagged by year. This helps identify if certain regions have a higher
-prevalence of cultivated specimens.</p>
+flagged because they are cultivated. This helps identify if certain
+regions have a higher prevalence of cultivated specimens.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Converting flag columns to numeric for plotting</span></span>
 <span><span class="co"># We invert the logic so that errors (FALSE) become 1 and clean data (TRUE) become 0</span></span>
-<span><span class="va">occ</span><span class="op">$</span><span class="va">year_flag_num</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="op">!</span><span class="va">occ</span><span class="op">$</span><span class="va">year_flag</span><span class="op">)</span></span>
+<span><span class="va">occ</span><span class="op">$</span><span class="va">cultivated_flag_num</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="op">!</span><span class="va">occ</span><span class="op">$</span><span class="va">cultivated_flag</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create the grid </span></span>
 <span><span class="va">r_flagged</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/richness_here.html">richness_here</a></span><span class="op">(</span><span class="va">occ</span>, </span>
 <span>                           summary <span class="op">=</span> <span class="st">"records"</span>, </span>
-<span>                           field <span class="op">=</span> <span class="st">"year_flag_num"</span>, </span>
-<span>                           fun <span class="op">=</span> <span class="va">mean</span>,</span>
+<span>                           field <span class="op">=</span> <span class="st">"cultivated_flag_num"</span>, </span>
+<span>                           field_name <span class="op">=</span> <span class="st">"Cultivated records"</span>,</span>
+<span>                           fun <span class="op">=</span> <span class="va">sum</span>,</span>
 <span>                           res <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plot with ggrid_here</span></span>
@@ -670,9 +671,6 @@ flags here, you can replace the flag column with any numeric trait
 (e.g., plant height, seed mass) or environmental variable. By changing
 the fun argument to mean or median, you can easily generate maps of
 average trait values across space.</p>
-<p>Additionally, if you provide a vector of multiple column names to the
-<code>field</code> argument, <code><a href="../reference/ggrid_here.html">ggrid_here()</a></code> will
-automatically generate a multi-panel plot.</p>
 <p>In the next vignette, we demonstrate how to use expert-derived
 information from other biodiversity databases, such as the IUCN and the
 World Checklist of Vascular Plants, to identify records that fall

@@ -72,6 +72,7 @@ reprojection to match reference rasters.</p>
 <span>  mask <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  summary <span class="op">=</span> <span class="st">"records"</span>,</span>
 <span>  field <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  field_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  fun <span class="op">=</span> <span class="va">mean</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -134,10 +135,17 @@ Either <code>"records"</code> (number of occurrences per cell) or <code>"species
 
 
 <dt id="arg-field">field<a class="anchor" aria-label="anchor" href="#arg-field"></a></dt>
-<dd><p>(character or named vector) columns in <code>occ</code> to summarize
+<dd><p>(character or named vector) column in <code>occ</code> to summarize
 (e.g., traits). If a named vector is provided, names must match species
 in <code>occ</code>. Used to summarize traits or flags in both 'species' and 'records'
 modes. Default is <code>NULL</code>.</p></dd>
+
+
+<dt id="arg-field-name">field_name<a class="anchor" aria-label="anchor" href="#arg-field-name"></a></dt>
+<dd><p>(character) a custom name used to build the legend when
+plotting the result with <code><a href="ggrid_here.html">ggrid_here()</a></code>. Only applicable if <code>field</code> is
+provided. Default is NULL, meaning it will use the same column name provided
+in <code>field</code>.</p></dd>
 
 
 <dt id="arg-fun">fun<a class="anchor" aria-label="anchor" href="#arg-fun"></a></dt>
@@ -170,18 +178,19 @@ density, or trait summary.</p>
 <span class="r-in"><span><span class="co"># 1. Identifying problematic regions by summing error flags</span></span></span>
 <span class="r-in"><span><span class="co"># We create a variable to store the sum of logical flags (TRUE = 1, FALSE = 0)</span></span></span>
 <span class="r-in"><span><span class="va">total_flags</span> <span class="op">&lt;-</span> <span class="va">occ_flagged</span><span class="op">$</span><span class="va">florabr_flag</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>               <span class="va">occ_flagged</span><span class="op">$</span><span class="va">wcvp_flag</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>               <span class="va">occ_flagged</span><span class="op">$</span><span class="va">iucn_flag</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>               <span class="va">occ_flagged</span><span class="op">$</span><span class="va">cultivated_flag</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>               <span class="va">occ_flagged</span><span class="op">$</span><span class="va">inaturalist_flag</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>               <span class="va">occ_flagged</span><span class="op">$</span><span class="va">duplicated_flag</span></span></span>
+<span class="r-in"><span> <span class="va">occ_flagged</span><span class="op">$</span><span class="va">wcvp_flag</span> <span class="op">+</span></span></span>
+<span class="r-in"><span> <span class="va">occ_flagged</span><span class="op">$</span><span class="va">iucn_flag</span> <span class="op">+</span></span></span>
+<span class="r-in"><span> <span class="va">occ_flagged</span><span class="op">$</span><span class="va">cultivated_flag</span> <span class="op">+</span></span></span>
+<span class="r-in"><span> <span class="va">occ_flagged</span><span class="op">$</span><span class="va">inaturalist_flag</span> <span class="op">+</span></span></span>
+<span class="r-in"><span> <span class="va">occ_flagged</span><span class="op">$</span><span class="va">duplicated_flag</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">total_flags</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">occ_flagged</span><span class="op">$</span><span class="va">record_id</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Using summary = "records" with to see the average accumulation of errors</span></span></span>
 <span class="r-in"><span><span class="co"># with fun = mean to see the average accumulation</span></span></span>
 <span class="r-in"><span><span class="va">r_flags</span> <span class="op">&lt;-</span> <span class="fu">richness_here</span><span class="op">(</span><span class="va">occ_flagged</span>, summary <span class="op">=</span> <span class="st">"records"</span>,</span></span>
-<span class="r-in"><span>                         field <span class="op">=</span> <span class="va">total_flags</span>,</span></span>
-<span class="r-in"><span>                         fun <span class="op">=</span> <span class="va">mean</span>, res <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                        field <span class="op">=</span> <span class="va">total_flags</span>,</span></span>
+<span class="r-in"><span>                        field_name <span class="op">=</span> <span class="st">"Number of flags"</span>,</span></span>
+<span class="r-in"><span>                        fun <span class="op">=</span> <span class="va">mean</span>, res <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="ggrid_here.html">ggrid_here</a></span><span class="op">(</span><span class="va">r_flags</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="richness_here-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
@@ -191,10 +200,10 @@ density, or trait summary.</p>
 <span class="r-in"><span><span class="va">sim_mass</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">spp</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">50</span><span class="op">)</span>, <span class="va">spp</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">r_trait</span> <span class="op">&lt;-</span> <span class="fu">richness_here</span><span class="op">(</span><span class="va">occ_flagged</span>, summary <span class="op">=</span> <span class="st">"records"</span>,</span></span>
-<span class="r-in"><span>                         field <span class="op">=</span> <span class="va">sim_mass</span>, fun <span class="op">=</span> <span class="va">mean</span>, res <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                        field <span class="op">=</span> <span class="va">sim_mass</span>, field_name <span class="op">=</span> <span class="st">"Mass"</span>,</span></span>
+<span class="r-in"><span>                        fun <span class="op">=</span> <span class="va">mean</span>, res <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="ggrid_here.html">ggrid_here</a></span><span class="op">(</span><span class="va">r_trait</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="richness_here-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
