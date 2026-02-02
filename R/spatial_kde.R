@@ -111,6 +111,9 @@ spatial_kde <- function(occ,
          call. = FALSE)
   }
 
+  if(inherits(occ, "data.table"))
+    occ <- as.data.frame(occ)
+
   # Convert occ to points
   if(!inherits(occ, "SpatVector")){
     pts <- spatialize(occ = occ, long = long, lat = lat, crs = crs)
