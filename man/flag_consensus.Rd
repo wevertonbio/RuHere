@@ -46,9 +46,10 @@ specified flag is valid (\code{TRUE}).
 }
 }
 \details{
-The following flags are available: correct_country, correct_state, cultivated,
-fossil, inaturalist, faunabr, florabr, wcvp, iucn, duplicated, thin, .val,
-.equ, .zer, .cap, .cen, .sea, .urb, .otl, .gbf, .inst, and .aohi.
+The following flags are available:  correct_country, correct_state,
+cultivated, fossil, inaturalist, faunabr, florabr, wcvp, iucn, duplicated,
+thin_geo, thin_env, year, .val, .equ, .zer, .cap, .cen, .sea, .urb, .otl,
+.gbf, .inst, and .aohi.
 }
 \examples{
 # Load example data
