@@ -29,7 +29,8 @@ ggmap_here(
   ocean_fill = "aliceblue",
   extension = NULL,
   facet_wrap = FALSE,
-  theme_plot = ggplot2::theme_minimal()
+  theme_plot = ggplot2::theme_minimal(),
+  ...
 )
 }
 \arguments{
@@ -116,6 +117,8 @@ using \code{ggplot2::facet_wrap()}. Default is \code{FALSE}.}
 
 \item{theme_plot}{(theme) a \code{ggplot2} theme object. Default is
 \code{ggplot2::theme_minimal()}.}
+
+\item{...}{other arguments passed to \code{ggplot2::theme()}.}
 }
 \value{
 An ggplot object displaying flagged and optionally unflagged occurrence

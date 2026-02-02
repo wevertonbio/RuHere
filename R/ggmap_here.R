@@ -68,6 +68,7 @@
 #' using `ggplot2::facet_wrap()`. Default is `FALSE`.
 #' @param theme_plot (theme) a `ggplot2` theme object. Default is
 #' `ggplot2::theme_minimal()`.
+#' @param ... other arguments passed to `ggplot2::theme()`.
 #'
 #' @details
 #' This function expects an occurrence dataset that has already been processed
@@ -141,7 +142,8 @@ ggmap_here <- function(occ,
                        ocean_fill = "aliceblue",
                        extension = NULL,
                        facet_wrap = FALSE,
-                       theme_plot = ggplot2::theme_minimal()
+                       theme_plot = ggplot2::theme_minimal(),
+                       ...
                        ) {
   ##-----------------------------##
   ##   ARGUMENT CHECKING        ##
@@ -490,7 +492,8 @@ ggmap_here <- function(occ,
       ggplot2::xlab("Longitude") + ggplot2::ylab("Latitude") +
       theme_plot +
       ggplot2::theme(panel.background = ggplot2::element_rect(fill = ocean_fill,
-                                                              colour = NA))
+                                                              colour = NA),
+                     ...)
 
     if(facet_wrap){
       p <- p + ggplot2::facet_wrap(.~Flag) +
@@ -526,7 +529,8 @@ ggmap_here <- function(occ,
       ggplot2::xlab("Longitude") + ggplot2::ylab("Latitude") +
       theme_plot +
       ggplot2::theme(panel.background = ggplot2::element_rect(fill = ocean_fill,
-                                                              colour = NA))
+                                                              colour = NA),
+                     ...)
 
     if(facet_wrap){
       p <- p + ggplot2::facet_wrap(.~Flag) +
