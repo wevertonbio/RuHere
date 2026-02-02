@@ -229,7 +229,7 @@ flag_geo_moran <- function(occ,
       stop("Column '", prioritary_column, "' not found in 'occ'.", call. = FALSE)
     }
 
-    if (!inherits(occ[[prioritary_column]], "numeric")) {
+    if (!inherits(occ[[prioritary_column]], c("numeric", "integer"))) {
       stop("'prioritary_column' must refer to a numeric column.", call. = FALSE)
     }
   }
