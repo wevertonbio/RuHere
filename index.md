@@ -42,7 +42,7 @@ The main functions of the package are presented in the figure below:
 
 ![Figure 1. Overview of the RuHere workflow for species occurrence data
 preparation and
-validation](https://github.com/wevertonbio/other_files/blob/2fabc002895126ac0043c40f43ee7346fa6e69dc/figures/RuHere_Workflow.png?raw=true)
+validation](https://github.com/wevertonbio/other_files/blob/e85358481a9109105378175046db25e97bc7190c/figures/RuHere_Workflow.png?raw=true)
 
 Figure 1. Overview of the RuHere workflow for species occurrence data
 preparation and validation
