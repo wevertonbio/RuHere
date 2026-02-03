@@ -128,7 +128,7 @@ using \code{thin_env()} function.
 \item Apply the selection criteria:
 \itemize{
 \item Keep only datasets with at least \code{min_records} records.
-\item Keep only datasets with Moran's I ≥ \code{min_imoran}.
+\item Keep only datasets with Moran's I greater or equal to \code{min_imoran}.
 \item Round Moran's I to two decimal places and select the dataset with the
 \strong{25th lowest} autocorrelation.
 \item If more than on dataset is selected, choose the dataset retaining

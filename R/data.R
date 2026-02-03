@@ -190,8 +190,8 @@
 #' The coordinate errors include:
 #'
 #' \itemize{
-#'   \item **Inverted longitude**: multiplying longitude by −1.
-#'   \item **Inverted latitude**: multiplying latitude by −1.
+#'   \item **Inverted longitude**: multiplying longitude by -1.
+#'   \item **Inverted latitude**: multiplying latitude by -1.
 #'   \item **Both coordinates inverted**.
 #'   \item **Swapped coordinates**: (`lon`, `lat`) → (`lat`, `lon`).
 #'   \item **Swapped + inverted** in four combinations:

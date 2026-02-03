@@ -27,8 +27,8 @@ This dataset is intended for automated testing of functions such as
 The coordinate errors include:
 
 \itemize{
-\item \strong{Inverted longitude}: multiplying longitude by −1.
-\item \strong{Inverted latitude}: multiplying latitude by −1.
+\item \strong{Inverted longitude}: multiplying longitude by -1.
+\item \strong{Inverted latitude}: multiplying latitude by -1.
 \item \strong{Both coordinates inverted}.
 \item \strong{Swapped coordinates}: (\code{lon}, \code{lat}) → (\code{lat}, \code{lon}).
 \item \strong{Swapped + inverted} in four combinations:

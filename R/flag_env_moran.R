@@ -68,7 +68,7 @@
 #' 4. Summarize autocorrelation per dataset (mean, median, min, or max).
 #' 5. Apply the selection criteria:
 #'    - Keep only datasets with at least `min_records` records.
-#'    - Keep only datasets with Moran's I ≥ `min_imoran`.
+#'    - Keep only datasets with Moran's I greater or equal to `min_imoran`.
 #'    - Round Moran's I to two decimal places and select the dataset with the
 #'      **25th lowest** autocorrelation.
 #'    - If more than on dataset is selected, choose the dataset retaining
