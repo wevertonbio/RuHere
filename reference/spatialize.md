@@ -35,9 +35,9 @@ spatialize(
 
 - crs:
 
-  (character) the coordinate reference system in one of the following
-  formats: PROJ-string notation, WKT/WKT2, or
-  :` (see `[`?terra::crs`](https://rspatial.github.io/terra/reference/crs.html)`). Default is "epsg:4326".`
+  (character) the coordinate reference system (see
+  [`?terra::crs`](https://rspatial.github.io/terra/reference/crs.html)).
+  Default is "epsg:4326".
 
 - force_numeric:
 
