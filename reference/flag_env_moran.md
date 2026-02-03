@@ -182,7 +182,8 @@ extending the procedure by allowing:
 
     - Keep only datasets with at least `min_records` records.
 
-    - Keep only datasets with Moran's I ≥ `min_imoran`.
+    - Keep only datasets with Moran's I greater or equal to
+      `min_imoran`.
 
     - Round Moran's I to two decimal places and select the dataset with
       the **25th lowest** autocorrelation.

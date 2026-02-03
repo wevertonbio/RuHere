@@ -28,9 +28,9 @@ records with intentionally manipulated coordinates. An additional column
 
 The coordinate errors include:
 
-- **Inverted longitude**: multiplying longitude by −1.
+- **Inverted longitude**: multiplying longitude by -1.
 
-- **Inverted latitude**: multiplying latitude by −1.
+- **Inverted latitude**: multiplying latitude by -1.
 
 - **Both coordinates inverted**.
 
