@@ -22,9 +22,8 @@ longitude values. Default is \code{"decimalLongitude"}.}
 \item{lat}{(character) the name of the column in \code{occ} that contains the
 latitude values. Default is \code{"decimalLatitude"}.}
 
-\item{crs}{(character) the coordinate reference system in one of the
-following formats: PROJ-string notation, WKT/WKT2, or \if{html}{\out{<authority>}}:\if{html}{\out{<code>}}
-(see \code{?terra::crs}). Default is "epsg:4326".}
+\item{crs}{(character) the coordinate reference system (see \code{?terra::crs}).
+Default is "epsg:4326".}
 
 \item{force_numeric}{(logical) whether to coerce the longitude and latitude
 columns to numeric if they are not already. Default is \code{TRUE.}}

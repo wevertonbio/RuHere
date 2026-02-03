@@ -10,9 +10,8 @@
 #' longitude values. Default is `"decimalLongitude"`.
 #' @param lat (character) the name of the column in `occ` that contains the
 #' latitude values. Default is `"decimalLatitude"`.
-#' @param crs (character) the coordinate reference system in one of the
-#' following formats: PROJ-string notation, WKT/WKT2, or <authority>:<code>
-#' (see `?terra::crs`). Default is "epsg:4326".
+#' @param crs (character) the coordinate reference system (see `?terra::crs`).
+#' Default is "epsg:4326".
 #' @param force_numeric (logical) whether to coerce the longitude and latitude
 #' columns to numeric if they are not already. Default is `TRUE.`
 #'
