@@ -1,6 +1,6 @@
 Package: RuHere
 Title: Flags Spatial Errors in Biological Collection Data Using Specialists' Information
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: c(
     person("Weverton C. F.", "Trindade", email = "wevertonf1993@gmail.com", role = c("aut", "cre"),
     comment = c(ORCID = "0000-0003-2045-4555")),
