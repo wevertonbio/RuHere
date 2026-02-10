@@ -6,3 +6,4 @@ scripts_teste/
 ^docs$
 ^pkgdown$
 ^cran-comments\.md$
+^CRAN-SUBMISSION$
