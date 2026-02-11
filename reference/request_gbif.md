@@ -77,12 +77,14 @@ credentials.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 # Prepare data to request GBIF download
 gbif_prepared <- prepare_gbif_download(species = "Araucaria angustifolia")
 # Submit a request to download occurrences
 gbif_requested <- request_gbif(gbif_info = gbif_prepared)
+#> Error in .Internal(getOption(x)) %||% default: supply a username
 # Check progress
 rgbif::occ_download_wait(gbif_requested)
-} # }
+#> Error: object 'gbif_requested' not found
+# }
 ```

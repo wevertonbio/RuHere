@@ -125,10 +125,10 @@ Users may also supply additional logical columns using
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 # Load example data
 data("occ_flagged", package = "RuHere")
 # Visualize flags interactively
 map_here(occ = occ_flagged, label = "record_id")
-} # }
+# }
 ```

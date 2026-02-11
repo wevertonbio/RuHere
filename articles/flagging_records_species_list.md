@@ -352,6 +352,11 @@ avail_ranges <- available_datasets(data_dir = dataset_dir, species = spp,
                                    return_distribution = TRUE)
 # Plot ranges of Araucaria
 ranges_araucaria <- avail_ranges$species_range$`Araucaria angustifolia`
+
+# Save current graphical parameters
+oldpar <- par(no.readonly = TRUE)
+
+# Set the plotting layout (1 row, 3 columns)
 par(mfrow = c(1, 3)) #Create grid
 plot(ranges_araucaria$florabr$states_biomes, main = "florabr")
 plot(ranges_araucaria$iucn, main = "IUCN")
@@ -361,9 +366,9 @@ plot(ranges_araucaria$wcvp, main = "WCVP")
 ![](flagging_records_species_list_files/figure-html/unnamed-chunk-12-1.png)
 
 ``` r
-dev.off() # Reset plotting layout
-#> null device 
-#>           1
+
+# Restore original graphical parameters
+par(oldpar)
 ```
 
   

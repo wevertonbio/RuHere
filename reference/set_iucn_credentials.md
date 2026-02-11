@@ -1,13 +1,13 @@
 # Store SpeciesLink credential
 
-This function stores the IUCN credential (API key) in the R environment.
-This API key is required to obtain distributional data from IUCN.
+This function sets the IUCN API key as an environment variable for the
+current R session. This key is required to obtain distributional data
+from IUCN.
 
 ## Usage
 
 ``` r
-set_iucn_credentials(iucn_key, overwrite = FALSE,
-                            open_Renviron = FALSE, verbose = TRUE)
+set_iucn_credentials(iucn_key, verbose = TRUE)
 ```
 
 ## Arguments
@@ -16,16 +16,6 @@ set_iucn_credentials(iucn_key, overwrite = FALSE,
 
   (character) your IUCN API key. See Details.
 
-- overwrite:
-
-  (logical) whether to overwrite IUCN credential if it already exists.
-  Default is FALSE.
-
-- open_Renviron:
-
-  (logical) whether to open the .Renviron file after saving the
-  credentials. Default is FALSE.
-
 - verbose:
 
   (logical) if `TRUE`, prints messages about the progress and the number
@@ -33,8 +23,7 @@ set_iucn_credentials(iucn_key, overwrite = FALSE,
 
 ## Value
 
-If `open_Renviron` is set to TRUE, it opens the .Renviron file.
-Otherwise, the credentials are saved silently.
+No return value.
 
 ## Details
 

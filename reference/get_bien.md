@@ -186,7 +186,7 @@ chosen `by` value and the corresponding BIEN function.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 # Example: download occurrence records for a single species
 res_test <- get_bien(
     by = "species",
@@ -196,5 +196,6 @@ res_test <- get_bien(
     observation.type = TRUE,
     only.geovalid = TRUE
 )
-} # }
+#> Getting page 1 of records
+# }
 ```

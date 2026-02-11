@@ -51,11 +51,18 @@ directory specified by `data_dir`.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 # Define a directory to save the data
 data_dir <- tempdir() # Here, a temporary directory
 
 # Download the WCVP database
 wcvp_here(data_dir = data_dir)
-} # }
+#> Task 1 of 3: Downloading data from the World Checklist of Vascular Plants (WCVP) repository...
+#> Task 2 of 3: Merging data...
+#> Task 3 of 3: Downloading map from the World Geographical Scheme for Recording Plant Distributions (WGSRPD)...
+#> Data sucessfuly saved in /tmp/RtmpJMI8HV/iucn
+#> Please don't forget to cite:
+#> 
+#> Govaerts, R., Nic Lughadha, E. et al. The World Checklist of Vascular Plants, a continuously updated resource for exploring global plant diversity. Sci Data, 8, 215 (2021). https://doi.org/10.1038/s41597-021-00997-6
+# }
 ```

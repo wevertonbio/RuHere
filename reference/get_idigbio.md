@@ -105,7 +105,7 @@ requested fields.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 ## search for a single species
 records_basic <- get_idigbio(species = "Arecaceae")
 
@@ -123,5 +123,6 @@ records_saved_rds <- get_idigbio(
   save = TRUE,
   compress = TRUE,
   file.format = "rds")
-} # }
+#> Writing /tmp/RtmpJMI8HV/anacardiaceae_records.rds on disk.
+# }
 ```

@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RuHere</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -405,15 +405,20 @@ ranges:</p>
 <span>                                   return_distribution <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co"># Plot ranges of Araucaria</span></span>
 <span><span class="va">ranges_araucaria</span> <span class="op">&lt;-</span> <span class="va">avail_ranges</span><span class="op">$</span><span class="va">species_range</span><span class="op">$</span><span class="va">`Araucaria angustifolia`</span></span>
+<span></span>
+<span><span class="co"># Save current graphical parameters</span></span>
+<span><span class="va">oldpar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>no.readonly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Set the plotting layout (1 row, 3 columns)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="co">#Create grid</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ranges_araucaria</span><span class="op">$</span><span class="va">florabr</span><span class="op">$</span><span class="va">states_biomes</span>, main <span class="op">=</span> <span class="st">"florabr"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ranges_araucaria</span><span class="op">$</span><span class="va">iucn</span>, main <span class="op">=</span> <span class="st">"IUCN"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ranges_araucaria</span><span class="op">$</span><span class="va">wcvp</span>, main <span class="op">=</span> <span class="st">"WCVP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="flagging_records_species_list_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="80%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Reset plotting layout</span></span>
-<span><span class="co">#&gt; null device </span></span>
-<span><span class="co">#&gt;           1</span></span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Restore original graphical parameters</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">oldpar</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 <p>These reference ranges are used by the subsequent functions to
 validate occurrence records: any record falling outside the specified

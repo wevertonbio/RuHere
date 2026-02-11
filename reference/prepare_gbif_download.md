@@ -91,7 +91,7 @@ data.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 gbif_prepared <- prepare_gbif_download(species = "Araucaria angustifolia")
-} # }
+# }
 ```

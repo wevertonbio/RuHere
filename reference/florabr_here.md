@@ -63,11 +63,23 @@ directory specified by `data_dir`.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 # Define a directory to save the data
 data_dir <- tempdir() # Here, a temporary directory
 
 # Download the latest version of the Flora e Funga do Brasil database
 florabr_here(data_dir = data_dir)
-} # }
+#> Getting data from Flora e Funga do Brasil...
+#> Data will be saved in /tmp/RtmpJMI8HV/florabr
+#> Downloading version: 393.422
+#> Merging data. Please wait a moment...
+#> Data will be saved in /tmp/RtmpJMI8HV/florabr
+#> Data downloaded and merged successfully. Final data saved in /tmp/RtmpJMI8HV/florabr/393.422/CompleteBrazilianFlora.rds
+#> Data sucessfuly saved in /tmp/RtmpJMI8HV/florabr
+#> 
+#> Please don't forget to cite:
+#> 
+#> Trindade WCF (2024). florabr: An R package to explore and spatialize species distribution using Flora e Funga do
+#>   Brasil. Applications in Plant Sciences, e11616. doi:10.1002/aps3.11616 <https://doi.org/10.1002/aps3.11616>
+# }
 ```
