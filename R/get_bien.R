@@ -96,7 +96,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Example: download occurrence records for a single species
 #' res_test <- get_bien(
 #'     by = "species",

@@ -4,28 +4,21 @@
 \alias{set_iucn_credentials}
 \title{Store SpeciesLink credential}
 \usage{
-set_iucn_credentials(iucn_key, overwrite = FALSE,
-                            open_Renviron = FALSE, verbose = TRUE)
+set_iucn_credentials(iucn_key, verbose = TRUE)
 }
 \arguments{
 \item{iucn_key}{(character) your IUCN API key. See Details.}
-
-\item{overwrite}{(logical) whether to overwrite IUCN credential if it
-already exists. Default is FALSE.}
-
-\item{open_Renviron}{(logical) whether to open the .Renviron file after
-saving the credentials. Default is FALSE.}
 
 \item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
 the number of species being checked. Default is \code{TRUE}.}
 }
 \value{
-If \code{open_Renviron} is set to TRUE, it opens the .Renviron file. Otherwise,
-the credentials are saved silently.
+No return value.
 }
 \description{
-This function stores the IUCN credential (API key) in the R environment. This
-API key is required to obtain distributional data from IUCN.
+This function sets the IUCN API key as an environment variable for the
+current R session. This key is required to obtain distributional data
+from IUCN.
 }
 \details{
 To check your API key, visit: \url{https://api.iucnredlist.org/users/edit}.

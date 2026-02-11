@@ -27,7 +27,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Define a directory to save the data
 #' data_dir <- tempdir() # Here, a temporary directory
 #'
@@ -66,6 +66,8 @@ wcvp_here <- function(data_dir,
 
   # Set time out
   original_timeout <- getOption("timeout")
+  on.exit(options(timeout = original_timeout))
+
   if(timeout != original_timeout){
     options(timeout = timeout)
   }
@@ -142,12 +144,6 @@ wcvp_here <- function(data_dir,
     unlink(file.path(odir, "wcvp_distribution.csv"), recursive = TRUE, force = TRUE)
     unlink(file.path(odir, "wcvp.zip"), recursive = TRUE, force = TRUE)
     unlink(file.path(odir, "README_WCVP.xlsx"), recursive = TRUE, force = TRUE)
-  }
-
-
-  # Set time out
-  if(original_timeout != timeout){
-    options(timeout = original_timeout)
   }
 
   if(verbose){

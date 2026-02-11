@@ -5,7 +5,6 @@
 \title{Store GBIF credentials}
 \usage{
 set_gbif_credentials(gbif_username, gbif_email, gbif_password,
-                           overwrite = FALSE, open_Renviron = FALSE,
                            verbose = TRUE)
 }
 \arguments{
@@ -15,23 +14,20 @@ set_gbif_credentials(gbif_username, gbif_email, gbif_password,
 
 \item{gbif_password}{(character) your GBIF password.}
 
-\item{overwrite}{(logical) whether to overwrite GBIF credentials if they
-already exist. Default is FALSE.}
-
-\item{open_Renviron}{(logical) whether to open the .Renviron file after
-saving the credentials. Default is FALSE.}
-
 \item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
 the number of species being checked. Default is \code{TRUE}.}
 }
 \value{
-If \code{open_Renviron} is set to TRUE, it opens the .Renviron file. Otherwise,
-the credentials are saved silently.
+No return value.
 }
 \description{
-This function stores the GBIF credentials (username, email and password) in
-the R environment. These credentials are required to retrieve occurrence
-records from GBIF.
+This function sets GBIF credentials (username, email and password) as
+environment variables for the current R session. These credentials are required
+to retrieve occurrence records from GBIF.
+}
+\details{
+To make these credentials permanent, you can manually add them to your
+\code{.Renviron} file.
 }
 \examples{
 \dontrun{

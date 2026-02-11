@@ -59,7 +59,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Define a directory to save the data
 #' data_dir <- tempdir() # Here, a temporary directory
 #'

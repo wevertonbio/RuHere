@@ -59,7 +59,7 @@
 #' @importFrom mapview mapview
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Load example data
 #' data("occ_flagged", package = "RuHere")
 #' # Visualize flags interactively

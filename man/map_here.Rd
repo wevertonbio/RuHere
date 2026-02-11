@@ -91,7 +91,7 @@ Users may also supply additional logical columns using
 (\code{names_additional_flags}) and colors (\code{col_additional_flags}).
 }
 \examples{
-\dontrun{
+\donttest{
 # Load example data
 data("occ_flagged", package = "RuHere")
 # Visualize flags interactively

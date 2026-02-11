@@ -76,7 +76,7 @@ The function also downloads the WGSRPD map used to represent distribution
 regions.
 }
 \examples{
-\dontrun{
+\donttest{
 # Define a directory to save the data
 data_dir <- tempdir() # Here, a temporary directory
 

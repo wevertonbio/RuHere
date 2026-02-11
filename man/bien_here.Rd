@@ -57,7 +57,7 @@ should have the accepted species in the first column and their synonyms in
 the second. See \code{RuHere::synonys} for an example.
 }
 \examples{
-\dontrun{
+\donttest{
 # Define a directory to save the data
 data_dir <- tempdir() # Here, a temporary directory
 

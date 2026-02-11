@@ -298,7 +298,6 @@ flag_geo_moran <- function(occ,
   #Filter using distances
   if (verbose) message("Filtering records...")
   filtered <- suppressMessages(lapply(d, function(x){
-    set.seed(42)
     f_x <- thin_geo(occ = occ, species = species,
                     long = lat, lat = long,
                     d = x,

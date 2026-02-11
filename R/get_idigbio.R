@@ -48,7 +48,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' ## search for a single species
 #' records_basic <- get_idigbio(species = "Arecaceae")
 #'

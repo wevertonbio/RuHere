@@ -165,7 +165,7 @@ network using user-defined filters. The function allows querying by
 taxonomic, geographic, and collection-related parameters.
 }
 \examples{
-\dontrun{
+\donttest{
 # Retrieve records for Arecaceae in São Paulo
 res <- get_specieslink(
   family = "Arecaceae",
@@ -180,7 +180,7 @@ get_specieslink(
   family = "Arecaceae",
   country = "Brazil",
   save = TRUE,
-  dir = "data/",
+  dir = tempdir(),
   filename = "arecaceae_sp",
   compress = TRUE
 )

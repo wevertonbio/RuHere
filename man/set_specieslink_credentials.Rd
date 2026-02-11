@@ -4,28 +4,20 @@
 \alias{set_specieslink_credentials}
 \title{Store SpeciesLink credential}
 \usage{
-set_specieslink_credentials(specieslink_key, overwrite = FALSE,
-                                   open_Renviron = FALSE, verbose = TRUE)
+set_specieslink_credentials(specieslink_key, verbose = TRUE)
 }
 \arguments{
 \item{specieslink_key}{(character) your SpeciesLink API key.}
-
-\item{overwrite}{(logical) whether to overwrite SpeciesLink credential if it
-already exists. Default is FALSE.}
-
-\item{open_Renviron}{(logical) whether to open the .Renviron file after
-saving the credentials. Default is FALSE.}
 
 \item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
 the number of species being checked. Default is \code{TRUE}.}
 }
 \value{
-If \code{open_Renviron} is set to TRUE, it opens the .Renviron file. Otherwise,
-the credentials are saved silently.
+No return value.
 }
 \description{
-This function stores the SpeciesLink credential (API key) in the R
-environment. This API key is required to retrieve occurrence records from
+This function sets the SpeciesLink API key as an environment variable for
+the current R session. This API key is required to retrieve occurrence records from
 SpeciesLink.
 }
 \details{

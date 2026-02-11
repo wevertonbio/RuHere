@@ -119,7 +119,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Retrieve records for Arecaceae in São Paulo
 #' res <- get_specieslink(
 #'   family = "Arecaceae",
@@ -134,7 +134,7 @@
 #'   family = "Arecaceae",
 #'   country = "Brazil",
 #'   save = TRUE,
-#'   dir = "data/",
+#'   dir = tempdir(),
 #'   filename = "arecaceae_sp",
 #'   compress = TRUE
 #' )
@@ -590,7 +590,8 @@ get_specieslink <- function(species = NULL, key = NULL, dir,
     df_lim <- lapply(list_urls,
                      function(x) jsonlite::fromJSON(x)$features$properties)
 
-    df <- do.call("rbind", df_lim)
+    df <- data.table::rbindlist(df_lim, fill = TRUE)
+    df <- as.data.frame(df)
   } else {
     df <- df_json$features$properties
   }

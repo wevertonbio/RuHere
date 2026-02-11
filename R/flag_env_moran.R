@@ -301,7 +301,6 @@ flag_env_moran <- function(occ,
   #Filter using distances
   if(verbose) message("Filtering records...")
   filtered <- suppressMessages(lapply(n_bins, function(x){
-    set.seed(42)
     f_x <- thin_env(occ = occ, species = species,
                     long = long, lat = lat,
                     n_bins = x,

@@ -48,7 +48,7 @@ database, which is required for filtering occurrence records using
 specialists' information via the \code{flag_faunabr()} function.
 }
 \examples{
-\dontrun{
+\donttest{
 # Define a directory to save the data
 data_dir <- tempdir() # Here, a temporary directory
 

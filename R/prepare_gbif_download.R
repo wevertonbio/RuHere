@@ -37,7 +37,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' gbif_prepared <- prepare_gbif_download(species = "Araucaria angustifolia")
 #' }
 prepare_gbif_download <- function(species, rank = NULL, kingdom = NULL,

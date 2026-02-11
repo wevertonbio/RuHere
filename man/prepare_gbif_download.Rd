@@ -64,7 +64,7 @@ Prepare data to request GBIF download
 This function requires an active internet connection to access GBIF data.
 }
 \examples{
-\dontrun{
+\donttest{
 gbif_prepared <- prepare_gbif_download(species = "Araucaria angustifolia")
 }
 }
