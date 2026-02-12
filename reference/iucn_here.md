@@ -96,12 +96,11 @@ distribution regions.
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # Define a directory to save the data
 data_dir <- tempdir() # Here, a temporary directory
 
 # Download species distribution information from IUCN
 iucn_here(data_dir = data_dir, species = "Araucaria angustifolia")
-#> Error in iucn_here(data_dir = data_dir, species = "Araucaria angustifolia"): You must get and save an IUCN API key. Check the function 'set_iucn_credentials()
-# }
+} # }
 ```

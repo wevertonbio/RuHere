@@ -245,7 +245,7 @@ speciesLink.
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # Retrieve records for Arecaceae in São Paulo
 res <- get_specieslink(
   family = "Arecaceae",
@@ -254,12 +254,6 @@ res <- get_specieslink(
   basisOfRecord = "PreservedSpecimen",
   limit = 10
 )
-#> Error in get_specieslink(family = "Arecaceae", country = "Brazil", stateProvince = "São Paulo",     basisOfRecord = "PreservedSpecimen", limit = 10): API key not found.
-#> Please save your API key to your R environment using:
-#>   set_specieslink_credentials("your_api_key")
-#> 
-#> You can find your API key at:
-#> https://specieslink.net/aut/profile/apikeys
 
 # Save results as compressed CSV
 get_specieslink(
@@ -270,11 +264,5 @@ get_specieslink(
   filename = "arecaceae_sp",
   compress = TRUE
 )
-#> Error in get_specieslink(family = "Arecaceae", country = "Brazil", save = TRUE,     dir = tempdir(), filename = "arecaceae_sp", compress = TRUE): API key not found.
-#> Please save your API key to your R environment using:
-#>   set_specieslink_credentials("your_api_key")
-#> 
-#> You can find your API key at:
-#> https://specieslink.net/aut/profile/apikeys
-# }
+} # }
 ```
