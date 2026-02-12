@@ -93,5 +93,6 @@ data.
 ``` r
 # \donttest{
 gbif_prepared <- prepare_gbif_download(species = "Araucaria angustifolia")
+#> Error: Service Unavailable
 # }
 ```
