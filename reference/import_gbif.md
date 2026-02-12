@@ -79,17 +79,14 @@ This function requires an active internet connection.
 ## Examples
 
 ``` r
- # \donttest{
+ if (FALSE) { # \dontrun{
 # Prepare data to request GBIF download
 gbif_prepared <- prepare_gbif_download(species = "Araucaria angustifolia")
 # Submit a request to download occurrences
 gbif_requested <- request_gbif(gbif_info = gbif_prepared)
-#> Error in .Internal(getOption(x)) %||% default: supply a username
 # Check progress
 rgbif::occ_download_wait(gbif_requested)
-#> Error: object 'gbif_requested' not found
 # After succeeded, import data
 occ_gbif <- import_gbif(request_key = gbif_requested)
-#> Error: object 'gbif_requested' not found
-# }
+} # }
 ```
