@@ -119,7 +119,7 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Retrieve records for Arecaceae in São Paulo
 #' res <- get_specieslink(
 #'   family = "Arecaceae",
