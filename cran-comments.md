@@ -61,7 +61,7 @@ For more details:
 -> R/set_gbif_credentials.R; R/set_iucn_credentials.R;
 R/set_specieslink_credentials.R
 
-* Refactored `set_gbif_credentials()`, `set_iucn_credentials()`, and `set_specieslink_credentials()` to avoid accessing or writing to the user's home filespace. 
+* Refactored `set_gbif_credentials()`, `set_iucn_credentials()`, and `set_specieslink_credentials()` to avoid writing to the user's home filespace by default. By default, credentials are now only set for the current session via `Sys.setenv()`. Permanent storage in .Renviron now requires explicit user consent by setting the new argument `permanently = TRUE`.
 
 > Please make sure that you do not change the user's options, par or
 working directory. If you really have to do so within functions, please
