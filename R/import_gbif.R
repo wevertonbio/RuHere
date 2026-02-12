@@ -36,7 +36,7 @@
 #' @export
 #'
 #' @examples
-#'  \donttest{
+#'  \dontrun{
 #' # Prepare data to request GBIF download
 #' gbif_prepared <- prepare_gbif_download(species = "Araucaria angustifolia")
 #' # Submit a request to download occurrences

@@ -49,7 +49,7 @@ For more details:
 
 > \dontrun{} should only be used if the example really cannot be executed (e.g. because of missing additional software, missing API keys, ...) by the user. That's why wrapping examples in \dontrun{} adds the comment ("# Not run:") as a warning for the user. Does not seem necessary. Please replace \dontrun with \donttest. Please unwrap the examples if they are executable in < 5 sec, or replace dontrun{} with \donttest{}.Please put functions which download data in \donttest{}. For more details: <https://contributor.r-project.org/cran-cookbook/general_issues.html#structuring-of-examples>
 
-* Updated the documentation by replacing `\dontrun{}` with `\donttest{}` in all functions involving data downloads (such as `wcvp_here()` and `prepare_gbif_download()`) or interactive visualizations (`map_here()`). The use of `\dontrun{}` was reserved for functions relying in credential-setting, such as `set_gbif_credentials()`, `set_specieslink_credentials()`, `get_specieslink()`, `iucn_here()` and `request_gbif()` as these fall under the policy exception for requiring private API keys.
+* Updated the documentation by replacing `\dontrun{}` with `\donttest{}` in all functions involving data downloads (such as `wcvp_here()` and `prepare_gbif_download()`) or interactive visualizations (`map_here()`). The use of `\dontrun{}` was reserved for functions relying in credential-setting, such as `set_gbif_credentials()`, `set_specieslink_credentials()`, `get_specieslink()`, `iucn_here()`, `request_gbif()`, and `import_gbif()`, as these fall under the policy exception for requiring private API keys.
 
 > Please ensure that your functions do not write by default or in your
 examples/vignettes/tests in the user's home filespace (including the
