@@ -61,15 +61,14 @@ set_specieslink_credentials <- function(specieslink_key, permanently = FALSE,
            call. = FALSE)
   }
 
-  # If do not add permanently...
-  if(!permanently){
-    # Set the key in the current session
-    Sys.setenv(SPECIESLINK_KEY = specieslink_key)
+  # Set the key in the current session
+  Sys.setenv(SPECIESLINK_KEY = specieslink_key)
 
-    if (verbose) {
+  # If do not add permanently...
+  if(!permanently && verbose){
       message("SpeciesLink credential set temporarily for the current session.
 To make it permanent, set 'permanently = TRUE'")
-    }
+
   }
 
   # If add permanently...

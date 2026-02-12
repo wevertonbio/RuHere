@@ -69,16 +69,14 @@ set_gbif_credentials <- function(gbif_username, gbif_email, gbif_password,
            call. = FALSE)
   }
 
-  if(!permanently){
-    # Set the key in the current session
-    Sys.setenv(GBIF_USER = gbif_username)
-    Sys.setenv(GBIF_EMAIL = gbif_email)
-    Sys.setenv(GBIF_PWD = gbif_password)
+  # Set the key in the current session
+  Sys.setenv(GBIF_USER = gbif_username)
+  Sys.setenv(GBIF_EMAIL = gbif_email)
+  Sys.setenv(GBIF_PWD = gbif_password)
 
-    if (verbose) {
+  if(!permanently && verbose){
       message("GBIF credentials set temporarily for the current session.
 To make them permanent, set 'permanently = TRUE'")
-    }
   }
 
   # If add permanently...

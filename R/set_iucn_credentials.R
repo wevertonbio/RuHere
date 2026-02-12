@@ -60,15 +60,13 @@ set_iucn_credentials <- function(iucn_key, permanently = FALSE,
            call. = FALSE)
   }
 
-  if(!permanently){
-    # Set the key in the current session
-    Sys.setenv(IUCN_REDLIST_KEY = iucn_key)
+  # Set the key in the current session
+  Sys.setenv(IUCN_REDLIST_KEY = iucn_key)
 
-    if (verbose) {
-      message("IUCN credentials set temporarily for the current session.
+  if(!permanently && verbose){
+  message("IUCN credentials set temporarily only for the current session.
 To make it permanent, set 'permanently = TRUE'")
     }
-  }
 
   # If add permanently...
   if(permanently){
