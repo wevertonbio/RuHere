@@ -52,7 +52,7 @@ To install the latest release of RuHere use the following line of code:
 
 ``` r
 # Installing from CRAN 
-#install.packages("RuHere")  # in progress
+install.packages("RuHere")
 ```
 
 The development version of RuHere can be installed using the code below.
