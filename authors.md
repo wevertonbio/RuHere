@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/wevertonbio/RuHere/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/wevertonbio/RuHere/blob/v1.0.1/DESCRIPTION)
 
 Trindade W, Caron F (2026). *RuHere: Flags Spatial Errors in Biological
 Collection Data Using Specialists' Information*. R package version
