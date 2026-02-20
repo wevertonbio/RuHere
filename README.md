@@ -1,6 +1,9 @@
 # **RuHere** <img src="man/figures/logo.png" align="right" height="40%" width = "40%"/>
 
 <!-- badges: start -->
+[![CRAN
+status](https://www.r-pkg.org/badges/version/RuHere)](https://CRAN.R-project.org/package=RuHere)
+[![downloads](https://cranlogs.r-pkg.org/badges/grand-total/RuHere)](https://cranlogs.r-pkg.org:443/badges/grand-total/RuHere)
 [![R-CMD-check](https://github.com/wevertonbio/RuHere/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/wevertonbio/RuHere/actions/workflows/R-CMD-check.yaml)
 [![License](https://img.shields.io/badge/license-GPL%20(%3E=%203)-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
 <!-- badges: end -->
