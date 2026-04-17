@@ -89,7 +89,7 @@ remove_flagged <- function(occ,
     if(!is.character(flags)) {
       stop("'flags' must be a character vector.", call. = FALSE)}
     # if flags provided, ensure they exist in occ
-    if (flags != "all") {
+    if (!("all" %in% flags)) {
       missing_flags <- flags[!flags %in% names(occ)]
       if (length(missing_flags) > 0) {
         stop(
@@ -100,7 +100,7 @@ remove_flagged <- function(occ,
       }
     }
 
-    if(flags == "all"){
+    if("all" %in% flags){
       flags <- c("correct_country", "correct_state",
                  "year", "duplicated", "fossil", "cultivated", "inaturalist",
                  "florabr", "faunabr", "wcvp", "iucn", "bien",
