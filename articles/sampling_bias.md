@@ -21,7 +21,7 @@ problematic:
 # Load packages
 library(RuHere)
 library(terra)
-#> terra 1.8.93
+#> terra 1.9.11
 library(mapview)
 
 # Import occurrence data

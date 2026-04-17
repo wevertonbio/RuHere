@@ -70,15 +70,10 @@ data_dir <- tempdir() # Here, a temporary directory
 # Download the latest version of the Flora e Funga do Brazil database
 faunabr_here(data_dir = data_dir)
 #> Getting data from Taxonomic Catalog of the Brazilian Fauna ...
-#> Data will be saved in /tmp/Rtmp1zJtNB/faunabr
-#> Downloading version: 1.47
+#> Data will be saved in /tmp/RtmpfJrqWG/faunabr
+#> Downloading version: 1.50
 #> Merging data. Please wait a moment...
-#> Data will be saved in /tmp/Rtmp1zJtNB/faunabr
-#> Data downloaded and merged successfully. Final data saved in/tmp/Rtmp1zJtNB/faunabr/1.47/CompleteBrazilianFauna.gz
-#> Data sucessfuly saved in /tmp/Rtmp1zJtNB/faunabr
-#> 
-#> Please don't forget to cite:
-#> 
-#> Trindade WCF (2025) faunabr: An R package to explore taxonomic data and map species distributions using the Catalogo Taxonomico da Fauna do Brasil. Zoologia 42: e25027. <https://doi.org/10.1590/S1984-4689.v42.e25027>.
+#> Data will be saved in /tmp/RtmpfJrqWG/faunabr
+#> Error in `[.data.frame`(df_final4, , c(c("id", "taxonID", "species", "subspecies",     "scientificName", "acceptedName", "acceptedNameUsage", "parentNameUsage",     "namePublishedInYear", "higherClassification", "kingdom",     "phylum", "class", "order", "family", "genus", "specificEpithet",     "infraspecificEpithet", "taxonRank", "scientificNameAuthorship",     "taxonomicStatus", "nomenclaturalStatus", "vernacularName",     "lifeForm", "habitat", "origin", "locality", "countryCode",     "modified", "bibliographicCitation", "relationshipOfResource"))): undefined columns selected
 # }
 ```
