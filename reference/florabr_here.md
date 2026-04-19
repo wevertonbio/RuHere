@@ -70,12 +70,12 @@ data_dir <- tempdir() # Here, a temporary directory
 # Download the latest version of the Flora e Funga do Brasil database
 florabr_here(data_dir = data_dir)
 #> Getting data from Flora e Funga do Brasil...
-#> Data will be saved in /tmp/RtmpfJrqWG/florabr
+#> Data will be saved in /tmp/RtmpwXQnG1/florabr
 #> Downloading version: 393.425
 #> Merging data. Please wait a moment...
-#> Data will be saved in /tmp/RtmpfJrqWG/florabr
-#> Data downloaded and merged successfully. Final data saved in /tmp/RtmpfJrqWG/florabr/393.425/CompleteBrazilianFlora.rds
-#> Data sucessfuly saved in /tmp/RtmpfJrqWG/florabr
+#> Data will be saved in /tmp/RtmpwXQnG1/florabr
+#> Data downloaded and merged successfully. Final data saved in /tmp/RtmpwXQnG1/florabr/393.425/CompleteBrazilianFlora.rds
+#> Data sucessfuly saved in /tmp/RtmpwXQnG1/florabr
 #> 
 #> Please don't forget to cite:
 #> 
