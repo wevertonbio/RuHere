@@ -615,3 +615,29 @@
 #' terra::plot(bioclim)
 "worldclim"
 
+#' Amphibian communities from the Atlantic Forest
+#'
+#' @description
+#' A data set of amphibian communities from the Atlantic Forests of South
+#' America sourced from Vancine et al. (2018).
+#'
+#' @format
+#' A \code{data.table} or \code{data.frame} with 8,254 rows and 3 columns:
+#' \describe{
+#'   \item{species}{Character. Scientific name of the virtual species.}
+#'   \item{decimalLongitude}{Numeric. Georeferenced longitude in decimal degrees.}
+#'   \item{decimalLatitude}{Numeric. Georeferenced latitude in decimal degrees.}
+#' }
+#'
+#' @usage
+#' atlantic_amphibians
+#'
+#' @examples
+#' # First rows
+#' head(atlantic_amphibians)
+#'
+#' @references
+#' Vancine et al. 2018. ATLANTIC AMPHIBIANS: a data set of amphibian communities from the Atlantic Forests of South America. Ecology, 99(7), 1692-1692. doi:10.1002/ecy.2392
+#' @seealso
+#' `inventory_completeness()`
+"atlantic_amphibians"

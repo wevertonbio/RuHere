@@ -11,6 +11,17 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// get_rarefaction_components
+NumericVector get_rarefaction_components(CharacterVector x);
+RcppExport SEXP _RuHere_get_rarefaction_components(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_rarefaction_components(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // moranfast
 List moranfast(arma::vec x, arma::mat weight, bool scaled, bool na_rm, std::string alternative);
 RcppExport SEXP _RuHere_moranfast(SEXP xSEXP, SEXP weightSEXP, SEXP scaledSEXP, SEXP na_rmSEXP, SEXP alternativeSEXP) {
@@ -45,6 +56,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_RuHere_get_rarefaction_components", (DL_FUNC) &_RuHere_get_rarefaction_components, 1},
     {"_RuHere_moranfast", (DL_FUNC) &_RuHere_moranfast, 5},
     {"_RuHere_kde_rcpp", (DL_FUNC) &_RuHere_kde_rcpp, 7},
     {NULL, NULL, 0}
