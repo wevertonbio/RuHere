@@ -2,6 +2,9 @@
 
 ## All functions
 
+- [`atlantic_amphibians`](https://wevertonbio.github.io/RuHere/reference/atlantic_amphibians.md)
+  : Amphibian communities from the Atlantic Forest
+
 - [`available_datasets()`](https://wevertonbio.github.io/RuHere/reference/available_datasets.md)
   : Check the available distribution datasets for a set of species
 
@@ -118,6 +121,9 @@
 
 - [`import_gbif()`](https://wevertonbio.github.io/RuHere/reference/import_gbif.md)
   : Import a download requested from GBIF
+
+- [`inventory_completeness()`](https://wevertonbio.github.io/RuHere/reference/inventory_completeness.md)
+  : Estimation of inventory completeness and coverage deficit
 
 - [`iucn_here()`](https://wevertonbio.github.io/RuHere/reference/iucn_here.md)
   : Download species distribution information from IUCN
