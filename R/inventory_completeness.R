@@ -19,21 +19,26 @@
 #' cell to calculate completeness and deficit. If the number of observed species
 #' is lower than this threshold, the function sets completeness = 0 and
 #' deficit = 1. Default is 3.
-#' @param maximum_expected (numeric or character) The upper limit for the estimated
-#' species richness (s_exp). Options include:
+#' @param maximum_expected (numeric or character) The upper limit for the
+#' estimated species richness (s_exp). Options include:
 #' \itemize{
-#'   \item \bold{"double_obs"}: Limits s_exp to twice the maximum observed richness
-#'   found across all cells (recommended for stability).
+#'   \item \bold{"equal_obs"}: Limits s_exp to the maximum observed richness
+#'   (sefault).
+#'   \item \bold{"double_obs"}: Limits s_exp to twice the maximum observed
+#'   richness found across all cells.
 #'   \item \bold{"triple_obs"}: Limits s_exp to three times the maximum observed
 #'   richness global.
 #'   \item \bold{"free"}: No limit is applied to the Chao1 estimator.
-#'   \item \bold{numeric}: A fixed integer defining the maximum number of species
-#'   allowed for any cell.
+#'   \item \bold{numeric}: A fixed integer defining the maximum number of
+#'   species allowed for any cell.
 #' }
 #' This prevents mathematically inflated estimates in cells with extremely
-#' low sampling coverage. Default is "double_obs".
+#' low sampling coverage.
 #' @param remove_NA (logical) whether to remove sampling units in raster_base
 #' where values are NA.
+#' @param fill_NA (logical) if TRUE (default), cells within the `raster_base`
+#' without occurrence records are assigned completeness = 0 and deficit = 1. If
+#' FALSE, these cells remain NA.
 #' @param return (character) metrics to return.. Available options are "n",
 #' "s_obs", "s_exp", "singletons", "doubletons", "completeness" and "deficit". See details.
 #'
@@ -82,9 +87,51 @@ inventory_completeness <- function(occ, species = "species",
                                    lat = "decimalLatitude",
                                    raster_base,
                                    minimum_species = 3,
-                                   maximum_expected = "double_obs",
+                                   maximum_expected = "equal_obs",
                                    remove_NA = TRUE,
+                                   fill_NA = TRUE,
                                    return = c("completeness", "deficit")) {
+
+  #### Start checking ####
+  # --- 1. Class and Basic Type Checks ---
+  if (!inherits(occ, "data.frame"))
+    stop("`occ` must be a data.frame or data.table.", call. = FALSE)
+
+  if (!inherits(raster_base, "SpatRaster"))
+    stop("`raster_base` must be a SpatRaster object.", call. = FALSE)
+
+  if (!is.numeric(minimum_species) || length(minimum_species) != 1)
+    stop("`minimum_species` must be a single numeric value.", call. = FALSE)
+
+  if (!is.logical(remove_NA) || !is.logical(fill_NA))
+    stop("`remove_NA` and `fill_NA` must be logical values (TRUE/FALSE).", call. = FALSE)
+
+  required_cols <- c(species, long, lat)
+  missing_cols <- required_cols[!required_cols %in% names(occ)]
+  if (length(missing_cols) > 0) {
+    stop("The following columns are missing in `occ`: ",
+         paste(missing_cols, collapse = ", "), call. = FALSE)
+  }
+
+  # Validating 'maximum_expected'
+  valid_max_options <- c("equal_obs", "double_obs", "triple_obs", "free")
+  if (!is.numeric(maximum_expected)) {
+    if (!(maximum_expected %in% valid_max_options)) {
+      stop("`maximum_expected` must be numeric or one of: ",
+           paste(valid_max_options, collapse = ", "), call. = FALSE)
+    }
+  }
+
+  # Validating 'return' metrics
+  valid_returns <- c("n", "s_obs", "s_exp", "singletons", "doubletons", "completeness", "deficit")
+  invalid_returns <- return[!return %in% valid_returns]
+  if (length(invalid_returns) > 0) {
+    stop("Invalid metrics in `return`: ",
+         paste(invalid_returns, collapse = ", "), ". \nSupported options: ",
+         paste(valid_returns, collapse = ", "), call. = FALSE)
+  }
+
+  #### End of checking ####
 
   # Set occ as data.table
   dt <- data.table::as.data.table(occ)
@@ -109,6 +156,8 @@ inventory_completeness <- function(occ, species = "species",
   # Get maximum expected
   if (is.numeric(maximum_expected)) {
     max_expected <- maximum_expected
+  } else if (maximum_expected == "equal_obs") {
+    max_expected <- max_s_obs_global
   } else if (maximum_expected == "double_obs") {
     max_expected <- max_s_obs_global * 2
   } else if (maximum_expected == "triple_obs") {
@@ -167,7 +216,7 @@ inventory_completeness <- function(occ, species = "species",
     list(
       n = n_val,
       s_obs = s_obs,
-      s_exp = s_exp_val,
+      s_exp = as.numeric(s_exp_val),
       singletons = f1,
       doubletons = f2,
       completeness = C_hat,
@@ -180,50 +229,24 @@ inventory_completeness <- function(occ, species = "species",
   names(mapa_final) <- return
 
   for(layer in return) {
+    # Criamos o vetor inicial com NAs
     vetor_completo <- rep(NA, terra::ncell(raster_base))
+
+    # If fill NA...
+    if (fill_NA) {
+      is_land <- !is.na(terra::values(raster_base[[1]])) #cells with values
+      if (layer == "completeness") {
+        vetor_completo[is_land] <- 0
+      } else if (layer == "deficit") {
+        vetor_completo[is_land] <- 1
+      } else {
+        vetor_completo[is_land] <- 0 # n, s_obs, s_exp, etc.
+      }
+    }
+
     vetor_completo[res_dt$cell_id] <- res_dt[[layer]]
     terra::values(mapa_final[[layer]]) <- vetor_completo
   }
 
   return(mapa_final)
 }
-
-# # Example
-# # Load example data
-# data("occurrences", package = "RuHere")
-# res <- inventory_completeness(occ = occ_flagged, raster_base = raster_base)
-# plot(res)
-# #
-#
-#
-#
-# # # # Import raster base
-# af <- vect("../AF_vertebrates/Vectors/AF.gpkg")
-# r_base <- rast(af, res = 0.25, vals = 1)
-# r_base <- crop(r_base, af, mask = TRUE)
-# terra::plot(r_base)
-# raster_base = r_base
-# # occ <- data.table::fread("../AF_vertebrates/Data/Occurrence_data/Check_Points/J - Cleaned records with CoordinateCleaner.gz",
-# #                          select = c("species", "decimalLongitude", "decimalLatitude"), data.table = FALSE)
-# # occ2 <- occ
-# # species = "species"
-# # long = "decimalLongitude"
-# # lat = "decimalLatitude"
-# # return = c("completeness", "deficit")
-# #
-# inv <- inventory_completeness(occ = occ2, raster_base = raster_base,
-#                               return = c("s_obs", "s_exp", "completeness", "deficit"))
-# terra::plot(inv)
-
-# # Testar o método de Défice (Esperamos valores altos de lacuna por causa das espécies raras)
-# mapa_teste <- analisar_amostragem(sim_dados, res_km = 100, metodo = "defice")
-#
-# # Verificar se o resultado é um objeto SpatRaster do terra
-# print(mapa_teste)
-#
-# # Visualizar
-# plot(mapa_teste, col = rev(heat.colors(10)), main = "Teste: Défice de Inventário")
-# points(sim_dados$longitude, sim_dados$latitude, pch = 20, cex = 0.5)
-#
-#
-# z <- analisar_amostragem(d, res_km = 100, metodo = "defice")

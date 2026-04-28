@@ -11,8 +11,9 @@ inventory_completeness(
   lat = "decimalLatitude",
   raster_base,
   minimum_species = 3,
-  maximum_expected = "double_obs",
+  maximum_expected = "equal_obs",
   remove_NA = TRUE,
+  fill_NA = TRUE,
   return = c("completeness", "deficit")
 )
 }
@@ -37,22 +38,28 @@ cell to calculate completeness and deficit. If the number of observed species
 is lower than this threshold, the function sets completeness = 0 and
 deficit = 1. Default is 3.}
 
-\item{maximum_expected}{(numeric or character) The upper limit for the estimated
-species richness (s_exp). Options include:
+\item{maximum_expected}{(numeric or character) The upper limit for the
+estimated species richness (s_exp). Options include:
 \itemize{
-\item \bold{"double_obs"}: Limits s_exp to twice the maximum observed richness
-found across all cells (recommended for stability).
+\item \bold{"equal_obs"}: Limits s_exp to the maximum observed richness
+(sefault).
+\item \bold{"double_obs"}: Limits s_exp to twice the maximum observed
+richness found across all cells.
 \item \bold{"triple_obs"}: Limits s_exp to three times the maximum observed
 richness global.
 \item \bold{"free"}: No limit is applied to the Chao1 estimator.
-\item \bold{numeric}: A fixed integer defining the maximum number of species
-allowed for any cell.
+\item \bold{numeric}: A fixed integer defining the maximum number of
+species allowed for any cell.
 }
 This prevents mathematically inflated estimates in cells with extremely
-low sampling coverage. Default is "double_obs".}
+low sampling coverage.}
 
 \item{remove_NA}{(logical) whether to remove sampling units in raster_base
 where values are NA.}
+
+\item{fill_NA}{(logical) if TRUE (default), cells within the \code{raster_base}
+without occurrence records are assigned completeness = 0 and deficit = 1. If
+FALSE, these cells remain NA.}
 
 \item{return}{(character) metrics to return.. Available options are "n",
 "s_obs", "s_exp", "singletons", "doubletons", "completeness" and "deficit". See details.}
