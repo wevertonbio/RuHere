@@ -65,8 +65,9 @@ Chao &amp; Jost (2012).</p>
 <span>  lat <span class="op">=</span> <span class="st">"decimalLatitude"</span>,</span>
 <span>  <span class="va">raster_base</span>,</span>
 <span>  minimum_species <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>  maximum_expected <span class="op">=</span> <span class="st">"double_obs"</span>,</span>
+<span>  maximum_expected <span class="op">=</span> <span class="st">"equal_obs"</span>,</span>
 <span>  remove_NA <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  fill_NA <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  return <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"completeness"</span>, <span class="st">"deficit"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -108,21 +109,29 @@ deficit = 1. Default is 3.</p></dd>
 
 
 <dt id="arg-maximum-expected">maximum_expected<a class="anchor" aria-label="anchor" href="#arg-maximum-expected"></a></dt>
-<dd><p>(numeric or character) The upper limit for the estimated
-species richness (s_exp). Options include:</p><ul><li><p><b>"double_obs"</b>: Limits s_exp to twice the maximum observed richness
-found across all cells (recommended for stability).</p></li>
+<dd><p>(numeric or character) The upper limit for the
+estimated species richness (s_exp). Options include:</p><ul><li><p><b>"equal_obs"</b>: Limits s_exp to the maximum observed richness
+(sefault).</p></li>
+<li><p><b>"double_obs"</b>: Limits s_exp to twice the maximum observed
+richness found across all cells.</p></li>
 <li><p><b>"triple_obs"</b>: Limits s_exp to three times the maximum observed
 richness global.</p></li>
 <li><p><b>"free"</b>: No limit is applied to the Chao1 estimator.</p></li>
-<li><p><b>numeric</b>: A fixed integer defining the maximum number of species
-allowed for any cell.</p></li>
+<li><p><b>numeric</b>: A fixed integer defining the maximum number of
+species allowed for any cell.</p></li>
 </ul><p>This prevents mathematically inflated estimates in cells with extremely
-low sampling coverage. Default is "double_obs".</p></dd>
+low sampling coverage.</p></dd>
 
 
 <dt id="arg-remove-na">remove_NA<a class="anchor" aria-label="anchor" href="#arg-remove-na"></a></dt>
 <dd><p>(logical) whether to remove sampling units in raster_base
 where values are NA.</p></dd>
+
+
+<dt id="arg-fill-na">fill_NA<a class="anchor" aria-label="anchor" href="#arg-fill-na"></a></dt>
+<dd><p>(logical) if TRUE (default), cells within the <code>raster_base</code>
+without occurrence records are assigned completeness = 0 and deficit = 1. If
+FALSE, these cells remain NA.</p></dd>
 
 
 <dt id="arg-return">return<a class="anchor" aria-label="anchor" href="#arg-return"></a></dt>

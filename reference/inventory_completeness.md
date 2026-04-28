@@ -14,8 +14,9 @@ inventory_completeness(
   lat = "decimalLatitude",
   raster_base,
   minimum_species = 3,
-  maximum_expected = "double_obs",
+  maximum_expected = "equal_obs",
   remove_NA = TRUE,
+  fill_NA = TRUE,
   return = c("completeness", "deficit")
 )
 ```
@@ -59,8 +60,11 @@ inventory_completeness(
   (numeric or character) The upper limit for the estimated species
   richness (s_exp). Options include:
 
+  - **"equal_obs"**: Limits s_exp to the maximum observed richness
+    (sefault).
+
   - **"double_obs"**: Limits s_exp to twice the maximum observed
-    richness found across all cells (recommended for stability).
+    richness found across all cells.
 
   - **"triple_obs"**: Limits s_exp to three times the maximum observed
     richness global.
@@ -71,12 +75,18 @@ inventory_completeness(
     allowed for any cell.
 
   This prevents mathematically inflated estimates in cells with
-  extremely low sampling coverage. Default is "double_obs".
+  extremely low sampling coverage.
 
 - remove_NA:
 
   (logical) whether to remove sampling units in raster_base where values
   are NA.
+
+- fill_NA:
+
+  (logical) if TRUE (default), cells within the `raster_base` without
+  occurrence records are assigned completeness = 0 and deficit = 1. If
+  FALSE, these cells remain NA.
 
 - return:
 
