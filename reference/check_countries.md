@@ -79,6 +79,7 @@ occ_country <- standardize_countries(occ = occurrences,
 occ_country_checked <- check_countries(occ = occ_country,
                                        country_column = "country_suggested")
 #> Warning: The following countries listed in the 'country_suggested' column were absent in the world map used for validation: NA
+#> Warning: GDAL Message 1: +init=epsg:XXXX syntax is deprecated. It might return a CRS with a non-EPSG compliant axis order.
 #> Testing countries...
 #> 54 records fall in wrong countries
 ```

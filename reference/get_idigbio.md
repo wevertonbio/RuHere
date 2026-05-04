@@ -123,6 +123,6 @@ records_saved_rds <- get_idigbio(
   save = TRUE,
   compress = TRUE,
   file.format = "rds")
-#> Writing /tmp/RtmphYJGJZ/anacardiaceae_records.rds on disk.
+#> Writing /tmp/RtmpmN4bl9/anacardiaceae_records.rds on disk.
 # }
 ```

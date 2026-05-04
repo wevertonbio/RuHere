@@ -27,6 +27,7 @@ results, and finally convert them into spatial objects ready for
 ecological analysis.
 
 ``` r
+
 # Load RuHere package
 library(RuHere)
 ```
@@ -82,6 +83,7 @@ GBIF username and the e-mail address associated with your account on the
 GBIF website (<https://www.gbif.org/user/profile>).
 
 ``` r
+
 set_gbif_credentials(
   gbif_username = "your_username",
   gbif_email = "your_email@domain.com",
@@ -97,6 +99,7 @@ required. You can create and check your API key at:
 <https://specieslink.net/aut/profile/apikeys>.
 
 ``` r
+
 set_specieslink_credentials(specieslink_key = "your_api_key", verbose = FALSE)
 ```
 
@@ -118,6 +121,7 @@ To download record from GBIF, we need to define a directory to save the
 files.
 
 ``` r
+
 # Store downloads in a temporary directory
 # In your own project, replace this with a permanent directory
 output_dir <- file.path(tempdir(), "occ_data")
@@ -125,6 +129,7 @@ dir.create(output_dir)
 ```
 
 ``` r
+
 # Prepare the taxonomic query
 gbif_prep <- prepare_gbif_download(species = "Araucaria angustifolia")
 ```
@@ -135,6 +140,7 @@ records with geographic coordinates (longitude and latitude), the GBIF
 key (ID), and the taxonomic classification.
 
 ``` r
+
 gbif_prep
 #> with_coordinates n_records                species usageKey                          scientificName          canonicalName
 #> 1             3056     15696 Araucaria angustifolia  2684940 Araucaria angustifolia (Bertol.) Kuntze Araucaria angustifolia
@@ -155,6 +161,7 @@ predicates to be passed via the `additional_predicates` argument. See
 `help(rgbif::pred)` for more details.
 
 ``` r
+
 # Submit the request to GBIF
 gbif_req <- request_gbif(
   gbif_info = gbif_prep,
@@ -170,6 +177,7 @@ download using the `rgbif` package. Once the process is complete, the
 following message is returned:
 
 ``` r
+
 rgbif::occ_download_wait(gbif_req)
 #> status: succeeded
 #> download is done, status: succeeded
@@ -178,6 +186,7 @@ rgbif::occ_download_wait(gbif_req)
 Now we can download the occurrence records and import them into R:
 
 ``` r
+
 # Import the processed file
 occ_gbif <- import_gbif(request_key = gbif_req)
 #> Download file size: 2.04 MB
@@ -189,6 +198,7 @@ changed by setting `select_columns = FALSE` or by explicitly specifying
 the columns to import via the `columns_to_import` argument.
 
 ``` r
+
 head(occ_gbif)
 #> # A tibble: 6 × 25
 #>   scientificName                acceptedScientificName occurrenceID collectionCode catalogNumber decimalLongitude #> decimalLatitude
@@ -225,6 +235,7 @@ databases:
 These databases allow direct downloading through a single function call.
 
 ``` r
+
 # SpeciesLink: Filtering by Species
 occ_sl <- get_specieslink(species = "Araucaria angustifolia", verbose = FALSE)
 
@@ -247,6 +258,7 @@ bind_here() function. However, we get an error if we try to merge the
 raw datasets:
 
 ``` r
+
 all_occ <- bind_here(occ_gbif, occ_sl, occ_bien, occ_idig)
 #> Error: All datasets must have the same columns.
 ```
@@ -272,6 +284,7 @@ We apply the function to each dataset, specifying the source in the
 binomials, and fixes data types.
 
 ``` r
+
 # Standardizing GBIF
 gbif_std <- format_columns(occ_gbif, metadata = "gbif")
 
@@ -295,6 +308,7 @@ incompatible values are replaced with `NA`.
 Now, we can safelly bind the occurrences:
 
 ``` r
+
 all_occ <- bind_here(gbif_std, sl_std, bien_std, idig_std)
 # Number of records by database
 table(all_occ$data_source)
@@ -328,6 +342,7 @@ additional columns as possible in order to take full advantage of the
 other functions in the package.
 
 ``` r
+
 # Import data example
 data("puma_atlanticr", package = "RuHere")
 
@@ -364,6 +379,7 @@ Even though this is an occurrence dataset from a different species, we
 can merge the cougar occurrences with those of Araucaria:
 
 ``` r
+
 occ_araucaria_cougar <- bind_here(all_occ, #Occurrences of Araucaria
                                   puma_occ) #Occurrences of cougar
 # Number of records per species
@@ -384,6 +400,7 @@ plotted using the **terra** package
 or displayed in an interactive map using the **mapview** package:
 
 ``` r
+
 # Convert to spatial object
 occ_spatial <- spatialize(occ = occ_araucaria_cougar)
 

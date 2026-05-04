@@ -60,10 +60,9 @@ the genus and the specific epithet.
 
 ## Details
 
-This function uses the
-[`BIEN::BIEN_ranges_load_species()`](https://rdrr.io/pkg/BIEN/man/BIEN_ranges_load_species.html)
-function to retrieve polygons representing the distribution ranges of
-species available in the BIEN database.
+This function uses the `BIEN::BIEN_ranges_load_species()` function to
+retrieve polygons representing the distribution ranges of species
+available in the BIEN database.
 
 Because taxonomic information in BIEN may be outdated, you can
 optionally provide a table of synonyms to broaden the search. The

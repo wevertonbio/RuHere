@@ -79,6 +79,7 @@ species: the Paraná pine (*Araucaria angustifolia*), the azure jay
 albus*).
 
 ``` r
+
 # Load RuHere and terra
 library(RuHere)
 library(terra)
@@ -102,6 +103,7 @@ directory. Let’s create this directory:
   
 
 ``` r
+
 # Define a directory for datasets (using a temporary one for this example)
 # In a real project, use a persistent path 
 dataset_dir <- file.path(tempdir(), "datasets")
@@ -133,6 +135,7 @@ dataset](https://sftp.kew.org/pub/data-repositories/WCVP/) and the
 corresponding WGSRPD shapefile:
 
 ``` r
+
 # Download WCVP
 wcvp_here(data_dir = dataset_dir)
 #> trying URL 'https://sftp.kew.org/pub/data-repositories/WCVP/wcvp.zip'
@@ -167,6 +170,7 @@ The
 function downloads the range maps for the specified species.
 
 ``` r
+
 # Set species
 spp <- unique(occurrences$species)
 spp
@@ -202,6 +206,7 @@ To use IUCN data, you first need to register for an API key at
 key securely in your R environment:
 
 ``` r
+
 # Set your key (do this once)
 set_iucn_credentials("YOUR_IUCN_KEY_HERE")
 ```
@@ -211,6 +216,7 @@ set_iucn_credentials("YOUR_IUCN_KEY_HERE")
 We can now download the distributional information from the IUCN:
 
 ``` r
+
 # Download data for specific species
 iucn_here(data_dir = dataset_dir, species = spp)
 #> trying URL 'https://zenodo.org/records/17455838/files/wgsrpd.gpkg?download=1'
@@ -282,6 +288,7 @@ package](https://www.scielo.br/j/zool/a/mGCFstdFnKyQfPLLRXWQCSH/?format=html&lan
 > <https://doi.org/10.1590/S1984-4689.v42.e25027>.
 
 ``` r
+
 faunabr_here(data_dir = dataset_dir)
 #> Getting data from Taxonomic Catalog of the Brazilian Fauna ...
 #> Downloading version: 1.45
@@ -304,6 +311,7 @@ After downloading the datasets, you should have one folder for each data
 source:
 
 ``` r
+
 fs::dir_tree(dataset_dir)
 #> datasets
 #> ├── bien
@@ -330,6 +338,7 @@ function to check which databases provide distributional information for
 each species:
 
 ``` r
+
 # Check availability for our species
 avail <- available_datasets(data_dir = dataset_dir, species = spp)
 avail
@@ -347,6 +356,7 @@ information is available for each species. If
 containing `SpatVector` objects representing the species ranges:
 
 ``` r
+
 # Get available ranges for species
 avail_ranges <- available_datasets(data_dir = dataset_dir, species = spp, 
                                    return_distribution = TRUE)
@@ -366,6 +376,7 @@ plot(ranges_araucaria$wcvp, main = "WCVP")
 ![](flagging_records_species_list_files/figure-html/unnamed-chunk-12-1.png)
 
 ``` r
+
 
 # Restore original graphical parameters
 par(oldpar)
@@ -392,6 +403,7 @@ include locations where the species is `"introduced"`, `"extinct"`, or
 marked as `"location_doubtful"`.
 
 ``` r
+
 # Flag using WCVP-defined range
 occ <- flag_wcvp(data_dir = dataset_dir, #Directory where dataset was saved
                  occ = occurrences)
@@ -406,6 +418,7 @@ distributional information for *Cyanocorax caeruleus* (an animal
 species), the function returns `NA` values for this species.
 
 ``` r
+
 # Number of records flagged (FALSE) for each species
 table(occ$species, occ$wcvp_flag)
 #>                             
@@ -431,6 +444,7 @@ The available presence type categories include `"extant"`,
 `"possibly extinct"`, `"presence uncertain"`, and `"all"` (default).
 
 ``` r
+
 # Flag using IUCN-defined range
 occ <- flag_iucn(data_dir = dataset_dir, #Directory where dataset was saved
                  occ = occ)
@@ -445,6 +459,7 @@ distributional information for *Cyanocorax caeruleus*, the function
 returns `NA` values for this species.
 
 ``` r
+
 # Number of records flagged (FALSE) for each species
 table(occ$species, occ$iucn_flag)
 #>                             
@@ -462,6 +477,7 @@ If BIEN range maps are available, this function checks if records fall
 within the modeled distribution polygons.
 
 ``` r
+
 # Flag using BIEN-defined range
 occ <- flag_bien(data_dir = dataset_dir, #Directory where dataset was saved
                  occ = occ)
@@ -477,6 +493,7 @@ BIEN-defined range are flagged as `FALSE`. Here, BIEN provides
 distributional information only for *Handroanthus serratifolius*:
 
 ``` r
+
 # Number of records flagged (FALSE) for each species
 table(occ$species, occ$bien_flag)
 #>                             
@@ -498,6 +515,7 @@ Brazil, you can also choose to flag records occurring outside the
 country (`by_endemism = TRUE`, default).
 
 ``` r
+
 # Flag using florabr-defined range
 occ <- flag_florabr(data_dir = dataset_dir, #Directory where dataset was saved
                     occ = occ)
@@ -511,6 +529,7 @@ florabr-defined range are flagged as `FALSE`. Here, florabr does not
 provide distributional information for *Cyanocorax caeruleus*:
 
 ``` r
+
 # Number of records flagged (FALSE) for each species
 table(occ$species, occ$florabr_flag)
 #>                             
@@ -531,6 +550,7 @@ by federal states (`by_state = TRUE`, default) and/or countries
 (`by_country= TRUE`, default).
 
 ``` r
+
 # Flag using faunabr-defined range
 occ <- flag_faunabr(data_dir = dataset_dir, #Directory where dataset was saved
                     occ = occ)
@@ -544,6 +564,7 @@ faunabr-defined range are flagged as `FALSE`. Here, fauna provides
 distributional information only for *Cyanocorax caeruleus*:
 
 ``` r
+
 # Number of records flagged (FALSE) for each species
 table(occ$species, occ$faunabr_flag)
 #>                             
@@ -574,6 +595,7 @@ which uses `ggplot2`. Let’s see the flagged record of the Paraná Pine:
 > is a static snapshot of the interactive map produced in RStudio.
 
 ``` r
+
 # Interactive map with map_here()
 map_here(occ, species = "Araucaria angustifolia", label = "record_id", cex = 4)
 ```
@@ -586,6 +608,7 @@ we can also plot each flag in a separate panel by setting
 `facet_wrap = TRUE`:
 
 ``` r
+
 ggmap_here(occ, species = "Araucaria angustifolia", facet_wrap = TRUE)
 ```
 
@@ -599,6 +622,7 @@ using
 Information**):
 
 ``` r
+
 occ_cleaned <- remove_flagged(occ)
 ```
 
@@ -611,6 +635,7 @@ Information**), we can create a bar plot summarizing the number of
 records flagged by each flagging function:
 
 ``` r
+
 flag_summary <- summarize_flags(occ)
 ```
 
@@ -620,6 +645,7 @@ The function returns a `data.frame` summarizing the number of records
 per flag and a `ggplot2` object displaying this summary as a bar plot:
 
 ``` r
+
 # Data.frame summarizing the number of records per flag
 flag_summary$df_summary
 #>              Flag    n
@@ -634,6 +660,7 @@ flag_summary$df_summary
   
 
 ``` r
+
 # Bar plot
 flag_summary$plot_summary
 ```

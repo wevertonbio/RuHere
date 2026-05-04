@@ -18,6 +18,7 @@ available in the package, after removing records flagged as potentially
 problematic:
 
 ``` r
+
 # Load packages
 library(RuHere)
 library(terra)
@@ -40,6 +41,7 @@ Before starting the thinning process, let’s create a heatmap based on a
 kernel density estimation of the records:
 
 ``` r
+
 # Generate heatmap
 heatmap <- spatial_kde(occ = occ, resolution = 0.2, buffer_extent = 50,
                        radius = 2, zero_as_NA = TRUE)
@@ -54,6 +56,7 @@ to plot the occurrences and the heatmap (or use
 if you prefer an interactive version).
 
 ``` r
+
 ggmap_here(occ = occ, size_points = 0.5, heatmap = heatmap)
 ```
 
@@ -87,6 +90,7 @@ Let’s thin the records using a 10 km radius and keep the most recent
 record as the priority:
 
 ``` r
+
 # Thin records using a 10 km distance threshold
 occ_thin <- thin_geo(occ = occ, d = 10, prioritary_column = "year")
 sum(!occ_thin$thin_geo_flag)  # Number of records flagged for removal
@@ -101,6 +105,7 @@ flagged records using
 and create a heatmap with the remaining records.
 
 ``` r
+
 # Remove flagged records
 occ_thin_geo <- remove_flagged(occ = occ_thin)
 # Create heatmap
@@ -141,6 +146,7 @@ need a raster containing the environmental variables. Here, we again
 specify a priority for retaining records (the most recent ones).
 
 ``` r
+
 # Load example of raster variables
 data("worldclim", package = "RuHere")
 # Unwrap Packed raster
@@ -163,6 +169,7 @@ with the number of retained records (`n_filtered`) and the proportion of
 records flagged (`prop_lost`).
 
 ``` r
+
 occ_geo_moran$imoran
 #>                   species Distance      bio_1     bio_7    bio_12 median_moran
 #> 1  Araucaria angustifolia        1 0.26797715 0.4154464 0.2700062    0.2700062
@@ -191,6 +198,7 @@ discarding too many records was 15km. Using this threshold, 2,040
 records were flagged.
 
 ``` r
+
 # Best distance selected
 occ_geo_moran$distance
 #> [1] "15"
@@ -204,6 +212,7 @@ sum(!occ_geo_moran$occ$thin_geo_flag)
 Visual inspection shows an even more uniform heatmap:
 
 ``` r
+
 # Remove flagged records
 occ_thin_geo_moran <- remove_flagged(occ = occ_geo_moran$occ)
 # Create heatmap
@@ -239,6 +248,7 @@ To illustrate how the environmental grid works, let’s use
 with 10 bins:
 
 ``` r
+
 # Get bins
 b <- get_env_bins(occ = occ, env_layers = r, n_bins = 10)
 head(b$data)
@@ -257,6 +267,7 @@ The function returns the environmental block IDs for each record. We can
 visualize the grid for any two variables:
 
 ``` r
+
 # Plot
 plot_env_bins(b, x_var = "bio_1", y_var = "bio_12",
               xlab = "Temperature", ylab = "Precipitation")
@@ -270,6 +281,7 @@ redundant records using
 [`thin_env()`](https://wevertonbio.github.io/RuHere/reference/thin_env.md):
 
 ``` r
+
 # Flag records that are close to each other in the enviromnetal space
 occ_thin_env <- thin_env(occ = occ, env_layers = r, n_bins = 10, 
                          prioritary_column = "year")
@@ -284,6 +296,7 @@ The function flagged 2,227 records. Let’s visualize these and create a
 heatmap of the remaining data.
 
 ``` r
+
 # Remove flagged records
 occ_thinned_env <- remove_flagged(occ = occ_thin_env)
 # Create heatmap
@@ -313,6 +326,7 @@ discarding many records.
 Here, we test 5, 10, 20, 30, 40, 50, 60, 70, and 80 bins:
 
 ``` r
+
 # Select thinned occurrences
 occ_env_moran <- flag_env_moran(occ = occ, 
                                 n_bins = c(5, 10, 20, 30, 40, 50, 60, 70, 80), 
@@ -330,6 +344,7 @@ median, minimum, and maximum), along with the number of retained records
 (`n_filtered`) and the proportion of records flagged (`prop_lost`).
 
 ``` r
+
 occ_env_moran$imoran
 #>                   species n_bins     bio_1     bio_7    bio_12 median_moran
 #> 5  Araucaria angustifolia      5 0.2401256 0.3282298 0.1749087    0.2401256
@@ -360,6 +375,7 @@ without discarding too many records was 70. With this threshold, 1,659
 records were flagged.
 
 ``` r
+
 # Best distance selected
 occ_env_moran$n_bins
 #> [1] "70"
@@ -374,6 +390,7 @@ Let’s check the distribution of these records and the heatmap generated
 with the unflagged records:
 
 ``` r
+
 # Remove flagged records
 occ_thin_env_moran <- remove_flagged(occ = occ_env_moran$occ)
 # Create heatmap
@@ -400,6 +417,7 @@ function can be used to flag records only when they are redundant in
 both geographic and environmental space.
 
 ``` r
+
 # Flag occurrences by thinning in geographic space
 occ_geo_moran <- flag_geo_moran(occ = occ, 
                                 d = c(1, 3, 5, 7, 10, 15, 20, 30), 
@@ -437,6 +455,7 @@ Let’s visualize which records were flagged by geographic thinning,
 environmental thinning, or both:
 
 ``` r
+
 ggmap_here(occ = occ_consensus, 
           flags = c("thin_geo", "thin_env"), 
           additional_flags = "thin_geo_env_flag", 

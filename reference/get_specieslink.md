@@ -235,6 +235,7 @@ get_specieslink(species = NULL, key = NULL, dir,
 
   \#' @details The speciesLink API key can be set permanently using:
 
+
       set_specieslink_credentials("your_api_key")
 
 ## Value

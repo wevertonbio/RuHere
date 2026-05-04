@@ -12,6 +12,7 @@ spatial consistency of your occurrence records by addressing name
 standardization, data imputation, verification, and correction.
 
 ``` r
+
 # Load RuHere package
 library(RuHere)
 ```
@@ -58,6 +59,7 @@ species: the Paraná pine (*Araucaria angustifolia*), the azure jay
 albus*).
 
 ``` r
+
 # Loading package occurrence data
 data("occurrences", package = "RuHere")
 # Number of records per species
@@ -77,6 +79,7 @@ a comprehensive dictionary of names and codes provided in
 `rnaturalearthdata::map_units110()`.
 
 ``` r
+
 # Standardize country names
 occ_country_std <- standardize_countries(
     occ = occurrences,
@@ -101,6 +104,7 @@ Below are the first few rows of the modified data frame and the
 standardization report:
 
 ``` r
+
 # Printing first rows and columns
 occ_country_std$occ[1:3, 1:5]
 #>   country country_suggested country_source  record_id               species
@@ -126,6 +130,7 @@ using as reference the names and postal codes provided in
 `rnaturalearthdata::states50()`.
 
 ``` r
+
 # Standardize state names
 occ_state_std <- standardize_states(
     occ = occ_country_std$occ,
@@ -155,6 +160,7 @@ Below are the first few rows of the modified data frame and the
 standardization report:
 
 ``` r
+
 occ_state_std$occ[1:3, 1:6]
 #>   stateProvince state_suggested state_source country_suggested country country_source
 #> 1          acre            acre     metadata            brazil  brazil       metadata
@@ -180,6 +186,7 @@ reference world map (`rnaturalearthdata::map_units110()`) to determine
 the country for each point.
 
 ``` r
+
 # Explicitly extract country from coordinates for all records
 occ_with_country_xy <- country_from_coords(
     occ = occ_state_std$occ,
@@ -205,6 +212,7 @@ filling all records (`from = "all"`) and appending a source column to
 track where the data came from.
 
 ``` r
+
 # Extract state from coordinates for all records
 occ_imputed <- states_from_coords(
     occ = occ_with_country_xy,
@@ -236,6 +244,7 @@ This function compares the coordinates against the boundaries of the
 country assigned in the `country_suggested` column.
 
 ``` r
+
 # Check if coordinates fall within the assigned country
 occ_checked_country <- check_countries(
     occ = occ_imputed,
@@ -284,6 +293,7 @@ We perform a similar verification for states. Note that `check_states`
 verifies points against the `state_suggested` column.
 
 ``` r
+
 # Check if coordinates fall within the assigned state
 occ_checked_state <- check_states(
     occ = occ_checked_country,
@@ -319,6 +329,7 @@ This function runs seven distinct tests to detect issues such as
 inverted signs or swapped coordinates.
 
 ``` r
+
 # This step is only necessary if you did NOT set try_to_fix = TRUE above
 fixing_example <- fix_countries(
    occ = occ_checked_country,

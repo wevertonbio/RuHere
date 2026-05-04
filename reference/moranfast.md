@@ -3,8 +3,8 @@
 This function computes Moran's I autocorrelation coefficient for a
 numeric vector `x` using a matrix of weights. The method follows
 Gittleman and Kot (1990). This function is an implementation of
-[`ape::Moran.I()`](https://rdrr.io/pkg/ape/man/MoranI.html), but
-rewritten in C++ to be substantially faster and more memory-efficient.
+`ape::Moran.I()`, but rewritten in C++ to be substantially faster and
+more memory-efficient.
 
 ## Usage
 

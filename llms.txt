@@ -59,6 +59,7 @@ Note: Internet connection is required to install the package.
 To install the latest release of RuHere use the following line of code:
 
 ``` r
+
 # Installing from CRAN 
 install.packages("RuHere")
 ```
@@ -66,6 +67,7 @@ install.packages("RuHere")
 The development version of RuHere can be installed using the code below.
 
 ``` r
+
 # Installing and loading packages
 if(!require(remotes)){
   install.packages("remotes")
