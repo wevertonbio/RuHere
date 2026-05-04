@@ -38,7 +38,6 @@
 #' underscore (“_”) replacing the space between the genus and the specific
 #' epithet.
 #'
-#' @importFrom BIEN BIEN_ranges_load_species
 #' @importFrom terra vect writeVector
 #' @importFrom data.table rbindlist
 #'
@@ -141,9 +140,8 @@ Run install.packages('pbapply')", call. = FALSE)
       } else {spp <- i}
     } else {spp <- i}
 
-
     sp_i <- sub(" ", "_", spp)
-    v_i <- BIEN::BIEN_ranges_load_species(species = sp_i, fetch.query = FALSE)
+    v_i <- BIEN_ranges_load_species(species = sp_i, fetch.query = FALSE)
     if(nrow(v_i) > 0){
       v_i <- terra::vect(v_i)
       #Spp name can't have present spaces
