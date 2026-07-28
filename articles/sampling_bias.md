@@ -22,7 +22,7 @@ problematic:
 # Load packages
 library(RuHere)
 library(terra)
-#> terra 1.9.11
+#> terra 1.9.34
 library(mapview)
 
 # Import occurrence data
@@ -73,7 +73,9 @@ The
 [`thin_geo()`](https://wevertonbio.github.io/RuHere/reference/thin_geo.md)
 function flags occurrence records for thinning by keeping only one
 record per species within a radius of `d` kilometers. This function is
-similar to `thin()` from the [spThin
+similar to
+[`thin()`](https://rspatial.github.io/terra/reference/thin.html) from
+the [spThin
 package](https://nsojournals.onlinelibrary.wiley.com/doi/10.1111/ecog.01132),
 but with an important difference: it allows specifying a priority order
 for retaining records.

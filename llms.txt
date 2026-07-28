@@ -102,6 +102,9 @@ remotes::install_github("wevertonbio/RuHere")
 - [`check_states()`](https://wevertonbio.github.io/RuHere/reference/check_states.md)
   : Check if the records fall in the state assigned in the metadata
 
+- [`count_flags()`](https://wevertonbio.github.io/RuHere/reference/count_flags.md)
+  : Count the number of flags for each record
+
 - [`country_dictionary`](https://wevertonbio.github.io/RuHere/reference/country_dictionary.md)
   : Country dictionary for standardizing country names and codes
 
