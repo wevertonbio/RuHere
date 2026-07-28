@@ -19,8 +19,8 @@
 #' @param additional_flags (character) an optional named character vector with
 #' the names of additional logical columns to be used as flags. Default is `NULL`.
 #' @param names_additional_flags (character) an optional different name to the
-#' flag provided in `additional_flags` to be shown in the map. Only applicable
-#' if `additional_flags` is not NULL.
+#' flag provided in `additional_flags` to be shown in the bar plot. Only
+#' applicable if `additional_flags` is not NULL.
 #' @param plot (logical) whether to return a `ggplot2` bar plot showing the
 #' number of flagged records. Default is `TRUE`.
 #' @param show_unflagged (logical) whether to include the number of unflagged

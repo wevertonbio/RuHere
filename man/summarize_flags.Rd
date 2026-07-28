@@ -43,8 +43,8 @@ all available flags. See \emph{Details} for all options. Default is \code{"all"}
 the names of additional logical columns to be used as flags. Default is \code{NULL}.}
 
 \item{names_additional_flags}{(character) an optional different name to the
-flag provided in \code{additional_flags} to be shown in the map. Only applicable
-if \code{additional_flags} is not NULL.}
+flag provided in \code{additional_flags} to be shown in the bar plot. Only
+applicable if \code{additional_flags} is not NULL.}
 
 \item{plot}{(logical) whether to return a \code{ggplot2} bar plot showing the
 number of flagged records. Default is \code{TRUE}.}
