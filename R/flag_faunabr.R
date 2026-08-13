@@ -1,11 +1,11 @@
 #' Identify records outside natural ranges according to Fauna do Brasil
 #'
 #' @description
-#' Flags (validates) occurrence records based on known distribution data
+#' Flags occurrence records based on known distribution data
 #' from the Catálogo Taxônomico da Fauna do Brasil (faunabr) data. This function
 #' checks if an occurrence point for a given species falls within its documented
 #' distribution, allowing for user-defined buffers around Brazilian states,
-#' or the entire country. Records are flagged as valid (`TRUE`) if they fall
+#' or the entire country. Records are flagged as `TRUE` if they fall
 #' within the specified range for the distribution information available in the
 #' `faunabr` data.
 #'
@@ -27,12 +27,12 @@
 #' to known Brazilian state distributions. Default is `TRUE`.
 #' @param buffer_state (numeric) buffer distance (in kilometers) to be applied
 #' around the known state distribution boundaries. Records within this distance
-#' are considered valid. Default is 20 km.
+#' are flagged as `TRUE`. Default is 20 km.
 #' @param by_country (logical) if `TRUE`, flags records based on their distance
 #' to country distributions. Default is `TRUE`.
 #' @param buffer_country (numeric) buffer distance (in kilometers) to be applied
-#' around the country boundaries. Records within this distance are considered
-#' valid. Default is 20 km.
+#' around the country boundaries. Records within this distance are flagged as
+#' `TRUE`. Default is 20 km.
 #' @param keep_columns (logical) if `TRUE`, the returned data frame contains
 #' all original columns from `occ`. If `FALSE`, it returns only the key columns
 #' and the flag. Default is `TRUE`.
@@ -51,12 +51,17 @@
 #' @param verbose (logical) if `TRUE`, prints messages about the progress and
 #' the number of species being checked. Default is `FALSE`.
 #'
-#' @return #' A \code{data.frame} that is the original \code{occ} data frame
+#' @return
+#' A \code{data.frame} that is the original \code{occ} data frame
 #' augmented with a new column named \code{faunabr_flag}. This column is
 #' logical (\code{TRUE}/\code{FALSE}) indicating whether the record falls
 #' within the expected distribution (plus buffer) based on the \code{faunabr}
-#' data. Records for species not found in the \code{faunabr} data will have
-#' \code{NA} in the \code{faunabr_flag} column.
+#' data. As with all other flagging functions in RuHere, \code{TRUE}
+#' indicates that the record passed this test and is eligible for retention;
+#' \code{FALSE} indicates it failed and is flagged as potentially problematic,
+#' and can be removed using \code{remove_flagged()}. Records for species not
+#' found in the \code{faunabr} data will have \code{NA} in the
+#' \code{faunabr_flag} column.
 #'
 #' @importFrom faunabr load_faunabr filter_faunabr
 #' @importFrom data.table rbindlist

@@ -1,11 +1,11 @@
 #' Identify records outside natural ranges according to BIEN
 #'
 #' @description
-#' Flags (validates) occurrence records based on known distribution data
+#' Flags occurrence records based on known distribution data
 #' from the Botanical Information and Ecology Network (BIEN) data. This function
 #' checks if an occurrence point for a given species falls within its documented
 #' distribution, allowing for user-defined buffers around the region. Records
-#' are flagged as valid (`TRUE`) if they fall inside the documented
+#' are flagged as `TRUE` if they fall inside the documented
 #' distribution (plus optional buffer) for the species in the BIEN dataset.
 #'
 #' @param data_dir (character) **Required** directory path where the `BIEN`
@@ -32,8 +32,12 @@
 #' augmented with a new column named \code{bien_flag}. This column is
 #' logical (\code{TRUE}/\code{FALSE}) indicating whether the record falls
 #' within the expected distribution (plus buffer) based on the \code{BIEN}
-#' data. Records for species not found in the \code{BIEN} data will have
-#' \code{NA} in the \code{bien_flag} column.
+#' data. As with all other flagging functions in RuHere, \code{TRUE}
+#' indicates that the record passed this test and is eligible for retention;
+#' \code{FALSE} indicates it failed and is flagged as potentially problematic,
+#' and can be removed using \code{remove_flagged()}. Records for species not
+#' found in the \code{BIEN} data will have \code{NA} in the \code{bien_flag}
+#' column.
 #'
 #' @importFrom terra vect buffer is.related
 #' @importFrom data.table rbindlist

@@ -42,8 +42,8 @@ the \code{prioritary_column} (e.g., from most recent to oldest when the variable
 is \code{"year"}). Only applicable when \code{prioritary_column} is not \code{NULL}.
 Default is \code{TRUE}.}
 
-\item{remove_invalid}{(logical) whether to remove invalid coordinates.
-Default is \code{TRUE}.}
+\item{remove_invalid}{(logical) whether to remove records with missing or
+impossible coordinates. Default is \code{TRUE}.}
 
 \item{optimize_memory}{(logical) whether to compute the distance matrix
 using a C++ implementation that reduces memory usage at the cost of
@@ -58,7 +58,10 @@ is TRUE.}
 The original \code{occ} data frame augmented with a new logical column named
 \code{thin_geo_flag}. Records that are retained after thinning receive
 \code{TRUE}, while records identified as too close to a higher-priority
-record receive \code{FALSE}.
+record receive \code{FALSE}. As with all other flagging functions in RuHere,
+\code{TRUE} indicates that the record passed this test and is eligible for
+retention; \code{FALSE} indicates it failed and is flagged as potentially
+problematic, and can be removed using \code{remove_flagged()}.
 }
 \description{
 Marks occurrence records for thinning by keeping only one record per species

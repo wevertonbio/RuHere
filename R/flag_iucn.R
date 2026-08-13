@@ -1,11 +1,11 @@
 #' Identify records outside natural ranges according to the IUCN
 #'
 #' @description
-#' Flags (validates) occurrence records based on known distribution data
+#' Flags occurrence records based on known distribution data
 #' from the International Union for Conservation of Nature (IUCN) data. This
 #' function checks if an occurrence point for a given species falls within its
 #' documented distribution, allowing for user-defined buffers around the region.
-#' Records are flagged as valid (`TRUE`) if they fall inside the documented
+#' Records are flagged as `TRUE` if they fall inside the documented
 #' distribution (plus optional buffer) for the species in the IUCN dataset.
 #'
 #' @param data_dir (character) **Required** directory path where the `IUCN`
@@ -24,13 +24,13 @@
 #' `"introduced"`, `"reintroduced"`, `"vagrant"`, `"origin uncertain"`,
 #' `"assisted colonisation"`, and `"all"`. For example,
 #' if  `origin = "introduced"`, only regions where the species is considered
-#' introduced will be used to validate records.  Default is `"native"`.
+#' introduced will be used to flag records.  Default is `"native"`.
 #' @param presence (character) vector specifying which presence type should
 #' be considered as part of the species' range. Options are: `"extant"`,
 #' `"probably extant"`, `"possibly extant"`, `"extinct"`, `"possibly extinct"`,
 #' `"presence uncertain"`, and `"all"`. For example,
 #' if  `presence = "extinct"`, only regions where the species is considered
-#' extinct will be used to validate records.  Default is `"all"`, meaning all
+#' extinct will be used to flag records.  Default is `"all"`, meaning all
 #' regions will be considered.
 #' @param buffer (numeric) buffer distance (in kilometers) to be applied
 #' around the region of distribution. Default is 20 km.
@@ -45,8 +45,12 @@
 #' augmented with a new column named \code{iucn_flag}. This column is
 #' logical (\code{TRUE}/\code{FALSE}) indicating whether the record falls
 #' within the expected distribution (plus buffer) based on the \code{IUCN}
-#' data. Records for species not found in the \code{IUCN} data will have
-#' \code{NA} in the \code{iucn_flag} column.
+#' data. As with all other flagging functions in RuHere, \code{TRUE}
+#' indicates that the record passed this test and is eligible for retention;
+#' \code{FALSE} indicates it failed and is flagged as potentially problematic,
+#' and can be removed using \code{remove_flagged()}. Records for species not
+#' found in the \code{IUCN} data will have \code{NA} in the \code{iucn_flag}
+#' column.
 #'
 #' @importFrom data.table fread rbindlist
 #' @importFrom terra vect as.data.frame aggregate buffer is.related

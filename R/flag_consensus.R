@@ -3,19 +3,19 @@
 #' @description
 #' This functions creates a new column representing the consensus across
 #' multiple flag columns. The consensus can be computed in two ways:
-#' - `"all_true"`: A record is considered valid (`TRUE`) only if **all**
-#'   specified flag are valid (`TRUE`).
-#' - `"any_true"`: A record is considered valid (`TRUE`) if **at least one**
-#'   specified flag is valid (`TRUE`).
+#' - `"all_true"`: A record passes the consensus (`TRUE`) only if **all**
+#'   specified flags are `TRUE`.
+#' - `"any_true"`: A record passes the consensus (`TRUE`) if **at least one**
+#'   specified flag is `TRUE`.
 #'
 #' @param occ (data.frame or data.table) a dataset with occurrence records that
 #' has been processed by two or more flagging functions.
 #' @param flags (character) a string vector with the names of the flags to be
 #' used in the consensus evaluation. See details for see the options.
 #' @param consensus_rule (character) A string specifying how the consensus
-#' should be computed. Options are `"all_true"` (record is considered valid only
-#' when **all** flags are `TRUE` or `"any_true"`(record is considered valid when
-#' **at least one** flag is `TRUE`. Default is `"all_true"`
+#' should be computed. Options are `"all_true"` (record passes the consensus
+#' only when **all** flags are `TRUE`) or `"any_true"` (record passes the
+#' consensus when **at least one** flag is `TRUE`). Default is `"all_true"`
 #' @param flag_name (character) name of the column that will store the
 #' consensus result. Default is `"consensus_flag"`.
 #' @param remove_flag_columns (logical) whether to remove the original flag
@@ -25,13 +25,17 @@
 #' The following flags are available:  correct_country, correct_state,
 #' cultivated, fossil, inaturalist, faunabr, florabr, wcvp, iucn, duplicated,
 #' thin_geo, thin_env, year, .val, .equ, .zer, .cap, .cen, .sea, .urb, .otl,
-#' .gbf, .inst, and .aohi.
+#' .gbf, .inst, and .aohi. Flags may be combined from any category
+#' (metadata-based, range-based, or thinning-related).
 #'
 #' @returns
 #' The original \code{occ} with an additional logical column defined by
 #' `flag_name`, indicating the consensus result based on the selected
-#' `consensus_rule`.
-#'
+#' `consensus_rule`. As with all other flagging functions in RuHere, `TRUE`
+#' indicates that the record passed the consensus criterion and is eligible
+#' for retention, while `FALSE` indicates it failed and is flagged as
+#' potentially problematic.
+#' 
 #' @export
 #'
 #' @examples

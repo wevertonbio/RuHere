@@ -48,6 +48,10 @@
 #' A \code{data.frame} that is the original \code{occ} data frame augmented with
 #' a new column named \code{duplicated_flag}. Records identified as duplicated
 #' receive \code{FALSE}, while all unique retained records receive \code{TRUE}.
+#' As with all other flagging functions in RuHere, \code{TRUE} indicates that
+#' the record passed this test and is eligible for retention; \code{FALSE}
+#' indicates it failed and is flagged as potentially problematic, and can be
+#' removed using \code{remove_flagged()}.
 #'
 #' @export
 #'

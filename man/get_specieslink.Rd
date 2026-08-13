@@ -84,7 +84,7 @@ specimen. Default is \code{NULL}.}
 
 \item{recordedBy}{(character) collector name. Default is \code{NULL}.}
 
-\item{recordNumber}{(numeric) collector’s record number. Default is \code{NULL}.}
+\item{recordNumber}{(numeric) collector's record number. Default is \code{NULL}.}
 
 \item{yearCollected}{(numeric) year of collection. Default is \code{NULL}.}
 
@@ -147,13 +147,7 @@ Default is \code{"csv"}.}
 Default is \code{FALSE}.}
 
 \item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
-the number of species being checked. Default is \code{TRUE}.
-
-#' @details
-The speciesLink API key can be set permanently using:
-\preformatted{
-set_specieslink_credentials("your_api_key")
-}}
+the number of species being checked. Default is \code{TRUE}.}
 }
 \value{
 A \code{data.frame} containing the occurrence data fields returned
@@ -164,8 +158,23 @@ Retrieves occurrence data from the \href{https://specieslink.net/}{speciesLink}
 network using user-defined filters. The function allows querying by
 taxonomic, geographic, and collection-related parameters.
 }
+\details{
+The speciesLink API key can be set permanently using:
+\preformatted{
+set_specieslink_credentials("your_api_key")
+}
+}
+\note{
+This function requires a valid speciesLink API key. Set it in advance
+using \code{set_specieslink_credentials()} before running the examples below.
+You can find your API key at
+https://specieslink.net/aut/profile/apikeys.
+}
 \examples{
 \dontrun{
+# Set your speciesLink API key (required before running this function)
+# set_specieslink_credentials("your_api_key")
+
 # Retrieve records for Arecaceae in São Paulo
 res <- get_specieslink(
   family = "Arecaceae",

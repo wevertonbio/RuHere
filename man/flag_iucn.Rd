@@ -39,14 +39,14 @@ be considered as part of the species' range. Options are: \code{"native"},
 \code{"introduced"}, \code{"reintroduced"}, \code{"vagrant"}, \code{"origin uncertain"},
 \code{"assisted colonisation"}, and \code{"all"}. For example,
 if  \code{origin = "introduced"}, only regions where the species is considered
-introduced will be used to validate records.  Default is \code{"native"}.}
+introduced will be used to flag records.  Default is \code{"native"}.}
 
 \item{presence}{(character) vector specifying which presence type should
 be considered as part of the species' range. Options are: \code{"extant"},
 \code{"probably extant"}, \code{"possibly extant"}, \code{"extinct"}, \code{"possibly extinct"},
 \code{"presence uncertain"}, and \code{"all"}. For example,
 if  \code{presence = "extinct"}, only regions where the species is considered
-extinct will be used to validate records.  Default is \code{"all"}, meaning all
+extinct will be used to flag records.  Default is \code{"all"}, meaning all
 regions will be considered.}
 
 \item{buffer}{(numeric) buffer distance (in kilometers) to be applied
@@ -64,15 +64,19 @@ A \code{data.frame} that is the original \code{occ} data frame
 augmented with a new column named \code{iucn_flag}. This column is
 logical (\code{TRUE}/\code{FALSE}) indicating whether the record falls
 within the expected distribution (plus buffer) based on the \code{IUCN}
-data. Records for species not found in the \code{IUCN} data will have
-\code{NA} in the \code{iucn_flag} column.
+data. As with all other flagging functions in RuHere, \code{TRUE}
+indicates that the record passed this test and is eligible for retention;
+\code{FALSE} indicates it failed and is flagged as potentially problematic,
+and can be removed using \code{remove_flagged()}. Records for species not
+found in the \code{IUCN} data will have \code{NA} in the \code{iucn_flag}
+column.
 }
 \description{
-Flags (validates) occurrence records based on known distribution data
+Flags occurrence records based on known distribution data
 from the International Union for Conservation of Nature (IUCN) data. This
 function checks if an occurrence point for a given species falls within its
 documented distribution, allowing for user-defined buffers around the region.
-Records are flagged as valid (\code{TRUE}) if they fall inside the documented
+Records are flagged as \code{TRUE} if they fall inside the documented
 distribution (plus optional buffer) for the species in the IUCN dataset.
 }
 \examples{

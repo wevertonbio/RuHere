@@ -43,13 +43,17 @@ is \code{"year"}). Only applicable when \code{prioritary_column} is not \code{NU
 Default is \code{TRUE}.}
 
 \item{flag_for_NA}{(logical) whether to treat records falling in \code{NA} cells
-of \code{env_layers} as valid (\code{TRUE}) or invalid (\code{FALSE}). Default is \code{FALSE}.}
+of \code{env_layers} as passing (\code{TRUE}) or failing (\code{FALSE}) this test. Default
+is \code{FALSE}.}
 }
 \value{
 The original \code{occ} data frame with two additional columns:
 \itemize{
-\item \code{thin_env_flag}: logical indicating whether each record is retained
-(\code{TRUE}) or flagged as redundant (\code{FALSE}).
+\item \code{thin_env_flag}: logical indicating whether each record was retained
+(\code{TRUE}) or flagged as redundant (\code{FALSE}). As with all other flagging
+functions in RuHere, \code{TRUE} indicates that the record passed this test
+and is eligible for retention; \code{FALSE} indicates it failed and is flagged
+as potentially problematic, and can be removed using \code{remove_flagged()}.
 \item \code{bin}: environmental bin ID assigned to each record. Each component
 of the ID corresponds to the bin of one environmental variable.
 }

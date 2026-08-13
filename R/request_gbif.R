@@ -28,7 +28,7 @@
 #'
 #' @note
 #' This function requires an active internet connection and valid GBIF
-#' credentials.
+#' credentials. Set them in advance using `set_gbif_credentials()`.
 #'
 #' @returns
 #' A download request key returned by the GBIF API, which can be used to monitor
@@ -40,6 +40,11 @@
 #'
 #' @examples
 #' \dontrun{
+#' # Set your GBIF credentials (required before running this function)
+#' # set_gbif_credentials(gbif_username = "your_username",
+#' #                       gbif_email = "your_email@example.com",
+#' #                       gbif_password = "your_password")
+#'
 #' # Prepare data to request GBIF download
 #' gbif_prepared <- prepare_gbif_download(species = "Araucaria angustifolia")
 #' # Submit a request to download occurrences
@@ -85,6 +90,23 @@ request_gbif <- function(gbif_info, hasCoordinate = TRUE,
   if (!is.null(additional_predicates) &&
       !inherits(additional_predicates, c("character", "occ_predicate")))
     stop("'additional_predicates' must be a object of class 'character' or 'occ_predicate' or NULL, not ", class(additional_predicates), call. = FALSE)
+
+  # Check GBIF credentials
+  if (is.null(gbif_user)) gbif_user <- Sys.getenv("GBIF_USER")
+  if (is.null(gbif_pwd)) gbif_pwd <- Sys.getenv("GBIF_PWD")
+  if (is.null(gbif_email)) gbif_email <- Sys.getenv("GBIF_EMAIL")
+
+  if (gbif_user == "" || gbif_pwd == "" || gbif_email == "") {
+    stop(
+      "GBIF credentials not found.\n",
+      "Please save your credentials using:\n",
+      "  set_gbif_credentials(gbif_username = \"your_username\", ",
+      "gbif_email = \"your_email\", gbif_password = \"your_password\")\n\n",
+      "You can create a GBIF account at:\n",
+      "https://www.gbif.org/user/profile",
+      call. = FALSE
+    )
+  }
 
   # Get key
   k <- gbif_info$usageKey

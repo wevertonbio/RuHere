@@ -31,8 +31,12 @@ information. Default is \code{FALSE}.}
 }
 \value{
 A data.frame identical to \code{occ} but with an additional column named
-\code{year_flag}. Records collected outside the year range specified are assigned
-\code{FALSE}.
+\code{year_flag}. Records collected outside the year range specified are
+assigned \code{FALSE}. As with all other flagging functions in RuHere, \code{TRUE}
+indicates that the record passed this test (i.e., falls within the
+specified year range) and is eligible for retention; \code{FALSE} indicates it
+failed and is flagged as potentially problematic, and can be removed using
+\code{remove_flagged()}.
 }
 \description{
 This function identifies occurrence records collected before or after

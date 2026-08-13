@@ -52,14 +52,14 @@ to known Brazilian state distributions. Default is \code{TRUE}.}
 
 \item{buffer_state}{(numeric) buffer distance (in kilometers) to be applied
 around the known state distribution boundaries. Records within this distance
-are considered valid. Default is 20 km.}
+are flagged as \code{TRUE}. Default is 20 km.}
 
 \item{by_biome}{(logical) if \code{TRUE}, flags records based on their
 distance to known Brazilian biome distributions. Default is \code{TRUE}.}
 
 \item{buffer_biome}{(numeric) buffer distance (in kilometers) to be
 applied around the known biome distribution boundaries. Records within this
-distance are considered valid. Default is 20 km.}
+distance are flagged as \code{TRUE}. Default is 20 km.}
 
 \item{by_endemism}{(logical) if \code{TRUE}, includes a check against the entire
 Brazilian boundary. Default is \code{TRUE}.}
@@ -103,15 +103,19 @@ A \code{data.frame} that is the original \code{occ} data frame
 augmented with a new column named \code{florabr_flag}. This column is
 logical (\code{TRUE}/\code{FALSE}) indicating whether the record falls
 within the expected distribution (plus buffer) based on the \code{florabr}
-data. Records for species not found in the \code{florabr} data will have
-\code{NA} in the \code{florabr_flag} column.
+data. As with all other flagging functions in RuHere, \code{TRUE}
+indicates that the record passed this test and is eligible for retention;
+\code{FALSE} indicates it failed and is flagged as potentially problematic,
+and can be removed using \code{remove_flagged()}. Records for species not
+found in the \code{florabr} data will have \code{NA} in the
+\code{florabr_flag} column.
 }
 \description{
-Flags (validates) occurrence records based on known distribution data
+Flags occurrence records based on known distribution data
 from the Flora e Funga do Brasil (florabr) data. This function checks if an
 occurrence point for a given species falls within its documented distribution,
 allowing for user-defined buffers around Brazilian states, biomes, or the
-entire country. Records are flagged as valid (\code{TRUE}) if they fall within
+entire country. Records are flagged as \code{TRUE} if they fall within
 the specified range for the distribution information available in the
 \code{florabr} data.
 }

@@ -92,7 +92,12 @@
 #' @returns
 #' A list with:
 #' - **occ**: the selected thinned occurrence dataset with the column
-#' `thin_geo_flag`indicating whether each record is retained (`TRUE`) or flagged.
+#' `thin_geo_flag` indicating whether each record was retained (`TRUE`) or
+#' flagged as redundant (`FALSE`) in geographic space. As with all other
+#' flagging functions in RuHere, `TRUE` indicates that the record passed this
+#' test and is eligible for retention; `FALSE` indicates it failed and is
+#' flagged as potentially problematic, and can be removed using
+#' `remove_flagged()`.
 #' - **imoran**: a table summarizing Moran's I for each thinning distance
 #' - **distance**: the thinning distance that produced the selected dataset
 #' - **moran_summary**: the summary statistic used to select the dataset

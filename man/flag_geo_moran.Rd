@@ -85,7 +85,12 @@ Default is \code{TRUE}}
 A list with:
 \itemize{
 \item \strong{occ}: the selected thinned occurrence dataset with the column
-\code{thin_geo_flag}indicating whether each record is retained (\code{TRUE}) or flagged.
+\code{thin_geo_flag} indicating whether each record was retained (\code{TRUE}) or
+flagged as redundant (\code{FALSE}) in geographic space. As with all other
+flagging functions in RuHere, \code{TRUE} indicates that the record passed this
+test and is eligible for retention; \code{FALSE} indicates it failed and is
+flagged as potentially problematic, and can be removed using
+\code{remove_flagged()}.
 \item \strong{imoran}: a table summarizing Moran's I for each thinning distance
 \item \strong{distance}: the thinning distance that produced the selected dataset
 \item \strong{moran_summary}: the summary statistic used to select the dataset

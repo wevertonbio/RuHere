@@ -45,7 +45,7 @@ specified by \code{data_dir}.
 \description{
 This function downloads the Taxonomic Catalog of the Brazilian Fauna
 database, which is required for filtering occurrence records using
-specialists' information via the \code{flag_faunabr()} function.
+specialists' range information via the \code{flag_faunabr()} function.
 }
 \examples{
 \donttest{
