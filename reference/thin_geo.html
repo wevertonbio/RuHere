@@ -112,8 +112,8 @@ Default is <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-remove-invalid">remove_invalid<a class="anchor" aria-label="anchor" href="#arg-remove-invalid"></a></dt>
-<dd><p>(logical) whether to remove invalid coordinates.
-Default is <code>TRUE</code>.</p></dd>
+<dd><p>(logical) whether to remove records with missing or
+impossible coordinates. Default is <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-optimize-memory">optimize_memory<a class="anchor" aria-label="anchor" href="#arg-optimize-memory"></a></dt>
@@ -134,7 +134,10 @@ is TRUE.</p></dd>
     <p>The original <code>occ</code> data frame augmented with a new logical column named
 <code>thin_geo_flag</code>. Records that are retained after thinning receive
 <code>TRUE</code>, while records identified as too close to a higher-priority
-record receive <code>FALSE</code>.</p>
+record receive <code>FALSE</code>. As with all other flagging functions in RuHere,
+<code>TRUE</code> indicates that the record passed this test and is eligible for
+retention; <code>FALSE</code> indicates it failed and is flagged as potentially
+problematic, and can be removed using <code><a href="remove_flagged.html">remove_flagged()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

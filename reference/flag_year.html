@@ -97,8 +97,12 @@ information. Default is <code>FALSE</code>.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data.frame identical to <code>occ</code> but with an additional column named
-<code>year_flag</code>. Records collected outside the year range specified are assigned
-<code>FALSE</code>.</p>
+<code>year_flag</code>. Records collected outside the year range specified are
+assigned <code>FALSE</code>. As with all other flagging functions in RuHere, <code>TRUE</code>
+indicates that the record passed this test (i.e., falls within the
+specified year range) and is eligible for retention; <code>FALSE</code> indicates it
+failed and is flagged as potentially problematic, and can be removed using
+<code><a href="remove_flagged.html">remove_flagged()</a></code>.</p>
     </div>
 
     <div class="section level2">

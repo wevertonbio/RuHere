@@ -37,18 +37,19 @@ remove_invalid_coordinates(
 
 - return_invalid:
 
-  (logical) whether to return a list containing the valid and invalid
-  coordinates. Default is TRUE.
+  (logical) whether to return a list containing records that passed and
+  failed this test. Default is TRUE.
 
 - save_invalid:
 
-  (logical) whether to save the invalid (removed) records. If `TRUE`, an
-  `output_dir` must be provided. Default is `FALSE`.
+  (logical) whether to save the records that failed this test (i.e.,
+  flagged as `FALSE`). If `TRUE`, an `output_dir` must be provided.
+  Default is `FALSE`.
 
 - output_dir:
 
-  (character) path to an existing directory where records with invalid
-  coordinates will be saved. Only used when `save_invalid = TRUE`.
+  (character) path to an existing directory where records flagged as
+  `FALSE` will be saved. Only used when `save_invalid = TRUE`.
 
 - overwrite:
 
@@ -57,7 +58,7 @@ remove_invalid_coordinates(
 
 - output_format:
 
-  (character) output format for saving removed records. Options are
+  (character) output format for saving flagged records. Options are
   `".csv"` or `".gz"`. Only used when `save_invalid = TRUE`. Default is
   `".gz"`.
 
@@ -68,13 +69,23 @@ remove_invalid_coordinates(
 
 ## Value
 
+The input data.frame with an additional logical column indicating
+whether each record passed (`TRUE`) or failed (`FALSE`) the coordinate
+quality check (i.e., is not missing, non-numeric, or outside the
+possible range for Earth: latitude between -90 and 90, longitude between
+-180 and 180). As with all other flagging functions in RuHere, `TRUE`
+indicates that the record passed this test and is eligible for
+retention; `FALSE` indicates it failed and is flagged as potentially
+problematic, and can be removed using
+[`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md).
+
 If `return_invalid = FALSE`, returns the occurrence dataset containing
-only valid coordinates. If `return_invalid = TRUE` (default), returns a
-list with two elements:
+only records flagged as `TRUE`. If `return_invalid = TRUE` (default),
+returns a list with two elements:
 
-- `valid` – the dataset with valid coordinates.
+- `valid` – the dataset with records flagged as `TRUE`.
 
-- `invalid` – the dataset with invalid coordinates removed.
+- `invalid` – the dataset with records flagged as `FALSE`.
 
 ## Examples
 

@@ -96,7 +96,11 @@ use the non cultivated-related expressions available in
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>data.frame</code> that is the original <code>occ</code> data frame augmented with
 a new column named <code>cultivated_flag</code>. Records identified as cultivated
-receive <code>FALSE</code>, while all other records receive <code>TRUE</code>.</p>
+receive <code>FALSE</code>, while all other records receive <code>TRUE</code>. As with
+all other flagging functions in RuHere, <code>TRUE</code> indicates that the
+record passed this test and is eligible for retention; <code>FALSE</code>
+indicates it failed and is flagged as potentially problematic, and can be
+removed using <code><a href="remove_flagged.html">remove_flagged()</a></code>.</p>
     </div>
 
     <div class="section level2">

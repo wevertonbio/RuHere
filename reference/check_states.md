@@ -65,7 +65,11 @@ check_states(
 
 The original `occ` data.frame with an additional column
 (`correct_state`) indicating whether each record falls within the state
-specified in the metadata (`TRUE`) or not (`FALSE`).
+specified in the metadata (`TRUE`) or not (`FALSE`). As with all other
+flagging functions in RuHere, `TRUE` indicates that the record passed
+this test and is eligible for retention; `FALSE` indicates it failed and
+is flagged as potentially problematic, and can be removed using
+[`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md).
 
 ## Examples
 

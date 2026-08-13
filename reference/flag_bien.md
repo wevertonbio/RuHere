@@ -1,12 +1,11 @@
 # Identify records outside natural ranges according to BIEN
 
-Flags (validates) occurrence records based on known distribution data
-from the Botanical Information and Ecology Network (BIEN) data. This
-function checks if an occurrence point for a given species falls within
-its documented distribution, allowing for user-defined buffers around
-the region. Records are flagged as valid (`TRUE`) if they fall inside
-the documented distribution (plus optional buffer) for the species in
-the BIEN dataset.
+Flags occurrence records based on known distribution data from the
+Botanical Information and Ecology Network (BIEN) data. This function
+checks if an occurrence point for a given species falls within its
+documented distribution, allowing for user-defined buffers around the
+region. Records are flagged as `TRUE` if they fall inside the documented
+distribution (plus optional buffer) for the species in the BIEN dataset.
 
 ## Usage
 
@@ -70,8 +69,13 @@ flag_bien(
 A `data.frame` that is the original `occ` data frame augmented with a
 new column named `bien_flag`. This column is logical (`TRUE`/`FALSE`)
 indicating whether the record falls within the expected distribution
-(plus buffer) based on the `BIEN` data. Records for species not found in
-the `BIEN` data will have `NA` in the `bien_flag` column.
+(plus buffer) based on the `BIEN` data. As with all other flagging
+functions in RuHere, `TRUE` indicates that the record passed this test
+and is eligible for retention; `FALSE` indicates it failed and is
+flagged as potentially problematic, and can be removed using
+[`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md).
+Records for species not found in the `BIEN` data will have `NA` in the
+`bien_flag` column.
 
 ## Examples
 

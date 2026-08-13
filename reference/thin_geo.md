@@ -61,7 +61,8 @@ thin_geo(
 
 - remove_invalid:
 
-  (logical) whether to remove invalid coordinates. Default is `TRUE`.
+  (logical) whether to remove records with missing or impossible
+  coordinates. Default is `TRUE`.
 
 - optimize_memory:
 
@@ -80,7 +81,11 @@ thin_geo(
 The original `occ` data frame augmented with a new logical column named
 `thin_geo_flag`. Records that are retained after thinning receive
 `TRUE`, while records identified as too close to a higher-priority
-record receive `FALSE`.
+record receive `FALSE`. As with all other flagging functions in RuHere,
+`TRUE` indicates that the record passed this test and is eligible for
+retention; `FALSE` indicates it failed and is flagged as potentially
+problematic, and can be removed using
+[`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md).
 
 ## Details
 

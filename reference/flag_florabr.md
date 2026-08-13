@@ -1,12 +1,12 @@
 # Identify records outside natural ranges according to Flora e Funga do Brasil
 
-Flags (validates) occurrence records based on known distribution data
-from the Flora e Funga do Brasil (florabr) data. This function checks if
-an occurrence point for a given species falls within its documented
-distribution, allowing for user-defined buffers around Brazilian states,
-biomes, or the entire country. Records are flagged as valid (`TRUE`) if
-they fall within the specified range for the distribution information
-available in the `florabr` data.
+Flags occurrence records based on known distribution data from the Flora
+e Funga do Brasil (florabr) data. This function checks if an occurrence
+point for a given species falls within its documented distribution,
+allowing for user-defined buffers around Brazilian states, biomes, or
+the entire country. Records are flagged as `TRUE` if they fall within
+the specified range for the distribution information available in the
+`florabr` data.
 
 ## Usage
 
@@ -77,7 +77,7 @@ flag_florabr(
 
   (numeric) buffer distance (in kilometers) to be applied around the
   known state distribution boundaries. Records within this distance are
-  considered valid. Default is 20 km.
+  flagged as `TRUE`. Default is 20 km.
 
 - by_biome:
 
@@ -88,7 +88,7 @@ flag_florabr(
 
   (numeric) buffer distance (in kilometers) to be applied around the
   known biome distribution boundaries. Records within this distance are
-  considered valid. Default is 20 km.
+  flagged as `TRUE`. Default is 20 km.
 
 - by_endemism:
 
@@ -151,8 +151,13 @@ flag_florabr(
 A `data.frame` that is the original `occ` data frame augmented with a
 new column named `florabr_flag`. This column is logical (`TRUE`/`FALSE`)
 indicating whether the record falls within the expected distribution
-(plus buffer) based on the `florabr` data. Records for species not found
-in the `florabr` data will have `NA` in the `florabr_flag` column.
+(plus buffer) based on the `florabr` data. As with all other flagging
+functions in RuHere, `TRUE` indicates that the record passed this test
+and is eligible for retention; `FALSE` indicates it failed and is
+flagged as potentially problematic, and can be removed using
+[`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md).
+Records for species not found in the `florabr` data will have `NA` in
+the `florabr_flag` column.
 
 ## Examples
 

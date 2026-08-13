@@ -88,18 +88,19 @@ valid range for Earth (latitude &gt; 90 or &lt; -90, and longitude &gt; 180 or &
 
 
 <dt id="arg-return-invalid">return_invalid<a class="anchor" aria-label="anchor" href="#arg-return-invalid"></a></dt>
-<dd><p>(logical) whether to return a list containing the valid
-and invalid coordinates. Default is TRUE.</p></dd>
+<dd><p>(logical) whether to return a list containing records
+that passed and failed this test. Default is TRUE.</p></dd>
 
 
 <dt id="arg-save-invalid">save_invalid<a class="anchor" aria-label="anchor" href="#arg-save-invalid"></a></dt>
-<dd><p>(logical) whether to save the invalid (removed) records.
-If <code>TRUE</code>, an <code>output_dir</code> must be provided. Default is <code>FALSE</code>.</p></dd>
+<dd><p>(logical) whether to save the records that failed this
+test (i.e., flagged as <code>FALSE</code>). If <code>TRUE</code>, an <code>output_dir</code> must be
+provided. Default is <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-output-dir">output_dir<a class="anchor" aria-label="anchor" href="#arg-output-dir"></a></dt>
-<dd><p>(character) path to an existing directory where records with
-invalid coordinates will be saved. Only used when <code>save_invalid = TRUE</code>.</p></dd>
+<dd><p>(character) path to an existing directory where records
+flagged as <code>FALSE</code> will be saved. Only used when <code>save_invalid = TRUE</code>.</p></dd>
 
 
 <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
@@ -108,7 +109,7 @@ invalid coordinates will be saved. Only used when <code>save_invalid = TRUE</cod
 
 
 <dt id="arg-output-format">output_format<a class="anchor" aria-label="anchor" href="#arg-output-format"></a></dt>
-<dd><p>(character) output format for saving removed records.
+<dd><p>(character) output format for saving flagged records.
 Options are <code>".csv"</code> or <code>".gz"</code>. Only used when <code>save_invalid = TRUE</code>.
 Default is <code>".gz"</code>.</p></dd>
 
@@ -120,10 +121,18 @@ Default is <code>TRUE</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>If <code>return_invalid = FALSE</code>, returns the occurrence dataset containing only
-valid coordinates.
-If <code>return_invalid = TRUE</code> (default), returns a list with two elements:</p><ul><li><p><code>valid</code> – the dataset with valid coordinates.</p></li>
-<li><p><code>invalid</code> – the dataset with invalid coordinates removed.</p></li>
+    <p>The input data.frame with an additional logical column indicating whether
+each record passed (<code>TRUE</code>) or failed (<code>FALSE</code>) the coordinate quality check
+(i.e., is not missing, non-numeric, or outside the possible range for Earth:
+latitude between -90 and 90, longitude between -180 and 180). As with all
+other flagging functions in RuHere, <code>TRUE</code> indicates that the record passed
+this test and is eligible for retention; <code>FALSE</code> indicates it failed and is
+flagged as potentially problematic, and can be removed using
+<code><a href="remove_flagged.html">remove_flagged()</a></code>.</p>
+<p>If <code>return_invalid = FALSE</code>, returns the occurrence dataset containing only
+records flagged as <code>TRUE</code>.
+If <code>return_invalid = TRUE</code> (default), returns a list with two elements:</p><ul><li><p><code>valid</code> – the dataset with records flagged as <code>TRUE</code>.</p></li>
+<li><p><code>invalid</code> – the dataset with records flagged as <code>FALSE</code>.</p></li>
 </ul></div>
 
     <div class="section level2">

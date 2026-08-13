@@ -178,7 +178,8 @@ the convex hull of records. Ignored if <code>mask</code> is provided. Default: <
 
 <dt id="arg-flag-for-na">flag_for_NA<a class="anchor" aria-label="anchor" href="#arg-flag-for-na"></a></dt>
 <dd><p>(logical) whether to treat records falling in <code>NA</code> cells
-of <code>env_layers</code> as valid (<code>TRUE</code>) or invalid (<code>FALSE</code>). Default is <code>FALSE</code>.</p></dd>
+of <code>env_layers</code> as passing (<code>TRUE</code>) or failing (<code>FALSE</code>) this test. Default
+is <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-return-all">return_all<a class="anchor" aria-label="anchor" href="#arg-return-all"></a></dt>
@@ -194,8 +195,12 @@ Default is <code>TRUE</code></p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list with:</p><ul><li><p><strong>occ</strong>: the selected thinned occurrence dataset with the column
-<code>thin_env_flag</code>indicating whether each record is retained (<code>TRUE</code>) or flagged
-as redundant (<code>FALSE</code>) in the environmental space .</p></li>
+<code>thin_env_flag</code> indicating whether each record was retained (<code>TRUE</code>) or
+flagged as redundant (<code>FALSE</code>) in environmental space. As with all other
+flagging functions in RuHere, <code>TRUE</code> indicates that the record passed this
+test and is eligible for retention; <code>FALSE</code> indicates it failed and is
+flagged as potentially problematic, and can be removed using
+<code><a href="remove_flagged.html">remove_flagged()</a></code>.</p></li>
 <li><p><strong>imoran</strong>: a table summarizing Moran's I for each thinning distance</p></li>
 <li><p><strong>n_bins</strong>: the number of bins that produced the selected dataset</p></li>
 <li><p><strong>moran_summary</strong>: the summary statistic used to select the dataset</p></li>

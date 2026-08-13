@@ -1,12 +1,12 @@
 # Identify records outside natural ranges according to the IUCN
 
-Flags (validates) occurrence records based on known distribution data
-from the International Union for Conservation of Nature (IUCN) data.
-This function checks if an occurrence point for a given species falls
-within its documented distribution, allowing for user-defined buffers
-around the region. Records are flagged as valid (`TRUE`) if they fall
-inside the documented distribution (plus optional buffer) for the
-species in the IUCN dataset.
+Flags occurrence records based on known distribution data from the
+International Union for Conservation of Nature (IUCN) data. This
+function checks if an occurrence point for a given species falls within
+its documented distribution, allowing for user-defined buffers around
+the region. Records are flagged as `TRUE` if they fall inside the
+documented distribution (plus optional buffer) for the species in the
+IUCN dataset.
 
 ## Usage
 
@@ -59,7 +59,7 @@ flag_iucn(
   `"introduced"`, `"reintroduced"`, `"vagrant"`, `"origin uncertain"`,
   `"assisted colonisation"`, and `"all"`. For example, if
   `origin = "introduced"`, only regions where the species is considered
-  introduced will be used to validate records. Default is `"native"`.
+  introduced will be used to flag records. Default is `"native"`.
 
 - presence:
 
@@ -68,8 +68,8 @@ flag_iucn(
   `"probably extant"`, `"possibly extant"`, `"extinct"`,
   `"possibly extinct"`, `"presence uncertain"`, and `"all"`. For
   example, if `presence = "extinct"`, only regions where the species is
-  considered extinct will be used to validate records. Default is
-  `"all"`, meaning all regions will be considered.
+  considered extinct will be used to flag records. Default is `"all"`,
+  meaning all regions will be considered.
 
 - buffer:
 
@@ -91,8 +91,13 @@ flag_iucn(
 A `data.frame` that is the original `occ` data frame augmented with a
 new column named `iucn_flag`. This column is logical (`TRUE`/`FALSE`)
 indicating whether the record falls within the expected distribution
-(plus buffer) based on the `IUCN` data. Records for species not found in
-the `IUCN` data will have `NA` in the `iucn_flag` column.
+(plus buffer) based on the `IUCN` data. As with all other flagging
+functions in RuHere, `TRUE` indicates that the record passed this test
+and is eligible for retention; `FALSE` indicates it failed and is
+flagged as potentially problematic, and can be removed using
+[`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md).
+Records for species not found in the `IUCN` data will have `NA` in the
+`iucn_flag` column.
 
 ## Examples
 

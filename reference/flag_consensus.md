@@ -3,11 +3,11 @@
 This functions creates a new column representing the consensus across
 multiple flag columns. The consensus can be computed in two ways:
 
-- `"all_true"`: A record is considered valid (`TRUE`) only if **all**
-  specified flag are valid (`TRUE`).
+- `"all_true"`: A record passes the consensus (`TRUE`) only if **all**
+  specified flags are `TRUE`.
 
-- `"any_true"`: A record is considered valid (`TRUE`) if **at least
-  one** specified flag is valid (`TRUE`).
+- `"any_true"`: A record passes the consensus (`TRUE`) if **at least
+  one** specified flag is `TRUE`.
 
 ## Usage
 
@@ -36,9 +36,9 @@ flag_consensus(
 - consensus_rule:
 
   (character) A string specifying how the consensus should be computed.
-  Options are `"all_true"` (record is considered valid only when **all**
-  flags are `TRUE` or `"any_true"`(record is considered valid when **at
-  least one** flag is `TRUE`. Default is `"all_true"`
+  Options are `"all_true"` (record passes the consensus only when
+  **all** flags are `TRUE`) or `"any_true"` (record passes the consensus
+  when **at least one** flag is `TRUE`). Default is `"all_true"`
 
 - flag_name:
 
@@ -54,14 +54,18 @@ flag_consensus(
 
 The original `occ` with an additional logical column defined by
 `flag_name`, indicating the consensus result based on the selected
-`consensus_rule`.
+`consensus_rule`. As with all other flagging functions in RuHere, `TRUE`
+indicates that the record passed the consensus criterion and is eligible
+for retention, while `FALSE` indicates it failed and is flagged as
+potentially problematic.
 
 ## Details
 
 The following flags are available: correct_country, correct_state,
 cultivated, fossil, inaturalist, faunabr, florabr, wcvp, iucn,
 duplicated, thin_geo, thin_env, year, .val, .equ, .zer, .cap, .cen,
-.sea, .urb, .otl, .gbf, .inst, and .aohi.
+.sea, .urb, .otl, .gbf, .inst, and .aohi. Flags may be combined from any
+category (metadata-based, range-based, or thinning-related).
 
 ## Examples
 

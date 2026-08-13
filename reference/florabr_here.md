@@ -1,8 +1,8 @@
 # Download the latest version of Flora e Funga do Brasil database
 
 This function downloads the Flora e Funga do Brasil database, which is
-required for filtering occurrence records using specialists' information
-via the
+required for filtering occurrence records using specialists' range
+information via the
 [`flag_florabr()`](https://wevertonbio.github.io/RuHere/reference/flag_florabr.md)
 function.
 
@@ -70,12 +70,12 @@ data_dir <- tempdir() # Here, a temporary directory
 # Download the latest version of the Flora e Funga do Brasil database
 florabr_here(data_dir = data_dir)
 #> Getting data from Flora e Funga do Brasil...
-#> Data will be saved in /tmp/RtmpLL4Uv9/florabr
-#> Downloading version: 393.428
+#> Data will be saved in /tmp/RtmpE8TInP/florabr
+#> Downloading version: 393.429
 #> Merging data. Please wait a moment...
-#> Data will be saved in /tmp/RtmpLL4Uv9/florabr
-#> Data downloaded and merged successfully. Final data saved in /tmp/RtmpLL4Uv9/florabr/393.428/CompleteBrazilianFlora.rds
-#> Data sucessfuly saved in /tmp/RtmpLL4Uv9/florabr
+#> Data will be saved in /tmp/RtmpE8TInP/florabr
+#> Data downloaded and merged successfully. Final data saved in /tmp/RtmpE8TInP/florabr/393.429/CompleteBrazilianFlora.rds
+#> Data sucessfuly saved in /tmp/RtmpE8TInP/florabr
 #> 
 #> Please don't forget to cite:
 #> 

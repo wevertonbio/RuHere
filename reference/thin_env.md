@@ -65,15 +65,19 @@ thin_env(
 - flag_for_NA:
 
   (logical) whether to treat records falling in `NA` cells of
-  `env_layers` as valid (`TRUE`) or invalid (`FALSE`). Default is
-  `FALSE`.
+  `env_layers` as passing (`TRUE`) or failing (`FALSE`) this test.
+  Default is `FALSE`.
 
 ## Value
 
 The original `occ` data frame with two additional columns:
 
-- `thin_env_flag`: logical indicating whether each record is retained
-  (`TRUE`) or flagged as redundant (`FALSE`).
+- `thin_env_flag`: logical indicating whether each record was retained
+  (`TRUE`) or flagged as redundant (`FALSE`). As with all other flagging
+  functions in RuHere, `TRUE` indicates that the record passed this test
+  and is eligible for retention; `FALSE` indicates it failed and is
+  flagged as potentially problematic, and can be removed using
+  [`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md).
 
 - `bin`: environmental bin ID assigned to each record. Each component of
   the ID corresponds to the bin of one environmental variable.

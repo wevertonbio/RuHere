@@ -2,7 +2,7 @@
 
 This function downloads the Taxonomic Catalog of the Brazilian Fauna
 database, which is required for filtering occurrence records using
-specialists' information via the
+specialists' range information via the
 [`flag_faunabr()`](https://wevertonbio.github.io/RuHere/reference/flag_faunabr.md)
 function.
 
@@ -70,22 +70,15 @@ data_dir <- tempdir() # Here, a temporary directory
 # Download the latest version of the Flora e Funga do Brazil database
 faunabr_here(data_dir = data_dir)
 #> Getting data from Taxonomic Catalog of the Brazilian Fauna ...
-#> Data will be saved in /tmp/RtmpLL4Uv9/faunabr
-#> Downloading version: 1.53
+#> Data will be saved in /tmp/RtmpE8TInP/faunabr
+#> Downloading version: 1.54
 #> Merging data. Please wait a moment...
-#> Data will be saved in /tmp/RtmpLL4Uv9/faunabr
+#> Data will be saved in /tmp/RtmpE8TInP/faunabr
 #> Reading files...
 #> Aggregating secondary tables...
 #> Performing table joins (merges)...
 #> Processing taxonomic columns...
 #> Warning: NAs introduced by coercion
-#> Saving final compressed file...
-#> Done!
-#> Data downloaded and merged successfully. Final data saved in /tmp/RtmpLL4Uv9/faunabr/1.53/CompleteBrazilianFauna.gz
-#> Data sucessfuly saved in /tmp/RtmpLL4Uv9/faunabr
-#> 
-#> Please don't forget to cite:
-#> 
-#> Trindade WCF (2025) faunabr: An R package to explore taxonomic data and map species distributions using the Catalogo Taxonomico da Fauna do Brasil. Zoologia 42: e25027. <https://doi.org/10.1590/S1984-4689.v42.e25027>.
+#> Error in rbindlist(l, use.names, fill, idcol, ignore.attr): Item 2 has 1 columns, inconsistent with item 1 which has 43 columns. To fill missing columns use fill=TRUE.
 # }
 ```

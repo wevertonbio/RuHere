@@ -34,7 +34,11 @@ flag_inaturalist(occ, columns = "datasetName", research_grade = FALSE)
 
 A `data.frame` that is the original `occ` data frame augmented with a
 new column named `inaturalist_flag`. Flagged records receive `FALSE`,
-while all other records receive `TRUE`.
+while all other records receive `TRUE`. As with all other flagging
+functions in RuHere, `TRUE` indicates that the record passed this test
+and is eligible for retention; `FALSE` indicates it failed and is
+flagged as potentially problematic, and can be removed using
+[`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md).
 
 ## Details
 

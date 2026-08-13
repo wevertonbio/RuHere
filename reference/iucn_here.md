@@ -2,7 +2,7 @@
 
 This function downloads information on species distributions from the
 IUCN Red List, required for filtering occurrence records using
-specialists' information via the
+specialists' range information via the
 [`flag_iucn()`](https://wevertonbio.github.io/RuHere/reference/flag_iucn.md)
 function.
 
@@ -93,10 +93,21 @@ and their synonyms in the second. See `RuHere::synonys` for an example.
 The function also downloads the WGSRPD map used to represent
 distribution regions.
 
+## Note
+
+This function requires a valid IUCN Red List API key. Set it in advance
+using
+[`set_iucn_credentials()`](https://wevertonbio.github.io/RuHere/reference/set_iucn_credentials.md)
+before running the examples below. You can check or generate your API
+key at https://api.iucnredlist.org/users/edit.
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Set your IUCN API key (required before running this function)
+# set_iucn_credentials(iucn_key = "your_api_key")
+
 # Define a directory to save the data
 data_dir <- tempdir() # Here, a temporary directory
 

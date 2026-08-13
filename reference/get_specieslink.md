@@ -139,7 +139,7 @@ get_specieslink(species = NULL, key = NULL, dir,
 
 - recordNumber:
 
-  (numeric) collector’s record number. Default is `NULL`.
+  (numeric) collector's record number. Default is `NULL`.
 
 - yearCollected:
 
@@ -233,20 +233,33 @@ get_specieslink(species = NULL, key = NULL, dir,
   (logical) if `TRUE`, prints messages about the progress and the number
   of species being checked. Default is `TRUE`.
 
-  \#' @details The speciesLink API key can be set permanently using:
-
-
-      set_specieslink_credentials("your_api_key")
-
 ## Value
 
 A `data.frame` containing the occurrence data fields returned by
 speciesLink.
 
+## Details
+
+The speciesLink API key can be set permanently using:
+
+
+    set_specieslink_credentials("your_api_key")
+
+## Note
+
+This function requires a valid speciesLink API key. Set it in advance
+using
+[`set_specieslink_credentials()`](https://wevertonbio.github.io/RuHere/reference/set_specieslink_credentials.md)
+before running the examples below. You can find your API key at
+https://specieslink.net/aut/profile/apikeys.
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+# Set your speciesLink API key (required before running this function)
+# set_specieslink_credentials("your_api_key")
+
 # Retrieve records for Arecaceae in São Paulo
 res <- get_specieslink(
   family = "Arecaceae",
