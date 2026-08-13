@@ -22,7 +22,10 @@
 #' @returns
 #' The original `occ` data.frame with an additional column (`correct_country`)
 #' indicating whether each record falls within the country specified in the
-#' metadata (`TRUE`) or not (`FALSE`).
+#' metadata (`TRUE`) or not (`FALSE`). As with all other flagging functions in
+#' RuHere, `TRUE` indicates that the record passed this test and is eligible
+#' for retention; `FALSE` indicates it failed and is flagged as potentially
+#' problematic, and can be removed using `remove_flagged()`.
 #'
 #' @importFrom terra vect aggregate buffer is.related unwrap
 #'

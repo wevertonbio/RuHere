@@ -48,14 +48,14 @@ to known Brazilian state distributions. Default is \code{TRUE}.}
 
 \item{buffer_state}{(numeric) buffer distance (in kilometers) to be applied
 around the known state distribution boundaries. Records within this distance
-are considered valid. Default is 20 km.}
+are flagged as \code{TRUE}. Default is 20 km.}
 
 \item{by_country}{(logical) if \code{TRUE}, flags records based on their distance
 to country distributions. Default is \code{TRUE}.}
 
 \item{buffer_country}{(numeric) buffer distance (in kilometers) to be applied
-around the country boundaries. Records within this distance are considered
-valid. Default is 20 km.}
+around the country boundaries. Records within this distance are flagged as
+\code{TRUE}. Default is 20 km.}
 
 \item{keep_columns}{(logical) if \code{TRUE}, the returned data frame contains
 all original columns from \code{occ}. If \code{FALSE}, it returns only the key columns
@@ -80,19 +80,23 @@ processing. If TRUE, the 'pbapply' package must be installed. Default is
 the number of species being checked. Default is \code{FALSE}.}
 }
 \value{
-#' A \code{data.frame} that is the original \code{occ} data frame
+A \code{data.frame} that is the original \code{occ} data frame
 augmented with a new column named \code{faunabr_flag}. This column is
 logical (\code{TRUE}/\code{FALSE}) indicating whether the record falls
 within the expected distribution (plus buffer) based on the \code{faunabr}
-data. Records for species not found in the \code{faunabr} data will have
-\code{NA} in the \code{faunabr_flag} column.
+data. As with all other flagging functions in RuHere, \code{TRUE}
+indicates that the record passed this test and is eligible for retention;
+\code{FALSE} indicates it failed and is flagged as potentially problematic,
+and can be removed using \code{remove_flagged()}. Records for species not
+found in the \code{faunabr} data will have \code{NA} in the
+\code{faunabr_flag} column.
 }
 \description{
-Flags (validates) occurrence records based on known distribution data
+Flags occurrence records based on known distribution data
 from the Catálogo Taxônomico da Fauna do Brasil (faunabr) data. This function
 checks if an occurrence point for a given species falls within its documented
 distribution, allowing for user-defined buffers around Brazilian states,
-or the entire country. Records are flagged as valid (\code{TRUE}) if they fall
+or the entire country. Records are flagged as \code{TRUE} if they fall
 within the specified range for the distribution information available in the
 \code{faunabr} data.
 }

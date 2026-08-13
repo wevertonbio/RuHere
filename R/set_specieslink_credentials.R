@@ -30,9 +30,28 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' set_specieslink_credentials(specieslink_key = "my_key")
-#' }
+#' # Set your speciesLink API key (required before running this function)
+#' # set_specieslink_credentials(specieslink_key = "your_api_key")
 #'
+#' # Retrieve records for Arecaceae in São Paulo
+#' res <- get_specieslink(
+#'   family = "Arecaceae",
+#'   country = "Brazil",
+#'   stateProvince = "São Paulo",
+#'   basisOfRecord = "PreservedSpecimen",
+#'   limit = 10
+#' )
+#'
+#' # Save results as compressed CSV
+#' get_specieslink(
+#'   family = "Arecaceae",
+#'   country = "Brazil",
+#'   save = TRUE,
+#'   dir = tempdir(),
+#'   filename = "arecaceae_sp",
+#'   compress = TRUE
+#' )
+#'}
 set_specieslink_credentials <- function(specieslink_key, permanently = FALSE,
                                         overwrite = FALSE,
                                         open_Renviron = FALSE,

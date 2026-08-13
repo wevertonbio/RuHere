@@ -37,7 +37,7 @@ latitude values. Default is \code{"decimalLatitude"}.}
 be considered as part of the species' range. Options are: \code{"native"},
 \code{"introduced"}, \code{"extinct"}, \code{"location_doubtful"}, and \code{"all"}. For example,
 if  \code{origin = "introduced"}, only regions where the species is considered
-introduced will be used to validate records.  Default is \code{"native"}.}
+introduced will be used to flag records.  Default is \code{"native"}.}
 
 \item{buffer}{(numeric) buffer distance (in kilometers) to be applied
 around the region of distribution. Default is 20 km.}
@@ -46,7 +46,7 @@ around the region of distribution. Default is 20 km.}
 processing. If TRUE, the 'pbapply' package must be installed. Default is
 \code{FALSE}.}
 
-\item{verbose}{(logical) if \code{FALSE}, prints messages about the progress and
+\item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
 the number of species being checked. Default is \code{FALSE}.}
 }
 \value{
@@ -54,15 +54,19 @@ A \code{data.frame} that is the original \code{occ} data frame
 augmented with a new column named \code{wcvp_flag}. This column is
 logical (\code{TRUE}/\code{FALSE}) indicating whether the record falls
 within the expected distribution (plus buffer) based on the \code{WCVP}
-data. Records for species not found in the \code{WCVP} data will have
-\code{NA} in the \code{wcvp_flag} column.
+data. As with all other flagging functions in RuHere, \code{TRUE}
+indicates that the record passed this test and is eligible for retention;
+\code{FALSE} indicates it failed and is flagged as potentially problematic,
+and can be removed using \code{remove_flagged()}. Records for species not
+found in the \code{WCVP} data will have \code{NA} in the \code{wcvp_flag}
+column.
 }
 \description{
-Flags (validates) occurrence records based on known distribution data
+Flags occurrence records based on known distribution data
 from the World Checklist of Vascular Plants (WCVP) data. This function checks
 if an occurrence point for a given species falls within its documented
 distribution, allowing for user-defined buffers around the region. Records
-are flagged as valid (\code{TRUE}) if they fall inside the documented
+are flagged as \code{TRUE} if they fall inside the documented
 distribution (plus optional buffer) for the species in the WCVP dataset.
 }
 \examples{

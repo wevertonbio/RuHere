@@ -2,8 +2,12 @@
 #'
 #' @description
 #' This function downloads distribution information from the BIEN database,
-#' required for filtering occurrence records using specialists' information via
-#' the `flag_bien()` function.
+#' required for filtering occurrence records using specialists' range
+#' information via the `flag_bien()` function. Unlike the other range
+#' products supported by RuHere (IUCN, WCVP, florabr, faunabr), BIEN range
+#' polygons are derived from ecological niche models rather than direct
+#' taxonomic curation, and should be interpreted as model-based hypotheses of
+#' potential distribution.
 #'
 #' @param data_dir (character) directory to save the data downloaded from BIEN.
 #' @param species (character) a vector of species names for which to retrieve
@@ -22,7 +26,8 @@
 #' @details
 #' This function uses the `BIEN::BIEN_ranges_load_species()` function to
 #' retrieve polygons representing the distribution ranges of species available
-#' in the BIEN database.
+#' in the BIEN database. These polygons are derived from ecological niche
+#' models (Maitner et al., 2018) rather than from direct taxonomic curation.
 #'
 #' Because taxonomic information in BIEN may be outdated, you can optionally
 #' provide a table of synonyms to broaden the search. The synonyms data.frame
@@ -35,7 +40,7 @@
 #' are available in BIEN.
 #' If the range is available, a GeoPackage file (.gpkg) is saved in
 #' `data_dir/bien`. The file name corresponds to the species name, with an
-#' underscore (“_”) replacing the space between the genus and the specific
+#' underscore ("_") replacing the space between the genus and the specific
 #' epithet.
 #'
 #' @importFrom terra vect writeVector

@@ -3,8 +3,7 @@
 #' @description
 #' This function downloads the World Checklist of Vascular Plants database,
 #' which is required for filtering occurrence records using specialists'
-#' information via the `flag_wcvp()` function.
-#'
+#' range information via the `flag_wcvp()` function.
 #'
 #' @param data_dir (character) a directory to save the data downloaded from
 #' WCVP.

@@ -43,8 +43,8 @@ specified by \code{data_dir}.
 }
 \description{
 This function downloads the Flora e Funga do Brasil database, which is
-required for filtering occurrence records using specialists' information
-via the \code{flag_florabr()} function.
+required for filtering occurrence records using specialists' range
+information via the \code{flag_florabr()} function.
 }
 \examples{
 \donttest{

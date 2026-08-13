@@ -32,7 +32,11 @@ use the non cultivated-related expressions available in
 \value{
 A \code{data.frame} that is the original \code{occ} data frame augmented with
 a new column named \code{cultivated_flag}. Records identified as cultivated
-receive \code{FALSE}, while all other records receive \code{TRUE}.
+receive \code{FALSE}, while all other records receive \code{TRUE}. As with
+all other flagging functions in RuHere, \code{TRUE} indicates that the
+record passed this test and is eligible for retention; \code{FALSE}
+indicates it failed and is flagged as potentially problematic, and can be
+removed using \code{remove_flagged()}.
 }
 \description{
 This function identifies records of cultivated individuals based on record

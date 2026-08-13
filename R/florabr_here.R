@@ -2,8 +2,8 @@
 #'
 #' @description
 #' This function downloads the Flora e Funga do Brasil database, which is
-#' required for filtering occurrence records using specialists' information
-#' via the `flag_florabr()` function.
+#' required for filtering occurrence records using specialists' range
+#' information via the `flag_florabr()` function.
 #'
 #' @param data_dir (character) a directory to save the data downloaded from
 #' Flora e Funga do Brasil.

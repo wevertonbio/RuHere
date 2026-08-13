@@ -47,10 +47,15 @@ request progress with \code{rgbif::occ_download_wait()}
 }
 \note{
 This function requires an active internet connection and valid GBIF
-credentials.
+credentials. Set them in advance using \code{set_gbif_credentials()}.
 }
 \examples{
 \dontrun{
+# Set your GBIF credentials (required before running this function)
+# set_gbif_credentials(gbif_username = "your_username",
+#                       gbif_email = "your_email@example.com",
+#                       gbif_password = "your_password")
+
 # Prepare data to request GBIF download
 gbif_prepared <- prepare_gbif_download(species = "Araucaria angustifolia")
 # Submit a request to download occurrences

@@ -20,9 +20,9 @@ has been processed by two or more flagging functions.}
 used in the consensus evaluation. See details for see the options.}
 
 \item{consensus_rule}{(character) A string specifying how the consensus
-should be computed. Options are \code{"all_true"} (record is considered valid only
-when \strong{all} flags are \code{TRUE} or \code{"any_true"}(record is considered valid when
-\strong{at least one} flag is \code{TRUE}. Default is \code{"all_true"}}
+should be computed. Options are \code{"all_true"} (record passes the consensus
+only when \strong{all} flags are \code{TRUE}) or \code{"any_true"} (record passes the
+consensus when \strong{at least one} flag is \code{TRUE}). Default is \code{"all_true"}}
 
 \item{flag_name}{(character) name of the column that will store the
 consensus result. Default is \code{"consensus_flag"}.}
@@ -33,23 +33,27 @@ columns specified in \code{flags} from the final output. Default is \code{FALSE}
 \value{
 The original \code{occ} with an additional logical column defined by
 \code{flag_name}, indicating the consensus result based on the selected
-\code{consensus_rule}.
+\code{consensus_rule}. As with all other flagging functions in RuHere, \code{TRUE}
+indicates that the record passed the consensus criterion and is eligible
+for retention, while \code{FALSE} indicates it failed and is flagged as
+potentially problematic.
 }
 \description{
 This functions creates a new column representing the consensus across
 multiple flag columns. The consensus can be computed in two ways:
 \itemize{
-\item \code{"all_true"}: A record is considered valid (\code{TRUE}) only if \strong{all}
-specified flag are valid (\code{TRUE}).
-\item \code{"any_true"}: A record is considered valid (\code{TRUE}) if \strong{at least one}
-specified flag is valid (\code{TRUE}).
+\item \code{"all_true"}: A record passes the consensus (\code{TRUE}) only if \strong{all}
+specified flags are \code{TRUE}.
+\item \code{"any_true"}: A record passes the consensus (\code{TRUE}) if \strong{at least one}
+specified flag is \code{TRUE}.
 }
 }
 \details{
 The following flags are available:  correct_country, correct_state,
 cultivated, fossil, inaturalist, faunabr, florabr, wcvp, iucn, duplicated,
 thin_geo, thin_env, year, .val, .equ, .zer, .cap, .cen, .sea, .urb, .otl,
-.gbf, .inst, and .aohi.
+.gbf, .inst, and .aohi. Flags may be combined from any category
+(metadata-based, range-based, or thinning-related).
 }
 \examples{
 # Load example data

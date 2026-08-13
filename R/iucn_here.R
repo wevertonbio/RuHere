@@ -3,7 +3,7 @@
 #' @description
 #' This function downloads information on species distributions from the IUCN
 #' Red List, required for filtering occurrence records using specialists'
-#' information via the `flag_iucn()` function.
+#' range information via the `flag_iucn()` function.
 #'
 #' @param data_dir (character) directory to save the data downloaded from
 #' IUCN.
@@ -46,6 +46,12 @@
 #' The function also downloads the WGSRPD map used to represent distribution
 #' regions.
 #'
+#' @note
+#' This function requires a valid IUCN Red List API key. Set it in advance
+#' using `set_iucn_credentials()` before running the examples below. You can
+#' check or generate your API key at
+#' https://api.iucnredlist.org/users/edit.
+#' 
 #' @returns
 #' A message indicating that the data were successfully saved in the directory
 #' specified by `data_dir`.
@@ -60,12 +66,16 @@
 #'
 #' @examples
 #' \dontrun{
+#' # Set your IUCN API key (required before running this function)
+#' # set_iucn_credentials(iucn_key = "your_api_key")
+#'
 #' # Define a directory to save the data
 #' data_dir <- tempdir() # Here, a temporary directory
 #'
 #' # Download species distribution information from IUCN
 #' iucn_here(data_dir = data_dir, species = "Araucaria angustifolia")
 #' }
+#' 
 iucn_here <- function(data_dir,
                       species,
                       synonyms = NULL,
@@ -117,7 +127,7 @@ iucn_here <- function(data_dir,
   }
 
   if(key == ""){
-    stop("You must get and save an IUCN API key. Check the function 'set_iucn_credentials()")
+    stop("You must get and save an IUCN API key. Check the function 'set_iucn_credentials()'")
   }
 
   # 5. Check overwrite

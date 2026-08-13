@@ -35,7 +35,7 @@ specified by \code{data_dir}.
 \description{
 This function downloads the World Checklist of Vascular Plants database,
 which is required for filtering occurrence records using specialists'
-information via the \code{flag_wcvp()} function.
+range information via the \code{flag_wcvp()} function.
 }
 \examples{
 \donttest{

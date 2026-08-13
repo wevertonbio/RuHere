@@ -4,7 +4,7 @@
 #' @description
 #' This function downloads the Taxonomic Catalog of the Brazilian Fauna
 #' database, which is required for filtering occurrence records using
-#' specialists' information via the `flag_faunabr()` function.
+#' specialists' range information via the `flag_faunabr()` function.
 #'
 #' @param data_dir (character) a directory to save the data downloaded from
 #' Fauna do Brazil.

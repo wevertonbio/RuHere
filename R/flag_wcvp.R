@@ -1,11 +1,11 @@
 #' Identify records outside natural ranges according to the World Checklist of Vascular Plants
 #'
 #' @description
-#' Flags (validates) occurrence records based on known distribution data
+#' Flags occurrence records based on known distribution data
 #' from the World Checklist of Vascular Plants (WCVP) data. This function checks
 #' if an occurrence point for a given species falls within its documented
 #' distribution, allowing for user-defined buffers around the region. Records
-#' are flagged as valid (`TRUE`) if they fall inside the documented
+#' are flagged as `TRUE` if they fall inside the documented
 #' distribution (plus optional buffer) for the species in the WCVP dataset.
 #'
 #' @param data_dir (character) **Required** directory path where the `WCVP`
@@ -23,13 +23,13 @@
 #' be considered as part of the species' range. Options are: `"native"`,
 #' `"introduced"`, `"extinct"`, `"location_doubtful"`, and `"all"`. For example,
 #' if  `origin = "introduced"`, only regions where the species is considered
-#' introduced will be used to validate records.  Default is `"native"`.
+#' introduced will be used to flag records.  Default is `"native"`.
 #' @param buffer (numeric) buffer distance (in kilometers) to be applied
 #' around the region of distribution. Default is 20 km.
 #' @param progress_bar (logical) whether to display a progress bar during
 #' processing. If TRUE, the 'pbapply' package must be installed. Default is
 #' `FALSE`.
-#' @param verbose (logical) if `FALSE`, prints messages about the progress and
+#' @param verbose (logical) if `TRUE`, prints messages about the progress and
 #' the number of species being checked. Default is `FALSE`.
 #'
 #' @returns
@@ -37,8 +37,12 @@
 #' augmented with a new column named \code{wcvp_flag}. This column is
 #' logical (\code{TRUE}/\code{FALSE}) indicating whether the record falls
 #' within the expected distribution (plus buffer) based on the \code{WCVP}
-#' data. Records for species not found in the \code{WCVP} data will have
-#' \code{NA} in the \code{wcvp_flag} column.
+#' data. As with all other flagging functions in RuHere, \code{TRUE}
+#' indicates that the record passed this test and is eligible for retention;
+#' \code{FALSE} indicates it failed and is flagged as potentially problematic,
+#' and can be removed using \code{remove_flagged()}. Records for species not
+#' found in the \code{WCVP} data will have \code{NA} in the \code{wcvp_flag}
+#' column.
 #'
 #' @importFrom data.table fread rbindlist
 #' @importFrom terra vect as.data.frame aggregate buffer is.related

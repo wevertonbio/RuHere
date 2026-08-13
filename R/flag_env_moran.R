@@ -46,7 +46,8 @@
 #' @param pca_buffer (numeric) buffer width (km) used when PCA is computed from
 #' the convex hull of records. Ignored if `mask` is provided. Default: `1000`.
 #' @param flag_for_NA (logical) whether to treat records falling in `NA` cells
-#' of `env_layers` as valid (`TRUE`) or invalid (`FALSE`). Default is `FALSE`.
+#' of `env_layers` as passing (`TRUE`) or failing (`FALSE`) this test. Default
+#' is `FALSE`.
 #' @param return_all (logical) whether to return the full list of all thinned
 #' datasets. Default is `FALSE`.
 #' @param verbose (logical) whether to print messages about the progress.
@@ -94,8 +95,12 @@
 #' @returns
 #' A list with:
 #' - **occ**: the selected thinned occurrence dataset with the column
-#' `thin_env_flag`indicating whether each record is retained (`TRUE`) or flagged
-#' as redundant (`FALSE`) in the environmental space .
+#' `thin_env_flag` indicating whether each record was retained (`TRUE`) or
+#' flagged as redundant (`FALSE`) in environmental space. As with all other
+#' flagging functions in RuHere, `TRUE` indicates that the record passed this
+#' test and is eligible for retention; `FALSE` indicates it failed and is
+#' flagged as potentially problematic, and can be removed using
+#' `remove_flagged()`.
 #' - **imoran**: a table summarizing Moran's I for each thinning distance
 #' - **n_bins**: the number of bins that produced the selected dataset
 #' - **moran_summary**: the summary statistic used to select the dataset

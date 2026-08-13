@@ -77,7 +77,8 @@ Default is NULL.}
 the convex hull of records. Ignored if \code{mask} is provided. Default: \code{1000}.}
 
 \item{flag_for_NA}{(logical) whether to treat records falling in \code{NA} cells
-of \code{env_layers} as valid (\code{TRUE}) or invalid (\code{FALSE}). Default is \code{FALSE}.}
+of \code{env_layers} as passing (\code{TRUE}) or failing (\code{FALSE}) this test. Default
+is \code{FALSE}.}
 
 \item{return_all}{(logical) whether to return the full list of all thinned
 datasets. Default is \code{FALSE}.}
@@ -89,8 +90,12 @@ Default is \code{TRUE}}
 A list with:
 \itemize{
 \item \strong{occ}: the selected thinned occurrence dataset with the column
-\code{thin_env_flag}indicating whether each record is retained (\code{TRUE}) or flagged
-as redundant (\code{FALSE}) in the environmental space .
+\code{thin_env_flag} indicating whether each record was retained (\code{TRUE}) or
+flagged as redundant (\code{FALSE}) in environmental space. As with all other
+flagging functions in RuHere, \code{TRUE} indicates that the record passed this
+test and is eligible for retention; \code{FALSE} indicates it failed and is
+flagged as potentially problematic, and can be removed using
+\code{remove_flagged()}.
 \item \strong{imoran}: a table summarizing Moran's I for each thinning distance
 \item \strong{n_bins}: the number of bins that produced the selected dataset
 \item \strong{moran_summary}: the summary statistic used to select the dataset

@@ -54,7 +54,7 @@ containing the species distribution information retrieved from IUCN.
 \description{
 This function downloads information on species distributions from the IUCN
 Red List, required for filtering occurrence records using specialists'
-information via the \code{flag_iucn()} function.
+range information via the \code{flag_iucn()} function.
 }
 \details{
 This function uses the \code{rredlist::rl_species()} function to retrieve
@@ -75,12 +75,22 @@ the second. See \code{RuHere::synonys} for an example.
 The function also downloads the WGSRPD map used to represent distribution
 regions.
 }
+\note{
+This function requires a valid IUCN Red List API key. Set it in advance
+using \code{set_iucn_credentials()} before running the examples below. You can
+check or generate your API key at
+https://api.iucnredlist.org/users/edit.
+}
 \examples{
 \dontrun{
+# Set your IUCN API key (required before running this function)
+# set_iucn_credentials(iucn_key = "your_api_key")
+
 # Define a directory to save the data
 data_dir <- tempdir() # Here, a temporary directory
 
 # Download species distribution information from IUCN
 iucn_here(data_dir = data_dir, species = "Araucaria angustifolia")
 }
+
 }

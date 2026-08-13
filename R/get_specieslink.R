@@ -59,7 +59,7 @@
 #' @param county (character) county or municipality name. Default is `NULL`.
 #' @param typeStatus (character) type status. Default is `NULL`.
 #' @param recordedBy (character) collector name. Default is `NULL`.
-#' @param recordNumber (numeric) collector’s record number. Default is `NULL`.
+#' @param recordNumber (numeric) collector's record number. Default is `NULL`.
 #' @param yearCollected (numeric) year of collection. Default is `NULL`.
 #' @param locality (character) locality description. Default is `NULL`.
 #' @param occurrenceRemarks (character) text field for remarks about the
@@ -104,11 +104,17 @@
 #' @param verbose (logical) if `TRUE`, prints messages about the progress and
 #' the number of species being checked. Default is `TRUE`.
 #'
-#'#' @details
+#' @details
 #' The speciesLink API key can be set permanently using:
 #' \preformatted{
 #' set_specieslink_credentials("your_api_key")
 #' }
+#'
+#' @note
+#' This function requires a valid speciesLink API key. Set it in advance
+#' using `set_specieslink_credentials()` before running the examples below.
+#' You can find your API key at
+#' https://specieslink.net/aut/profile/apikeys.
 #'
 #' @return A \code{data.frame} containing the occurrence data fields returned
 #' by speciesLink.
@@ -120,6 +126,9 @@
 #'
 #' @examples
 #' \dontrun{
+#' # Set your speciesLink API key (required before running this function)
+#' # set_specieslink_credentials("your_api_key")
+#'
 #' # Retrieve records for Arecaceae in São Paulo
 #' res <- get_specieslink(
 #'   family = "Arecaceae",

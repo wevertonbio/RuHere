@@ -17,7 +17,11 @@
 #' @returns
 #' A \code{data.frame} that is the original \code{occ} data frame augmented with
 #' a new column named \code{fossil_flag}. Records identified as fossils receive
-#' \code{FALSE}, while all other records receive \code{TRUE}.
+#' \code{FALSE}, while all other records receive \code{TRUE}. As with all other
+#' flagging functions in RuHere, \code{TRUE} indicates that the record passed
+#' this test and is eligible for retention; \code{FALSE} indicates it failed
+#' and is flagged as potentially problematic, and can be removed using
+#' \code{remove_flagged()}.
 #'
 #' @export
 #'
