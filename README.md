@@ -34,7 +34,7 @@ The main functions of the package are presented in the figure below:
 
 <div class="figure" style="text-align: center">
 
-<img src="https://github.com/wevertonbio/other_files/blob/e85358481a9109105378175046db25e97bc7190c/figures/RuHere_Workflow.png?raw=true" alt="Figure 1. Overview of the RuHere workflow for species occurrence data preparation and validation" width="761" />
+<img src="https://github.com/wevertonbio/other_files/blob/7d01c6021bb2c5c6225335a625b713b5e3907c97/figures/Workflow_v2.png?raw=true" alt="Figure 1. Overview of the RuHere workflow for species occurrence data preparation and validation" width="761" />
 <p class="caption">
 
 Figure 1. Overview of the RuHere workflow for species occurrence data preparation and validation
