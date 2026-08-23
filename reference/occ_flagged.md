@@ -15,6 +15,11 @@ occ_flagged
 A data frame where each row corresponds to a georeferenced occurrence of
 *A. angustifolia*.
 
+## References
+
+Derived dataset GBIF.org (23 August 2026) Filtered export of GBIF
+occurrence data https://doi.org/10.15468/dd.xezdws
+
 ## See also
 
 `occurrences`,
@@ -55,5 +60,4 @@ table(occ_flagged$correct_country)
 #> 
 #> FALSE  TRUE 
 #>     6  2610 
-
 ```

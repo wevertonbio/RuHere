@@ -40,6 +40,11 @@ including:
   [`format_columns()`](https://wevertonbio.github.io/RuHere/reference/format_columns.md)
   (e.g., `data_source`)
 
+## References
+
+Derived dataset GBIF.org (23 August 2026) Filtered export of GBIF
+occurrence data https://doi.org/10.15468/dd.6nyzke
+
 ## See also
 
 [`format_columns()`](https://wevertonbio.github.io/RuHere/reference/format_columns.md),

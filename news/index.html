@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RuHere</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,11 +46,21 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.2" id="ruhere-102-april-2026">RuHere 1.0.2 (April 2026)<a class="anchor" aria-label="anchor" href="#ruhere-102-april-2026"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.1.0" id="ruhere-110-august-2026">RuHere 1.1.0 (August 2026)<a class="anchor" aria-label="anchor" href="#ruhere-110-august-2026"></a></h2>
 <ul><li>Fix bug in <code><a href="../reference/remove_flagged.html">remove_flagged()</a></code> when flag is not “all”.</li>
-<li>New function <code><a href="../reference/inventory_completeness.html">inventory_completeness()</a></code>.</li>
-<li>New dataset <code>atlantic_amphibians</code> to run example of <code><a href="../reference/inventory_completeness.html">inventory_completeness()</a></code>
+<li>Add new functions: <code><a href="../reference/inventory_completeness.html">inventory_completeness()</a></code>, <code><a href="../reference/count_flags.html">count_flags()</a></code>, <code><a href="../reference/get_datapaper.html">get_datapaper()</a></code>, and <code><a href="../reference/cite_datapaper.html">cite_datapaper()</a></code>.</li>
+<li>Add new dataset <code>atlantic_amphibians</code> to run example of <code><a href="../reference/inventory_completeness.html">inventory_completeness()</a></code>
 </li>
+<li>
+<code><a href="../reference/request_gbif.html">request_gbif()</a></code> now checks for GBIF credentials and returns a clear error pointing to <code><a href="../reference/set_gbif_credentials.html">set_gbif_credentials()</a></code> if missing, instead of an uninformative error from rgbif.</li>
+<li>Clarify in the documentation that TRUE/FALSE semantics are consistent across all flagging functions: <code>TRUE</code> means the record passed the test and is eligible for retention.</li>
+<li>Standardize terminology to “specialists’ range information” across function documentation.</li>
+<li>Clarify in <code><a href="../reference/bien_here.html">bien_here()</a></code> that BIEN range polygons are derived from ecological niche models, unlike the taxonomist-curated data from IUCN, WCVP, florabr, and faunabr.</li>
+<li>Add authentication notes and updated examples to <code><a href="../reference/request_gbif.html">request_gbif()</a></code>, <code><a href="../reference/get_specieslink.html">get_specieslink()</a></code>, and <code><a href="../reference/iucn_here.html">iucn_here()</a></code>.</li>
+<li>Fix incorrect documentation of the <code>verbose</code> argument in <code><a href="../reference/flag_wcvp.html">flag_wcvp()</a></code>.</li>
+<li>RuHere now depends on <strong>faunabr</strong> (&gt;= 1.1.1).</li>
+<li>Update vignette for obtaining data: add GBIF citation guidelines and instructions for using <code><a href="../reference/get_datapaper.html">get_datapaper()</a></code>.</li>
+<li>Add GBIF references in <code>occurrences</code>, <code>occ_gbif</code>, and <code>occ_flagged</code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.1" id="ruhere-101-february-2026">RuHere 1.0.1 (February 2026)<a class="anchor" aria-label="anchor" href="#ruhere-101-february-2026"></a></h2><p class="text-muted">CRAN release: 2026-02-17</p>

@@ -21,6 +21,11 @@ occ_gbif
 A data frame containing georeferenced GBIF occurrence records for *A.
 angustifolia* after all cleaning steps.
 
+## References
+
+Derived dataset GBIF.org (23 August 2026) Filtered export of GBIF
+occurrence data https://doi.org/10.15468/dd.aqxw37
+
 ## See also
 
 [`prepare_gbif_download()`](https://wevertonbio.github.io/RuHere/reference/prepare_gbif_download.md),

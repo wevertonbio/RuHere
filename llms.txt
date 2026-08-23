@@ -102,6 +102,9 @@ remotes::install_github("wevertonbio/RuHere")
 - [`check_states()`](https://wevertonbio.github.io/RuHere/reference/check_states.md)
   : Check if the records fall in the state assigned in the metadata
 
+- [`cite_datapaper()`](https://wevertonbio.github.io/RuHere/reference/cite_datapaper.md)
+  : Cite data papers retrieved from get_datapaper
+
 - [`count_flags()`](https://wevertonbio.github.io/RuHere/reference/count_flags.md)
   : Count the number of flags for each record
 
@@ -187,6 +190,9 @@ remotes::install_github("wevertonbio/RuHere")
 
 - [`get_bien()`](https://wevertonbio.github.io/RuHere/reference/get_bien.md)
   : Download occurrence records from BIEN
+
+- [`get_datapaper()`](https://wevertonbio.github.io/RuHere/reference/get_datapaper.md)
+  : Download and merge biodiversity data papers
 
 - [`get_env_bins()`](https://wevertonbio.github.io/RuHere/reference/get_env_bins.md)
   : Identify Environmental Blocks and Group Nearby Records in
