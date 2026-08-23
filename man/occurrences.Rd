@@ -42,6 +42,9 @@ head(occurrences)
 table(occurrences$species)
 
 }
+\references{
+Derived dataset GBIF.org (23 August 2026) Filtered export of GBIF occurrence data https://doi.org/10.15468/dd.6nyzke
+}
 \seealso{
 \code{format_columns()}, \code{bind_here()}, \code{flag_duplicates()}, \code{remove_flagged()}
 }

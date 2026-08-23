@@ -23,7 +23,10 @@ head(occ_flagged)
 # Count flagged vs. unflagged records
 table(occ_flagged$correct_country)
 
-
+}
+\references{
+Derived dataset GBIF.org (23 August 2026) Filtered export of GBIF occurrence
+data https://doi.org/10.15468/dd.xezdws
 }
 \seealso{
 \code{occurrences},

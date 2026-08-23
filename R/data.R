@@ -318,6 +318,10 @@
 #' # Number of cleaned records
 #' nrow(occ_gbif)
 #'
+#' @references
+#' Derived dataset GBIF.org (23 August 2026) Filtered export of GBIF occurrence
+#' data https://doi.org/10.15468/dd.aqxw37
+#'
 #' @seealso
 #' `prepare_gbif_download()`, `request_gbif()`, `import_gbif()`,
 #' `flag_duplicates()`, `remove_flagged()`
@@ -412,6 +416,8 @@
 #' # Number of occurrences per species
 #' table(occurrences$species)
 #'
+#' @references Derived dataset GBIF.org (23 August 2026) Filtered export of GBIF occurrence data https://doi.org/10.15468/dd.6nyzke
+#'
 #' @seealso
 #' `format_columns()`, `bind_here()`, `flag_duplicates()`, `remove_flagged()`
 "occurrences"
@@ -437,6 +443,9 @@
 #' # Count flagged vs. unflagged records
 #' table(occ_flagged$correct_country)
 #'
+#' @references
+#' Derived dataset GBIF.org (23 August 2026) Filtered export of GBIF occurrence
+#' data https://doi.org/10.15468/dd.xezdws
 #'
 #' @seealso
 #' `occurrences`,
@@ -641,3 +650,72 @@
 #' @seealso
 #' `inventory_completeness()`
 "atlantic_amphibians"
+
+
+
+# #### Generate citation to gbif ####
+# library(dplyr)
+# library(rgbif)
+#
+# #### occ_gbif ####
+# # Create derived dataset
+# derived_data <- RuHere::occ_gbif %>%
+#   group_by(datasetKey) %>%
+#   count()
+# derived_dataset_prep(
+#   citation_data = derived_data,
+#   title = "Occurrence records of Araucaria angustifolia in RuHere R package",
+#   description = "This data was downloaded from GBIF and later incorported as data example in RuHere R Package",
+#   source_url = "https://github.com/wevertonbio/RuHere/raw/refs/heads/main/data/occ_gbif.rda"
+# )
+# # If output looks ok, run derived_dataset to register the dataset on GBIF
+# derived_dataset(
+#   citation_data = derived_data,
+#   title = "Occurrence records of Araucaria angustifolia in RuHere R package",
+#   description = "This data was downloaded from GBIF and later incorported as data example in RuHere R Package",
+#   source_url = "https://github.com/wevertonbio/RuHere/raw/refs/heads/main/data/occ_gbif.rda"
+# )
+#
+# #### Occurrences ####
+# # Get request key (x <- "0020598-251120083545085")
+# x <- "0020598-251120083545085"
+# # Download dataset
+# occ <- RuHere::import_gbif(request_key = x)
+# # Create derived dataset
+# derived_data <- occ%>%
+#   group_by(datasetKey) %>%
+#   count()
+# # Check
+# ?occurrences
+# derived_dataset_prep(
+#   citation_data = derived_data,
+#   title = "Integrated occurrence dataset for three example species",
+#   description = "A harmonized, multi-source occurrence dataset containing cleaned georeferenced records for three species: Araucaria angustifolia (Parana pine), Cyanocorax caeruleus (Azure jay), and Handroanthus serratifolius (Yellow trumpet tree). Records were retrieved from GBIF, speciesLink, BIEN, and iDigBio, standardized through the package workflow, merged, and cleaned to remove duplicates.",
+#   source_url = "https://github.com/wevertonbio/RuHere/raw/refs/heads/main/data/occurrences.rda"
+# )
+# # If output looks ok, run derived_dataset to register the dataset on GBIF
+# derived_dataset(
+#   citation_data = derived_data,
+#   title = "Integrated occurrence dataset for three example species",
+#   description = "A harmonized, multi-source occurrence dataset containing cleaned georeferenced records for three species: Araucaria angustifolia (Parana pine), Cyanocorax caeruleus (Azure jay), and Handroanthus serratifolius (Yellow trumpet tree). Records were retrieved from GBIF, speciesLink, BIEN, and iDigBio, standardized through the package workflow, merged, and cleaned to remove duplicates.",
+#   source_url = "https://github.com/wevertonbio/RuHere/raw/refs/heads/main/data/occurrences.rda"
+# )
+#
+# # occ_flagged
+# # Create derived dataset
+# derived_data <- RuHere::occ_gbif %>%
+#   group_by(datasetKey) %>%
+#   count()
+# derived_dataset_prep(
+#   citation_data = derived_data,
+#   title = "Flagged occurrence records of Araucaria angustifolia",
+#   description = "A dataset containing the occurrence records of Araucaria angustifolia after applying several of the flagging and data-quality assessment functions in RuHere R package.",
+#   source_url = "https://github.com/wevertonbio/RuHere/raw/refs/heads/main/data/occ_flagged.rda"
+# )
+# # If output looks ok, run derived_dataset to register the dataset on GBIF
+# derived_dataset(
+#   citation_data = derived_data,
+#   title = "Flagged occurrence records of Araucaria angustifolia",
+#   description = "A dataset containing the occurrence records of Araucaria angustifolia after applying several of the flagging and data-quality assessment functions in RuHere R package.",
+#   source_url = "https://github.com/wevertonbio/RuHere/raw/refs/heads/main/data/occ_flagged.rda"
+# )

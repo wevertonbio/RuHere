@@ -28,6 +28,10 @@ head(occ_gbif)
 nrow(occ_gbif)
 
 }
+\references{
+Derived dataset GBIF.org (23 August 2026) Filtered export of GBIF occurrence
+data https://doi.org/10.15468/dd.aqxw37
+}
 \seealso{
 \code{prepare_gbif_download()}, \code{request_gbif()}, \code{import_gbif()},
 \code{flag_duplicates()}, \code{remove_flagged()}
