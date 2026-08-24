@@ -197,7 +197,7 @@ florabr_here(data_dir = dataset_dir, data_version = "latest")
 
 The [Taxonomic Catalog of the Brazilian Fauna (faunabr)](https://fauna.jbrj.gov.br/fauna/listaBrasil/PrincipalUC/PrincipalUC.do?lingua=en) is a sister project of *florabr* and represents the collaborative efforts of more than 500 zoologists, each specializing in different animal groups native to Brazil.
 
-Similar to *florabr*, it provides expert-derived information on the Brazilian federal states and countries with confirmed species occurrences. Here, we download the dataset using the [faunabr R package](https://www.scielo.br/j/zool/a/mGCFstdFnKyQfPLLRXWQCSH/?format=html&lang=en):
+Similar to *florabr*, it provides expert-derived information on the Brazilian federal states and countries with confirmed species occurrences. Here, we download the dataset using the [faunabr R package](https://wevertonbio.github.io/faunabr/):
 
 > Note: If you use this dataset, please remember to cite the package: 
 > Trindade WCF (2025) faunabr: An R package to explore taxonomic data and map species distributions using the Catálogo Taxonômico da Fauna do Brasil. Zoologia 42: e25027. <https://doi.org/10.1590/S1984-4689.v42.e25027>. 
