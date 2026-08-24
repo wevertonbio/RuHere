@@ -279,7 +279,7 @@ animal groups native to Brazil.
 Similar to *florabr*, it provides expert-derived information on the
 Brazilian federal states and countries with confirmed species
 occurrences. Here, we download the dataset using the [faunabr R
-package](https://www.scielo.br/j/zool/a/mGCFstdFnKyQfPLLRXWQCSH/?format=html&lang=en):
+package](https://wevertonbio.github.io/faunabr/):
 
 > Note: If you use this dataset, please remember to cite the package:
 > Trindade WCF (2025) faunabr: An R package to explore taxonomic data
