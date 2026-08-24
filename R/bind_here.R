@@ -10,6 +10,8 @@
 #' combine.
 #' @param fill (logical) whether to fills missing columns with `NA`. Default is
 #' FALSE.
+#' @param ignore.attr (logical) whether to allow binding columns with different
+#' attributes (e.g. class). Default is FALSE.
 #'
 #' @returns
 #' A `data.frame` containing all occurrence records combined.
@@ -42,7 +44,7 @@
 #'                       bien_standardized, idig_standardized)
 #'
 bind_here <- function(...,
-                      fill = FALSE){
+                      fill = FALSE, ignore.attr = FALSE){
 
   # ---- Argument checks ----
 
@@ -72,7 +74,8 @@ bind_here <- function(...,
 
 
   l <- list(...)
-  l <- data.table::rbindlist(l, fill = fill, use.names = TRUE)
+  l <- data.table::rbindlist(l, fill = fill, use.names = TRUE,
+                             ignore.attr = ignore.attr)
   if(inherits(l, "data.table"))
     l <- as.data.frame(l)
   return(l)

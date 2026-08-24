@@ -4,7 +4,7 @@
 \alias{bind_here}
 \title{Bind occurrences after standardizing columns}
 \usage{
-bind_here(..., fill = FALSE)
+bind_here(..., fill = FALSE, ignore.attr = FALSE)
 }
 \arguments{
 \item{...}{(data.frame) two or more data frames with occurrence records to
@@ -12,6 +12,9 @@ combine.}
 
 \item{fill}{(logical) whether to fills missing columns with \code{NA}. Default is
 FALSE.}
+
+\item{ignore.attr}{(logical) whether to allow binding columns with different
+attributes (e.g. class). Default is FALSE.}
 }
 \value{
 A \code{data.frame} containing all occurrence records combined.
