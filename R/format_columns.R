@@ -391,6 +391,13 @@ Run install.packages('pbapply')", call. = FALSE)
   # Create ID for each records
   occ$record_id <- paste(occ$data_source, 1:nrow(occ), sep = "_")
 
+  # Fix eventDate
+  if("eventDate" %in% colnames(occ)){
+    if(!is.character(occ$eventDate)){
+      occ$eventDate <- as.character(occ$eventDate)
+    }
+  }
+
   # Fix encoding again
   bad_cols <- names(occ)[
     sapply(occ, function(x) {
