@@ -9,7 +9,7 @@ to ensure column compatibility across data sources.
 ## Usage
 
 ``` r
-bind_here(..., fill = FALSE)
+bind_here(..., fill = FALSE, ignore.attr = FALSE)
 ```
 
 ## Arguments
@@ -23,6 +23,11 @@ bind_here(..., fill = FALSE)
 
   (logical) whether to fills missing columns with `NA`. Default is
   FALSE.
+
+- ignore.attr:
+
+  (logical) whether to allow binding columns with different attributes
+  (e.g. class). Default is FALSE.
 
 ## Value
 
