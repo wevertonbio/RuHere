@@ -75,6 +75,9 @@ flag_bien <- function(data_dir, occ, species = "species",
   if (!inherits(occ, c("data.frame", "data.table"))) {
     stop("'occ' must be a data.frame or data.table.", call. = FALSE)
   }
+  if(inherits(occ, "data.table")){
+    occ <- as.data.frame(occ)
+  }
 
   # species, long, lat
   for (arg in c("species", "long", "lat")) {
