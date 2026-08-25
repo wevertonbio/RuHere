@@ -39,6 +39,16 @@
   instructions for using
   [`get_datapaper()`](https://wevertonbio.github.io/RuHere/reference/get_datapaper.md).
 - Add GBIF references in `occurrences`, `occ_gbif`, and `occ_flagged`.
+- Fix bug in
+  [`flag_bien()`](https://wevertonbio.github.io/RuHere/reference/flag_bien.md)
+  when `occ` is a `data.table` object.
+- In
+  [`bind_here()`](https://wevertonbio.github.io/RuHere/reference/bind_here.md),
+  add argument `ignore.attr` to allow binding columns with different
+  attributes (e.g. class).
+- In
+  [`format_columns()`](https://wevertonbio.github.io/RuHere/reference/format_columns.md),
+  force column `eventDate` to be a character.
 
 ## RuHere 1.0.1 (February 2026)
 
