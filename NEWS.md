@@ -15,6 +15,7 @@
 * Fix bug in `flag_bien()` when `occ` is a `data.table` object.
 * In `bind_here()`, add argument `ignore.attr` to allow binding columns with different attributes (e.g. class).
 * In `format_columns()`, force column `eventDate` to be a character.
+* Add new function `request_gbif_specieslist()`.
 
 # RuHere 1.0.1 (February 2026)
 
