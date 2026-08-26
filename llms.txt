@@ -280,6 +280,10 @@ remotes::install_github("wevertonbio/RuHere")
 - [`request_gbif()`](https://wevertonbio.github.io/RuHere/reference/request_gbif.md)
   : Submit a request to download occurrence data from GBIF.
 
+- [`request_gbif_specieslist()`](https://wevertonbio.github.io/RuHere/reference/request_gbif_specieslist.md)
+  : Download a list of species recorded inside a spatial polygon from
+  GBIF.
+
 - [`richness_here()`](https://wevertonbio.github.io/RuHere/reference/richness_here.md)
   : Species Richness and Occurrence Summary Mapping
 

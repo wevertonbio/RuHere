@@ -49,6 +49,8 @@
 - In
   [`format_columns()`](https://wevertonbio.github.io/RuHere/reference/format_columns.md),
   force column `eventDate` to be a character.
+- Add new function
+  [`request_gbif_specieslist()`](https://wevertonbio.github.io/RuHere/reference/request_gbif_specieslist.md).
 
 ## RuHere 1.0.1 (February 2026)
 
