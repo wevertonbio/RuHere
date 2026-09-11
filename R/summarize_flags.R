@@ -232,7 +232,7 @@ summarize_flags <- function(occ = NULL,
   # Get name
   if(!is.null(additional_flags)){
     if(is.null(names_additional_flags)){
-      names_additional_flags <- additional_flags
+      names_additional_flags <- names(additional_flags)
     }
     names(names_additional_flags) <- additional_flags
     flag_names <- c(flag_names, names_additional_flags)
