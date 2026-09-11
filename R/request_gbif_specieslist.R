@@ -124,11 +124,32 @@ request_gbif_specieslist <- function(spatial_polygon,
     spatial_polygon <- terra::project(spatial_polygon, "EPSG:4326")
   }
 
+
+  # Check number of polygons
+  partes <- terra::disagg(spatial_polygon)
+  n_partes <- length(partes)
+
+  if (n_partes > 1) {
+    stop(sprintf(
+      paste0(
+        "The supplied 'spatial_polygon' contains %d disjoint polygon parts (multipart geometry). ",
+        "The GBIF API only accepts single contiguous polygons (POLYGON). ",
+        "Please provide a single-part polygon, aggregate disjoint parts, or query by bounding box."
+      ),
+      n_partes
+    ), call. = FALSE)
+  }
+
   # Simplify polygon if vertex count exceeds safe GBIF limits
   if (nrow(terra::crds(spatial_polygon)) > 500) {
     message("Geometry contains >500 vertices. Simplifying geometry...")
     spatial_polygon <- terra::simplifyGeom(spatial_polygon, tolerance = tolerance)
   }
+
+  # Ensure counter clockwise
+  coordenadas <- terra::crds(spatial_polygon)
+  coordenadas_ccw <- ensure_counter_clockwise(coordenadas)
+  spatial_polygon <- terra::vect(coordenadas_ccw, type = "polygons", crs = "EPSG:4326")
 
   wkt_geom <- terra::geom(spatial_polygon, wkt = TRUE)
   if (length(wkt_geom) > 1) {
