@@ -22,7 +22,7 @@ problematic:
 # Load packages
 library(RuHere)
 library(terra)
-#> terra 1.9.46
+#> terra 1.9.50
 library(mapview)
 
 # Import occurrence data

@@ -2,6 +2,8 @@
 
 ## RuHere 1.1.0 (August 2026)
 
+CRAN release: 2026-08-27
+
 - Fix bug in
   [`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md)
   when flag is not “all”.
