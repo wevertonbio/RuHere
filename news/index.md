@@ -1,5 +1,21 @@
 # Changelog
 
+## RuHere 1.1.1
+
+- Fix bug in
+  [`flag_consensus()`](https://wevertonbio.github.io/RuHere/reference/flag_consensus.md)
+  when using “bien” as one of the flags.
+- Fix bug in
+  [`map_here()`](https://wevertonbio.github.io/RuHere/reference/map_here.md)
+  when the column flags have NA.
+- Fix bug when using additional/user flags in
+  [`summarize_flags()`](https://wevertonbio.github.io/RuHere/reference/summarize_flags.md).
+- Add new function:
+  [`request_gbif_specieslist()`](https://wevertonbio.github.io/RuHere/reference/request_gbif_specieslist.md).
+- Fig bug in
+  [`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md)
+  when occ is a data.table.
+
 ## RuHere 1.1.0 (August 2026)
 
 CRAN release: 2026-08-27

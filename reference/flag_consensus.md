@@ -62,7 +62,7 @@ potentially problematic.
 ## Details
 
 The following flags are available: correct_country, correct_state,
-cultivated, fossil, inaturalist, faunabr, florabr, wcvp, iucn,
+cultivated, fossil, inaturalist, faunabr, florabr, wcvp, iucn, bien,
 duplicated, thin_geo, thin_env, year, .val, .equ, .zer, .cap, .cen,
 .sea, .urb, .otl, .gbf, .inst, and .aohi. Flags may be combined from any
 category (metadata-based, range-based, or thinning-related).

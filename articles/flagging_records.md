@@ -519,10 +519,10 @@ nrow(occ)
 #> [1] 4077
 # Number of valid records
 nrow(occ_cleaned)
-#> [1] 3837
+#> [1] 1123
 # Number of records removed
 nrow(occ) - nrow(occ_cleaned)
-#> [1] 240
+#> [1] 2954
 ```
 
 We can inspect the directory specified in `path_to_save` to see the
