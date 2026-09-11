@@ -256,7 +256,7 @@ map_here <- function(occ,
 
   # Split points by flag
   occ_list <- lapply(flags, function(i){
-    occ[!occ[[i]],]
+    occ[!occ[[i]] & !is.na(occ[[i]]), ]
   })
   #Rename
   names(occ_list) <- flag_names[flags]
