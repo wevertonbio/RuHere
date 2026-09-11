@@ -23,9 +23,9 @@
 #'
 #' @details
 #' The following flags are available:  correct_country, correct_state,
-#' cultivated, fossil, inaturalist, faunabr, florabr, wcvp, iucn, duplicated,
-#' thin_geo, thin_env, year, .val, .equ, .zer, .cap, .cen, .sea, .urb, .otl,
-#' .gbf, .inst, and .aohi. Flags may be combined from any category
+#' cultivated, fossil, inaturalist, faunabr, florabr, wcvp, iucn, bien,
+#' duplicated, thin_geo, thin_env, year, .val, .equ, .zer, .cap, .cen, .sea,
+#' .urb, .otl, .gbf, .inst, and .aohi. Flags may be combined from any category
 #' (metadata-based, range-based, or thinning-related).
 #'
 #' @returns
@@ -35,7 +35,7 @@
 #' indicates that the record passed the consensus criterion and is eligible
 #' for retention, while `FALSE` indicates it failed and is flagged as
 #' potentially problematic.
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -75,7 +75,7 @@ flag_consensus <- function(occ, flags, consensus_rule = "all_true",
   # Define allowed flag names
   allowed_flags <- c(
     "correct_country", "correct_state", "cultivated",
-    "fossil", "inaturalist", "faunabr", "florabr",
+    "fossil", "inaturalist", "faunabr", "florabr", "bien",
     "wcvp", "iucn", "duplicated", "thin_geo", "thin_env", "year",
     ".val", ".equ", ".zer", ".cap", ".cen",
     ".sea", ".urb", ".otl", ".gbf", ".inst", ".aohi"
