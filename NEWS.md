@@ -1,3 +1,11 @@
+# RuHere 1.1.1
+
+* Fix bug in `flag_consensus()` when using "bien" as one of the flags.
+* Fix bug in `map_here()` when the column flags have NA.
+* Fix bug when using additional/user flags in `summarize_flags()`.
+* Add new function: `request_gbif_specieslist()`.
+* Fig bug in `remove_flagged()` when occ is a data.table.
+
 # RuHere 1.1.0 (August 2026)
 
 * Fix bug in `remove_flagged()` when flag is not "all".
