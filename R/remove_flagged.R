@@ -81,13 +81,20 @@ remove_flagged <- function(occ,
   }
 
   # Force occ to be a dataframe
-  if(inherits(occ, "data.table"))
+  if (inherits(occ, "data.table")) {
     occ <- as.data.frame(occ)
+  }
 
   # flags must be NULL or a character vector
   if (!is.null(flags)) {
-    if(!is.character(flags)) {
-      stop("'flags' must be a character vector.", call. = FALSE)}
+    if (!is.character(flags)) {
+      stop("'flags' must be a character vector.", call. = FALSE)
+    }
+    # Add _flags for some columns
+    to_paste <- c("florabr", "faunabr", "wcvp", "iucn", "bien", "cultivated", "fossil", "year",
+                  "inaturalist", "duplicated", "thin_env", "thin_geo", "consensus")
+
+    flags[flags %in% to_paste] <- paste0(flags[flags %in% to_paste], "_flag")
     # if flags provided, ensure they exist in occ
     if (!("all" %in% flags)) {
       missing_flags <- flags[!flags %in% names(occ)]
@@ -100,16 +107,15 @@ remove_flagged <- function(occ,
       }
     }
 
-    if("all" %in% flags){
+    if ("all" %in% flags) {
       flags <- c("correct_country", "correct_state",
                  "year", "duplicated", "fossil", "cultivated", "inaturalist",
                  "florabr", "faunabr", "wcvp", "iucn", "bien",
                  "thin_env", "thin_geo", "consensus",
-                 # Froom CoordinateCleaner
+                 # From CoordinateCleaner
                  ".val", ".equ", ".zer", ".cap", ".cen", ".sea", ".urb", ".otl",
                  ".gbf", ".inst", ".aohi")
     }
-
   }
 
   # additional_flags must be NULL or a character vector
@@ -119,7 +125,7 @@ remove_flagged <- function(occ,
 
   # if additional_flags provided, ensure they exist and are logical
   if (!is.null(additional_flags)) {
-    if(is.null(names(additional_flags))){
+    if (is.null(names(additional_flags))) {
       stop("'additional_flags' must be a named character (i.e., 'user_flag' = 'User flag')")
     }
     missing_extra <- additional_flags[!additional_flags %in% names(occ)]
@@ -155,7 +161,7 @@ remove_flagged <- function(occ,
   }
 
   # if forcing keep/remove, column_id is required
-  if (( !is.null(force_keep) || !is.null(force_remove) ) && is.null(column_id)) {
+  if ((!is.null(force_keep) || !is.null(force_remove)) && is.null(column_id)) {
     stop(
       "You must specify 'column_id' when using 'force_keep' or 'force_remove'.",
       call. = FALSE
@@ -179,7 +185,6 @@ remove_flagged <- function(occ,
 
   # check saving options
   if (save_flagged) {
-
     # output_dir must exist
     if (is.null(output_dir) || !is.character(output_dir)) {
       stop("You must provide a valid 'output_dir' when 'save_flagged = TRUE'.", call. = FALSE)
@@ -199,66 +204,65 @@ remove_flagged <- function(occ,
     }
   }
 
+  ## --- Processing flags -------------------------------------------------------
 
-  # Add _flags for some columns
-  to_paste <- c("florabr", "faunabr", "wcvp", "iucn", "bien", "cultivated", "fossil", "year",
-                "inaturalist", "duplicated", "thin_env", "thin_geo", "consensus")
-
-  flags[flags %in% to_paste] <- paste0(flags[flags %in% to_paste], "_flag")
-
-  # Subset columns
+  # Subset existing columns in occ
   flags <- intersect(flags, colnames(occ))
 
   # Change names of flags
   flag_names <- getExportedValue("RuHere", "flag_names")
 
   # Additional flags
-  if(!is.null(additional_flags)){
+  if (!is.null(additional_flags)) {
     flag_names <- c(flag_names, additional_flags)
     flags <- c(flags, additional_flags)
   }
 
-  if(!is.null(force_remove)){
-    # flag_names <- c(flag_names, "force_remove" = "Forcibly removed")
-    # Create columns
-    occ$force_remove <- TRUE
-    # Get IDs
-    occ$force_remove[occ[[column_id]] %in% force_remove] <- FALSE
+  # Handle force_remove
+  if (!is.null(force_remove)) {
+    # Cria a coluna de flag manual: TRUE = manter, FALSE = remover
+    occ$force_remove <- !(occ[[column_id]] %in% force_remove)
+
+    # Adiciona aos vetores de filtragem e nomenclatura de salvamento
+    flags <- c(flags, "force_remove")
+    flag_names <- c(flag_names, setNames("force_remove", "force_remove"))
   }
 
-  # Exceptions...
-  if(!is.null(force_keep)){
-    occ_keep <- occ[occ[[column_id]] %in% force_keep,]
-    occ <- occ[!(occ[[column_id]] %in% force_keep),]
+  # Handle force_keep
+  if (!is.null(force_keep)) {
+    occ_keep <- occ[occ[[column_id]] %in% force_keep, ]
+    occ <- occ[!(occ[[column_id]] %in% force_keep), ]
   }
 
-  # remove NAs?
-  if(remove_NA){
+  # Handle NAs
+  if (remove_NA) {
     occ[, flags][is.na(occ[, flags])] <- FALSE
   } else {
     occ[, flags][is.na(occ[, flags])] <- TRUE
   }
 
-  # Create empty list to save flagged results
+  # Create list with flagged records for each flag
   occ_flagged <- list()
-  # Identify flags
-   for(i in flags){
-    occ_flagged[[i]] <- occ[!occ[[i]],]
-   }
+  for (i in flags) {
+    occ_flagged[[i]] <- occ[!occ[[i]], ]
+  }
 
-  # Update flag names
+  # Update flag names based on flag_names lookup
   match_flags <- flag_names[match(names(occ_flagged), names(flag_names))]
+  # Se algum nome não for mapeado em flag_names, mantém o nome original da coluna
+  na_names <- is.na(match_flags)
+  match_flags[na_names] <- names(occ_flagged)[na_names]
   names(occ_flagged) <- match_flags
 
   # Remove flags with 0 records
   occ_flagged <- occ_flagged[sapply(occ_flagged, function(i) nrow(i) > 0)]
 
-
-  # Filter
+  # Filter valid records (all flags == TRUE)
   occ_final <- occ[rowSums(occ[flags]) == length(flags), ]
 
-  if(!is.null(force_keep)){
-    if(nrow(occ_keep) > 0){
+  # Restore force_keep records
+  if (!is.null(force_keep)) {
+    if (nrow(occ_keep) > 0) {
       occ_final <- rbind(occ_final, occ_keep)
     } else {
       warning("None of the IDs provided in 'force_keep' were found in the dataset.\n",
@@ -266,28 +270,32 @@ remove_flagged <- function(occ,
     }
   }
 
-  if(save_flagged){
-    # Update flags
-    flags <- names(occ_flagged)
+  # Remove temporary force_remove column from output if it was created
+  if ("force_remove" %in% names(occ_final)) {
+    occ_final$force_remove <- NULL
+  }
 
-    # Build path to sabe
-    p <- lapply(flags, function(i){
-      file_i <- file.path(output_dir, paste0(i, output_format))
+  # Save flagged records
+  if (save_flagged && length(occ_flagged) > 0) {
+    saved_flag_names <- names(occ_flagged)
+
+    p <- lapply(saved_flag_names, function(i) {
+      file.path(output_dir, paste0(i, output_format))
     })
 
-    #Check if files exists
-    if(!overwrite){
+    if (!overwrite) {
       f_exists <- sapply(p, file.exists)
-      if(sum(f_exists) > 0){
-        stop("Some flagged occurrences already exists in '", output_dir, "'.\n",
+      if (any(f_exists)) {
+        stop("Some flagged occurrences already exist in '", output_dir, "'.\n",
              "Delete the file, change the folder or set 'overwrite = TRUE'")
       }
     }
-  #Save
-    for(y in 1:length(flags)){
-      data.table::fwrite(x = occ_flagged[[flags[y]]],
-                         p[[y]])
+
+    for (y in seq_along(saved_flag_names)) {
+      data.table::fwrite(x = occ_flagged[[saved_flag_names[y]]],
+                         file = p[[y]])
     }
   }
+
   return(occ_final)
 }
