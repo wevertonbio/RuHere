@@ -90,13 +90,32 @@ remove_flagged <- function(occ,
     if (!is.character(flags)) {
       stop("'flags' must be a character vector.", call. = FALSE)
     }
-    # Add _flags for some columns
+
+    # Check if "all" was requested to define the default flag list
+    is_all <- "all" %in% flags
+
+    if (is_all) {
+      flags <- c("correct_country", "correct_state",
+                 "year", "duplicated", "fossil", "cultivated", "inaturalist",
+                 "florabr", "faunabr", "wcvp", "iucn", "bien",
+                 "thin_env", "thin_geo", "consensus",
+                 # From CoordinateCleaner
+                 ".val", ".equ", ".zer", ".cap", ".cen", ".sea", ".urb", ".otl",
+                 ".gbf", ".inst", ".aohi")
+    }
+
+    # Add _flag suffix for specific columns
     to_paste <- c("florabr", "faunabr", "wcvp", "iucn", "bien", "cultivated", "fossil", "year",
                   "inaturalist", "duplicated", "thin_env", "thin_geo", "consensus")
 
     flags[flags %in% to_paste] <- paste0(flags[flags %in% to_paste], "_flag")
-    # if flags provided, ensure they exist in occ
-    if (!("all" %in% flags)) {
+
+    # Conditional treatment for missing flags
+    if (is_all) {
+      # If "all" is used, silently drop the flags that do not exist in 'occ'
+      flags <- flags[flags %in% names(occ)]
+    } else {
+      # If the user provided custom flags, keep strict validation (throw an error if missing)
       missing_flags <- flags[!flags %in% names(occ)]
       if (length(missing_flags) > 0) {
         stop(
@@ -105,16 +124,6 @@ remove_flagged <- function(occ,
           call. = FALSE
         )
       }
-    }
-
-    if ("all" %in% flags) {
-      flags <- c("correct_country", "correct_state",
-                 "year", "duplicated", "fossil", "cultivated", "inaturalist",
-                 "florabr", "faunabr", "wcvp", "iucn", "bien",
-                 "thin_env", "thin_geo", "consensus",
-                 # From CoordinateCleaner
-                 ".val", ".equ", ".zer", ".cap", ".cen", ".sea", ".urb", ".otl",
-                 ".gbf", ".inst", ".aohi")
     }
   }
 
