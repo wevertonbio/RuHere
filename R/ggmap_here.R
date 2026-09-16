@@ -66,6 +66,9 @@
 #' extent of the occurrence data).
 #' @param facet_wrap (logical) whether to plots each flag in a separate panel
 #' using `ggplot2::facet_wrap()`. Default is `FALSE`.
+#' @param remove_invalid (logical) whether to remove records with coordinates
+#' outside the valid range for Earth (latitude > 90 or < -90, and longitude >
+#' 180 or < -180). Default is `TRUE`.
 #' @param theme_plot (theme) a `ggplot2` theme object. Default is
 #' `ggplot2::theme_minimal()`.
 #' @param ... other arguments passed to `ggplot2::theme()`.
@@ -142,6 +145,7 @@ ggmap_here <- function(occ,
                        ocean_fill = "aliceblue",
                        extension = NULL,
                        facet_wrap = FALSE,
+                       remove_invalid = TRUE,
                        theme_plot = ggplot2::theme_minimal(),
                        ...
                        ) {
@@ -324,6 +328,11 @@ ggmap_here <- function(occ,
     stop("'facet_wrap' must be logical (TRUE/FALSE).")
   }
 
+  # remove_invalid must be logical
+  if (!inherits(remove_invalid, "logical")) {
+    stop("'remove_invalid' must be logical (TRUE/FALSE).")
+  }
+
   # theme_plot must be a ggplot theme
   if (!inherits(theme_plot, "theme")) {
     stop("'theme_plot' must inherit from 'ggplot2::theme'.")
@@ -363,6 +372,12 @@ ggmap_here <- function(occ,
     }
   }
 
+  # Remove invalid coordinates?
+  if(remove_invalid){
+    invalid <- occ[[long]] > 180 | occ[[long]] < -180 | occ[[lat]] >
+      90 | occ[[lat]] < -90 | is.na(occ[[long]]) | is.na(occ[[lat]])
+    occ <- occ[!invalid, ]
+  }
 
   if(all(flags == "all")){
     flags <- c("correct_country", "correct_state", "florabr", "faunabr",
