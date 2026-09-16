@@ -15,6 +15,9 @@
 - Fig bug in
   [`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md)
   when occ is a data.table.
+- In
+  [`ggmap_here()`](https://wevertonbio.github.io/RuHere/reference/ggmap_here.md),
+  add option to remove records with coordinates outside the Earth.
 
 ## RuHere 1.1.0 (August 2026)
 
