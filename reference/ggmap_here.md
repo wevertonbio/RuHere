@@ -38,6 +38,7 @@ ggmap_here(
   ocean_fill = "aliceblue",
   extension = NULL,
   facet_wrap = FALSE,
+  remove_invalid = TRUE,
   theme_plot = ggplot2::theme_minimal(),
   ...
 )
@@ -174,6 +175,12 @@ ggmap_here(
   (logical) whether to plots each flag in a separate panel using
   [`ggplot2::facet_wrap()`](https://ggplot2.tidyverse.org/reference/facet_wrap.html).
   Default is `FALSE`.
+
+- remove_invalid:
+
+  (logical) whether to remove records with coordinates outside the valid
+  range for Earth (latitude \> 90 or \< -90, and longitude \> 180 or \<
+  -180). Default is `TRUE`.
 
 - theme_plot:
 
