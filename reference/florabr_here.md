@@ -70,9 +70,8 @@ data_dir <- tempdir() # Here, a temporary directory
 # Download the latest version of the Flora e Funga do Brasil database
 florabr_here(data_dir = data_dir)
 #> Getting data from Flora e Funga do Brasil...
-#> Data will be saved in /tmp/Rtmp8dbPx1/florabr
-#> No encoding supplied: defaulting to UTF-8.
-#> Downloading version: 
-#> Error in handle_url(handle, url, ...): Must specify at least one of url or handle
+#> Data will be saved in /tmp/Rtmp61M6aS/florabr
+#> Error in curl::curl_fetch_memory(url, handle = handle): Couldn't resolve host name [ipt.jbrj.gov.br]:
+#> Could not resolve host: ipt.jbrj.gov.br
 # }
 ```

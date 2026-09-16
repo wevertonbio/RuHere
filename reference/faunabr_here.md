@@ -70,9 +70,8 @@ data_dir <- tempdir() # Here, a temporary directory
 # Download the latest version of the Flora e Funga do Brazil database
 faunabr_here(data_dir = data_dir)
 #> Getting data from Taxonomic Catalog of the Brazilian Fauna ...
-#> Data will be saved in /tmp/Rtmp8dbPx1/faunabr
-#> No encoding supplied: defaulting to UTF-8.
-#> Downloading version: 
-#> Error in dir.create(exdir, showWarnings = FALSE, recursive = TRUE): invalid 'path' argument
+#> Data will be saved in /tmp/Rtmp61M6aS/faunabr
+#> Error in curl::curl_fetch_memory(url, handle = handle): Couldn't resolve host name [ipt.jbrj.gov.br]:
+#> Could not resolve host: ipt.jbrj.gov.br
 # }
 ```

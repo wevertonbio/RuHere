@@ -96,7 +96,7 @@ record as the priority:
 # Thin records using a 10 km distance threshold
 occ_thin <- thin_geo(occ = occ, d = 10, prioritary_column = "year")
 sum(!occ_thin$thin_geo_flag)  # Number of records flagged for removal
-#> [1] 4
+#> [1] 1860
 ```
 
   
@@ -173,24 +173,24 @@ records flagged (`prop_lost`).
 ``` r
 
 occ_geo_moran$imoran
-#>                   species Distance       bio_1     bio_7    bio_12 median_moran
-#> 1  Araucaria angustifolia        1  0.02364183 0.2946608 0.1627377    0.1627377
-#> 3  Araucaria angustifolia        3  0.02364183 0.2946608 0.1627377    0.1627377
-#> 5  Araucaria angustifolia        5  0.02364183 0.2946608 0.1627377    0.1627377
-#> 7  Araucaria angustifolia        7  0.02364183 0.2946608 0.1627377    0.1627377
-#> 10 Araucaria angustifolia       10  0.02364183 0.2946608 0.1627377    0.1627377
-#> 15 Araucaria angustifolia       15 -0.05854502 0.1461562 0.1676072    0.1461562
-#> 20 Araucaria angustifolia       20 -0.05854502 0.1461562 0.1676072    0.1461562
-#> 30 Araucaria angustifolia       30 -0.08638203 0.1567395 0.1822410    0.1567395
-#>    mean_moran   min_moran max_moran n_filtered all_records prop_lost
-#> 1  0.16034678  0.02364183 0.2946608         28          33 0.1515152
-#> 3  0.16034678  0.02364183 0.2946608         28          33 0.1515152
-#> 5  0.16034678  0.02364183 0.2946608         28          33 0.1515152
-#> 7  0.16034678  0.02364183 0.2946608         28          33 0.1515152
-#> 10 0.16034678  0.02364183 0.2946608         28          33 0.1515152
-#> 15 0.08507278 -0.05854502 0.1676072         27          33 0.1818182
-#> 20 0.08507278 -0.05854502 0.1676072         27          33 0.1818182
-#> 30 0.08419952 -0.08638203 0.1822410         25          33 0.2424242
+#>                   species Distance      bio_1     bio_7    bio_12 median_moran
+#> 1  Araucaria angustifolia        1 0.26797715 0.4154464 0.2700062    0.2700062
+#> 3  Araucaria angustifolia        3 0.20037829 0.3587940 0.1982657    0.2003783
+#> 5  Araucaria angustifolia        5 0.17522297 0.3368257 0.1765754    0.1765754
+#> 7  Araucaria angustifolia        7 0.16065669 0.3235316 0.1695589    0.1695589
+#> 10 Araucaria angustifolia       10 0.15567148 0.2954804 0.1622244    0.1622244
+#> 15 Araucaria angustifolia       15 0.14275985 0.2697169 0.1536365    0.1536365
+#> 20 Araucaria angustifolia       20 0.13085143 0.2802101 0.1463788    0.1463788
+#> 30 Araucaria angustifolia       30 0.09891003 0.2382515 0.1634006    0.1634006
+#>    mean_moran  min_moran max_moran n_filtered all_records prop_lost
+#> 1   0.3178099 0.26797715 0.4154464       1236        2426 0.4905194
+#> 3   0.2524793 0.19826573 0.3587940        878        2426 0.6380874
+#> 5   0.2295414 0.17522297 0.3368257        732        2426 0.6982688
+#> 7   0.2179157 0.16065669 0.3235316        634        2426 0.7386645
+#> 10  0.2044587 0.15567148 0.2954804        517        2426 0.7868920
+#> 15  0.1887044 0.14275985 0.2697169        386        2426 0.8408904
+#> 20  0.1858135 0.13085143 0.2802101        313        2426 0.8709810
+#> 30  0.1668540 0.09891003 0.2382515        206        2426 0.9150866
 ```
 
   
@@ -203,10 +203,10 @@ records were flagged.
 
 # Best distance selected
 occ_geo_moran$distance
-#> [1] "1"
+#> [1] "15"
 # Number of flagged records using this distance to thin
 sum(!occ_geo_moran$occ$thin_geo_flag)
-#> [1] 5
+#> [1] 2040
 ```
 
   
@@ -255,12 +255,12 @@ with 10 bins:
 b <- get_env_bins(occ = occ, env_layers = r, n_bins = 10)
 head(b$data)
 #>      bio_1  bio_7 bio_12 bio_1_bin bio_7_bin bio_12_bin block_id
-#> 1       NA     NA     NA        NA        NA         NA     <NA>
-#> 2       NA     NA     NA        NA        NA         NA     <NA>
-#> 3       NA     NA     NA        NA        NA         NA     <NA>
-#> 4       NA     NA     NA        NA        NA         NA     <NA>
-#> 5 18.59283 22.753   1812         5        10          8   5_10_8
-#> 6 21.34883 21.640   1669        10         9          6   10_9_6
+#> 1 17.69396 18.667   1523         5         5          3    5_5_3
+#> 2 17.10746 17.701   1397         5         4          2    5_4_2
+#> 3 16.44496 19.445   1698         4         6          4    4_6_4
+#> 4 18.17946 22.320   1872         6         9          5    6_9_5
+#> 5 19.71071 18.632   1496         7         5          3    7_5_3
+#> 6 17.77913 19.411   1576         5         6          3    5_6_3
 ```
 
   
@@ -289,7 +289,7 @@ occ_thin_env <- thin_env(occ = occ, env_layers = r, n_bins = 10,
                          prioritary_column = "year")
 # Number of flagged (redundant) records
 sum(!occ_thin_env$thin_env_flag) #Number of flagged records
-#> [1] 13
+#> [1] 2227
 ```
 
   
@@ -348,26 +348,26 @@ median, minimum, and maximum), along with the number of retained records
 ``` r
 
 occ_env_moran$imoran
-#>                   species n_bins      bio_1     bio_7    bio_12 median_moran
-#> 5  Araucaria angustifolia      5 0.01909402 0.2841587 0.1245460    0.1245460
-#> 10 Araucaria angustifolia     10 0.00526043 0.2838191 0.1159936    0.1159936
-#> 20 Araucaria angustifolia     20 0.02364183 0.2946608 0.1627377    0.1627377
-#> 30 Araucaria angustifolia     30 0.02364183 0.2946608 0.1627377    0.1627377
-#> 40 Araucaria angustifolia     40 0.02364183 0.2946608 0.1627377    0.1627377
-#> 50 Araucaria angustifolia     50 0.02364183 0.2946608 0.1627377    0.1627377
-#> 60 Araucaria angustifolia     60 0.02364183 0.2946608 0.1627377    0.1627377
-#> 70 Araucaria angustifolia     70 0.02364183 0.2946608 0.1627377    0.1627377
-#> 80 Araucaria angustifolia     80 0.02364183 0.2946608 0.1627377    0.1627377
-#>    mean_moran  min_moran max_moran n_filtered all_records prop_lost
-#> 5   0.1425996 0.01909402 0.2841587         19          33 0.4242424
-#> 10  0.1350244 0.00526043 0.2838191         20          33 0.3939394
-#> 20  0.1603468 0.02364183 0.2946608         22          33 0.3333333
-#> 30  0.1603468 0.02364183 0.2946608         22          33 0.3333333
-#> 40  0.1603468 0.02364183 0.2946608         22          33 0.3333333
-#> 50  0.1603468 0.02364183 0.2946608         22          33 0.3333333
-#> 60  0.1603468 0.02364183 0.2946608         22          33 0.3333333
-#> 70  0.1603468 0.02364183 0.2946608         22          33 0.3333333
-#> 80  0.1603468 0.02364183 0.2946608         22          33 0.3333333
+#>                   species n_bins     bio_1     bio_7    bio_12 median_moran
+#> 5  Araucaria angustifolia      5 0.2401256 0.3282298 0.1749087    0.2401256
+#> 10 Araucaria angustifolia     10 0.2099819 0.3770858 0.1764008    0.2099819
+#> 20 Araucaria angustifolia     20 0.1762887 0.3638996 0.1923568    0.1923568
+#> 30 Araucaria angustifolia     30 0.1787372 0.3657022 0.1944775    0.1944775
+#> 40 Araucaria angustifolia     40 0.1903925 0.3540410 0.1927357    0.1927357
+#> 50 Araucaria angustifolia     50 0.1873899 0.3515700 0.1926828    0.1926828
+#> 60 Araucaria angustifolia     60 0.1839720 0.3525726 0.1930614    0.1930614
+#> 70 Araucaria angustifolia     70 0.1839973 0.3561391 0.1930398    0.1930398
+#> 80 Araucaria angustifolia     80 0.1865604 0.3558738 0.1934019    0.1934019
+#>    mean_moran min_moran max_moran n_filtered all_records prop_lost
+#> 5   0.2477547 0.1749087 0.3282298         57        2426 0.9765045
+#> 10  0.2544895 0.1764008 0.3770858        199        2426 0.9179720
+#> 20  0.2441817 0.1762887 0.3638996        504        2426 0.7922506
+#> 30  0.2463056 0.1787372 0.3657022        658        2426 0.7287716
+#> 40  0.2457231 0.1903925 0.3540410        715        2426 0.7052762
+#> 50  0.2438809 0.1873899 0.3515700        748        2426 0.6916735
+#> 60  0.2432020 0.1839720 0.3525726        757        2426 0.6879637
+#> 70  0.2443921 0.1839973 0.3561391        767        2426 0.6838417
+#> 80  0.2452787 0.1865604 0.3558738        769        2426 0.6830173
 ```
 
   
@@ -380,10 +380,10 @@ records were flagged.
 
 # Best distance selected
 occ_env_moran$n_bins
-#> [1] "80"
+#> [1] "70"
 # Number of flagged records using this distance to thin
 sum(!occ_env_moran$occ$thin_env_flag)
-#> [1] 11
+#> [1] 1659
 ```
 
   
