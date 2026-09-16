@@ -5,6 +5,7 @@
 * Fix bug when using additional/user flags in `summarize_flags()`.
 * Add new function: `request_gbif_specieslist()`.
 * Fig bug in `remove_flagged()` when occ is a data.table.
+* In `ggmap_here()`, add option to remove records with coordinates outside the Earth.
 
 # RuHere 1.1.0 (August 2026)
 
