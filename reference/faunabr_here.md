@@ -70,8 +70,7 @@ data_dir <- tempdir() # Here, a temporary directory
 # Download the latest version of the Flora e Funga do Brazil database
 faunabr_here(data_dir = data_dir)
 #> Getting data from Taxonomic Catalog of the Brazilian Fauna ...
-#> Data will be saved in /tmp/Rtmp9kPnG5/faunabr
-#> Error in curl::curl_fetch_memory(url, handle = handle): Couldn't resolve host name [ipt.jbrj.gov.br]:
-#> Could not resolve host: ipt.jbrj.gov.br
+#> Data will be saved in /tmp/RtmpQlQwmQ/faunabr
+#> Error: Could not determine the latest Fauna do Brasil version from the IPT: Forbidden (HTTP 403).
 # }
 ```
