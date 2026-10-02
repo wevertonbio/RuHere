@@ -1,6 +1,6 @@
 # RuHere 1.1.2
 
-* RuHere now depends on faunabr (>= 1.1.2).
+* RuHere now depends on faunabr (>= 1.1.2) and florabr(>= 1.4.0.).
 * Update datasets to be compatible with florabr 1.4.0.
 
 # RuHere 1.1.1
