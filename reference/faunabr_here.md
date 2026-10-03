@@ -70,7 +70,7 @@ data_dir <- tempdir() # Here, a temporary directory
 # Download the latest version of the Flora e Funga do Brazil database
 faunabr_here(data_dir = data_dir)
 #> Getting data from Taxonomic Catalog of the Brazilian Fauna ...
-#> Data will be saved in /tmp/RtmpQlQwmQ/faunabr
+#> Data will be saved in /tmp/RtmpHPqWNO/faunabr
 #> Error: Could not determine the latest Fauna do Brasil version from the IPT: Forbidden (HTTP 403).
 # }
 ```
