@@ -374,7 +374,7 @@ Run install.packages('pbapply')", call. = FALSE)
                                      to = "utf-8")
         df_cc <- data.frame(old = i,
                             new = cc_corrected_i)
-        return(df_cc)})
+        return(df_cc)}, silent = TRUE)
       })
     }
 
