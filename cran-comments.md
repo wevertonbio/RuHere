@@ -1,3 +1,19 @@
+## Submission RuHere 1.1.1 (October 2026)
+This is the first submission of version 1.1.1
+
+## Test environments
+* Windows 11, R 4.5.1 (local)
+* MacOS 15.7.3, R release (GitHub Actions)
+* Windows 10.0.26100, R release (GitHub Actions)
+* Ubuntu 24.04.3 LTS, R release (GitHub Actions)
+* Ubuntu 24.04.3 LTS, R devel (GitHub Actions)
+* Ubuntu 24.04.3 LTS, R oldrel-1 (GitHub Actions)
+
+## R CMD check results
+There were no ERRORs.
+There were no WARNINGs.
+There were no NOTEs.
+
 ## Submission RuHere 1.1.0 (August 2026)
 This is the first submission of version 1.1.0
 
