@@ -17,7 +17,8 @@ get_datapaper(
 \arguments{
 \item{datapaper}{(character) vector with the names of the data papers to
 download. Valid options are: \code{"atlantic"}, \code{"brazil road-kill"}, \code{"dryflor"},
-\code{"neotropical xenarthrans"}, and \code{"neotroptree"}.}
+\code{"neotropical xenarthrans"}, \code{"neotroptree"}, \code{dry_diagonal_epiphyte}, and
+\code{gabi}. See details.}
 
 \item{species}{(character) optional species name or vector of species names
 to filter the dataset. Default is \code{NULL} (returns all species).}
@@ -60,6 +61,9 @@ Tropical Forests (DryFlor) dataset.
 \item \code{"neotropical xenarthrans"}: Neotropical Xenarthrans occurrence
 dataset.
 \item \code{"neotroptree"}: NeoTropTree tree species checklist database.
+\item \code{"dry_diagonal_epiphyte"}: Vascular epiphytes of the South
+America Dry Diagonal.
+\item \code{"gabi"}: Global Ant Biodiversity Informatics.
 }
 }
 \note{

@@ -9,7 +9,8 @@
 #'
 #' @param datapaper (character) vector with the names of the data papers to
 #' download. Valid options are: `"atlantic"`, `"brazil road-kill"`, `"dryflor"`,
-#' `"neotropical xenarthrans"`, and `"neotroptree"`.
+#' `"neotropical xenarthrans"`, `"neotroptree"`, `dry_diagonal_epiphyte`, and
+#' `gabi`. See details.
 #' @param species (character) optional species name or vector of species names
 #' to filter the dataset. Default is `NULL` (returns all species).
 #' @param save (logical) whether to save the merged output file to disk. If
@@ -35,6 +36,9 @@
 #'   \item \code{"neotropical xenarthrans"}: Neotropical Xenarthrans occurrence
 #'   dataset.
 #'   \item \code{"neotroptree"}: NeoTropTree tree species checklist database.
+#'   \item \code{"dry_diagonal_epiphyte"}: Vascular epiphytes of the South
+#'   America Dry Diagonal.
+#'   \item \code{"gabi"}: Global Ant Biodiversity Informatics.
 #' }
 #'
 #' @note
@@ -65,13 +69,20 @@ get_datapaper <- function(datapaper, species = NULL, save = FALSE, dir = NULL,
                           file.format = "gz", overwrite = FALSE,
                           verbose = TRUE){
 
+  # If save is FALSE, set temporary directory
+  if(!save){
+    dir <- tempdir()
+  }
+
   # Argument checking... ####
   valid_datapapers <- c(
     "atlantic",
     "brazil road-kill",
     "dryflor",
     "neotropical xenarthrans",
-    "neotroptree"
+    "neotroptree",
+    "dry_diagonal_epiphyte",
+    "gabi"
   )
   valid_formats <- c("gz", "csv", "rds", ".rds")
 
@@ -179,6 +190,85 @@ get_datapaper <- function(datapaper, species = NULL, save = FALSE, dir = NULL,
               httr::write_disk(file.path(file.path(dir, "neotroptree.gz")),
                                overwrite = T))
     l[["neotroptree"]] <- file.path(dir, "neotroptree.gz")
+  }
+
+  if("dry_diagonal_epiphyte" %in% datapaper){
+    if(verbose) message("Downloading data from Vascular epiphytes of the South America Dry Diagonal...")
+    httr::GET("https://zenodo.org/records/11189566/files/Dry_Diagonal_Epiphyte_Online_v7.csv?download=1",
+              httr::write_disk(file.path(tempdir(), "dry_diagonal_epiphyte.csv"),
+                               overwrite = T))
+    dry <- data.table::fread(file.path(tempdir(), "dry_diagonal_epiphyte.csv"),
+                             encoding = "Latin-1")
+    # Create metadata for dryflor
+    edry <- create_metadata(occ = dry,
+                            scientificName = "SPECIES",
+                            decimalLongitude = "LONGITUDE",
+                            decimalLatitude = "LATITUDE",
+                            collectionCode = "COLLECTION",
+                            catalogNumber = "catalognumber",
+                            coordinateUncertaintyInMeters = NA, elevation = NA,
+                            country = "COUNTRY", stateProvince = NA, municipality = NA,
+                            locality = NA, year = "YEAR_COLLECTED",
+                            eventDate = NA, recordedBy = "collector",
+                            identifiedBy = "identifiedby",
+                            basisOfRecord = NA, occurrenceRemarks = NA,
+                            habitat = NA, datasetName = NA, datasetKey = NA,
+                            key = NA)
+    # Standardize
+    edry_occ <- format_columns(occ = dry, metadata = edry,
+                               binomial_from = "SPECIES",
+                               data_source = "Dry_Diagonal_Epiphyte",
+                               verbose = FALSE)
+    # Save
+    data.table::fwrite(edry_occ,
+                       file.path(dir, "dry_diagonal_epiphyte.gz"))
+    l[["dry_diagonal_epiphyte"]] <- file.path(dir, "dry_diagonal_epiphyte.gz")
+  }
+
+  if("gabi" %in% datapaper){
+    # Download
+    if(verbose) message("Downloading data from Global Ant Biodiversity Informatics (GABI)...")
+    httr::GET("https://antmaps.org/data/GABI_Data_Release1.0_18012020.zip",
+              httr::write_disk(file.path(tempdir(), "ants.zip"),
+                               overwrite = T))
+    # Unzip
+    zip_file <- file.path(tempdir(), "ants.zip")
+    csv_file <- "GABI_Data_Release1.0_18012020/GABI_Data_Release1.0_18012020.csv"
+    utils::unzip(zip_file, files = csv_file, exdir = tempdir())
+    gabi <- data.table::fread(file.path(tempdir(), csv_file),
+                              select = c("valid_species_name", "dec_long",
+                                         "dec_lat", "accession_number",
+                                         "country", "adm1", "adm2", "locality",
+                                         "type_of_data"))
+    # Remove records without coodinates
+    gabi <- gabi[!is.na(gabi$dec_long) & !is.na(gabi$dec_long)]
+    # Fix species names
+    gabi$valid_species_name <- sub(".", " ", gabi$valid_species_name, fixed = TRUE)
+
+    # Create metadata for dryflor
+    gabi_metadata <- create_metadata(occ = gabi,
+                                     scientificName = "valid_species_name",
+                                     decimalLongitude = "dec_long",
+                                     decimalLatitude = "dec_lat",
+                                     collectionCode = NA,
+                                     catalogNumber = "accession_number",
+                                     coordinateUncertaintyInMeters = NA, elevation = NA,
+                                     country = "country", stateProvince = "adm1", municipality = "adm2",
+                                     locality = "locality", year = NA,
+                                     eventDate = NA, recordedBy = NA,
+                                     identifiedBy = NA,
+                                     basisOfRecord = "type_of_data", occurrenceRemarks = NA,
+                                     habitat = NA, datasetName = NA, datasetKey = NA,
+                                     key = NA)
+    # Standardize
+    gabi_occ <- format_columns(occ = gabi, metadata = gabi_metadata,
+                               binomial_from = "valid_species_name",
+                               data_source = "GABI",
+                               verbose = FALSE)
+    # Save
+    data.table::fwrite(gabi_occ,
+                       file.path(dir, "gabi.gz"))
+    l[["gabi"]] <- file.path(dir, "gabi.gz")
   }
 
   # Read files

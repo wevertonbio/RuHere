@@ -78,7 +78,11 @@ cite_datapaper <- function(data) {
 
     "atlantic_primates" = "Culot, L., Pereira, L. A., Agostini, I., De Almeida, M. A. B., Alves, R. S. C., Aximoff, I., Bager, A., Baldovino, M. C., Bella, T. R., Bicca-Marques, J. C., Braga, C., Brocardo, C. R., Campelo, A. K. N., Canale, G. R., Cardoso, J. D. C., Carrano, E., Casanova, D. C., Cassano, C. R., Castro, E., ... Galetti, M. (2019). ATLANTIC - PRIMATES: A dataset of communities and occurrences of primates in the Atlantic Forests of South America. Ecology, 100(1), e02525. https://doi.org/10.1002/ecy.2525",
 
-    "atlantic_small_mammal" = "Bovendorp, R. S., Villar, N., De Abreu-Junior, E. F., Bello, C., Regolin, A. L., Percequillo, A. R., & Galetti, M. (2017). Atlantic small-mammal: A dataset of communities of rodents and marsupials of the Atlantic forests of South America. Ecology, 98(8), 2226-2226. https://doi.org/10.1002/ecy.1893"
+    "atlantic_small_mammal" = "Bovendorp, R. S., Villar, N., De Abreu-Junior, E. F., Bello, C., Regolin, A. L., Percequillo, A. R., & Galetti, M. (2017). Atlantic small-mammal: A dataset of communities of rodents and marsupials of the Atlantic forests of South America. Ecology, 98(8), 2226-2226. https://doi.org/10.1002/ecy.1893",
+
+    "Dry_Diagonal_Epiphyte" = "Ramos, F. N., de Araujo, M. L., da Silva Assis, I., Basilio, G. A., Barbosa, D. E. F., Correa, T. A., ... & Elias, J. P. C. (2025). Vascular epiphytes of the South America Dry Diagonal: characterising their occurrence and richness in this neglected region. New Zealand Journal of Botany, 63(4), 822-839. https://doi.org/10.1080/0028825X.2024.2387188",
+
+    "GABI" = "Guenard, B., Weiser, M., Gomez, K., Narula, N., Economo, E.P. (2017) The Global Ant Biodiversity Informatics (GABI) database: a synthesis of ant species geographic distributions. Myrmecological News 24: 83-89."
   )
 
   # Extract sources
