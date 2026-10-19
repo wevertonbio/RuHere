@@ -1,10 +1,10 @@
-# RuHere 1.1.2
+# RuHere 1.1.1 (October 2026)
 
+* Add datasets from GABI and from Vascular epiphytes of the South America Dry Diagonal to `get_datapaper()` and `cite_datapaper()`.
+* In `faunabr_here()` and `florabr_here()`, add the `get_fixed_version` argument to allow users to download fixed versions of faunabr and florabr, with `TRUE` as the default.
+* In `map_here()`, add the `map.types` argument to allow users to select which background map layers to display, with "OpenStreetMap" as the default layer.
 * RuHere now depends on faunabr (>= 1.1.2) and florabr(>= 1.4.0.).
 * Update datasets to be compatible with florabr 1.4.0.
-
-# RuHere 1.1.1
-
 * Fix bug in `flag_consensus()` when using "bien" as one of the flags.
 * Fix bug in `map_here()` when the column flags have NA.
 * Fix bug when using additional/user flags in `summarize_flags()`.
