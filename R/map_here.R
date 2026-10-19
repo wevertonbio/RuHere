@@ -35,6 +35,9 @@
 #' `RuHere::flag_colors()` are used.
 #' @param label (character) column name in `occ` to use as the mouseover label.
 #' Default is `NULL`, in which case the record's row number is displayed.
+#' @param map.types (character) background map layers to display. Defaults to
+#' c("OpenStreetMap", "Esri.WorldImagery", "OpenTopoMap", "CartoDB.Positron",
+#' "CartoDB.DarkMatter"). See `?mapview::mapview` for additional options.
 #' @param ... additional arguments passed to `mapview::mapview()`.
 #'
 #' @details
@@ -78,6 +81,9 @@ map_here <- function(occ,
                      lwd = 2,
                      col_points = NULL,
                      label = NULL,
+                     map.types = c("OpenStreetMap",
+                                   "Esri.WorldImagery", "OpenTopoMap",
+                                   "CartoDB.Positron", "CartoDB.DarkMatter"),
                      ...){
 
   # ---- Argument checking -----------------------------------------------------
@@ -301,7 +307,9 @@ map_here <- function(occ,
                            col.regions = col_points[[first_map]],
                            cex = cex, lwd = lwd,
                            layer.name = first_map,
-                           label = label, ...)
+                           label = label,
+                           map.types = map.types,
+                           ...)
   # Add other maps
   if(length(flags) > 1){
     for(i in 2:length(flags)){

@@ -18,6 +18,8 @@ map_here(
   lwd = 2,
   col_points = NULL,
   label = NULL,
+  map.types = c("OpenStreetMap", "Esri.WorldImagery", "OpenTopoMap", "CartoDB.Positron",
+    "CartoDB.DarkMatter"),
   ...
 )
 }
@@ -63,6 +65,10 @@ flag. If \code{NULL}, default colors from the internal object
 
 \item{label}{(character) column name in \code{occ} to use as the mouseover label.
 Default is \code{NULL}, in which case the record's row number is displayed.}
+
+\item{map.types}{(character) background map layers to display. Defaults to
+c("OpenStreetMap", "Esri.WorldImagery", "OpenTopoMap", "CartoDB.Positron",
+"CartoDB.DarkMatter"). See \code{?mapview::mapview} for additional options.}
 
 \item{...}{additional arguments passed to \code{mapview::mapview()}.}
 }
