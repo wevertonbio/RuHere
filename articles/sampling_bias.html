@@ -214,24 +214,24 @@ maximum), along with the number of retained records
 (<code>prop_lost</code>).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">occ_geo_moran</span><span class="op">$</span><span class="va">imoran</span></span>
-<span><span class="co">#&gt;                   species Distance      bio_1     bio_7    bio_12 median_moran</span></span>
-<span><span class="co">#&gt; 1  Araucaria angustifolia        1 0.26797715 0.4154464 0.2700062    0.2700062</span></span>
-<span><span class="co">#&gt; 3  Araucaria angustifolia        3 0.20037829 0.3587940 0.1982657    0.2003783</span></span>
-<span><span class="co">#&gt; 5  Araucaria angustifolia        5 0.17522297 0.3368257 0.1765754    0.1765754</span></span>
-<span><span class="co">#&gt; 7  Araucaria angustifolia        7 0.16065669 0.3235316 0.1695589    0.1695589</span></span>
-<span><span class="co">#&gt; 10 Araucaria angustifolia       10 0.15567148 0.2954804 0.1622244    0.1622244</span></span>
-<span><span class="co">#&gt; 15 Araucaria angustifolia       15 0.14275985 0.2697169 0.1536365    0.1536365</span></span>
-<span><span class="co">#&gt; 20 Araucaria angustifolia       20 0.13085143 0.2802101 0.1463788    0.1463788</span></span>
-<span><span class="co">#&gt; 30 Araucaria angustifolia       30 0.09891003 0.2382515 0.1634006    0.1634006</span></span>
-<span><span class="co">#&gt;    mean_moran  min_moran max_moran n_filtered all_records prop_lost</span></span>
-<span><span class="co">#&gt; 1   0.3178099 0.26797715 0.4154464       1236        2426 0.4905194</span></span>
-<span><span class="co">#&gt; 3   0.2524793 0.19826573 0.3587940        878        2426 0.6380874</span></span>
-<span><span class="co">#&gt; 5   0.2295414 0.17522297 0.3368257        732        2426 0.6982688</span></span>
-<span><span class="co">#&gt; 7   0.2179157 0.16065669 0.3235316        634        2426 0.7386645</span></span>
-<span><span class="co">#&gt; 10  0.2044587 0.15567148 0.2954804        517        2426 0.7868920</span></span>
-<span><span class="co">#&gt; 15  0.1887044 0.14275985 0.2697169        386        2426 0.8408904</span></span>
-<span><span class="co">#&gt; 20  0.1858135 0.13085143 0.2802101        313        2426 0.8709810</span></span>
-<span><span class="co">#&gt; 30  0.1668540 0.09891003 0.2382515        206        2426 0.9150866</span></span></code></pre></div>
+<span><span class="co">#&gt;                   species Distance     bio_1     bio_7    bio_12 median_moran</span></span>
+<span><span class="co">#&gt; 1  Araucaria angustifolia        1 0.2770973 0.4317940 0.2817309    0.2817309</span></span>
+<span><span class="co">#&gt; 3  Araucaria angustifolia        3 0.2112889 0.3769774 0.2143917    0.2143917</span></span>
+<span><span class="co">#&gt; 5  Araucaria angustifolia        5 0.1760223 0.3482783 0.1852354    0.1852354</span></span>
+<span><span class="co">#&gt; 7  Araucaria angustifolia        7 0.1690197 0.3247761 0.1728955    0.1728955</span></span>
+<span><span class="co">#&gt; 10 Araucaria angustifolia       10 0.1581986 0.3097439 0.1696517    0.1696517</span></span>
+<span><span class="co">#&gt; 15 Araucaria angustifolia       15 0.1489380 0.2855890 0.1617572    0.1617572</span></span>
+<span><span class="co">#&gt; 20 Araucaria angustifolia       20 0.1412617 0.2885731 0.1568221    0.1568221</span></span>
+<span><span class="co">#&gt; 30 Araucaria angustifolia       30 0.1180864 0.2676711 0.1647299    0.1647299</span></span>
+<span><span class="co">#&gt;    mean_moran min_moran max_moran n_filtered all_records prop_lost</span></span>
+<span><span class="co">#&gt; 1   0.3302074 0.2770973 0.4317940       1270        2426 0.4765045</span></span>
+<span><span class="co">#&gt; 3   0.2675526 0.2112889 0.3769774        935        2426 0.6145919</span></span>
+<span><span class="co">#&gt; 5   0.2365120 0.1760223 0.3482783        777        2426 0.6797197</span></span>
+<span><span class="co">#&gt; 7   0.2222304 0.1690197 0.3247761        672        2426 0.7230008</span></span>
+<span><span class="co">#&gt; 10  0.2125314 0.1581986 0.3097439        566        2426 0.7666941</span></span>
+<span><span class="co">#&gt; 15  0.1987614 0.1489380 0.2855890        439        2426 0.8190437</span></span>
+<span><span class="co">#&gt; 20  0.1955523 0.1412617 0.2885731        353        2426 0.8544930</span></span>
+<span><span class="co">#&gt; 30  0.1834958 0.1180864 0.2676711        251        2426 0.8965375</span></span></code></pre></div>
 <p><br></p>
 <p>The “best” distance that reduces the spatial autocorrelation without
 discarding too many records was 15km. Using this threshold, 2,040
@@ -242,7 +242,7 @@ records were flagged.</p>
 <span><span class="co">#&gt; [1] "15"</span></span>
 <span><span class="co"># Number of flagged records using this distance to thin</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">occ_geo_moran</span><span class="op">$</span><span class="va">occ</span><span class="op">$</span><span class="va">thin_geo_flag</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 2040</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 1987</span></span></code></pre></div>
 <p><br></p>
 <p>Visual inspection shows an even more uniform heatmap:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">

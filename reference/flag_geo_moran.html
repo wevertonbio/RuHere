@@ -262,21 +262,21 @@ https://doi.org/10.1111/ddi.13215</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "30"</span>
 <span class="r-in"><span><span class="co"># Number of flagged and unflagged records</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">occ_geo_moran</span><span class="op">$</span><span class="va">occ</span><span class="op">$</span><span class="va">thin_geo_flag</span><span class="op">)</span> <span class="co">#Retained</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 297</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 356</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">occ_geo_moran</span><span class="op">$</span><span class="va">occ</span><span class="op">$</span><span class="va">thin_geo_flag</span><span class="op">)</span> <span class="co">#Flagged for thinning out</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 627</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 568</span>
 <span class="r-in"><span><span class="co"># Results os the spatial autocorrelation analysis</span></span></span>
 <span class="r-in"><span><span class="va">occ_geo_moran</span><span class="op">$</span><span class="va">imoran</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   species Distance     bio_1     bio_7    bio_12 median_moran</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Araucaria angustifolia        5 0.1678046 0.3300641 0.1719100    0.1719100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 Araucaria angustifolia       10 0.1511561 0.3003992 0.1665782    0.1665782</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20 Araucaria angustifolia       20 0.1318548 0.2699369 0.1473847    0.1473847</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30 Araucaria angustifolia       30 0.1072336 0.2590974 0.1499994    0.1499994</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    mean_moran min_moran max_moran n_filtered all_records prop_lost</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   0.2232595 0.1678046 0.3300641        836         924 0.0952381</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10  0.2060445 0.1511561 0.3003992        621         924 0.3279221</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20  0.1830588 0.1318548 0.2699369        407         924 0.5595238</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30  0.1721101 0.1072336 0.2590974        297         924 0.6785714</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Araucaria angustifolia        5 0.1770229 0.3494990 0.1843405    0.1843405</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 Araucaria angustifolia       10 0.1586904 0.3106287 0.1722410    0.1722410</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 Araucaria angustifolia       20 0.1424202 0.2917658 0.1614796    0.1614796</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30 Araucaria angustifolia       30 0.1212340 0.2608837 0.1500443    0.1500443</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    mean_moran min_moran max_moran n_filtered all_records   prop_lost</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   0.2369541 0.1770229 0.3494990        923         924 0.001082251</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  0.2138533 0.1586904 0.3106287        689         924 0.254329004</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20  0.1985552 0.1424202 0.2917658        469         924 0.492424242</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30  0.1773873 0.1212340 0.2608837        356         924 0.614718615</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
