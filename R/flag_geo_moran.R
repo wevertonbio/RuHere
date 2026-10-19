@@ -304,7 +304,7 @@ flag_geo_moran <- function(occ,
   if (verbose) message("Filtering records...")
   filtered <- suppressMessages(lapply(d, function(x){
     f_x <- thin_geo(occ = occ, species = species,
-                    long = lat, lat = long,
+                    long = long, lat = lat,
                     d = x,
                     prioritary_column = prioritary_column,
                     decreasing = decreasing,

@@ -237,9 +237,7 @@ spatial_kde <- function(occ,
   }
 
   # Crop
-  if(!is.null(mask)){
-    r_base <- terra::crop(r_base, mask, mask = TRUE)
-  } else {
+  if (is.null(raster_ref) && is.null(mask)) {
     r_base <- terra::crop(r_base, adjusted_extent, mask = TRUE)
   }
 

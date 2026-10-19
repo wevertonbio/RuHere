@@ -131,16 +131,40 @@ get_env_bins <- function(occ, species = "species",
 
     # Define breaks covering the range of the data
     # We add a tiny epsilon to the max to ensure the last point is included
-    rng <- range(x, na.rm = TRUE, finite = TRUE)
-    breaks <- seq(from = rng[1], to = rng[2], length.out = n_bins + 1)
+    validos <- is.finite(x)
 
-    # Store breaks for plotting later
+    if (!any(validos)) {
+      break_values[[var_name]] <- NA_real_
+      bin_indices[[paste0(var_name, "_bin")]] <- rep(NA_integer_, length(x))
+      next
+    }
+
+    rng <- range(x[validos])
+
+    if (rng[1] == rng[2]) {
+      # Create limits
+      margem <- max(1, abs(rng[1])) * 1e-6
+      breaks <- seq(rng[1] - margem, rng[2] + margem,
+                    length.out = n_bins + 1L)
+    } else {
+      breaks <- seq(rng[1], rng[2], length.out = n_bins + 1L)
+    }
+
     break_values[[var_name]] <- breaks
-
-    # Cut the data to get the bin index (integer)
     bin_indices[[paste0(var_name, "_bin")]] <- as.integer(
       cut(x, breaks = breaks, include.lowest = TRUE, labels = FALSE)
     )
+
+    # rng <- range(x, na.rm = TRUE, finite = TRUE)
+    # breaks <- seq(from = rng[1], to = rng[2], length.out = n_bins + 1)
+    #
+    # # Store breaks for plotting later
+    # break_values[[var_name]] <- breaks
+    #
+    # # Cut the data to get the bin index (integer)
+    # bin_indices[[paste0(var_name, "_bin")]] <- as.integer(
+    #   cut(x, breaks = breaks, include.lowest = TRUE, labels = FALSE)
+    # )
   }
 
   # Convert list of indices to data frame

@@ -168,10 +168,14 @@ standardize_countries <- function(occ,
   # Check country names
   unique_countries <- na.omit(unique(occ[[country_column]]))
 
-  if(all(is.na(unique_countries))){
+  if (all(is.na(unique_countries))) {
     ccn <- NULL
     ccc <- NULL
-    final_states <- NULL} else {
+    final_countries <- data.frame(
+      country = character(0),
+      country_suggested = character(0)
+    )
+  } else {
       ccn <- florabr::match_names(species = unique_countries,
                                   species_to_match = cd$country_name$country_name,
                                   max_distance = max_distance)
@@ -213,10 +217,15 @@ standardize_countries <- function(occ,
     }
 
 
-  # Relocate columns
-  occ_final <- relocate_before(occ_final, country_column,
-                              names(occ)[which(names(occ) == country_column) - 1]
-                              )
+
+
+  # Relocate columns (if necessary)
+  pos_country <- match(country_column, names(occ))
+  if (pos_country > 1L) {
+    occ_final <- relocate_before(
+      occ_final, country_column, names(occ)[pos_country - 1L]
+    )
+  }
   occ_final <- relocate_after(occ_final, "country_suggested", country_column)
 
   # Fill NA?
