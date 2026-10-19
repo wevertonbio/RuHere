@@ -26,7 +26,8 @@ get_datapaper(
 
   (character) vector with the names of the data papers to download.
   Valid options are: `"atlantic"`, `"brazil road-kill"`, `"dryflor"`,
-  `"neotropical xenarthrans"`, and `"neotroptree"`.
+  `"neotropical xenarthrans"`, `"neotroptree"`, `dry_diagonal_epiphyte`,
+  and `gabi`. See details.
 
 - species:
 
@@ -79,6 +80,11 @@ Available datasets that can be requested in `datapaper`:
   dataset.
 
 - `"neotroptree"`: NeoTropTree tree species checklist database.
+
+- `"dry_diagonal_epiphyte"`: Vascular epiphytes of the South America Dry
+  Diagonal.
+
+- `"gabi"`: Global Ant Biodiversity Informatics.
 
 ## Note
 

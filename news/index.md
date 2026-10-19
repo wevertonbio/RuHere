@@ -1,12 +1,24 @@
 # Changelog
 
-## RuHere 1.1.2
+## RuHere 1.1.1 (October 2026)
 
+- Add datasets from GABI and from Vascular epiphytes of the South
+  America Dry Diagonal to
+  [`get_datapaper()`](https://wevertonbio.github.io/RuHere/reference/get_datapaper.md)
+  and
+  [`cite_datapaper()`](https://wevertonbio.github.io/RuHere/reference/cite_datapaper.md).
+- In
+  [`faunabr_here()`](https://wevertonbio.github.io/RuHere/reference/faunabr_here.md)
+  and
+  [`florabr_here()`](https://wevertonbio.github.io/RuHere/reference/florabr_here.md),
+  add the `get_fixed_version` argument to allow users to download fixed
+  versions of faunabr and florabr, with `TRUE` as the default.
+- In
+  [`map_here()`](https://wevertonbio.github.io/RuHere/reference/map_here.md),
+  add the `map.types` argument to allow users to select which background
+  map layers to display, with “OpenStreetMap” as the default layer.
 - RuHere now depends on faunabr (\>= 1.1.2) and florabr(\>= 1.4.0.).
 - Update datasets to be compatible with florabr 1.4.0.
-
-## RuHere 1.1.1
-
 - Fix bug in
   [`flag_consensus()`](https://wevertonbio.github.io/RuHere/reference/flag_consensus.md)
   when using “bien” as one of the flags.

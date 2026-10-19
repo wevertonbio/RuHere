@@ -12,6 +12,7 @@ function.
 faunabr_here(
   data_dir,
   data_version = "latest",
+  get_fixed_version = TRUE,
   solve_discrepancy = TRUE,
   overwrite = TRUE,
   remove_files = TRUE,
@@ -32,6 +33,12 @@ faunabr_here(
   "latest" to get the most recent version, which is updated frequently.
   Alternatively, specify an older version (e.g., data_version="1.2").
   Default value is "latest".
+
+- get_fixed_version:
+
+  (logical) If `TRUE`, download the already-merged version 1.57 from
+  Zenodo instead of downloading and processing an IPT archive. Default
+  is TRUE.
 
 - solve_discrepancy:
 
@@ -63,14 +70,11 @@ directory specified by `data_dir`.
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # Define a directory to save the data
 data_dir <- tempdir() # Here, a temporary directory
 
 # Download the latest version of the Flora e Funga do Brazil database
 faunabr_here(data_dir = data_dir)
-#> Getting data from Taxonomic Catalog of the Brazilian Fauna ...
-#> Data will be saved in /tmp/RtmpHPqWNO/faunabr
-#> Error: Could not determine the latest Fauna do Brasil version from the IPT: Forbidden (HTTP 403).
-# }
+} # }
 ```

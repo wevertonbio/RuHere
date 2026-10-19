@@ -75,6 +75,8 @@ directly on the map.</p>
 <span>  lwd <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  col_points <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  label <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  map.types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"OpenStreetMap"</span>, <span class="st">"Esri.WorldImagery"</span>, <span class="st">"OpenTopoMap"</span>, <span class="st">"CartoDB.Positron"</span>,</span>
+<span>    <span class="st">"CartoDB.DarkMatter"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -149,6 +151,12 @@ flag. If <code>NULL</code>, default colors from the internal object
 <dt id="arg-label">label<a class="anchor" aria-label="anchor" href="#arg-label"></a></dt>
 <dd><p>(character) column name in <code>occ</code> to use as the mouseover label.
 Default is <code>NULL</code>, in which case the record's row number is displayed.</p></dd>
+
+
+<dt id="arg-map-types">map.types<a class="anchor" aria-label="anchor" href="#arg-map-types"></a></dt>
+<dd><p>(character) background map layers to display. Defaults to
+c("OpenStreetMap", "Esri.WorldImagery", "OpenTopoMap", "CartoDB.Positron",
+"CartoDB.DarkMatter"). See <code><a href="https://r-spatial.github.io/mapview/reference/mapView.html" class="external-link">?mapview::mapview</a></code> for additional options.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

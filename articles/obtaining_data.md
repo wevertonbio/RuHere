@@ -284,7 +284,8 @@ records that may not be available in global aggregators such as GBIF or
 speciesLink (see the Discussion in [Trindade & Marques,
 2024](https://onlinelibrary.wiley.com/doi/10.1111/ddi.13931)). The
 `RuHere` package provides seamless access to several key biodiversity
-data papers and checklist compilations across the Neotropical region:
+data papers and checklist compilations, especially across the
+Neotropical region:
 
 - [ATLANTIC: A series of data Papers from the Atlantic Forest
   Hotspot](https://esajournals.onlinelibrary.wiley.com/doi/toc/10.1002/(ISSN)1939-9170.AtlanticPapers).
@@ -302,6 +303,12 @@ data papers and checklist compilations across the Neotropical region:
 - [Neotropical
   Xenarthrans](https://esajournals.onlinelibrary.wiley.com/doi/10.1002/ecy.2663):
   a data set of occurrence of xenarthran species in the Neotropics.
+- [Dry diagonal
+  epiphyte](https://www.tandfonline.com/doi/figure/10.1080/0028825X.2024.2387188?scroll=top&needAccess=true):
+  a dataset of epiphyte records from the South America Dry Diagonal.
+- [GABI: Global Ant Biodiversity
+  Informatics](https://antmaps.org/about.html): a data set of occurrence
+  of ant species in the World.
 
 All records have been harmonized and standardized into the **Darwin Core
 (DwC)** format.
