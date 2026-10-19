@@ -7,6 +7,7 @@
 florabr_here(
   data_dir,
   data_version = "latest",
+  get_fixed_version = TRUE,
   solve_discrepancy = TRUE,
   overwrite = TRUE,
   remove_files = TRUE,
@@ -21,6 +22,10 @@ Flora e Funga do Brasil.}
 database to download. Use "latest" to get the most recent version, updated
 weekly. Alternatively, specify an older version (e.g.,
 data_version="393.319"). Default value is "latest".}
+
+\item{get_fixed_version}{If \code{TRUE}, download the fixed and already-merged
+version 393.432 from Zenodo instead of downloading and processing an IPT
+archive. Default is \code{TRUE}.}
 
 \item{solve_discrepancy}{(logical) whether to resolve discrepancies between
 species and subspecies/varieties information. When set to TRUE, species
@@ -47,7 +52,7 @@ required for filtering occurrence records using specialists' range
 information via the \code{flag_florabr()} function.
 }
 \examples{
-\donttest{
+\dontrun{
 # Define a directory to save the data
 data_dir <- tempdir() # Here, a temporary directory
 

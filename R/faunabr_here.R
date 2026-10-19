@@ -12,6 +12,9 @@
 #' download. Use "latest" to get the most recent version, which is updated
 #' frequently. Alternatively, specify an older version (e.g.,
 #' data_version="1.2"). Default value is "latest".
+#' @param get_fixed_version (logical) If `TRUE`, download the already-merged
+#' version 1.57 from Zenodo instead of downloading and processing an IPT archive.
+#' Default is TRUE.
 #' @param solve_discrepancy (logical) whether to resolve inconsistencies
 #' between species and subspecies information. When set to TRUE (default),
 #' species information is updated based on unique data from subspecies. For
@@ -42,6 +45,7 @@
 #' }
 faunabr_here <- function(data_dir,
                          data_version = "latest",
+                         get_fixed_version = TRUE,
                          solve_discrepancy = TRUE,
                          overwrite = TRUE,
                          remove_files = TRUE,
@@ -89,6 +93,7 @@ faunabr_here <- function(data_dir,
   faunabr::get_faunabr(output_dir = file.path(data_dir, "faunabr"),
                        data_version,
                        solve_discrepancies = solve_discrepancy,
+                       get_fixed_version = get_fixed_version,
                        overwrite = overwrite,
                        verbose = verbose)
   # Remove files

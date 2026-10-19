@@ -11,6 +11,9 @@
 #' database to download. Use "latest" to get the most recent version, updated
 #' weekly. Alternatively, specify an older version (e.g.,
 #' data_version="393.319"). Default value is "latest".
+#' @param get_fixed_version If `TRUE`, download the fixed and already-merged
+#' version 393.432 from Zenodo instead of downloading and processing an IPT
+#' archive. Default is `TRUE`.
 #' @param solve_discrepancy (logical) whether to resolve discrepancies between
 #' species and subspecies/varieties information. When set to TRUE, species
 #' information is updated based on unique data from varieties and subspecies.
@@ -42,6 +45,7 @@
 
 florabr_here <- function(data_dir,
                          data_version = "latest",
+                         get_fixed_version = TRUE,
                          solve_discrepancy = TRUE,
                          overwrite = TRUE,
                          remove_files = TRUE,
@@ -85,9 +89,15 @@ florabr_here <- function(data_dir,
   if(verbose){
     message("Getting data from Flora e Funga do Brasil...")
   }
+
+  if(get_fixed_version){
+    solve_discrepancy <- FALSE
+  }
+
   florabr::get_florabr(output_dir = file.path(data_dir, "florabr"),
                        data_version,
                        solve_discrepancy = solve_discrepancy,
+                       get_fixed_version = get_fixed_version,
                        overwrite = overwrite,
                        verbose = verbose,
                        remove_files = remove_files)

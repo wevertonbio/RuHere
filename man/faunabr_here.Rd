@@ -8,6 +8,7 @@ Brazilian Fauna)}
 faunabr_here(
   data_dir,
   data_version = "latest",
+  get_fixed_version = TRUE,
   solve_discrepancy = TRUE,
   overwrite = TRUE,
   remove_files = TRUE,
@@ -22,6 +23,10 @@ Fauna do Brazil.}
 download. Use "latest" to get the most recent version, which is updated
 frequently. Alternatively, specify an older version (e.g.,
 data_version="1.2"). Default value is "latest".}
+
+\item{get_fixed_version}{(logical) If \code{TRUE}, download the already-merged
+version 1.57 from Zenodo instead of downloading and processing an IPT archive.
+Default is TRUE.}
 
 \item{solve_discrepancy}{(logical) whether to resolve inconsistencies
 between species and subspecies information. When set to TRUE (default),
@@ -48,7 +53,7 @@ database, which is required for filtering occurrence records using
 specialists' range information via the \code{flag_faunabr()} function.
 }
 \examples{
-\donttest{
+\dontrun{
 # Define a directory to save the data
 data_dir <- tempdir() # Here, a temporary directory
 
