@@ -1,3 +1,7 @@
+# RuHere 1.1.2 (In development)
+
+* Fix additional_predicates in `request_gbif()` to allow combinations of `pred_and()` and `pred_or()`.
+
 # RuHere 1.1.1 (October 2026)
 
 * Add datasets from GABI and from Vascular epiphytes of the South America Dry Diagonal to `get_datapaper()` and `cite_datapaper()`.

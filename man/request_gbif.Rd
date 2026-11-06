@@ -13,9 +13,11 @@ request_gbif(gbif_info, hasCoordinate = TRUE,
 \item{gbif_info}{an object of class 'gbif_info' resulted by the
 \code{prepare_gbif_download()} function.}
 
-\item{hasCoordinate}{(logical) whether to retrieve only records with coordinates. Default is TRUE.}
+\item{hasCoordinate}{(logical) whether to retrieve only records with
+coordinates. Default is TRUE.}
 
-\item{hasGeospatialIssue}{(logical) whether to retrieve records identified with geospatial issue. Default is FALSE.}
+\item{hasGeospatialIssue}{(logical) whether to retrieve records identified
+with geospatial issue. Default is FALSE.}
 
 \item{format}{(character) the download format. Options available are 'DWCA',
 'SIMPLE_CSV', or 'SPECIES_LIST', Default is DWCA'.}
@@ -31,8 +33,8 @@ NULL, meaning it will try to obtain this information from the R enviroment.}
 NULL, meaning it will try to obtain this information from the R enviroment.}
 
 \item{additional_predicates}{(character or occ_predicate) additional
-supported predicates that can be combined to build more complex download requests. See
-\code{rgbif::pred()} for details.}
+supported predicates that can be combined to build more complex download
+requests. See \code{rgbif::pred()} for details.}
 }
 \value{
 A download request key returned by the GBIF API, which can be used to monitor
