@@ -1,6 +1,14 @@
 # Changelog
 
+## RuHere 1.1.2 (In development)
+
+- Fix additional_predicates in
+  [`request_gbif()`](https://wevertonbio.github.io/RuHere/reference/request_gbif.md)
+  to allow combinations of `pred_and()` and `pred_or()`.
+
 ## RuHere 1.1.1 (October 2026)
+
+CRAN release: 2026-10-20
 
 - Add datasets from GABI and from Vascular epiphytes of the South
   America Dry Diagonal to
