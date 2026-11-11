@@ -1,6 +1,7 @@
 # RuHere 1.1.2 (In development)
 
 * Fix additional_predicates in `request_gbif()` to allow combinations of `pred_and()` and `pred_or()`.
+* RuHere now depends on rgbif (>= 3.9.0) due to changes in taxon keys, which were switched from the GBIF Backbone to the COL (Catalogue of Life) Extended Release.
 
 # RuHere 1.1.1 (October 2026)
 

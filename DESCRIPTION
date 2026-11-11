@@ -15,7 +15,7 @@ Imports:
     faunabr (>= 1.1.2),
     florabr (>= 1.4.0),
     jsonlite,
-    rgbif,
+    rgbif (>= 3.9.0),
     rredlist,
     stringi,
     RPostgreSQL,
