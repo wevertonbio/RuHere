@@ -15,18 +15,19 @@ flag_duplicates(
   categorical_variable = NULL,
   priority_categories = NULL,
   by_cell = FALSE,
-  raster_variable = NULL
+  raster_variable = NULL,
+  keep_cell_id = FALSE
 )
 }
 \arguments{
-\item{occ}{(data.frame) a data frame containing the occurrence records to be
-examined, preferably standardized using \code{format_columns()}. Must contain the
-columns specified in \code{species}, \code{long} and \code{lat} arguments.}
+\item{occ}{(data.frame or data.table) a data frame containing the occurrence
+records to be examined, preferably standardized using \code{format_columns()}.
+Must contain the columns specified in \code{species}, \code{long}, and \code{lat} arguments.}
 
 \item{species}{(character) the name of the column containing species names.
-Default is "species".}
+Default is \code{"species"}.}
 
-\item{long}{(character)  the name of the column containing longitude values.
+\item{long}{(character) the name of the column containing longitude values.
 Default is \code{"decimalLongitude"}.}
 
 \item{lat}{(character) the name of the column containing latitude values.
@@ -39,22 +40,21 @@ will not be flagged. Default is \code{NULL}.}
 
 \item{continuous_variable}{(character) optional name of a numeric column used
 to sort duplicated records and select one to remain unflagged. Default is
-\code{NULL}, meaning that no sorting will occur and the unflagged record will be
-selected randomly.}
+\code{NULL}.}
 
 \item{decreasing}{(logical) whether to sort records in decreasing order using
 the \code{continuous_variable} (e.g., from most recent to oldest when the variable
 is \code{"year"}). Only applicable when \code{continuous_variable} is not \code{NULL}.
 Default is \code{TRUE}.}
 
-\item{categorical_variable}{(character) (character) optional name of a
-categorical column used to sort duplicated records and select one to remain
-unflagged. If provided, the order of priority must be specified through
+\item{categorical_variable}{(character) optional name of a categorical column
+used to sort duplicated records and select one to remain unflagged. If
+provided, the order of priority must be specified through
 \code{priority_categories}. Default is \code{NULL}.}
 
 \item{priority_categories}{(character) vector of categories, in the desired
 order of priority, present in the column specified in \code{categorical_variable}.
-Only applicable when \code{categorical_variable} is not \code{NULL}. Default is \code{NULL}.}
+Required when \code{categorical_variable} is not \code{NULL}. Default is \code{NULL}.}
 
 \item{by_cell}{(logical) whether to use raster cells instead of raw
 coordinates to identify duplicates (i.e., all records inside the same raster
@@ -64,15 +64,19 @@ in \code{raster_variable}. Default is \code{FALSE}.}
 \item{raster_variable}{(SpatRaster) a \code{SpatRaster} used to identify
 duplicated records by raster cell. Only applicable when \code{by_cell} is \code{TRUE}.
 Default is \code{NULL}.}
+
+\item{keep_cell_id}{(logical) whether to retain the \code{cell_id} column in the
+returned object when \code{by_cell = TRUE}. Default is \code{FALSE}.}
 }
 \value{
-A \code{data.frame} that is the original \code{occ} data frame augmented with
-a new column named \code{duplicated_flag}. Records identified as duplicated
-receive \code{FALSE}, while all unique retained records receive \code{TRUE}.
-As with all other flagging functions in RuHere, \code{TRUE} indicates that
-the record passed this test and is eligible for retention; \code{FALSE}
-indicates it failed and is flagged as potentially problematic, and can be
-removed using \code{remove_flagged()}.
+An object of the same class as \code{occ} (\code{data.frame} or \code{data.table}) augmented
+with a new logical column named \code{duplicated_flag} (and optionally \code{cell_id}
+if \code{by_cell = TRUE} and \code{keep_cell_id = TRUE}). Records identified as
+duplicated receive \code{FALSE}, while unique/retained records receive \code{TRUE}.
+As with all other flagging functions in RuHere, \code{TRUE} indicates that the
+record passed this test and is eligible for retention; \code{FALSE} indicates it
+failed and is flagged as potentially problematic, and can be removed using
+\code{remove_flagged()}.
 }
 \description{
 This function identifies duplicated records based on species name and
@@ -86,8 +90,8 @@ randomly.
 # Load example data
 data("occurrences", package = "RuHere")
 # Duplicate some records as example
-occurrences <- rbind(occurrences[1:1000, ], occurrences[1:100,])
+occurrences <- rbind(occurrences[1:1000, ], occurrences[1:100, ])
 # Flag duplicates
 occ_dup <- flag_duplicates(occ = occurrences)
-sum(!occ_dup$duplicated_flag) #Number of duplicated records
+sum(!occ_dup$duplicated_flag) # Number of duplicated records
 }
