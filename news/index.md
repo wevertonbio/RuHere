@@ -18,6 +18,9 @@
   [`fix_species_names()`](https://wevertonbio.github.io/RuHere/reference/fix_species_names.md):
   replaces misspelled, outdated, or unstandardized species names in an
   occurrence dataset using a user-supplied reference dictionary.
+- Handle NA coordinates, fix positional args, and optimize
+  c`heck_countries()` and
+  [`check_states()`](https://wevertonbio.github.io/RuHere/reference/check_states.md).
 
 ## RuHere 1.1.1 (October 2026)
 
