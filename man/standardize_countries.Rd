@@ -16,42 +16,44 @@ standardize_countries(
 )
 }
 \arguments{
-\item{occ}{(data.frame) a dataset with occurrence records, preferably
-standardized using \code{format_columns()}.}
+\item{occ}{(data.frame or data.table) a dataset with occurrence records,
+preferably standardized using \code{format_columns()}.}
 
 \item{country_column}{(character) the column name containing the country
-information.}
+information. Default is \code{"country"}.}
 
 \item{max_distance}{(numeric) maximum allowed distance (as a fraction) when
 searching for suggestions for misspelled country names. Can be any value
 between 0 and 1. Higher values return more suggestions. See \code{agrep()} for
-details. Default is 0.1.}
+details. Default is \code{0.1}.}
 
 \item{user_dictionary}{(data.frame) optional data.frame with two columns:
-'country_name' and 'country_suggested'. If provided, this dictionary will be
-combined with the package’s default country dictionary
-(\code{RuHere::country_dictionary}). Default is NULL.}
+\code{'country_name'} and \code{'country_suggested'}. If provided, this dictionary will
+be combined with the package's default country dictionary
+(\code{RuHere::country_dictionary}). Default is \code{NULL}.}
 
 \item{lookup_na_country}{(logical) whether to extract the country from
-coordinates when the country column has missing values. If TRUE, longitude
-and latitude columns must be provided. Default is FALSE.}
+coordinates when the country column has missing values or ambiguous fuzzy
+matches. If \code{TRUE}, longitude and latitude columns must be provided. Default
+is \code{FALSE}.}
 
 \item{long}{(character) column name with longitude. Only applicable if
-\code{lookup_na_country = TRUE}. Default is "decimalLongitude".}
+\code{lookup_na_country = TRUE}. Default is \code{"decimalLongitude"}.}
 
 \item{lat}{(character) column name with latitude. Only applicable if
-\code{lookup_na_country = TRUE}. Default is "decimalLatitude".}
+\code{lookup_na_country = TRUE}. Default is \code{"decimalLatitude"}.}
 
 \item{return_dictionary}{(logical) whether to return the dictionary of
-countries that were (fuzzy) matched.}
+countries that were (fuzzy) matched. Default is \code{TRUE}.}
 }
 \value{
-A list with two elements:
-\item{data}{The original \code{occ} data.frame with an additional column
-(country_suggested) containing the suggested country names based on exact
-match, fuzzy match, and/or coordinates.}
-\item{dictionary}{If \code{return_dictionary = TRUE}, a data.frame with the
-original country names and the suggested matches.}
+If \code{return_dictionary = FALSE}, returns the original \code{occ} \code{data.frame}
+augmented with a \code{country_suggested} column (and \code{country_source} if
+\code{lookup_na_country = TRUE}).
+If \code{return_dictionary = TRUE}, returns a list with two elements:
+\item{occ}{The original \code{occ} data.frame with the \code{country_suggested} column.}
+\item{report}{A data.frame with the original country names and the suggested
+matches.}
 }
 \description{
 This function standardizes country names using both names and codes present
@@ -61,22 +63,26 @@ in a specified column.
 Country names are first standardized by exact matching against a list of
 country names in several languages from \code{rnaturalearthdata::map_units110}.
 Any unmatched names are then processed using a fuzzy matching algorithm to
-find potential candidates for misspelled country names. If unmatched names
-remain and \code{lookup_na_country = TRUE}, the country is extracted from
+find potential candidates for misspelled country names. When fuzzy
+matching yields multiple candidate countries for a single input string, the
+ambiguity is resolved using geographic coordinates if \code{lookup_na_country = TRUE}
+(retaining the candidate that matches the point's location), or set to \code{NA}
+when coordinates are unavailable or \code{lookup_na_country = FALSE}. If unmatched
+names remain and \code{lookup_na_country = TRUE}, the country is extracted from
 coordinates using a map retrieved from \code{rnaturalearthdata::map_units110}.
 }
 \examples{
 # Import and standardize GBIF
-data("occ_gbif", package = "RuHere") #Import data example
+data("occ_gbif", package = "RuHere")
 gbif_standardized <- format_columns(occ_gbif, metadata = "gbif")
 # Import and standardize SpeciesLink
-data("occ_splink", package = "RuHere") #Import data example
+data("occ_splink", package = "RuHere")
 splink_standardized <- format_columns(occ_splink, metadata = "specieslink")
 # Import and standardize BIEN
-data("occ_bien", package = "RuHere") #Import data example
+data("occ_bien", package = "RuHere")
 bien_standardized <- format_columns(occ_bien, metadata = "bien")
 # Import and standardize idigbio
-data("occ_idig", package = "RuHere") #Import data example
+data("occ_idig", package = "RuHere")
 idig_standardized <- format_columns(occ_idig, metadata = "idigbio")
 # Merge all
 all_occ <- bind_here(gbif_standardized, splink_standardized,

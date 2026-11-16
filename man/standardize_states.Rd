@@ -16,65 +16,71 @@ standardize_states(
 )
 }
 \arguments{
-\item{occ}{(data.frame) a dataset with occurrence records, preferably
-standardized using \code{format_columns()}.}
+\item{occ}{(data.frame or data.table) a dataset with occurrence records,
+preferably standardized using \code{format_columns()}.}
 
 \item{state_column}{(character) the column name containing the state
-information.}
+information. Default is \code{"stateProvince"}.}
 
 \item{country_column}{(character) the column name containing the country
-information.}
+information. Default is \code{"country_suggested"}.}
 
 \item{max_distance}{(numeric) maximum allowed distance (as a fraction) when
 searching for suggestions for misspelled state names. Can be any value
 between 0 and 1. Higher values return more suggestions. See \code{agrep()} for
-details. Default is 0.1.}
+details. Default is \code{0.1}.}
 
 \item{lookup_na_state}{(logical) whether to extract the state from
-coordinates when the state column has missing values. If TRUE, longitude
-and latitude columns must be provided. Default is FALSE.}
+coordinates when the state column has missing values or ambiguous fuzzy
+matches. If \code{TRUE}, longitude and latitude columns must be provided. Default
+is \code{FALSE}.}
 
 \item{long}{(character) column name with longitude. Only applicable if
-\code{lookup_na_state = TRUE}. Default is "decimalLongitude".}
+\code{lookup_na_state = TRUE}. Default is \code{"decimalLongitude"}.}
 
 \item{lat}{(character) column name with latitude. Only applicable if
-\code{lookup_na_state = TRUE}. Default is "decimalLatitude".}
+\code{lookup_na_state = TRUE}. Default is \code{"decimalLatitude"}.}
 
 \item{return_dictionary}{(logical) whether to return the dictionary of
-states that were (fuzzy) matched.}
+states that were (fuzzy) matched. Default is \code{TRUE}.}
 }
 \value{
-A list with two elements:
-\item{data}{The original \code{occ} data.frame with an additional column
-(state_suggested) containing the suggested state names based on exact
-match, fuzzy match, and/or coordinates.}
-\item{dictionary}{If \code{return_dictionary = TRUE}, a data.frame with the
-original state names and the suggested matches.}
+If \code{return_dictionary = FALSE}, returns the original \code{occ} \code{data.frame}
+augmented with a \code{state_suggested} column (and \code{state_source} if
+\code{lookup_na_state = TRUE}).
+If \code{return_dictionary = TRUE}, returns a list with two elements:
+\item{occ}{The original \code{occ} data.frame with the \code{state_suggested} column.}
+\item{report}{A data.frame with the original state names and the suggested
+matches.}
 }
 \description{
 This function standardizes state names using both names and codes present
 in a specified column.
 }
 \details{
-States names are first standardized by exact matching against a list of
+State names are first standardized by exact matching against a list of
 state names in several languages from \code{rnaturalearthdata::states50}.
 Any unmatched names are then processed using a fuzzy matching algorithm to
-find potential candidates for misspelled state names. If unmatched names
-remain and \code{lookup_na_state = TRUE}, the state is extracted from
+find potential candidates for misspelled state names. When fuzzy matching
+yields multiple candidate states for a single \verb{(state, country)} pair, the
+ambiguity is resolved using geographic coordinates if \code{lookup_na_state = TRUE}
+(retaining the candidate that matches the point's location), or set to \code{NA}
+when coordinates are unavailable or \code{lookup_na_state = FALSE}. If unmatched
+names remain and \code{lookup_na_state = TRUE}, the state is extracted from
 coordinates using a map retrieved from \code{rnaturalearthdata::states50}.
 }
 \examples{
 # Import and standardize GBIF
-data("occ_gbif", package = "RuHere") #Import data example
+data("occ_gbif", package = "RuHere")
 gbif_standardized <- format_columns(occ_gbif, metadata = "gbif")
 # Import and standardize SpeciesLink
-data("occ_splink", package = "RuHere") #Import data example
+data("occ_splink", package = "RuHere")
 splink_standardized <- format_columns(occ_splink, metadata = "specieslink")
 # Import and standardize BIEN
-data("occ_bien", package = "RuHere") #Import data example
+data("occ_bien", package = "RuHere")
 bien_standardized <- format_columns(occ_bien, metadata = "bien")
 # Import and standardize idigbio
-data("occ_idig", package = "RuHere") #Import data example
+data("occ_idig", package = "RuHere")
 idig_standardized <- format_columns(occ_idig, metadata = "idigbio")
 # Merge all
 all_occ <- bind_here(gbif_standardized, splink_standardized,
