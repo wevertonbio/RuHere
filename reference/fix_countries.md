@@ -119,13 +119,13 @@ occ_country <- standardize_countries(occ = occurrences,
 # Check whether records fall within the assigned countries
 occ_country_checked <- check_countries(occ = occ_country,
                                        country_column = "country_suggested")
-#> Warning: The following countries listed in the 'country_suggested' column were absent in the world map used for validation: NA
 #> Testing countries...
-#> 54 records fall in wrong countries
+#> 51 records fall in wrong countries
 
 # Fix records with incorrect or misassigned countries
 occ_country_fixed <- fix_countries(occ = occ_country_checked,
                                    country_column = "country_suggested")
+#> Warning: GDAL Message 1: +init=epsg:XXXX syntax is deprecated. It might return a CRS with a non-EPSG compliant axis order. Further messages of this type will be suppressed.
 #> Task 1 of 7: testing if longitude is inverted
 #> 0 coordinates with longitude inverted
 #> Task 2 of 7: testing if latitude is inverted

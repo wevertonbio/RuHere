@@ -69,18 +69,19 @@
 
 
 <dl><dt id="arg-occ">occ<a class="anchor" aria-label="anchor" href="#arg-occ"></a></dt>
-<dd><p>(data.frame) a dataset with occurrence records, preferably with
-country information standardized using <code><a href="standardize_countries.html">standardize_countries()</a></code>.</p></dd>
+<dd><p>(data.frame or data.table) a dataset with occurrence records,
+preferably with country information standardized using
+<code><a href="standardize_countries.html">standardize_countries()</a></code>.</p></dd>
 
 
 <dt id="arg-long">long<a class="anchor" aria-label="anchor" href="#arg-long"></a></dt>
 <dd><p>(character) column name with longitude. Default is
-'decimalLongitude'.</p></dd>
+<code>'decimalLongitude'</code>.</p></dd>
 
 
 <dt id="arg-lat">lat<a class="anchor" aria-label="anchor" href="#arg-lat"></a></dt>
-<dd><p>lat (character) column name with latitude. Default is
-'decimalLatitude'.</p></dd>
+<dd><p>(character) column name with latitude. Default is
+<code>'decimalLatitude'</code>.</p></dd>
 
 
 <dt id="arg-country-column">country_column<a class="anchor" aria-label="anchor" href="#arg-country-column"></a></dt>
@@ -101,7 +102,7 @@ identified as inverted or transposed will be corrected. Default is <code>FALSE</
 
 <dt id="arg-progress-bar">progress_bar<a class="anchor" aria-label="anchor" href="#arg-progress-bar"></a></dt>
 <dd><p>(logical) whether to display a progress bar during
-processing. If TRUE, the 'pbapply' package must be installed. Default is
+processing. If <code>TRUE</code>, the <code>'pbapply'</code> package must be installed. Default is
 <code>FALSE</code>.</p></dd>
 
 
@@ -123,17 +124,15 @@ problematic, and can be removed using <code><a href="remove_flagged.html">remove
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Load example data</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"occurrences"</span>, package <span class="op">=</span> <span class="st">"RuHere"</span><span class="op">)</span> <span class="co">#Import data example</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"occurrences"</span>, package <span class="op">=</span> <span class="st">"RuHere"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Standardize country names</span></span></span>
 <span class="r-in"><span><span class="va">occ_country</span> <span class="op">&lt;-</span> <span class="fu"><a href="standardize_countries.html">standardize_countries</a></span><span class="op">(</span>occ <span class="op">=</span> <span class="va">occurrences</span>,</span></span>
 <span class="r-in"><span>                                     return_dictionary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Check whether records fall within assigned countries</span></span></span>
 <span class="r-in"><span><span class="va">occ_country_checked</span> <span class="op">&lt;-</span> <span class="fu">check_countries</span><span class="op">(</span>occ <span class="op">=</span> <span class="va">occ_country</span>,</span></span>
 <span class="r-in"><span>                                       country_column <span class="op">=</span> <span class="st">"country_suggested"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following countries listed in the 'country_suggested' column were absent in the world map used for validation: NA</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GDAL Message 1: +init=epsg:XXXX syntax is deprecated. It might return a CRS with a non-EPSG compliant axis order. Further messages of this type will be suppressed.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Testing countries...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 54 records fall in wrong countries</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 51 records fall in wrong countries</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

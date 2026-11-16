@@ -21,18 +21,18 @@ check_states(
 
 - occ:
 
-  (data.frame) a dataset with occurrence records, preferably with
-  country information standardized using
+  (data.frame or data.table) a dataset with occurrence records,
+  preferably with state information standardized using
   [`standardize_states()`](https://wevertonbio.github.io/RuHere/reference/standardize_states.md).
 
 - long:
 
-  (character) column name with longitude. Default is 'decimalLongitude'.
+  (character) column name with longitude. Default is
+  `'decimalLongitude'`.
 
 - lat:
 
-  lat (character) column name with latitude. Default is
-  'decimalLatitude'.
+  (character) column name with latitude. Default is `'decimalLatitude'`.
 
 - state_column:
 
@@ -54,7 +54,7 @@ check_states(
 - progress_bar:
 
   (logical) whether to display a progress bar during processing. If
-  TRUE, the 'pbapply' package must be installed. Default is `FALSE`.
+  `TRUE`, the `'pbapply'` package must be installed. Default is `FALSE`.
 
 - verbose:
 
@@ -75,7 +75,7 @@ is flagged as potentially problematic, and can be removed using
 
 ``` r
 # Load example data
-data("occurrences", package = "RuHere") #Import data example
+data("occurrences", package = "RuHere")
 # Subset occurrences for Araucaria angustifolia
 occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
 # Standardize country names
@@ -88,7 +88,7 @@ occ_state <- standardize_states(occ = occ_country,
 # Check whether records fall within assigned states
 occ_state_checked <- check_states(occ = occ_state,
                                     state_column = "state_suggested")
-#> Warning: The following states listed in the 'state_suggested' column were absent in the world map used for validation: NA, mexico
+#> Warning: The following states listed in the 'state_suggested' column were absent in the world map used for validation: mexico
 #> Testing states...
-#> 13 records fall in wrong states
+#> 12 records fall in wrong states
 ```

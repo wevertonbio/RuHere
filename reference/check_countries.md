@@ -21,18 +21,18 @@ check_countries(
 
 - occ:
 
-  (data.frame) a dataset with occurrence records, preferably with
-  country information standardized using
+  (data.frame or data.table) a dataset with occurrence records,
+  preferably with country information standardized using
   [`standardize_countries()`](https://wevertonbio.github.io/RuHere/reference/standardize_countries.md).
 
 - long:
 
-  (character) column name with longitude. Default is 'decimalLongitude'.
+  (character) column name with longitude. Default is
+  `'decimalLongitude'`.
 
 - lat:
 
-  lat (character) column name with latitude. Default is
-  'decimalLatitude'.
+  (character) column name with latitude. Default is `'decimalLatitude'`.
 
 - country_column:
 
@@ -54,7 +54,7 @@ check_countries(
 - progress_bar:
 
   (logical) whether to display a progress bar during processing. If
-  TRUE, the 'pbapply' package must be installed. Default is `FALSE`.
+  `TRUE`, the `'pbapply'` package must be installed. Default is `FALSE`.
 
 - verbose:
 
@@ -76,15 +76,13 @@ using
 
 ``` r
 # Load example data
-data("occurrences", package = "RuHere") #Import data example
+data("occurrences", package = "RuHere")
 # Standardize country names
 occ_country <- standardize_countries(occ = occurrences,
                                      return_dictionary = FALSE)
 # Check whether records fall within assigned countries
 occ_country_checked <- check_countries(occ = occ_country,
                                        country_column = "country_suggested")
-#> Warning: The following countries listed in the 'country_suggested' column were absent in the world map used for validation: NA
-#> Warning: GDAL Message 1: +init=epsg:XXXX syntax is deprecated. It might return a CRS with a non-EPSG compliant axis order. Further messages of this type will be suppressed.
 #> Testing countries...
-#> 54 records fall in wrong countries
+#> 51 records fall in wrong countries
 ```
