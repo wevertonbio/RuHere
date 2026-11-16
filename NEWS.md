@@ -5,6 +5,10 @@
 * In `standardize_countries()` and `standardize_states()`, sanitize non-alphabetic strings (e.g., "?") to NA before fuzzy matching to prevent row expansion on merge.
 * New function `fix_species_names()`: replaces misspelled, outdated, or unstandardized species names in an occurrence dataset using a user-supplied reference dictionary.
 * Handle NA coordinates, fix positional args, and optimize c`heck_countries()` and `check_states()`.
+* In `flag_duplicates()`, `replace terra::extract()` with `terra::cellFromXY()`, deduplicate via `!duplicated(..., by = to_group)` on a lightweight subset, preserve original row order and input class, and avoid grouping NA coordinates/cells as duplicates.
+* In `check_countries()` & `check_states()`: Use `data.table` radix grouping and two-stage buffering (applying `terra::buffer()` only when points fall outside the raw polygon), filter out NA coordinates before spatialization, and use `DT[, ("col") := ...]` with `setcolorder()` to avoid column reallocation errors.
+* In `flag_fossil()`, `flag_cultivated()`, & `flag_inaturalist()`, perform case-insensitive regex matching on unique column values only to speed up performance.
+* In `remove_invalid_coordinates()` & `flag_year()`: Standardize input argument checks, suppress numeric coercion warnings, and ensure consistent return types when `return_invalid = TRUE`.
 
 # RuHere 1.1.1 (October 2026)
 
