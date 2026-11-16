@@ -11,9 +11,9 @@ flag_fossil(
 )
 }
 \arguments{
-\item{occ}{(data.frame) a data frame containing the occurrence records to be
-examined, preferably standardized using \code{format_columns()}. Must contain the
-columns specified in \code{columns}.}
+\item{occ}{(data.frame or data.table) a data frame containing the occurrence
+records to be examined, preferably standardized using \code{format_columns()}.
+Must contain the columns specified in \code{columns}.}
 
 \item{columns}{(character) vector of column names in \code{occ} where the function
 will search for the term \code{"fossil"} or other fossil-related expressions.
@@ -24,13 +24,12 @@ indicate a fossil record (e.g., \code{"paleontological"}, \code{"subfossil"}). D
 is \code{NULL}.}
 }
 \value{
-A \code{data.frame} that is the original \code{occ} data frame augmented with
-a new column named \code{fossil_flag}. Records identified as fossils receive
-\code{FALSE}, while all other records receive \code{TRUE}. As with all other
-flagging functions in RuHere, \code{TRUE} indicates that the record passed
-this test and is eligible for retention; \code{FALSE} indicates it failed
-and is flagged as potentially problematic, and can be removed using
-\code{remove_flagged()}.
+A \code{data.frame} that is the original \code{occ} data frame augmented with a new
+column named \code{fossil_flag}. Records identified as fossils receive \code{FALSE},
+while all other records receive \code{TRUE}. As with all other flagging functions
+in RuHere, \code{TRUE} indicates that the record passed this test and is eligible
+for retention; \code{FALSE} indicates it failed and is flagged as potentially
+problematic, and can be removed using \code{remove_flagged()}.
 }
 \description{
 This function identifies occurrence records that correspond to fossils,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/flag_cultivated.R
 \name{flag_cultivated}
 \alias{flag_cultivated}
-\title{Flag occurrence records of cultived individuals}
+\title{Flag occurrence records of cultivated individuals}
 \usage{
 flag_cultivated(
   occ,
@@ -12,31 +12,30 @@ flag_cultivated(
 )
 }
 \arguments{
-\item{occ}{(data.frame) a data frame containing the occurrence records to be
-examined, preferably standardized using \code{format_columns()}. Must contain the
-columns specified in \code{columns}.}
+\item{occ}{(data.frame or data.table) a data frame containing the occurrence
+records to be examined, preferably standardized using \code{format_columns()}.
+Must contain the columns specified in \code{columns}.}
 
-\item{columns}{columns (character) vector of column names in \code{occ} where the
+\item{columns}{(character) vector of column names in \code{occ} where the
 function will search for cultivated-related expressions. Default is
 \code{c("occurrenceRemarks", "habitat", "locality")}.}
 
 \item{cultivated_terms}{(character) optional vector of additional terms that
-indicate a cultivated individual. Default is NULL, meaning it will use the
+indicate a cultivated individual. Default is \code{NULL}, meaning it will use the
 cultivated-related expressions available in \code{RuHere::cultivated$cultivated}.}
 
 \item{not_cultivated_terms}{(character) optional vector of additional terms
-that indicate a non-cultivated individual. Default is NULL, meaning it will
-use the non cultivated-related expressions available in
+that indicate a non-cultivated individual. Default is \code{NULL}, meaning it will
+use the non-cultivated-related expressions available in
 \code{RuHere::cultivated$not_cultivated}.}
 }
 \value{
-A \code{data.frame} that is the original \code{occ} data frame augmented with
-a new column named \code{cultivated_flag}. Records identified as cultivated
-receive \code{FALSE}, while all other records receive \code{TRUE}. As with
-all other flagging functions in RuHere, \code{TRUE} indicates that the
-record passed this test and is eligible for retention; \code{FALSE}
-indicates it failed and is flagged as potentially problematic, and can be
-removed using \code{remove_flagged()}.
+A \code{data.frame} that is the original \code{occ} data frame augmented with a new
+column named \code{cultivated_flag}. Records identified as cultivated receive
+\code{FALSE}, while all other records receive \code{TRUE}. As with all other flagging
+functions in RuHere, \code{TRUE} indicates that the record passed this test and
+is eligible for retention; \code{FALSE} indicates it failed and is flagged as
+potentially problematic, and can be removed using \code{remove_flagged()}.
 }
 \description{
 This function identifies records of cultivated individuals based on record
@@ -45,6 +44,6 @@ description.
 \examples{
 # Load example data
 data("occurrences", package = "RuHere")
-# Flag fossil records
+# Flag cultivated records
 occ_cultivated <- flag_cultivated(occ = occurrences)
 }

@@ -4,9 +4,9 @@
 #' This function identifies occurrence records that correspond to fossils,
 #' based on specific search terms found in selected columns.
 #'
-#' @param occ (data.frame) a data frame containing the occurrence records to be
-#' examined, preferably standardized using `format_columns()`. Must contain the
-#' columns specified in `columns`.
+#' @param occ (data.frame or data.table) a data frame containing the occurrence
+#' records to be examined, preferably standardized using `format_columns()`.
+#' Must contain the columns specified in `columns`.
 #' @param columns (character) vector of column names in `occ` where the function
 #' will search for the term `"fossil"` or other fossil-related expressions.
 #' Default is `c("basisOfRecord", "occurrenceRemarks")`.
@@ -15,17 +15,16 @@
 #' is `NULL`.
 #'
 #' @returns
-#' A \code{data.frame} that is the original \code{occ} data frame augmented with
-#' a new column named \code{fossil_flag}. Records identified as fossils receive
-#' \code{FALSE}, while all other records receive \code{TRUE}. As with all other
-#' flagging functions in RuHere, \code{TRUE} indicates that the record passed
-#' this test and is eligible for retention; \code{FALSE} indicates it failed
-#' and is flagged as potentially problematic, and can be removed using
-#' \code{remove_flagged()}.
+#' A `data.frame` that is the original `occ` data frame augmented with a new
+#' column named `fossil_flag`. Records identified as fossils receive `FALSE`,
+#' while all other records receive `TRUE`. As with all other flagging functions
+#' in RuHere, `TRUE` indicates that the record passed this test and is eligible
+#' for retention; `FALSE` indicates it failed and is flagged as potentially
+#' problematic, and can be removed using `remove_flagged()`.
 #'
 #' @export
 #'
-#' @importFrom stringi stri_detect_regex
+#' @importFrom stringi stri_detect_regex stri_opts_regex
 #'
 #' @examples
 #' # Load example data
@@ -34,61 +33,58 @@
 #' occ_fossil <- flag_fossil(occ = occurrences)
 flag_fossil <- function(occ,
                         columns = c("basisOfRecord", "occurrenceRemarks"),
-                        fossil_terms = NULL){
+                        fossil_terms = NULL) {
 
-
-  # Force occ to be a dataframe
-  if(inherits(occ, "data.table"))
-    occ <- as.data.frame(occ)
-
-  ### --- Argument checking --- ###
-
+  # ---- ARGUMENT CHECKING ----
   if (missing(occ) || is.null(occ)) {
-    stop("'occ' must be specified (must not be NULL or missing).")
-  } else if (!inherits(occ, "data.frame")) {
-    stop("'occ' should be a data.frame, not ", class(occ))
+    stop("'occ' must be specified (must not be NULL or missing).", call. = FALSE)
+  }
+  if (!inherits(occ, c("data.frame", "data.table"))) {
+    stop("'occ' should be a data.frame or data.table, not ",
+         paste(class(occ), collapse = "/"), ".", call. = FALSE)
+  }
+  if (nrow(occ) == 0L) {
+    stop("'occ' is empty. Please provide a dataset with occurrence records.",
+         call. = FALSE)
+  }
+  if (!is.character(columns) || length(columns) == 0L || any(is.na(columns))) {
+    stop("'columns' must be a non-empty character vector without NAs.", call. = FALSE)
   }
 
-  if (!inherits(columns, "character")) {
-    stop("'columns' should be a character, not ", class(columns))
+  missing_cols <- setdiff(columns, names(occ))
+  if (length(missing_cols) > 0L) {
+    stop("The following columns specified in 'columns' are not present in 'occ': ",
+         paste(missing_cols, collapse = ", "), call. = FALSE)
   }
 
-  # check that columns exist in occ
-  missing_cols <- columns[!columns %in% names(occ)]
-  if (length(missing_cols) > 0) {
-    stop(
-      "The following columns specified in 'columns' are not present in 'occ': ",
-      paste(missing_cols, collapse = ", ")
-    )
+  if (!is.null(fossil_terms) && (!is.character(fossil_terms) || any(is.na(fossil_terms)))) {
+    stop("'fossil_terms' must be a character vector without NAs or NULL.", call. = FALSE)
   }
 
-  if (!is.null(fossil_terms) && !inherits(fossil_terms, "character")) {
-    stop("'fossil_terms' should be a character or NULL, not ", class(fossil_terms))
+  # Force occ to be a data.frame
+  if (inherits(occ, "data.table")) {
+    occ <- as.data.frame(occ)
   }
 
+  # Build case-insensitive regex pattern
+  terms <- unique(c("fossil", fossil_terms))
+  terms <- terms[nzchar(trimws(terms))]
+  pattern <- paste(terms, collapse = "|")
+  opts <- stringi::stri_opts_regex(case_insensitive = TRUE)
 
-  # Combine fossil terms in single vector
-  if(is.null(fossil_terms)){
-    fossil <- "fossil"
-  } else {
-    fossil <- c("fossil", fossil_terms)
+  # Vectorized unique-value lookup across selected columns
+  is_fossil <- rep(FALSE, nrow(occ))
+  for (col in columns) {
+    vals <- as.character(occ[[col]])
+    u_vals <- unique(vals[!is.na(vals)])
+    if (length(u_vals) > 0L) {
+      matched_u <- u_vals[stringi::stri_detect_regex(u_vals, pattern = pattern, opts_regex = opts)]
+      if (length(matched_u) > 0L) {
+        is_fossil <- is_fossil | (vals %in% matched_u)
+      }
+    }
   }
 
-  fossil <- paste(fossil, collapse = "|")
-
-  # First, check fossil...
-  fossil_index <- sapply(columns, function(i){
-    which(stringi::stri_detect_regex(occ[[i]],
-                                     pattern = fossil))
-  }, USE.NAMES = FALSE)
-  fossil_index <- unlist(fossil_index)
-
-  # Create column to save flags
-  occ$fossil_flag <- TRUE
-  # Flag if necessary
-  if(length(fossil_index) > 0){
-    occ$fossil_flag[fossil_index] <- FALSE
-  }
-
+  occ$fossil_flag <- !is_fossil
   return(occ)
 }

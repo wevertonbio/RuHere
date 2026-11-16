@@ -7,12 +7,12 @@
 flag_inaturalist(occ, columns = "datasetName", research_grade = FALSE)
 }
 \arguments{
-\item{occ}{(data.frame) a data frame containing the occurrence records to be
-examined, preferably standardized using \code{format_columns()}. Must contain the
-columns specified in \code{columns}.}
+\item{occ}{(data.frame or data.table) a data frame containing the occurrence
+records to be examined, preferably standardized using \code{format_columns()}.
+Must contain the columns specified in \code{columns}.}
 
-\item{columns}{(character) column name in \code{occ} where the
-function will search for the term "iNaturalist". Default is "datasetName".}
+\item{columns}{(character) column name(s) in \code{occ} where the function will
+search for the term \code{"iNaturalist"}. Default is \code{"datasetName"}.}
 
 \item{research_grade}{(logical) whether to flag \emph{all} records from
 iNaturalist, including those with Research Grade status. Default is \code{FALSE},
@@ -20,13 +20,12 @@ meaning that only iNaturalist records \strong{without} Research Grade will be
 flagged.}
 }
 \value{
-A \code{data.frame} that is the original \code{occ} data frame augmented with
-a new column named \code{inaturalist_flag}. Flagged records receive
-\code{FALSE}, while all other records receive \code{TRUE}. As with all other
-flagging functions in RuHere, \code{TRUE} indicates that the record passed
-this test and is eligible for retention; \code{FALSE} indicates it failed
-and is flagged as potentially problematic, and can be removed using
-\code{remove_flagged()}.
+A \code{data.frame} that is the original \code{occ} data frame augmented with a new
+column named \code{inaturalist_flag}. Flagged records receive \code{FALSE}, while all
+other records receive \code{TRUE}. As with all other flagging functions in
+RuHere, \code{TRUE} indicates that the record passed this test and is eligible
+for retention; \code{FALSE} indicates it failed and is flagged as potentially
+problematic, and can be removed using \code{remove_flagged()}.
 }
 \description{
 This function identifies and flags occurrence records sourced from
@@ -34,7 +33,8 @@ iNaturalist. It can flag all iNaturalist records or only those that do not
 have Research Grade status.
 }
 \details{
-According to \href{https://help.inaturalist.org/en/support/solutions/articles/151000169936-what-is-the-data-quality-assessment-and-how-do-observations-qualify-to-become-research-grade-}{iNaturalist}, Observations become Research Grade when:
+According to \href{https://help.inaturalist.org/en/support/solutions/articles/151000169936-what-is-the-data-quality-assessment-and-how-do-observations-qualify-to-become-research-grade-}{iNaturalist},
+Observations become Research Grade when:
 \itemize{
 \item the iNaturalist community agrees on species-level ID or lower, i.e. when
 more than 2/3 of identifiers agree on a taxon;
