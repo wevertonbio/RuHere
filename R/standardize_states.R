@@ -135,88 +135,85 @@ standardize_states <- function(occ,
   # Remove accents
   occ[[state_column]] <- remove_accent(occ[[state_column]])
 
-  # Convert empty cells ("") in NA
-  occ[[state_column]][occ[[state_column]] == ""] <- NA
+  # Convert empty cells, whitespace-only, or non-alphanumeric symbols (like "?") to NA
+  occ[[state_column]] <- trimws(occ[[state_column]])
+  occ[[state_column]][occ[[state_column]] == "" |
+                        !grepl("[A-Za-z]", occ[[state_column]])] <- NA
 
   # Set states to lower
   occ[[state_column]][nchar(occ[[state_column]]) > 3 &
-                          !is.na(occ[[state_column]])] <- tolower(
-                            occ[[state_column]][nchar(occ[[state_column]]) > 3 &
-                                                    !is.na(occ[[state_column]])])
+                        !is.na(occ[[state_column]])] <- tolower(
+                          occ[[state_column]][nchar(occ[[state_column]]) > 3 &
+                                                !is.na(occ[[state_column]])])
 
   # Set codes to upper
   occ[[state_column]][nchar(occ[[state_column]]) <= 3 &
-                          !is.na(occ[[state_column]])] <- toupper(
-                            occ[[state_column]][nchar(occ[[state_column]]) <= 3 &
-                                                    !is.na(occ[[state_column]])])
-
-  # Replace empty values with NA
-  occ[[state_column]][occ[[state_column]] == ""] <- NA
+                        !is.na(occ[[state_column]])] <- toupper(
+                          occ[[state_column]][nchar(occ[[state_column]]) <= 3 &
+                                                !is.na(occ[[state_column]])])
 
   # Check state names
-  unique_states <- unique(occ[, c(state_column, country_column)])
+  unique_states <- unique(occ[, c(state_column, country_column), drop = FALSE])
+  valid_states <- as.character(na.omit(unique(unique_states[[state_column]])))
 
-  if(all(is.na(unique_states$stateProvince))){
+  if (length(valid_states) == 0) {
     ccn <- NULL
     ccc <- NULL
     final_states <- NULL
   } else {
-    ccn <- florabr::match_names(species = na.omit(unique_states[[state_column]]),
+    ccn <- florabr::match_names(species = valid_states,
                                 species_to_match = ss$states_name$state_name,
                                 max_distance = max_distance)
     colnames(ccn) <- c("state", "state_name", "Distance")
+
     # Join data
-    ccn <-merge(na.omit(ccn), ss$states_name, by = "state_name", all.x = TRUE)
-    # Remove duplicated countries
-    ccn <- ccn[ccn$country %in% unique_states$country_suggested,]
+    ccn <- merge(na.omit(ccn), ss$states_name, by = "state_name", all.x = TRUE)
+    # Filter by country using dynamic country_column
+    ccn <- ccn[ccn$country %in% unique_states[[country_column]], ]
     ccn <- unique(ccn[, c("state", "state_suggested", "country")])
 
-
-    if(nrow(ccn) > 0){
-      # Rename columns
-      colnames(ccn) <- c(state_column, "state_suggested", country_column)} else {
-        ccn <- NULL
-      }
+    if (nrow(ccn) > 0) {
+      colnames(ccn) <- c(state_column, "state_suggested", country_column)
+    } else {
+      ccn <- NULL
+    }
 
     # Check state codes
-    colnames(ss$states_code) <- c("state_code", state_column, country_column)
-
-    ccc <- ss$states_code
-    ccc <- ccc[ccc$state_code %in% unique_states$stateProvince, ]
-
     ccc <- ss$states_code[
-      ss$states_code[["state_code"]] %in% unique_states[[state_column]] &
-        ss$states_code[[country_column]] %in% unique_states[[country_column]],
+      ss$states_code[["state_code"]] %in% valid_states &
+        ss$states_code[["country"]] %in% unique_states[[country_column]],
+      c("state_code", "state_suggested", "country")
     ]
 
+    if (nrow(ccc) > 0) {
+      colnames(ccc) <- c(state_column, "state_suggested", country_column)
+    } else {
+      ccc <- NULL
+    }
 
-    if(nrow(ccc) > 0){
-      # Rename columns
-      colnames(ccc) <- c(state_column, "state_suggested", country_column)} else {
-        ccc <- NULL
-      }
-
-    # Join information
-    final_states <- rbind(ccn, ccc)
+    # Join information and deduplicate
+    final_states <- unique(rbind(ccn, ccc))
   }
 
-
-  if(is.null(final_states) || nrow(final_states) == 0){
+  if (is.null(final_states) || nrow(final_states) == 0) {
     occ_final <- occ
-    occ_final$state_suggested <- NA } else {
+    occ_final$state_suggested <- NA
+  } else {
     occ_final <- merge(occ, final_states, by = c(state_column, country_column),
                        all.x = TRUE)
   }
 
-  # Relocate columns
-  occ_final <- relocate_before(occ_final, state_column,
-                               names(occ)[which(names(occ) == state_column) - 1]
-                               )
+  # Relocate columns safely (protecting against column index 1)
+  pos_state <- match(state_column, names(occ))
+  if (!is.na(pos_state) && pos_state > 1L) {
+    occ_final <- relocate_before(occ_final, state_column, names(occ)[pos_state - 1L])
+  }
   occ_final <- relocate_after(occ_final, "state_suggested", state_column)
-  occ_final <- relocate_after(occ_final, "state_suggested", state_column)
-  occ_final <- relocate_before(occ_final, country_column,
-                               names(occ)[which(names(occ) == country_column) - 1]
-                               )
+
+  pos_country <- match(country_column, names(occ))
+  if (!is.na(pos_country) && pos_country > 1L) {
+    occ_final <- relocate_before(occ_final, country_column, names(occ)[pos_country - 1L])
+  }
 
 
   # Fill NA?

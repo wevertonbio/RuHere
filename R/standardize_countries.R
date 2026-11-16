@@ -162,13 +162,15 @@ standardize_countries <- function(occ,
                             occ[[country_column]][nchar(occ[[country_column]]) <= 3 &
                                                     !is.na(occ[[country_column]])])
 
-  # Replace empty values with NA
-  occ[[country_column]][occ[[country_column]] == ""] <- NA
+  # Replace empty values, whitespace-only, or non-alphanumeric symbols (like "?") with NA
+  occ[[country_column]] <- trimws(occ[[country_column]])
+  occ[[country_column]][occ[[country_column]] == "" |
+                          !grepl("[A-Za-z]", occ[[country_column]])] <- NA
 
   # Check country names
-  unique_countries <- na.omit(unique(occ[[country_column]]))
+  unique_countries <- as.character(na.omit(unique(occ[[country_column]])))
 
-  if (all(is.na(unique_countries))) {
+  if (length(unique_countries) == 0) {
     ccn <- NULL
     ccc <- NULL
     final_countries <- data.frame(
@@ -176,37 +178,36 @@ standardize_countries <- function(occ,
       country_suggested = character(0)
     )
   } else {
-      ccn <- florabr::match_names(species = unique_countries,
-                                  species_to_match = cd$country_name$country_name,
-                                  max_distance = max_distance)
+    ccn <- florabr::match_names(species = unique_countries,
+                                species_to_match = cd$country_name$country_name,
+                                max_distance = max_distance)
 
-      colnames(ccn) <- c("country", "country_name", "Distance")
-      # Join data
-      ccn <- unique(
-        merge(na.omit(ccn), cd$country_name, by = "country_name", all.x = TRUE)[
-          , c("country", "country_suggested")]
-      )
+    colnames(ccn) <- c("country", "country_name", "Distance")
+    # Join data
+    ccn <- unique(
+      merge(na.omit(ccn), cd$country_name, by = "country_name", all.x = TRUE)[
+        , c("country", "country_suggested")]
+    )
 
-
-      if(nrow(ccn) > 0){
-        # Rename columns
-        colnames(ccn) <- c(country_column, "country_suggested")} else {
-          ccn <- NULL
-        }
-
-      # Check country codes
-      ccc <- cd$country_code
-      ccc <- ccc[ccc$country_code %in% unique_countries, ]
-
-      if(nrow(ccc) > 0){
-        # Rename columns
-        colnames(ccc) <- c(country_column, "country_suggested")} else {
-          ccc <- NULL
-        }
-
-      # Join information
-      final_countries <- rbind(ccn, ccc)
+    if (nrow(ccn) > 0) {
+      colnames(ccn) <- c(country_column, "country_suggested")
+    } else {
+      ccn <- NULL
     }
+
+    # Check country codes
+    ccc <- cd$country_code
+    ccc <- ccc[ccc$country_code %in% unique_countries, ]
+
+    if (nrow(ccc) > 0) {
+      colnames(ccc) <- c(country_column, "country_suggested")
+    } else {
+      ccc <- NULL
+    }
+
+    # Join information and remove duplicates to prevent row multiplication on merge
+    final_countries <- unique(rbind(ccn, ccc))
+  }
 
   # Merge
   if(is.null(final_countries) || nrow(final_countries) == 0){
