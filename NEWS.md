@@ -2,6 +2,8 @@
 
 * Fix additional_predicates in `request_gbif()` to allow combinations of `pred_and()` and `pred_or()`.
 * RuHere now depends on rgbif (>= 3.9.0) due to changes in taxon keys, which were switched from the GBIF Backbone to the COL (Catalogue of Life) Extended Release.
+* In `standardize_countries()` and `standardize_states()`, sanitize non-alphabetic strings (e.g., "?") to NA before fuzzy matching to prevent row expansion on merge.
+* New function `fix_species_names()`: replaces misspelled, outdated, or unstandardized species names in an occurrence dataset using a user-supplied reference dictionary.
 
 # RuHere 1.1.1 (October 2026)
 
