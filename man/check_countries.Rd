@@ -44,12 +44,13 @@ processing. If \code{TRUE}, the \code{'pbapply'} package must be installed. Defa
 Default is \code{TRUE}.}
 }
 \value{
-The original \code{occ} data.frame with an additional column (\code{correct_country})
-indicating whether each record falls within the country specified in the
-metadata (\code{TRUE}) or not (\code{FALSE}). As with all other flagging functions in
-RuHere, \code{TRUE} indicates that the record passed this test and is eligible
-for retention; \code{FALSE} indicates it failed and is flagged as potentially
-problematic, and can be removed using \code{remove_flagged()}.
+The original \code{occ} object (\code{data.frame} or \code{data.table}) with an additional
+column (\code{correct_country}) indicating whether each record falls within the
+country specified in the metadata (\code{TRUE}) or not (\code{FALSE}). As with all
+other flagging functions in RuHere, \code{TRUE} indicates that the record passed
+this test and is eligible for retention; \code{FALSE} indicates it failed and is
+flagged as potentially problematic, and can be removed using
+\code{remove_flagged()}.
 }
 \description{
 Check if the records fall in the country assigned in the metadata

@@ -21,14 +21,16 @@
 #' Default is `TRUE`.
 #'
 #' @returns
-#' The original `occ` data.frame with an additional column (`correct_country`)
-#' indicating whether each record falls within the country specified in the
-#' metadata (`TRUE`) or not (`FALSE`). As with all other flagging functions in
-#' RuHere, `TRUE` indicates that the record passed this test and is eligible
-#' for retention; `FALSE` indicates it failed and is flagged as potentially
-#' problematic, and can be removed using `remove_flagged()`.
+#' The original `occ` object (`data.frame` or `data.table`) with an additional
+#' column (`correct_country`) indicating whether each record falls within the
+#' country specified in the metadata (`TRUE`) or not (`FALSE`). As with all
+#' other flagging functions in RuHere, `TRUE` indicates that the record passed
+#' this test and is eligible for retention; `FALSE` indicates it failed and is
+#' flagged as potentially problematic, and can be removed using
+#' `remove_flagged()`.
 #'
 #' @importFrom terra vect aggregate buffer is.related unwrap
+#' @importFrom data.table is.data.table as.data.table copy set setcolorder :=
 #'
 #' @export
 #'
@@ -121,13 +123,12 @@ check_countries <- function(occ,
     my_lapply <- base::lapply
   }
 
-  # Convert to data.frame if necessary
-  if (inherits(occ, "data.table")) {
-    occ <- as.data.frame(occ)
-  }
+  # Preserve input class while avoiding redundant copies
+  was_dt <- data.table::is.data.table(occ)
+  DT <- if (was_dt) data.table::copy(occ) else data.table::as.data.table(occ)
 
   # Get unique non-NA countries
-  countries <- unique(occ[[country_column]])
+  countries <- unique(DT[[country_column]])
   countries <- countries[!is.na(countries) & nzchar(trimws(as.character(countries)))]
 
   # Get shapefile with countries
@@ -148,21 +149,22 @@ check_countries <- function(occ,
             call. = FALSE)
   }
 
-  # Filter valid coordinates and deduplicate combinations
-  valid_coords <- !is.na(occ[[long]]) & !is.na(occ[[lat]]) &
-    occ[[country_column]] %in% countries_in
+  # Filter valid coordinates and deduplicate via data.table radix grouping
+  valid_idx <- which(!is.na(DT[[long]]) & !is.na(DT[[lat]]) &
+                       DT[[country_column]] %in% countries_in)
 
-  occ$correct_country <- NA
+  res_full <- rep(NA, nrow(DT))
 
-  if (any(valid_coords)) {
-    sub_df <- occ[valid_coords, c(long, lat, country_column), drop = FALSE]
-    keys <- paste(sub_df[[long]], sub_df[[lat]], sub_df[[country_column]], sep = "\r")
-    uniq_idx <- !duplicated(keys)
-    unique_xy <- sub_df[uniq_idx, , drop = FALSE]
-    unique_keys <- keys[uniq_idx]
+  if (length(valid_idx) > 0L) {
+    sub_dt <- DT[valid_idx, c(long, lat, country_column), with = FALSE]
+    data.table::set(sub_dt, j = "..orig_idx..", value = valid_idx)
+
+    # Group identical (long, lat, country) tuples in C
+    groups <- sub_dt[, list(..rows.. = list(.SD[["..orig_idx.."]])),
+                     by = c(long, lat, country_column)]
 
     # Spatialize unique valid points
-    dc <- terra::vect(unique_xy,
+    dc <- terra::vect(as.data.frame(groups[, c(long, lat), with = FALSE]),
                       geom = c(x = long, y = lat),
                       crs = "EPSG:4326")
 
@@ -170,40 +172,54 @@ check_countries <- function(occ,
       message("Testing countries...")
     }
 
-    # Pre-split indices by country to avoid repeated O(N) scans inside loop
-    idx_by_country <- split(seq_len(nrow(unique_xy)), unique_xy[[country_column]])
-    unique_res <- rep(NA, nrow(unique_xy))
+    idx_by_country <- split(seq_len(nrow(groups)), groups[[country_column]])
     buf_width <- distance * 1000
 
     res_list <- my_lapply(countries_in, function(i) {
       occ_i <- idx_by_country[[i]]
+      xy_i <- dc[occ_i]
       country_i <- country_shp[country_shp$name == i]
-      if (buf_width > 0) {
-        country_i <- terra::aggregate(terra::buffer(country_i, width = buf_width))
+
+      # Stage 1: Fast direct intersection without buffer
+      in_poly <- as.logical(terra::is.related(xy_i, country_i, "intersects"))
+
+      # Stage 2: Apply buffer ONLY if distance > 0 and some points fell outside
+      if (buf_width > 0 && any(!in_poly)) {
+        outside_idx <- which(!in_poly)
+        country_buf <- terra::aggregate(terra::buffer(country_i, width = buf_width))
+        in_poly[outside_idx] <- as.logical(
+          terra::is.related(xy_i[outside_idx], country_buf, "intersects")
+        )
       }
-      as.logical(terra::is.related(dc[occ_i], country_i, "intersects"))
+
+      in_poly
     })
 
+    unique_res <- rep(NA, nrow(groups))
     for (k in seq_along(countries_in)) {
       unique_res[idx_by_country[[countries_in[k]]]] <- res_list[[k]]
     }
 
-    # Map results back to all valid rows without altering row order
-    occ$correct_country[valid_coords] <- unique_res[match(keys, unique_keys)]
+    # Expand results back to original row indices
+    res_full[unlist(groups[["..rows.."]], use.names = FALSE)] <-
+      rep(unique_res, lengths(groups[["..rows.."]]))
   }
 
-  # Relocate 'correct_country' right after 'country_column'
-  nm <- names(occ)
-  i <- match(country_column, nm)
-  j <- match("correct_country", nm)
-  occ <- occ[, append(nm[-j], nm[j], after = i), drop = FALSE]
+  # Insert 'correct_country' right after 'country_column'
+  orig_names <- setdiff(names(DT), "correct_country")
+  DT[, ("correct_country") := res_full]
+  pos <- match(country_column, orig_names)
+  new_order <- append(orig_names, "correct_country", after = pos)
+  data.table::setcolorder(DT, new_order)
 
   if (verbose) {
-    message(sum(!occ$correct_country, na.rm = TRUE), " records fall in wrong countries")
+    message(sum(!DT[["correct_country"]], na.rm = TRUE), " records fall in wrong countries")
   }
 
+  out <- if (was_dt) DT else as.data.frame(DT)
+
   if (try_to_fix) {
-    occ <- fix_countries(occ = occ,
+    out <- fix_countries(occ = out,
                          long = long,
                          lat = lat,
                          country_column = country_column,
@@ -211,8 +227,8 @@ check_countries <- function(occ,
                          distance = distance,
                          progress_bar = progress_bar,
                          verbose = verbose)
-    occ$correct_country[!is.na(occ$country_issues) & occ$country_issues != "incorrect"] <- TRUE
+    out$correct_country[!is.na(out$country_issues) & out$country_issues != "incorrect"] <- TRUE
   }
 
-  return(occ)
+  return(out)
 }
