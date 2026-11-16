@@ -48,6 +48,9 @@
 - [`fix_countries()`](https://wevertonbio.github.io/RuHere/reference/fix_countries.md)
   : Identify and correct coordinates based on country information
 
+- [`fix_species_names()`](https://wevertonbio.github.io/RuHere/reference/fix_species_names.md)
+  : Standardize or fix species names using a dictionary
+
 - [`fix_states()`](https://wevertonbio.github.io/RuHere/reference/fix_states.md)
   : Identify and correct coordinates based on state information
 
