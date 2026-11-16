@@ -6,41 +6,35 @@
 #' valid range for Earth (latitude > 90 or < -90, and longitude > 180 or < -180).
 #'
 #' @param occ (data.frame or data.table) a dataset with occurrence records.
-#' @param long (character) column name in `occ` with the longitude.
-#' @param lat (character) column name in `occ` with the latitude.
+#' @param long (character) column name in `occ` with the longitude. Default is
+#' `"decimalLongitude"`.
+#' @param lat (character) column name in `occ` with the latitude. Default is
+#' `"decimalLatitude"`.
 #' @param return_invalid (logical) whether to return a list containing records
-#' that passed and failed this test. Default is TRUE.
+#' that passed and failed this test. Default is `TRUE`.
 #' @param save_invalid (logical) whether to save the records that failed this
 #' test (i.e., flagged as `FALSE`). If `TRUE`, an `output_dir` must be
 #' provided. Default is `FALSE`.
 #' @param output_dir (character) path to an existing directory where records
 #' flagged as `FALSE` will be saved. Only used when `save_invalid = TRUE`.
-#' @param overwrite (logical)  whether to overwrite existing files in
+#' @param overwrite (logical) whether to overwrite existing files in
 #' `output_dir`. Only used when `save_invalid = TRUE`. Default is `FALSE`.
 #' @param output_format (character) output format for saving flagged records.
 #' Options are `".csv"` or `".gz"`. Only used when `save_invalid = TRUE`.
 #' Default is `".gz"`.
 #' @param verbose (logical) whether to print messages about function progress.
-#' Default is `TRUE`.
+#' Default is `FALSE`.
 #'
 #' @returns
-#' The input data.frame with an additional logical column indicating whether 
-#' each record passed (`TRUE`) or failed (`FALSE`) the coordinate quality check 
-#' (i.e., is not missing, non-numeric, or outside the possible range for Earth: 
-#' latitude between -90 and 90, longitude between -180 and 180). As with all 
-#' other flagging functions in RuHere, `TRUE` indicates that the record passed 
-#' this test and is eligible for retention; `FALSE` indicates it failed and is 
-#' flagged as potentially problematic, and can be removed using 
-#' `remove_flagged()`.
-#'
-#' If `return_invalid = FALSE`, returns the occurrence dataset containing only
-#' records flagged as `TRUE`.
+#' If `return_invalid = FALSE`, returns a `data.frame` containing only records
+#' with valid coordinates.
 #' If `return_invalid = TRUE` (default), returns a list with two elements:
 #' \itemize{
-#'   \item `valid` – the dataset with records flagged as `TRUE`.
-#'   \item `invalid` – the dataset with records flagged as `FALSE`.
+#'   \item `valid` – the dataset with valid coordinates.
+#'   \item `invalid` – the dataset with invalid coordinates (augmented with
+#'   `invalid_coordinates = FALSE`).
 #' }
-#' 
+#'
 #' @export
 #'
 #' @importFrom data.table fwrite
@@ -60,120 +54,131 @@ remove_invalid_coordinates <- function(occ,
                                        output_dir = NULL,
                                        overwrite = FALSE,
                                        output_format = ".gz",
-                                       verbose = FALSE){
-  ## ---- Argument checking -----------------------------------------------------
+                                       verbose = FALSE) {
+  # ---- ARGUMENT CHECKING ----
+  is_single_str <- function(x) {
+    is.character(x) && length(x) == 1L && !is.na(x) && nzchar(trimws(x))
+  }
+  is_single_bool <- function(x) {
+    is.logical(x) && length(x) == 1L && !is.na(x)
+  }
 
-  # check occ
+  # 1. Check occ
+  if (missing(occ) || is.null(occ)) {
+    stop("'occ' must be specified (must not be NULL or missing).", call. = FALSE)
+  }
   if (!inherits(occ, c("data.frame", "data.table"))) {
     stop("'occ' must be a data.frame or data.table.", call. = FALSE)
   }
-
-  # Force occ to be a dataframe
-  if(inherits(occ, "data.table"))
-    occ <- as.data.frame(occ)
-
-  # check long and lat arguments
-  if (!is.character(long) || length(long) != 1) {
-    stop("'long' must be a single character string with the longitude column name.",
+  if (nrow(occ) == 0L) {
+    stop("'occ' is empty. Please provide a dataset with occurrence records.",
          call. = FALSE)
   }
 
-  if (!is.character(lat) || length(lat) != 1) {
+  # 2. Check long and lat arguments
+  if (!is_single_str(long)) {
+    stop("'long' must be a single character string with the longitude column name.",
+         call. = FALSE)
+  }
+  if (!is_single_str(lat)) {
     stop("'lat' must be a single character string with the latitude column name.",
          call. = FALSE)
   }
 
-  # check if longitude and latitude columns exist
   missing_cols <- setdiff(c(long, lat), names(occ))
-  if (length(missing_cols) > 0) {
-    stop(
-      "The following required column(s) are missing in 'occ': ",
-      paste(missing_cols, collapse = ", "),
-      call. = FALSE
-    )
+  if (length(missing_cols) > 0L) {
+    stop("The following required column(s) are missing in 'occ': ",
+         paste(missing_cols, collapse = ", "), call. = FALSE)
   }
 
-  # check return_invalid
-  if (!is.logical(return_invalid) || length(return_invalid) != 1) {
-    stop("'return_invalid' must be a single logical value (TRUE or FALSE).",
-         call. = FALSE)
+  # 3. Check logical flags
+  if (!is_single_bool(return_invalid)) {
+    stop("'return_invalid' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+  }
+  if (!is_single_bool(save_invalid)) {
+    stop("'save_invalid' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+  }
+  if (!is_single_bool(verbose)) {
+    stop("'verbose' must be a single logical value (TRUE or FALSE).", call. = FALSE)
   }
 
-  # save_invalid must be logical
-  if (!is.logical(save_invalid) || length(save_invalid) != 1) {
-    stop("'save_invalid' must be TRUE or FALSE.", call. = FALSE)
-  }
-
-  # check saving options
+  # 4. Check saving options
   if (save_invalid) {
-
-    # output_dir must exist
-    if (is.null(output_dir) || !is.character(output_dir)) {
+    if (!is_single_str(output_dir)) {
       stop("You must provide a valid 'output_dir' when 'save_invalid = TRUE'.", call. = FALSE)
     }
     if (!dir.exists(output_dir)) {
       stop("'output_dir' does not exist: ", output_dir, call. = FALSE)
     }
-
-    # check output_format
-    if (!output_format %in% c(".csv", ".gz")) {
+    if (!is_single_str(output_format) || !output_format %in% c(".csv", ".gz")) {
       stop("'output_format' must be either '.csv' or '.gz'.", call. = FALSE)
     }
-
-    # overwrite must be logical
-    if (!is.logical(overwrite) || length(overwrite) != 1) {
-      stop("'overwrite' must be TRUE or FALSE.", call. = FALSE)
+    if (!is_single_bool(overwrite)) {
+      stop("'overwrite' must be a single logical value (TRUE or FALSE).", call. = FALSE)
     }
   }
 
-
-  # Force numeric
-  if(!inherits(occ[[long]], "numeric"))
-    occ[[long]] <- as.numeric(occ[[long]])
-  if(!inherits(occ[[lat]], "numeric"))
-    occ[[lat]] <- as.numeric(occ[[lat]])
-
-  # Identify invalids
-  invalid <- occ[[long]] > 180 | occ[[long]] < -180 |
-                     occ[[lat]] > 90 | occ[[lat]] < -90 |
-                     is.na(occ[[long]]) | is.na(occ[[lat]])
-
-  if(sum(invalid) == nrow(occ)){
-    stop("All coordinates are invalid!")
+  # Force occ to be a data.frame
+  if (inherits(occ, "data.table")) {
+    occ <- as.data.frame(occ)
   }
 
+  # Coerce coordinates to numeric safely (without warning spam)
+  if (!is.numeric(occ[[long]])) {
+    occ[[long]] <- suppressWarnings(as.numeric(as.character(occ[[long]])))
+  }
+  if (!is.numeric(occ[[lat]])) {
+    occ[[lat]] <- suppressWarnings(as.numeric(as.character(occ[[lat]])))
+  }
 
-  if(sum(invalid) > 0){
-    # Save invalid?
-    if(save_invalid){
-      # Build path to sabe
+  lon_v <- occ[[long]]
+  lat_v <- occ[[lat]]
+
+  # Identify invalid coordinates (including NaN and Inf via !is.finite)
+  invalid <- !is.finite(lon_v) | !is.finite(lat_v) |
+    lon_v > 180 | lon_v < -180 |
+    lat_v > 90 | lat_v < -90
+
+  n_invalid <- sum(invalid)
+
+  if (n_invalid == nrow(occ)) {
+    stop("All coordinates are invalid!", call. = FALSE)
+  }
+
+  if (n_invalid > 0L) {
+    occ_invalid <- occ[invalid, , drop = FALSE]
+    occ_invalid$invalid_coordinates <- FALSE
+
+    if (save_invalid) {
       p <- file.path(output_dir, paste0("Invalid coordinates", output_format))
-      #Check if files exists
-      if(!overwrite){
-        f_exists <- file.exists(p)
-        if(f_exists){
-          stop("'Invalid coordinates' already exists in '", output_dir, "'.\n",
-               "Delete the file, change the folder or set 'overwrite = TRUE'")
-        }
+      if (!overwrite && file.exists(p)) {
+        stop("'Invalid coordinates' already exists in '", output_dir, "'.\n",
+             "Delete the file, change the folder or set 'overwrite = TRUE'.",
+             call. = FALSE)
       }
-      # Subset
-      occ_invalid <- occ[invalid,]
-      # Create column
-      occ_invalid$invalid_coordinates <-  FALSE
-      # Save
       data.table::fwrite(x = occ_invalid, file = p)
     }
 
-    # Return?
-    if(return_invalid){
-      return(list(valid = occ[!invalid,],
-                  invalid = occ[invalid,]))
+    if (verbose) {
+      message(n_invalid, " record(s) with invalid coordinates removed.")
+    }
+
+    occ_valid <- occ[!invalid, , drop = FALSE]
+    if (return_invalid) {
+      return(list(valid = occ_valid, invalid = occ_invalid))
     } else {
-      return(occ[!invalid,])
+      return(occ_valid)
     }
   } else {
-    if(verbose){
-      message("All coordinates are valid! Returning original 'occ'.")}
-    return(occ)
+    if (verbose) {
+      message("All coordinates are valid!")
+    }
+    if (return_invalid) {
+      occ_empty <- occ[0L, , drop = FALSE]
+      occ_empty$invalid_coordinates <- logical(0L)
+      return(list(valid = occ, invalid = occ_empty))
+    } else {
+      return(occ)
+    }
   }
 }

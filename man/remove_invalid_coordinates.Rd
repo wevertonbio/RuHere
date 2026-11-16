@@ -19,12 +19,14 @@ remove_invalid_coordinates(
 \arguments{
 \item{occ}{(data.frame or data.table) a dataset with occurrence records.}
 
-\item{long}{(character) column name in \code{occ} with the longitude.}
+\item{long}{(character) column name in \code{occ} with the longitude. Default is
+\code{"decimalLongitude"}.}
 
-\item{lat}{(character) column name in \code{occ} with the latitude.}
+\item{lat}{(character) column name in \code{occ} with the latitude. Default is
+\code{"decimalLatitude"}.}
 
 \item{return_invalid}{(logical) whether to return a list containing records
-that passed and failed this test. Default is TRUE.}
+that passed and failed this test. Default is \code{TRUE}.}
 
 \item{save_invalid}{(logical) whether to save the records that failed this
 test (i.e., flagged as \code{FALSE}). If \code{TRUE}, an \code{output_dir} must be
@@ -33,7 +35,7 @@ provided. Default is \code{FALSE}.}
 \item{output_dir}{(character) path to an existing directory where records
 flagged as \code{FALSE} will be saved. Only used when \code{save_invalid = TRUE}.}
 
-\item{overwrite}{(logical)  whether to overwrite existing files in
+\item{overwrite}{(logical) whether to overwrite existing files in
 \code{output_dir}. Only used when \code{save_invalid = TRUE}. Default is \code{FALSE}.}
 
 \item{output_format}{(character) output format for saving flagged records.
@@ -41,24 +43,16 @@ Options are \code{".csv"} or \code{".gz"}. Only used when \code{save_invalid = T
 Default is \code{".gz"}.}
 
 \item{verbose}{(logical) whether to print messages about function progress.
-Default is \code{TRUE}.}
+Default is \code{FALSE}.}
 }
 \value{
-The input data.frame with an additional logical column indicating whether
-each record passed (\code{TRUE}) or failed (\code{FALSE}) the coordinate quality check
-(i.e., is not missing, non-numeric, or outside the possible range for Earth:
-latitude between -90 and 90, longitude between -180 and 180). As with all
-other flagging functions in RuHere, \code{TRUE} indicates that the record passed
-this test and is eligible for retention; \code{FALSE} indicates it failed and is
-flagged as potentially problematic, and can be removed using
-\code{remove_flagged()}.
-
-If \code{return_invalid = FALSE}, returns the occurrence dataset containing only
-records flagged as \code{TRUE}.
+If \code{return_invalid = FALSE}, returns a \code{data.frame} containing only records
+with valid coordinates.
 If \code{return_invalid = TRUE} (default), returns a list with two elements:
 \itemize{
-\item \code{valid} – the dataset with records flagged as \code{TRUE}.
-\item \code{invalid} – the dataset with records flagged as \code{FALSE}.
+\item \code{valid} – the dataset with valid coordinates.
+\item \code{invalid} – the dataset with invalid coordinates (augmented with
+\code{invalid_coordinates = FALSE}).
 }
 }
 \description{

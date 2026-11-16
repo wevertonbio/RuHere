@@ -13,12 +13,13 @@ flag_year(
 )
 }
 \arguments{
-\item{occ}{(data.frame) a dataset with occurrence records, preferably
-standardized using \code{format_columns()}. Must contain the column specified in
-\code{year_column}.}
+\item{occ}{(data.frame or data.table) a dataset with occurrence records,
+preferably standardized using \code{format_columns()}. Must contain the column
+specified in \code{year_column}.}
 
 \item{year_column}{(character) name of the column containing the year in
-which the occurrence was recorded. This column must be numeric.}
+which the occurrence was recorded. This column must be numeric. Default is
+\code{"year"}.}
 
 \item{lower_limit}{(numeric) the minimum acceptable year. Records collected
 before this value will be flagged. Default is \code{NULL}.}
@@ -26,11 +27,11 @@ before this value will be flagged. Default is \code{NULL}.}
 \item{upper_limit}{(numeric) the maximum acceptable year. Records collected
 after this value will be flagged. Default is \code{NULL}.}
 
-\item{flag_NA}{(character) whether to flag records with missing year
+\item{flag_NA}{(logical) whether to flag records with missing year
 information. Default is \code{FALSE}.}
 }
 \value{
-A data.frame identical to \code{occ} but with an additional column named
+A \code{data.frame} identical to \code{occ} but with an additional column named
 \code{year_flag}. Records collected outside the year range specified are
 assigned \code{FALSE}. As with all other flagging functions in RuHere, \code{TRUE}
 indicates that the record passed this test (i.e., falls within the
