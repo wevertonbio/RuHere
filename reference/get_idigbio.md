@@ -108,10 +108,6 @@ requested fields.
 # \donttest{
 ## search for a single species
 records_basic <- get_idigbio(species = "Arecaceae")
-#> Warning: Error during API request: HTTP failure: 500
-#> Error message from API server: {"error":"Internal Server Error"}
-#> Error: HTTP failure: 500
-#> Error message from API server: {"error":"Internal Server Error"}
 
 ## search for multiple species
 records_multiple <- get_idigbio(
@@ -127,6 +123,6 @@ records_saved_rds <- get_idigbio(
   save = TRUE,
   compress = TRUE,
   file.format = "rds")
-#> Writing /tmp/RtmpeLpWQX/anacardiaceae_records.rds on disk.
+#> Writing /tmp/Rtmpo8Yq0h/anacardiaceae_records.rds on disk.
 # }
 ```
