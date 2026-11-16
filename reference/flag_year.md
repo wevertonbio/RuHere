@@ -19,15 +19,16 @@ flag_year(
 
 - occ:
 
-  (data.frame) a dataset with occurrence records, preferably
-  standardized using
+  (data.frame or data.table) a dataset with occurrence records,
+  preferably standardized using
   [`format_columns()`](https://wevertonbio.github.io/RuHere/reference/format_columns.md).
   Must contain the column specified in `year_column`.
 
 - year_column:
 
   (character) name of the column containing the year in which the
-  occurrence was recorded. This column must be numeric.
+  occurrence was recorded. This column must be numeric. Default is
+  `"year"`.
 
 - lower_limit:
 
@@ -41,12 +42,12 @@ flag_year(
 
 - flag_NA:
 
-  (character) whether to flag records with missing year information.
+  (logical) whether to flag records with missing year information.
   Default is `FALSE`.
 
 ## Value
 
-A data.frame identical to `occ` but with an additional column named
+A `data.frame` identical to `occ` but with an additional column named
 `year_flag`. Records collected outside the year range specified are
 assigned `FALSE`. As with all other flagging functions in RuHere, `TRUE`
 indicates that the record passed this test (i.e., falls within the

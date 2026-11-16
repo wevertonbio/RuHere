@@ -78,7 +78,8 @@ randomly.</p>
 <span>  categorical_variable <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  priority_categories <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  by_cell <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  raster_variable <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  raster_variable <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  keep_cell_id <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -87,18 +88,18 @@ randomly.</p>
 
 
 <dl><dt id="arg-occ">occ<a class="anchor" aria-label="anchor" href="#arg-occ"></a></dt>
-<dd><p>(data.frame) a data frame containing the occurrence records to be
-examined, preferably standardized using <code><a href="format_columns.html">format_columns()</a></code>. Must contain the
-columns specified in <code>species</code>, <code>long</code> and <code>lat</code> arguments.</p></dd>
+<dd><p>(data.frame or data.table) a data frame containing the occurrence
+records to be examined, preferably standardized using <code><a href="format_columns.html">format_columns()</a></code>.
+Must contain the columns specified in <code>species</code>, <code>long</code>, and <code>lat</code> arguments.</p></dd>
 
 
 <dt id="arg-species">species<a class="anchor" aria-label="anchor" href="#arg-species"></a></dt>
 <dd><p>(character) the name of the column containing species names.
-Default is "species".</p></dd>
+Default is <code>"species"</code>.</p></dd>
 
 
 <dt id="arg-long">long<a class="anchor" aria-label="anchor" href="#arg-long"></a></dt>
-<dd><p>(character)  the name of the column containing longitude values.
+<dd><p>(character) the name of the column containing longitude values.
 Default is <code>"decimalLongitude"</code>.</p></dd>
 
 
@@ -117,8 +118,7 @@ will not be flagged. Default is <code>NULL</code>.</p></dd>
 <dt id="arg-continuous-variable">continuous_variable<a class="anchor" aria-label="anchor" href="#arg-continuous-variable"></a></dt>
 <dd><p>(character) optional name of a numeric column used
 to sort duplicated records and select one to remain unflagged. Default is
-<code>NULL</code>, meaning that no sorting will occur and the unflagged record will be
-selected randomly.</p></dd>
+<code>NULL</code>.</p></dd>
 
 
 <dt id="arg-decreasing">decreasing<a class="anchor" aria-label="anchor" href="#arg-decreasing"></a></dt>
@@ -129,16 +129,16 @@ Default is <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-categorical-variable">categorical_variable<a class="anchor" aria-label="anchor" href="#arg-categorical-variable"></a></dt>
-<dd><p>(character) (character) optional name of a
-categorical column used to sort duplicated records and select one to remain
-unflagged. If provided, the order of priority must be specified through
+<dd><p>(character) optional name of a categorical column
+used to sort duplicated records and select one to remain unflagged. If
+provided, the order of priority must be specified through
 <code>priority_categories</code>. Default is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-priority-categories">priority_categories<a class="anchor" aria-label="anchor" href="#arg-priority-categories"></a></dt>
 <dd><p>(character) vector of categories, in the desired
 order of priority, present in the column specified in <code>categorical_variable</code>.
-Only applicable when <code>categorical_variable</code> is not <code>NULL</code>. Default is <code>NULL</code>.</p></dd>
+Required when <code>categorical_variable</code> is not <code>NULL</code>. Default is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-by-cell">by_cell<a class="anchor" aria-label="anchor" href="#arg-by-cell"></a></dt>
@@ -153,16 +153,22 @@ in <code>raster_variable</code>. Default is <code>FALSE</code>.</p></dd>
 duplicated records by raster cell. Only applicable when <code>by_cell</code> is <code>TRUE</code>.
 Default is <code>NULL</code>.</p></dd>
 
+
+<dt id="arg-keep-cell-id">keep_cell_id<a class="anchor" aria-label="anchor" href="#arg-keep-cell-id"></a></dt>
+<dd><p>(logical) whether to retain the <code>cell_id</code> column in the
+returned object when <code>by_cell = TRUE</code>. Default is <code>FALSE</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>data.frame</code> that is the original <code>occ</code> data frame augmented with
-a new column named <code>duplicated_flag</code>. Records identified as duplicated
-receive <code>FALSE</code>, while all unique retained records receive <code>TRUE</code>.
-As with all other flagging functions in RuHere, <code>TRUE</code> indicates that
-the record passed this test and is eligible for retention; <code>FALSE</code>
-indicates it failed and is flagged as potentially problematic, and can be
-removed using <code><a href="remove_flagged.html">remove_flagged()</a></code>.</p>
+    <p>An object of the same class as <code>occ</code> (<code>data.frame</code> or <code>data.table</code>) augmented
+with a new logical column named <code>duplicated_flag</code> (and optionally <code>cell_id</code>
+if <code>by_cell = TRUE</code> and <code>keep_cell_id = TRUE</code>). Records identified as
+duplicated receive <code>FALSE</code>, while unique/retained records receive <code>TRUE</code>.
+As with all other flagging functions in RuHere, <code>TRUE</code> indicates that the
+record passed this test and is eligible for retention; <code>FALSE</code> indicates it
+failed and is flagged as potentially problematic, and can be removed using
+<code><a href="remove_flagged.html">remove_flagged()</a></code>.</p>
     </div>
 
     <div class="section level2">
@@ -170,10 +176,10 @@ removed using <code><a href="remove_flagged.html">remove_flagged()</a></code>.</
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Load example data</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"occurrences"</span>, package <span class="op">=</span> <span class="st">"RuHere"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Duplicate some records as example</span></span></span>
-<span class="r-in"><span><span class="va">occurrences</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">occurrences</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>, <span class="op">]</span>, <span class="va">occurrences</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,<span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">occurrences</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">occurrences</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>, <span class="op">]</span>, <span class="va">occurrences</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Flag duplicates</span></span></span>
 <span class="r-in"><span><span class="va">occ_dup</span> <span class="op">&lt;-</span> <span class="fu">flag_duplicates</span><span class="op">(</span>occ <span class="op">=</span> <span class="va">occurrences</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">occ_dup</span><span class="op">$</span><span class="va">duplicated_flag</span><span class="op">)</span> <span class="co">#Number of duplicated records</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">occ_dup</span><span class="op">$</span><span class="va">duplicated_flag</span><span class="op">)</span> <span class="co"># Number of duplicated records</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
 </code></pre></div>
     </div>

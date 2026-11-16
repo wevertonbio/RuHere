@@ -14,15 +14,15 @@ flag_inaturalist(occ, columns = "datasetName", research_grade = FALSE)
 
 - occ:
 
-  (data.frame) a data frame containing the occurrence records to be
-  examined, preferably standardized using
+  (data.frame or data.table) a data frame containing the occurrence
+  records to be examined, preferably standardized using
   [`format_columns()`](https://wevertonbio.github.io/RuHere/reference/format_columns.md).
   Must contain the columns specified in `columns`.
 
 - columns:
 
-  (character) column name in `occ` where the function will search for
-  the term "iNaturalist". Default is "datasetName".
+  (character) column name(s) in `occ` where the function will search for
+  the term `"iNaturalist"`. Default is `"datasetName"`.
 
 - research_grade:
 

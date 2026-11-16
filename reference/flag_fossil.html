@@ -67,9 +67,9 @@ based on specific search terms found in selected columns.</p>
 
 
 <dl><dt id="arg-occ">occ<a class="anchor" aria-label="anchor" href="#arg-occ"></a></dt>
-<dd><p>(data.frame) a data frame containing the occurrence records to be
-examined, preferably standardized using <code><a href="format_columns.html">format_columns()</a></code>. Must contain the
-columns specified in <code>columns</code>.</p></dd>
+<dd><p>(data.frame or data.table) a data frame containing the occurrence
+records to be examined, preferably standardized using <code><a href="format_columns.html">format_columns()</a></code>.
+Must contain the columns specified in <code>columns</code>.</p></dd>
 
 
 <dt id="arg-columns">columns<a class="anchor" aria-label="anchor" href="#arg-columns"></a></dt>
@@ -86,13 +86,12 @@ is <code>NULL</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>data.frame</code> that is the original <code>occ</code> data frame augmented with
-a new column named <code>fossil_flag</code>. Records identified as fossils receive
-<code>FALSE</code>, while all other records receive <code>TRUE</code>. As with all other
-flagging functions in RuHere, <code>TRUE</code> indicates that the record passed
-this test and is eligible for retention; <code>FALSE</code> indicates it failed
-and is flagged as potentially problematic, and can be removed using
-<code><a href="remove_flagged.html">remove_flagged()</a></code>.</p>
+    <p>A <code>data.frame</code> that is the original <code>occ</code> data frame augmented with a new
+column named <code>fossil_flag</code>. Records identified as fossils receive <code>FALSE</code>,
+while all other records receive <code>TRUE</code>. As with all other flagging functions
+in RuHere, <code>TRUE</code> indicates that the record passed this test and is eligible
+for retention; <code>FALSE</code> indicates it failed and is flagged as potentially
+problematic, and can be removed using <code><a href="remove_flagged.html">remove_flagged()</a></code>.</p>
     </div>
 
     <div class="section level2">

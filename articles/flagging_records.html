@@ -223,7 +223,7 @@ corresponds to a fossil.</p>
 <code class="sourceCode R"><span><span class="va">occ</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/flag_fossil.html">flag_fossil</a></span><span class="op">(</span><span class="va">occ</span><span class="op">)</span> <span class="co"># Scan for fossil-related terms</span></span>
 <span><span class="co"># Number of records flagged as fossil</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">occ</span><span class="op">$</span><span class="va">fossil_flag</span><span class="op">)</span> <span class="co"># No records flagged as fossil</span></span>
-<span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
 <p><br></p>
 </div>
 <div class="section level3">
@@ -239,7 +239,7 @@ the <code>plantR</code> package:</p>
 <code class="sourceCode R"><span><span class="va">occ</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/flag_cultivated.html">flag_cultivated</a></span><span class="op">(</span><span class="va">occ</span><span class="op">)</span> <span class="co"># Scan for fossil-related terms</span></span>
 <span><span class="co"># Number of records flagged as fossil</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">occ</span><span class="op">$</span><span class="va">cultivated_flag</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 14</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 37</span></span></code></pre></div>
 <p><br></p>
 </div>
 <div class="section level3">
@@ -474,8 +474,12 @@ custom name can be provided. Here, we name the new flag as
 <span><span class="va">occ_consensus_flagged</span> <span class="op">&lt;-</span> <span class="va">occ_consensus</span><span class="op">[</span><span class="op">!</span><span class="va">occ_consensus</span><span class="op">$</span><span class="va">old_cultivated</span>, <span class="op">]</span></span>
 <span><span class="va">occ_consensus_flagged</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"species"</span>, <span class="st">"cultivated_flag"</span>, <span class="st">"year_flag"</span>, <span class="st">"old_cultivated"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;                         species cultivated_flag year_flag old_cultivated</span></span>
+<span><span class="co">#&gt; 1371     Araucaria angustifolia           FALSE     FALSE          FALSE</span></span>
+<span><span class="co">#&gt; 1375     Araucaria angustifolia           FALSE     FALSE          FALSE</span></span>
 <span><span class="co">#&gt; 1381     Araucaria angustifolia           FALSE     FALSE          FALSE</span></span>
 <span><span class="co">#&gt; 1388     Araucaria angustifolia           FALSE     FALSE          FALSE</span></span>
+<span><span class="co">#&gt; 1403     Araucaria angustifolia           FALSE     FALSE          FALSE</span></span>
+<span><span class="co">#&gt; 1416     Araucaria angustifolia           FALSE     FALSE          FALSE</span></span>
 <span><span class="co">#&gt; 1424     Araucaria angustifolia           FALSE     FALSE          FALSE</span></span>
 <span><span class="co">#&gt; 4769 Handroanthus serratifolius           FALSE     FALSE          FALSE</span></span></code></pre></div>
 <p><br></p>
@@ -541,10 +545,10 @@ should define a permanent location:</p>
 <span><span class="co">#&gt; [1] 4077</span></span>
 <span><span class="co"># Number of valid records</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">occ_cleaned</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 3835</span></span>
+<span><span class="co">#&gt; [1] 3816</span></span>
 <span><span class="co"># Number of records removed</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">occ</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">occ_cleaned</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 242</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 261</span></span></code></pre></div>
 <p>We can inspect the directory specified in <code>path_to_save</code>
 to see the files containing the removed records. By default, the files
 are saved in GZIP format, which is a compressed format that can be read
@@ -579,13 +583,14 @@ summary as a bar plot:</p>
 <span><span class="va">flag_summary</span><span class="op">$</span><span class="va">df_summary</span></span>
 <span><span class="co">#&gt;                         Flag    n</span></span>
 <span><span class="co">#&gt; 6             Equal lat-long    3</span></span>
+<span><span class="co">#&gt; 3                     Fossil    4</span></span>
 <span><span class="co">#&gt; 7              Zero lat-long    6</span></span>
 <span><span class="co">#&gt; 10  Biodiversity Institution    6</span></span>
 <span><span class="co">#&gt; 9  Country-Province centroid    7</span></span>
-<span><span class="co">#&gt; 1                 Cultivated   14</span></span>
 <span><span class="co">#&gt; 8           Capital centroid   23</span></span>
+<span><span class="co">#&gt; 1                 Cultivated   37</span></span>
 <span><span class="co">#&gt; 4                Out of year  198</span></span>
-<span><span class="co">#&gt; 11                     Valid 3837</span></span></code></pre></div>
+<span><span class="co">#&gt; 11                     Valid 3818</span></span></code></pre></div>
 <p><br></p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Bar plot</span></span>

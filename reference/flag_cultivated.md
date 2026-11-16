@@ -1,4 +1,4 @@
-# Flag occurrence records of cultived individuals
+# Flag occurrence records of cultivated individuals
 
 This function identifies records of cultivated individuals based on
 record description.
@@ -18,29 +18,29 @@ flag_cultivated(
 
 - occ:
 
-  (data.frame) a data frame containing the occurrence records to be
-  examined, preferably standardized using
+  (data.frame or data.table) a data frame containing the occurrence
+  records to be examined, preferably standardized using
   [`format_columns()`](https://wevertonbio.github.io/RuHere/reference/format_columns.md).
   Must contain the columns specified in `columns`.
 
 - columns:
 
-  columns (character) vector of column names in `occ` where the function
-  will search for cultivated-related expressions. Default is
+  (character) vector of column names in `occ` where the function will
+  search for cultivated-related expressions. Default is
   `c("occurrenceRemarks", "habitat", "locality")`.
 
 - cultivated_terms:
 
   (character) optional vector of additional terms that indicate a
-  cultivated individual. Default is NULL, meaning it will use the
+  cultivated individual. Default is `NULL`, meaning it will use the
   cultivated-related expressions available in
   `RuHere::cultivated$cultivated`.
 
 - not_cultivated_terms:
 
   (character) optional vector of additional terms that indicate a
-  non-cultivated individual. Default is NULL, meaning it will use the
-  non cultivated-related expressions available in
+  non-cultivated individual. Default is `NULL`, meaning it will use the
+  non-cultivated-related expressions available in
   `RuHere::cultivated$not_cultivated`.
 
 ## Value
@@ -59,6 +59,6 @@ using
 ``` r
 # Load example data
 data("occurrences", package = "RuHere")
-# Flag fossil records
+# Flag cultivated records
 occ_cultivated <- flag_cultivated(occ = occurrences)
 ```

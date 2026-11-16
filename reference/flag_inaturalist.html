@@ -66,14 +66,14 @@ have Research Grade status.</p>
 
 
 <dl><dt id="arg-occ">occ<a class="anchor" aria-label="anchor" href="#arg-occ"></a></dt>
-<dd><p>(data.frame) a data frame containing the occurrence records to be
-examined, preferably standardized using <code><a href="format_columns.html">format_columns()</a></code>. Must contain the
-columns specified in <code>columns</code>.</p></dd>
+<dd><p>(data.frame or data.table) a data frame containing the occurrence
+records to be examined, preferably standardized using <code><a href="format_columns.html">format_columns()</a></code>.
+Must contain the columns specified in <code>columns</code>.</p></dd>
 
 
 <dt id="arg-columns">columns<a class="anchor" aria-label="anchor" href="#arg-columns"></a></dt>
-<dd><p>(character) column name in <code>occ</code> where the
-function will search for the term "iNaturalist". Default is "datasetName".</p></dd>
+<dd><p>(character) column name(s) in <code>occ</code> where the function will
+search for the term <code>"iNaturalist"</code>. Default is <code>"datasetName"</code>.</p></dd>
 
 
 <dt id="arg-research-grade">research_grade<a class="anchor" aria-label="anchor" href="#arg-research-grade"></a></dt>
@@ -85,17 +85,17 @@ flagged.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>data.frame</code> that is the original <code>occ</code> data frame augmented with
-a new column named <code>inaturalist_flag</code>. Flagged records receive
-<code>FALSE</code>, while all other records receive <code>TRUE</code>. As with all other
-flagging functions in RuHere, <code>TRUE</code> indicates that the record passed
-this test and is eligible for retention; <code>FALSE</code> indicates it failed
-and is flagged as potentially problematic, and can be removed using
-<code><a href="remove_flagged.html">remove_flagged()</a></code>.</p>
+    <p>A <code>data.frame</code> that is the original <code>occ</code> data frame augmented with a new
+column named <code>inaturalist_flag</code>. Flagged records receive <code>FALSE</code>, while all
+other records receive <code>TRUE</code>. As with all other flagging functions in
+RuHere, <code>TRUE</code> indicates that the record passed this test and is eligible
+for retention; <code>FALSE</code> indicates it failed and is flagged as potentially
+problematic, and can be removed using <code><a href="remove_flagged.html">remove_flagged()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>According to <a href="https://help.inaturalist.org/en/support/solutions/articles/151000169936-what-is-the-data-quality-assessment-and-how-do-observations-qualify-to-become-research-grade-" class="external-link">iNaturalist</a>, Observations become Research Grade when:</p><ul><li><p>the iNaturalist community agrees on species-level ID or lower, i.e. when
+    <p>According to <a href="https://help.inaturalist.org/en/support/solutions/articles/151000169936-what-is-the-data-quality-assessment-and-how-do-observations-qualify-to-become-research-grade-" class="external-link">iNaturalist</a>,
+Observations become Research Grade when:</p><ul><li><p>the iNaturalist community agrees on species-level ID or lower, i.e. when
 more than 2/3 of identifiers agree on a taxon;</p></li>
 <li><p>the community taxon and the observation taxon agree;</p></li>
 <li><p>or the community agrees on an ID between family and species and votes that

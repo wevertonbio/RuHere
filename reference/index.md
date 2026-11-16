@@ -64,7 +64,7 @@
   : Get consensus across multiple flags
 
 - [`flag_cultivated()`](https://wevertonbio.github.io/RuHere/reference/flag_cultivated.md)
-  : Flag occurrence records of cultived individuals
+  : Flag occurrence records of cultivated individuals
 
 - [`flag_duplicates()`](https://wevertonbio.github.io/RuHere/reference/flag_duplicates.md)
   : Flag duplicated records

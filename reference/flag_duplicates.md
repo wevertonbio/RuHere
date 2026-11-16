@@ -21,7 +21,8 @@ flag_duplicates(
   categorical_variable = NULL,
   priority_categories = NULL,
   by_cell = FALSE,
-  raster_variable = NULL
+  raster_variable = NULL,
+  keep_cell_id = FALSE
 )
 ```
 
@@ -29,16 +30,16 @@ flag_duplicates(
 
 - occ:
 
-  (data.frame) a data frame containing the occurrence records to be
-  examined, preferably standardized using
+  (data.frame or data.table) a data frame containing the occurrence
+  records to be examined, preferably standardized using
   [`format_columns()`](https://wevertonbio.github.io/RuHere/reference/format_columns.md).
-  Must contain the columns specified in `species`, `long` and `lat`
+  Must contain the columns specified in `species`, `long`, and `lat`
   arguments.
 
 - species:
 
   (character) the name of the column containing species names. Default
-  is "species".
+  is `"species"`.
 
 - long:
 
@@ -60,9 +61,7 @@ flag_duplicates(
 - continuous_variable:
 
   (character) optional name of a numeric column used to sort duplicated
-  records and select one to remain unflagged. Default is `NULL`, meaning
-  that no sorting will occur and the unflagged record will be selected
-  randomly.
+  records and select one to remain unflagged. Default is `NULL`.
 
 - decreasing:
 
@@ -73,17 +72,16 @@ flag_duplicates(
 
 - categorical_variable:
 
-  (character) (character) optional name of a categorical column used to
-  sort duplicated records and select one to remain unflagged. If
-  provided, the order of priority must be specified through
-  `priority_categories`. Default is `NULL`.
+  (character) optional name of a categorical column used to sort
+  duplicated records and select one to remain unflagged. If provided,
+  the order of priority must be specified through `priority_categories`.
+  Default is `NULL`.
 
 - priority_categories:
 
   (character) vector of categories, in the desired order of priority,
-  present in the column specified in `categorical_variable`. Only
-  applicable when `categorical_variable` is not `NULL`. Default is
-  `NULL`.
+  present in the column specified in `categorical_variable`. Required
+  when `categorical_variable` is not `NULL`. Default is `NULL`.
 
 - by_cell:
 
@@ -98,15 +96,21 @@ flag_duplicates(
   raster cell. Only applicable when `by_cell` is `TRUE`. Default is
   `NULL`.
 
+- keep_cell_id:
+
+  (logical) whether to retain the `cell_id` column in the returned
+  object when `by_cell = TRUE`. Default is `FALSE`.
+
 ## Value
 
-A `data.frame` that is the original `occ` data frame augmented with a
-new column named `duplicated_flag`. Records identified as duplicated
-receive `FALSE`, while all unique retained records receive `TRUE`. As
-with all other flagging functions in RuHere, `TRUE` indicates that the
-record passed this test and is eligible for retention; `FALSE` indicates
-it failed and is flagged as potentially problematic, and can be removed
-using
+An object of the same class as `occ` (`data.frame` or `data.table`)
+augmented with a new logical column named `duplicated_flag` (and
+optionally `cell_id` if `by_cell = TRUE` and `keep_cell_id = TRUE`).
+Records identified as duplicated receive `FALSE`, while unique/retained
+records receive `TRUE`. As with all other flagging functions in RuHere,
+`TRUE` indicates that the record passed this test and is eligible for
+retention; `FALSE` indicates it failed and is flagged as potentially
+problematic, and can be removed using
 [`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md).
 
 ## Examples
@@ -115,9 +119,9 @@ using
 # Load example data
 data("occurrences", package = "RuHere")
 # Duplicate some records as example
-occurrences <- rbind(occurrences[1:1000, ], occurrences[1:100,])
+occurrences <- rbind(occurrences[1:1000, ], occurrences[1:100, ])
 # Flag duplicates
 occ_dup <- flag_duplicates(occ = occurrences)
-sum(!occ_dup$duplicated_flag) #Number of duplicated records
+sum(!occ_dup$duplicated_flag) # Number of duplicated records
 #> [1] 100
 ```

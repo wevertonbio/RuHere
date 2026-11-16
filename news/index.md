@@ -21,6 +21,35 @@
 - Handle NA coordinates, fix positional args, and optimize
   c`heck_countries()` and
   [`check_states()`](https://wevertonbio.github.io/RuHere/reference/check_states.md).
+- In
+  [`flag_duplicates()`](https://wevertonbio.github.io/RuHere/reference/flag_duplicates.md),
+  `replace terra::extract()` with
+  [`terra::cellFromXY()`](https://rspatial.github.io/terra/reference/xyCellFrom.html),
+  deduplicate via `!duplicated(..., by = to_group)` on a lightweight
+  subset, preserve original row order and input class, and avoid
+  grouping NA coordinates/cells as duplicates.
+- In
+  [`check_countries()`](https://wevertonbio.github.io/RuHere/reference/check_countries.md)
+  &
+  [`check_states()`](https://wevertonbio.github.io/RuHere/reference/check_states.md):
+  Use `data.table` radix grouping and two-stage buffering (applying
+  [`terra::buffer()`](https://rspatial.github.io/terra/reference/buffer.html)
+  only when points fall outside the raw polygon), filter out NA
+  coordinates before spatialization, and use `DT[, ("col") := ...]` with
+  `setcolorder()` to avoid column reallocation errors.
+- In
+  [`flag_fossil()`](https://wevertonbio.github.io/RuHere/reference/flag_fossil.md),
+  [`flag_cultivated()`](https://wevertonbio.github.io/RuHere/reference/flag_cultivated.md),
+  &
+  [`flag_inaturalist()`](https://wevertonbio.github.io/RuHere/reference/flag_inaturalist.md),
+  perform case-insensitive regex matching on unique column values only
+  to speed up performance.
+- In
+  [`remove_invalid_coordinates()`](https://wevertonbio.github.io/RuHere/reference/remove_invalid_coordinates.md)
+  &
+  [`flag_year()`](https://wevertonbio.github.io/RuHere/reference/flag_year.md):
+  Standardize input argument checks, suppress numeric coercion warnings,
+  and ensure consistent return types when `return_invalid = TRUE`.
 
 ## RuHere 1.1.1 (October 2026)
 

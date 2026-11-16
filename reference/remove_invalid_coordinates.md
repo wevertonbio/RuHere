@@ -29,16 +29,18 @@ remove_invalid_coordinates(
 
 - long:
 
-  (character) column name in `occ` with the longitude.
+  (character) column name in `occ` with the longitude. Default is
+  `"decimalLongitude"`.
 
 - lat:
 
-  (character) column name in `occ` with the latitude.
+  (character) column name in `occ` with the latitude. Default is
+  `"decimalLatitude"`.
 
 - return_invalid:
 
   (logical) whether to return a list containing records that passed and
-  failed this test. Default is TRUE.
+  failed this test. Default is `TRUE`.
 
 - save_invalid:
 
@@ -65,27 +67,18 @@ remove_invalid_coordinates(
 - verbose:
 
   (logical) whether to print messages about function progress. Default
-  is `TRUE`.
+  is `FALSE`.
 
 ## Value
 
-The input data.frame with an additional logical column indicating
-whether each record passed (`TRUE`) or failed (`FALSE`) the coordinate
-quality check (i.e., is not missing, non-numeric, or outside the
-possible range for Earth: latitude between -90 and 90, longitude between
--180 and 180). As with all other flagging functions in RuHere, `TRUE`
-indicates that the record passed this test and is eligible for
-retention; `FALSE` indicates it failed and is flagged as potentially
-problematic, and can be removed using
-[`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md).
-
-If `return_invalid = FALSE`, returns the occurrence dataset containing
-only records flagged as `TRUE`. If `return_invalid = TRUE` (default),
+If `return_invalid = FALSE`, returns a `data.frame` containing only
+records with valid coordinates. If `return_invalid = TRUE` (default),
 returns a list with two elements:
 
-- `valid` – the dataset with records flagged as `TRUE`.
+- `valid` – the dataset with valid coordinates.
 
-- `invalid` – the dataset with records flagged as `FALSE`.
+- `invalid` – the dataset with invalid coordinates (augmented with
+  `invalid_coordinates = FALSE`).
 
 ## Examples
 

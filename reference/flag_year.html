@@ -69,14 +69,15 @@ user-specified years.</p>
 
 
 <dl><dt id="arg-occ">occ<a class="anchor" aria-label="anchor" href="#arg-occ"></a></dt>
-<dd><p>(data.frame) a dataset with occurrence records, preferably
-standardized using <code><a href="format_columns.html">format_columns()</a></code>. Must contain the column specified in
-<code>year_column</code>.</p></dd>
+<dd><p>(data.frame or data.table) a dataset with occurrence records,
+preferably standardized using <code><a href="format_columns.html">format_columns()</a></code>. Must contain the column
+specified in <code>year_column</code>.</p></dd>
 
 
 <dt id="arg-year-column">year_column<a class="anchor" aria-label="anchor" href="#arg-year-column"></a></dt>
 <dd><p>(character) name of the column containing the year in
-which the occurrence was recorded. This column must be numeric.</p></dd>
+which the occurrence was recorded. This column must be numeric. Default is
+<code>"year"</code>.</p></dd>
 
 
 <dt id="arg-lower-limit">lower_limit<a class="anchor" aria-label="anchor" href="#arg-lower-limit"></a></dt>
@@ -90,13 +91,13 @@ after this value will be flagged. Default is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-flag-na">flag_NA<a class="anchor" aria-label="anchor" href="#arg-flag-na"></a></dt>
-<dd><p>(character) whether to flag records with missing year
+<dd><p>(logical) whether to flag records with missing year
 information. Default is <code>FALSE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data.frame identical to <code>occ</code> but with an additional column named
+    <p>A <code>data.frame</code> identical to <code>occ</code> but with an additional column named
 <code>year_flag</code>. Records collected outside the year range specified are
 assigned <code>FALSE</code>. As with all other flagging functions in RuHere, <code>TRUE</code>
 indicates that the record passed this test (i.e., falls within the

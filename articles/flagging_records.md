@@ -142,7 +142,7 @@ corresponds to a fossil.
 occ <- flag_fossil(occ) # Scan for fossil-related terms
 # Number of records flagged as fossil
 sum(!occ$fossil_flag) # No records flagged as fossil
-#> [1] 0
+#> [1] 4
 ```
 
   
@@ -161,7 +161,7 @@ inspired by the `getCult()` function from the `plantR` package:
 occ <- flag_cultivated(occ) # Scan for fossil-related terms
 # Number of records flagged as fossil
 sum(!occ$cultivated_flag)
-#> [1] 14
+#> [1] 37
 ```
 
   
@@ -442,8 +442,12 @@ occ_consensus <- flag_consensus(occ,
 occ_consensus_flagged <- occ_consensus[!occ_consensus$old_cultivated, ]
 occ_consensus_flagged[, c("species", "cultivated_flag", "year_flag", "old_cultivated")]
 #>                         species cultivated_flag year_flag old_cultivated
+#> 1371     Araucaria angustifolia           FALSE     FALSE          FALSE
+#> 1375     Araucaria angustifolia           FALSE     FALSE          FALSE
 #> 1381     Araucaria angustifolia           FALSE     FALSE          FALSE
 #> 1388     Araucaria angustifolia           FALSE     FALSE          FALSE
+#> 1403     Araucaria angustifolia           FALSE     FALSE          FALSE
+#> 1416     Araucaria angustifolia           FALSE     FALSE          FALSE
 #> 1424     Araucaria angustifolia           FALSE     FALSE          FALSE
 #> 4769 Handroanthus serratifolius           FALSE     FALSE          FALSE
 ```
@@ -519,10 +523,10 @@ nrow(occ)
 #> [1] 4077
 # Number of valid records
 nrow(occ_cleaned)
-#> [1] 3835
+#> [1] 3816
 # Number of records removed
 nrow(occ) - nrow(occ_cleaned)
-#> [1] 242
+#> [1] 261
 ```
 
 We can inspect the directory specified in `path_to_save` to see the
@@ -567,13 +571,14 @@ per flag and a `ggplot2` object displaying this summary as a bar plot:
 flag_summary$df_summary
 #>                         Flag    n
 #> 6             Equal lat-long    3
+#> 3                     Fossil    4
 #> 7              Zero lat-long    6
 #> 10  Biodiversity Institution    6
 #> 9  Country-Province centroid    7
-#> 1                 Cultivated   14
 #> 8           Capital centroid   23
+#> 1                 Cultivated   37
 #> 4                Out of year  198
-#> 11                     Valid 3837
+#> 11                     Valid 3818
 ```
 
   
