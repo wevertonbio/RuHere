@@ -19,7 +19,7 @@ flag_iucn(
 }
 \arguments{
 \item{data_dir}{(character) \strong{Required} directory path where the \code{IUCN}
-data is saved}
+data is saved.}
 
 \item{occ}{(data.frame or data.table) a data frame containing the occurrence
 records to be flagged. Must contain columns for species, longitude, and
@@ -37,23 +37,18 @@ latitude values. Default is \code{"decimalLatitude"}.}
 \item{origin}{(character) vector specifying which origin categories should
 be considered as part of the species' range. Options are: \code{"native"},
 \code{"introduced"}, \code{"reintroduced"}, \code{"vagrant"}, \code{"origin uncertain"},
-\code{"assisted colonisation"}, and \code{"all"}. For example,
-if  \code{origin = "introduced"}, only regions where the species is considered
-introduced will be used to flag records.  Default is \code{"native"}.}
+\code{"assisted colonisation"}, and \code{"all"}. Default is \code{"native"}.}
 
 \item{presence}{(character) vector specifying which presence type should
 be considered as part of the species' range. Options are: \code{"extant"},
 \code{"probably extant"}, \code{"possibly extant"}, \code{"extinct"}, \code{"possibly extinct"},
-\code{"presence uncertain"}, and \code{"all"}. For example,
-if  \code{presence = "extinct"}, only regions where the species is considered
-extinct will be used to flag records.  Default is \code{"all"}, meaning all
-regions will be considered.}
+\code{"presence uncertain"}, and \code{"all"}. Default is \code{"all"}.}
 
 \item{buffer}{(numeric) buffer distance (in kilometers) to be applied
-around the region of distribution. Default is 20 km.}
+around the region of distribution. Default is \code{20} km.}
 
 \item{progress_bar}{(logical) whether to display a progress bar during
-processing. If TRUE, the 'pbapply' package must be installed. Default is
+processing. If \code{TRUE}, the \code{'pbapply'} package must be installed. Default is
 \code{FALSE}.}
 
 \item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
@@ -68,8 +63,8 @@ data. As with all other flagging functions in RuHere, \code{TRUE}
 indicates that the record passed this test and is eligible for retention;
 \code{FALSE} indicates it failed and is flagged as potentially problematic,
 and can be removed using \code{remove_flagged()}. Records for species not
-found in the \code{IUCN} data will have \code{NA} in the \code{iucn_flag}
-column.
+found in the \code{IUCN} data (or lacking distribution polygons for the
+selected filters) will have \code{NA} in the \code{iucn_flag} column.
 }
 \description{
 Flags occurrence records based on known distribution data
@@ -85,11 +80,10 @@ data("occurrences", package = "RuHere")
 # Get only occurrences from Araucaria
 occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
 # Set folder where distributional datasets were saved
-# Here, just a sample provided in tha package
+# Here, just a sample provided in the package
 # You must run 'iucn_here()' beforehand to download the necessary data files
 dataset_dir <- system.file("extdata/datasets", package = "RuHere")
 
 # Flag records using IUCN specialist information
 occ_iucn <- flag_iucn(data_dir = dataset_dir, occ = occ)
-
 }

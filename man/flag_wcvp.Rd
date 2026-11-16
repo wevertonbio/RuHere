@@ -18,7 +18,7 @@ flag_wcvp(
 }
 \arguments{
 \item{data_dir}{(character) \strong{Required} directory path where the \code{WCVP}
-data is saved}
+data is saved.}
 
 \item{occ}{(data.frame or data.table) a data frame containing the occurrence
 records to be flagged. Must contain columns for species, longitude, and
@@ -35,15 +35,14 @@ latitude values. Default is \code{"decimalLatitude"}.}
 
 \item{origin}{(character) vector specifying which origin categories should
 be considered as part of the species' range. Options are: \code{"native"},
-\code{"introduced"}, \code{"extinct"}, \code{"location_doubtful"}, and \code{"all"}. For example,
-if  \code{origin = "introduced"}, only regions where the species is considered
-introduced will be used to flag records.  Default is \code{"native"}.}
+\code{"introduced"}, \code{"extinct"}, \code{"location_doubtful"}, and \code{"all"}. Default is
+\code{"native"}.}
 
 \item{buffer}{(numeric) buffer distance (in kilometers) to be applied
-around the region of distribution. Default is 20 km.}
+around the region of distribution. Default is \code{20} km.}
 
 \item{progress_bar}{(logical) whether to display a progress bar during
-processing. If TRUE, the 'pbapply' package must be installed. Default is
+processing. If \code{TRUE}, the \code{'pbapply'} package must be installed. Default is
 \code{FALSE}.}
 
 \item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
@@ -58,8 +57,8 @@ data. As with all other flagging functions in RuHere, \code{TRUE}
 indicates that the record passed this test and is eligible for retention;
 \code{FALSE} indicates it failed and is flagged as potentially problematic,
 and can be removed using \code{remove_flagged()}. Records for species not
-found in the \code{WCVP} data will have \code{NA} in the \code{wcvp_flag}
-column.
+found in the \code{WCVP} data (or lacking distribution polygons for the
+selected filters) will have \code{NA} in the \code{wcvp_flag} column.
 }
 \description{
 Flags occurrence records based on known distribution data
@@ -81,5 +80,4 @@ dataset_dir <- system.file("extdata/datasets", package = "RuHere")
 
 # Flag records using WCVP specialist information
 occ_wcvp <- flag_wcvp(data_dir = dataset_dir, occ = occ)
-
 }

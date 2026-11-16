@@ -29,10 +29,11 @@ flag_florabr(
 }
 \arguments{
 \item{data_dir}{(character) directory path where the \code{florabr} data is
-saved \strong{Required.}}
+saved. \strong{Required.}}
 
-\item{occ}{(data.frame) a data frame containing the occurrence records to be
-flagged. Must contain columns for species, longitude, and latitude.}
+\item{occ}{(data.frame or data.table) a data frame containing the occurrence
+records to be flagged. Must contain columns for species, longitude, and
+latitude.}
 
 \item{species}{(character) the name of the column in \code{occ} that contains the
 species scientific names. Default is \code{"species"}.}
@@ -67,32 +68,32 @@ Brazilian boundary. Default is \code{TRUE}.}
 \item{buffer_brazil}{(numeric) buffer distance (in kilometers) to be applied
 around the entire Brazilian boundary. Default is 20 km.}
 
-\item{state_vect}{(SpatVector) qn optional custom simple features
-(\code{sf}) vector representing Brazilian states/regions. If \code{NULL}, uses the
+\item{state_vect}{(SpatVector) an optional custom spatial vector
+(\code{SpatVector}) representing Brazilian states/regions. If \code{NULL}, uses the
 default data loaded by \code{florabr}. Default is \code{NULL}.}
 
 \item{state_column}{(character) the name of the column in \code{state_vect}
 (or the default state vector) used to match distribution information.
 Default is \code{NULL}.}
 
-\item{biome_vect}{(SpatVector) an optional custom simple features (\code{sf})
-vector representing Brazilian biomes. If \code{NULL}, uses the default data
+\item{biome_vect}{(SpatVector) an optional custom spatial vector
+(\code{SpatVector}) representing Brazilian biomes. If \code{NULL}, uses the default data
 loaded by \code{florabr}. Default is \code{NULL}.}
 
 \item{biome_column}{(character) the name of the column in \code{biome_vect}
 (or the default biome vector) used to match distribution information.
 Default is \code{NULL}.}
 
-\item{br_vect}{(SpatVector) an optional custom simple features (\code{sf}) vector
-representing the entire Brazilian boundary. If \code{NULL}, uses the default data
-loaded by \code{florabr}. Default is \code{NULL}.}
+\item{br_vect}{(SpatVector) an optional custom spatial vector
+(\code{SpatVector}) representing the entire Brazilian boundary. If \code{NULL}, uses
+the default data loaded by \code{florabr}. Default is \code{NULL}.}
 
 \item{keep_columns}{(logical) if \code{TRUE}, the returned data frame contains
 all original columns from \code{occ}. If \code{FALSE}, it returns only the key columns
 and the flag. Default is \code{TRUE}.}
 
 \item{progress_bar}{(logical) whether to display a progress bar during
-processing. If TRUE, the 'pbapply' package must be installed. Default is
+processing. If \code{TRUE}, the \code{'pbapply'} package must be installed. Default is
 \code{FALSE}.}
 
 \item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
@@ -107,17 +108,27 @@ data. As with all other flagging functions in RuHere, \code{TRUE}
 indicates that the record passed this test and is eligible for retention;
 \code{FALSE} indicates it failed and is flagged as potentially problematic,
 and can be removed using \code{remove_flagged()}. Records for species not
-found in the \code{florabr} data will have \code{NA} in the
-\code{florabr_flag} column.
+found in the \code{florabr} data, or lacking distribution information in the
+catalogue, will have \code{NA} in the \code{florabr_flag} column.
 }
 \description{
 Flags occurrence records based on known distribution data
-from the Flora e Funga do Brasil (florabr) data. This function checks if an
+from the Flora e Funga do Brasil (\code{florabr}) data. This function checks if an
 occurrence point for a given species falls within its documented distribution,
 allowing for user-defined buffers around Brazilian states, biomes, or the
 entire country. Records are flagged as \code{TRUE} if they fall within
 the specified range for the distribution information available in the
 \code{florabr} data.
+}
+\details{
+For some taxonomic groups in the Flora e Funga do Brasil (e.g., algae,
+fungi, and certain bryophyte or angiosperm groups), a substantial proportion
+of valid species entries lack documented state (\code{states}), biome (\code{biome}),
+or endemism (\code{endemism}) distribution records. When a species is present in
+the catalogue but lacks distribution information for the enabled spatial
+filters (\code{by_state}, \code{by_biome}, and/or \code{by_endemism}), its records cannot be
+validated and are assigned \code{NA} in \code{florabr_flag} (consistent with species
+absent from the catalogue).
 }
 \examples{
 # Load example data
@@ -131,5 +142,4 @@ dataset_dir <- system.file("extdata/datasets", package = "RuHere")
 
 # Flag records using specialist information from Flora do Brasil
 occ_flora <- flag_florabr(data_dir = dataset_dir, occ = occ)
-
 }

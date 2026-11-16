@@ -9,6 +9,8 @@
 * In `check_countries()` & `check_states()`: Use `data.table` radix grouping and two-stage buffering (applying `terra::buffer()` only when points fall outside the raw polygon), filter out NA coordinates before spatialization, and use `DT[, ("col") := ...]` with `setcolorder()` to avoid column reallocation errors.
 * In `flag_fossil()`, `flag_cultivated()`, & `flag_inaturalist()`, perform case-insensitive regex matching on unique column values only to speed up performance.
 * In `remove_invalid_coordinates()` & `flag_year()`: Standardize input argument checks, suppress numeric coercion warnings, and ensure consistent return types when `return_invalid = TRUE`.
+* Handle missing distribution data as `NA` and use `fill = TRUE` in `flag_faunabr()` and `flag_florabr()` (Issue #23)
+* Resolve origin/column bugs and optimize spatial checks in `flag_bien()`, `flag_iucn()`, and `flag_wcvp()`.
 
 # RuHere 1.1.1 (October 2026)
 

@@ -17,7 +17,7 @@ flag_bien(
 }
 \arguments{
 \item{data_dir}{(character) \strong{Required} directory path where the \code{BIEN}
-data is saved}
+data is saved.}
 
 \item{occ}{(data.frame or data.table) a data frame containing the occurrence
 records to be flagged. Must contain columns for species, longitude, and
@@ -33,10 +33,10 @@ longitude values. Default is \code{"decimalLongitude"}.}
 latitude values. Default is \code{"decimalLatitude"}.}
 
 \item{buffer}{(numeric) buffer distance (in kilometers) to be applied
-around the region of distribution. Default is 20 km.}
+around the region of distribution. Default is \code{10} km.}
 
 \item{progress_bar}{(logical) whether to display a progress bar during
-processing. If TRUE, the 'pbapply' package must be installed. Default is
+processing. If \code{TRUE}, the \code{'pbapply'} package must be installed. Default is
 \code{FALSE}.}
 
 \item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
@@ -51,8 +51,8 @@ data. As with all other flagging functions in RuHere, \code{TRUE}
 indicates that the record passed this test and is eligible for retention;
 \code{FALSE} indicates it failed and is flagged as potentially problematic,
 and can be removed using \code{remove_flagged()}. Records for species not
-found in the \code{BIEN} data will have \code{NA} in the \code{bien_flag}
-column.
+found in the \code{BIEN} data (or with missing coordinates) will have
+\code{NA} in the \code{bien_flag} column.
 }
 \description{
 Flags occurrence records based on known distribution data
@@ -74,5 +74,4 @@ dataset_dir <- system.file("extdata/datasets", package = "RuHere")
 
 # Flag records using BIEN specialist information
 occ_bien <- flag_bien(data_dir = dataset_dir, occ = occ)
-
 }

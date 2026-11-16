@@ -23,7 +23,7 @@ flag_faunabr(
 )
 }
 \arguments{
-\item{data_dir}{(character)  \strong{Required} directory path where the \code{faunabr}
+\item{data_dir}{(character) \strong{Required} directory path where the \code{faunabr}
 data is saved.}
 
 \item{occ}{(data.frame or data.table) a data frame containing the occurrence
@@ -62,18 +62,18 @@ all original columns from \code{occ}. If \code{FALSE}, it returns only the key c
 and the flag. Default is \code{TRUE}.}
 
 \item{spat_state}{(SpatVector) a SpatVector of the Brazilian states. By
-default, it uses the SpatVector provided by geobr::read_state(). It can be
-another Spatvector, but the structure must be identical to 'faunabr::states',
-with a column called "abbrev_state" identifying the states codes.}
+default, it uses the SpatVector provided by \code{geobr::read_state()}. It can be
+another SpatVector, but the structure must be identical to \code{faunabr::states},
+with a column called \code{"abbrev_state"} identifying the state codes.}
 
 \item{spat_country}{(SpatVector) a SpatVector of the world countries. By
-default, it uses the SpatVector provided by rnaturalearth::ne_countries. It
-can be another Spatvector, but the structure must be identical to
-'faunabr::world_fauna', with a column called "country_code" identifying the
+default, it uses the SpatVector provided by \code{rnaturalearth::ne_countries()}.
+It can be another SpatVector, but the structure must be identical to
+\code{faunabr::world_fauna}, with a column called \code{"country_code"} identifying the
 country codes.}
 
 \item{progress_bar}{(logical) whether to display a progress bar during
-processing. If TRUE, the 'pbapply' package must be installed. Default is
+processing. If \code{TRUE}, the \code{'pbapply'} package must be installed. Default is
 \code{FALSE}.}
 
 \item{verbose}{(logical) if \code{TRUE}, prints messages about the progress and
@@ -88,17 +88,27 @@ data. As with all other flagging functions in RuHere, \code{TRUE}
 indicates that the record passed this test and is eligible for retention;
 \code{FALSE} indicates it failed and is flagged as potentially problematic,
 and can be removed using \code{remove_flagged()}. Records for species not
-found in the \code{faunabr} data will have \code{NA} in the
-\code{faunabr_flag} column.
+found in the \code{faunabr} data, or lacking distribution information in the
+catalogue, will have \code{NA} in the \code{faunabr_flag} column.
 }
 \description{
 Flags occurrence records based on known distribution data
-from the Catálogo Taxônomico da Fauna do Brasil (faunabr) data. This function
-checks if an occurrence point for a given species falls within its documented
-distribution, allowing for user-defined buffers around Brazilian states,
-or the entire country. Records are flagged as \code{TRUE} if they fall
+from the Catálogo Taxonômico da Fauna do Brasil (\code{faunabr}) data. This
+function checks if an occurrence point for a given species falls within its
+documented distribution, allowing for user-defined buffers around Brazilian
+states, or the entire country. Records are flagged as \code{TRUE} if they fall
 within the specified range for the distribution information available in the
 \code{faunabr} data.
+}
+\details{
+For some taxonomic groups in the Catálogo Taxonômico da Fauna do Brasil
+(e.g., amphibians and several invertebrate groups), a substantial proportion
+of valid species entries lack documented state (\code{states}) or country
+(\code{countryCode}) distribution records. When a species is present in the
+catalogue but lacks distribution information for the enabled spatial filters
+(\code{by_state} and/or \code{by_country}), its records cannot be validated and are
+assigned \code{NA} in \code{faunabr_flag} (consistent with species absent from the
+catalogue).
 }
 \examples{
 # Load example data
