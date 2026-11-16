@@ -16,14 +16,15 @@ check_countries(
 )
 }
 \arguments{
-\item{occ}{(data.frame) a dataset with occurrence records, preferably with
-country information standardized using \code{standardize_countries()}.}
+\item{occ}{(data.frame or data.table) a dataset with occurrence records,
+preferably with country information standardized using
+\code{standardize_countries()}.}
 
 \item{long}{(character) column name with longitude. Default is
-'decimalLongitude'.}
+\code{'decimalLongitude'}.}
 
-\item{lat}{lat (character) column name with latitude. Default is
-'decimalLatitude'.}
+\item{lat}{(character) column name with latitude. Default is
+\code{'decimalLatitude'}.}
 
 \item{country_column}{(character) column name containing the country
 information.}
@@ -36,7 +37,7 @@ transposed (see \code{fix_countries()} for details). If \code{TRUE}, coordinates
 identified as inverted or transposed will be corrected. Default is \code{FALSE}.}
 
 \item{progress_bar}{(logical) whether to display a progress bar during
-processing. If TRUE, the 'pbapply' package must be installed. Default is
+processing. If \code{TRUE}, the \code{'pbapply'} package must be installed. Default is
 \code{FALSE}.}
 
 \item{verbose}{(logical) whether to print messages about function progress.
@@ -55,7 +56,7 @@ Check if the records fall in the country assigned in the metadata
 }
 \examples{
 # Load example data
-data("occurrences", package = "RuHere") #Import data example
+data("occurrences", package = "RuHere")
 # Standardize country names
 occ_country <- standardize_countries(occ = occurrences,
                                      return_dictionary = FALSE)

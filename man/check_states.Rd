@@ -16,14 +16,15 @@ check_states(
 )
 }
 \arguments{
-\item{occ}{(data.frame) a dataset with occurrence records, preferably with
-country information standardized using \code{standardize_states()}.}
+\item{occ}{(data.frame or data.table) a dataset with occurrence records,
+preferably with state information standardized using
+\code{standardize_states()}.}
 
 \item{long}{(character) column name with longitude. Default is
-'decimalLongitude'.}
+\code{'decimalLongitude'}.}
 
-\item{lat}{lat (character) column name with latitude. Default is
-'decimalLatitude'.}
+\item{lat}{(character) column name with latitude. Default is
+\code{'decimalLatitude'}.}
 
 \item{state_column}{(character) column name containing the state information.}
 
@@ -35,7 +36,7 @@ transposed (see \code{fix_states()} for details). If \code{TRUE}, coordinates
 identified as inverted or transposed will be corrected. Default is \code{FALSE}.}
 
 \item{progress_bar}{(logical) whether to display a progress bar during
-processing. If TRUE, the 'pbapply' package must be installed. Default is
+processing. If \code{TRUE}, the \code{'pbapply'} package must be installed. Default is
 \code{FALSE}.}
 
 \item{verbose}{(logical) whether to print messages about function progress.
@@ -54,7 +55,7 @@ Check if the records fall in the state assigned in the metadata
 }
 \examples{
 # Load example data
-data("occurrences", package = "RuHere") #Import data example
+data("occurrences", package = "RuHere")
 # Subset occurrences for Araucaria angustifolia
 occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
 # Standardize country names
