@@ -60,6 +60,12 @@
   [`flag_iucn()`](https://wevertonbio.github.io/RuHere/reference/flag_iucn.md),
   and
   [`flag_wcvp()`](https://wevertonbio.github.io/RuHere/reference/flag_wcvp.md).
+- In
+  [`standardize_countries()`](https://wevertonbio.github.io/RuHere/reference/standardize_countries.md)
+  and
+  [`standardize_states()`](https://wevertonbio.github.io/RuHere/reference/standardize_states.md),
+  resolve ambiguous fuzzy matches via coordinates and handle all-NA
+  coordinate columns to prevent row expansion.
 
 ## RuHere 1.1.1 (October 2026)
 

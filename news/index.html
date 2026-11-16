@@ -58,6 +58,7 @@
 <li>In <code><a href="../reference/remove_invalid_coordinates.html">remove_invalid_coordinates()</a></code> &amp; <code><a href="../reference/flag_year.html">flag_year()</a></code>: Standardize input argument checks, suppress numeric coercion warnings, and ensure consistent return types when <code>return_invalid = TRUE</code>.</li>
 <li>Handle missing distribution data as <code>NA</code> and use <code>fill = TRUE</code> in <code><a href="../reference/flag_faunabr.html">flag_faunabr()</a></code> and <code><a href="../reference/flag_florabr.html">flag_florabr()</a></code> (Issue <a href="https://github.com/wevertonbio/RuHere/issues/23" class="external-link">#23</a>)</li>
 <li>Resolve origin/column bugs and optimize spatial checks in <code><a href="../reference/flag_bien.html">flag_bien()</a></code>, <code><a href="../reference/flag_iucn.html">flag_iucn()</a></code>, and <code><a href="../reference/flag_wcvp.html">flag_wcvp()</a></code>.</li>
+<li>In <code><a href="../reference/standardize_countries.html">standardize_countries()</a></code> and <code><a href="../reference/standardize_states.html">standardize_states()</a></code>, resolve ambiguous fuzzy matches via coordinates and handle all-NA coordinate columns to prevent row expansion.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.1" id="ruhere-111-october-2026">RuHere 1.1.1 (October 2026)<a class="anchor" aria-label="anchor" href="#ruhere-111-october-2026"></a></h2><p class="text-muted">CRAN release: 2026-10-20</p>

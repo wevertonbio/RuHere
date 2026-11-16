@@ -89,7 +89,6 @@ occ_state <- standardize_states(occ = occ_country,
 # Check whether records fall within assigned states
 occ_state_checked <- check_states(occ = occ_state,
                                     state_column = "state_suggested")
-#> Warning: The following states listed in the 'state_suggested' column were absent in the world map used for validation: mexico
 #> Testing states...
-#> 12 records fall in wrong states
+#> 8 records fall in wrong states
 ```
