@@ -27,7 +27,8 @@ flag_wcvp(
 
 - data_dir:
 
-  (character) **Required** directory path where the `WCVP` data is saved
+  (character) **Required** directory path where the `WCVP` data is
+  saved.
 
 - occ:
 
@@ -54,20 +55,18 @@ flag_wcvp(
 
   (character) vector specifying which origin categories should be
   considered as part of the species' range. Options are: `"native"`,
-  `"introduced"`, `"extinct"`, `"location_doubtful"`, and `"all"`. For
-  example, if `origin = "introduced"`, only regions where the species is
-  considered introduced will be used to flag records. Default is
-  `"native"`.
+  `"introduced"`, `"extinct"`, `"location_doubtful"`, and `"all"`.
+  Default is `"native"`.
 
 - buffer:
 
   (numeric) buffer distance (in kilometers) to be applied around the
-  region of distribution. Default is 20 km.
+  region of distribution. Default is `20` km.
 
 - progress_bar:
 
   (logical) whether to display a progress bar during processing. If
-  TRUE, the 'pbapply' package must be installed. Default is `FALSE`.
+  `TRUE`, the `'pbapply'` package must be installed. Default is `FALSE`.
 
 - verbose:
 
@@ -84,7 +83,8 @@ functions in RuHere, `TRUE` indicates that the record passed this test
 and is eligible for retention; `FALSE` indicates it failed and is
 flagged as potentially problematic, and can be removed using
 [`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md).
-Records for species not found in the `WCVP` data will have `NA` in the
+Records for species not found in the `WCVP` data (or lacking
+distribution polygons for the selected filters) will have `NA` in the
 `wcvp_flag` column.
 
 ## Examples

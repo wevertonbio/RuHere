@@ -29,7 +29,8 @@ flag_iucn(
 
 - data_dir:
 
-  (character) **Required** directory path where the `IUCN` data is saved
+  (character) **Required** directory path where the `IUCN` data is
+  saved.
 
 - occ:
 
@@ -57,29 +58,25 @@ flag_iucn(
   (character) vector specifying which origin categories should be
   considered as part of the species' range. Options are: `"native"`,
   `"introduced"`, `"reintroduced"`, `"vagrant"`, `"origin uncertain"`,
-  `"assisted colonisation"`, and `"all"`. For example, if
-  `origin = "introduced"`, only regions where the species is considered
-  introduced will be used to flag records. Default is `"native"`.
+  `"assisted colonisation"`, and `"all"`. Default is `"native"`.
 
 - presence:
 
   (character) vector specifying which presence type should be considered
   as part of the species' range. Options are: `"extant"`,
   `"probably extant"`, `"possibly extant"`, `"extinct"`,
-  `"possibly extinct"`, `"presence uncertain"`, and `"all"`. For
-  example, if `presence = "extinct"`, only regions where the species is
-  considered extinct will be used to flag records. Default is `"all"`,
-  meaning all regions will be considered.
+  `"possibly extinct"`, `"presence uncertain"`, and `"all"`. Default is
+  `"all"`.
 
 - buffer:
 
   (numeric) buffer distance (in kilometers) to be applied around the
-  region of distribution. Default is 20 km.
+  region of distribution. Default is `20` km.
 
 - progress_bar:
 
   (logical) whether to display a progress bar during processing. If
-  TRUE, the 'pbapply' package must be installed. Default is `FALSE`.
+  `TRUE`, the `'pbapply'` package must be installed. Default is `FALSE`.
 
 - verbose:
 
@@ -96,7 +93,8 @@ functions in RuHere, `TRUE` indicates that the record passed this test
 and is eligible for retention; `FALSE` indicates it failed and is
 flagged as potentially problematic, and can be removed using
 [`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md).
-Records for species not found in the `IUCN` data will have `NA` in the
+Records for species not found in the `IUCN` data (or lacking
+distribution polygons for the selected filters) will have `NA` in the
 `iucn_flag` column.
 
 ## Examples
@@ -107,7 +105,7 @@ data("occurrences", package = "RuHere")
 # Get only occurrences from Araucaria
 occ <- occurrences[occurrences$species == "Araucaria angustifolia", ]
 # Set folder where distributional datasets were saved
-# Here, just a sample provided in tha package
+# Here, just a sample provided in the package
 # You must run 'iucn_here()' beforehand to download the necessary data files
 dataset_dir <- system.file("extdata/datasets", package = "RuHere")
 

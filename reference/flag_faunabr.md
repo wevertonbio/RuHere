@@ -1,7 +1,7 @@
 # Identify records outside natural ranges according to Fauna do Brasil
 
 Flags occurrence records based on known distribution data from the
-Catálogo Taxônomico da Fauna do Brasil (faunabr) data. This function
+Catálogo Taxonômico da Fauna do Brasil (`faunabr`) data. This function
 checks if an occurrence point for a given species falls within its
 documented distribution, allowing for user-defined buffers around
 Brazilian states, or the entire country. Records are flagged as `TRUE`
@@ -95,22 +95,24 @@ flag_faunabr(
 - spat_state:
 
   (SpatVector) a SpatVector of the Brazilian states. By default, it uses
-  the SpatVector provided by geobr::read_state(). It can be another
-  Spatvector, but the structure must be identical to 'faunabr::states',
-  with a column called "abbrev_state" identifying the states codes.
+  the SpatVector provided by `geobr::read_state()`. It can be another
+  SpatVector, but the structure must be identical to
+  [`faunabr::states`](https://wevertonbio.github.io/faunabr/reference/states.html),
+  with a column called `"abbrev_state"` identifying the state codes.
 
 - spat_country:
 
   (SpatVector) a SpatVector of the world countries. By default, it uses
-  the SpatVector provided by rnaturalearth::ne_countries. It can be
-  another Spatvector, but the structure must be identical to
-  'faunabr::world_fauna', with a column called "country_code"
-  identifying the country codes.
+  the SpatVector provided by
+  [`rnaturalearth::ne_countries()`](https://docs.ropensci.org/rnaturalearth/reference/ne_countries.html).
+  It can be another SpatVector, but the structure must be identical to
+  [`faunabr::world_fauna`](https://wevertonbio.github.io/faunabr/reference/world_fauna.html),
+  with a column called `"country_code"` identifying the country codes.
 
 - progress_bar:
 
   (logical) whether to display a progress bar during processing. If
-  TRUE, the 'pbapply' package must be installed. Default is `FALSE`.
+  `TRUE`, the `'pbapply'` package must be installed. Default is `FALSE`.
 
 - verbose:
 
@@ -127,8 +129,20 @@ functions in RuHere, `TRUE` indicates that the record passed this test
 and is eligible for retention; `FALSE` indicates it failed and is
 flagged as potentially problematic, and can be removed using
 [`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md).
-Records for species not found in the `faunabr` data will have `NA` in
-the `faunabr_flag` column.
+Records for species not found in the `faunabr` data, or lacking
+distribution information in the catalogue, will have `NA` in the
+`faunabr_flag` column.
+
+## Details
+
+For some taxonomic groups in the Catálogo Taxonômico da Fauna do Brasil
+(e.g., amphibians and several invertebrate groups), a substantial
+proportion of valid species entries lack documented state (`states`) or
+country (`countryCode`) distribution records. When a species is present
+in the catalogue but lacks distribution information for the enabled
+spatial filters (`by_state` and/or `by_country`), its records cannot be
+validated and are assigned `NA` in `faunabr_flag` (consistent with
+species absent from the catalogue).
 
 ## Examples
 

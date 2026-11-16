@@ -50,6 +50,16 @@
   [`flag_year()`](https://wevertonbio.github.io/RuHere/reference/flag_year.md):
   Standardize input argument checks, suppress numeric coercion warnings,
   and ensure consistent return types when `return_invalid = TRUE`.
+- Handle missing distribution data as `NA` and use `fill = TRUE` in
+  [`flag_faunabr()`](https://wevertonbio.github.io/RuHere/reference/flag_faunabr.md)
+  and
+  [`flag_florabr()`](https://wevertonbio.github.io/RuHere/reference/flag_florabr.md)
+  (Issue [\#23](https://github.com/wevertonbio/RuHere/issues/23))
+- Resolve origin/column bugs and optimize spatial checks in
+  [`flag_bien()`](https://wevertonbio.github.io/RuHere/reference/flag_bien.md),
+  [`flag_iucn()`](https://wevertonbio.github.io/RuHere/reference/flag_iucn.md),
+  and
+  [`flag_wcvp()`](https://wevertonbio.github.io/RuHere/reference/flag_wcvp.md).
 
 ## RuHere 1.1.1 (October 2026)
 

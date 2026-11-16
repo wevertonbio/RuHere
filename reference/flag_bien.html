@@ -85,7 +85,7 @@ distribution (plus optional buffer) for the species in the BIEN dataset.</p>
 
 <dl><dt id="arg-data-dir">data_dir<a class="anchor" aria-label="anchor" href="#arg-data-dir"></a></dt>
 <dd><p>(character) <strong>Required</strong> directory path where the <code>BIEN</code>
-data is saved</p></dd>
+data is saved.</p></dd>
 
 
 <dt id="arg-occ">occ<a class="anchor" aria-label="anchor" href="#arg-occ"></a></dt>
@@ -111,12 +111,12 @@ latitude values. Default is <code>"decimalLatitude"</code>.</p></dd>
 
 <dt id="arg-buffer">buffer<a class="anchor" aria-label="anchor" href="#arg-buffer"></a></dt>
 <dd><p>(numeric) buffer distance (in kilometers) to be applied
-around the region of distribution. Default is 20 km.</p></dd>
+around the region of distribution. Default is <code>10</code> km.</p></dd>
 
 
 <dt id="arg-progress-bar">progress_bar<a class="anchor" aria-label="anchor" href="#arg-progress-bar"></a></dt>
 <dd><p>(logical) whether to display a progress bar during
-processing. If TRUE, the 'pbapply' package must be installed. Default is
+processing. If <code>TRUE</code>, the <code>'pbapply'</code> package must be installed. Default is
 <code>FALSE</code>.</p></dd>
 
 
@@ -135,8 +135,8 @@ data. As with all other flagging functions in RuHere, <code>TRUE</code>
 indicates that the record passed this test and is eligible for retention;
 <code>FALSE</code> indicates it failed and is flagged as potentially problematic,
 and can be removed using <code><a href="remove_flagged.html">remove_flagged()</a></code>. Records for species not
-found in the <code>BIEN</code> data will have <code>NA</code> in the <code>bien_flag</code>
-column.</p>
+found in the <code>BIEN</code> data (or with missing coordinates) will have
+<code>NA</code> in the <code>bien_flag</code> column.</p>
     </div>
 
     <div class="section level2">
@@ -153,7 +153,6 @@ column.</p>
 <span class="r-in"><span><span class="co"># Flag records using BIEN specialist information</span></span></span>
 <span class="r-in"><span><span class="va">occ_bien</span> <span class="op">&lt;-</span> <span class="fu">flag_bien</span><span class="op">(</span>data_dir <span class="op">=</span> <span class="va">dataset_dir</span>, occ <span class="op">=</span> <span class="va">occ</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Checking the distribution from 1 of 1 species</span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

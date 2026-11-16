@@ -113,6 +113,10 @@ records_basic <- get_idigbio(species = "Arecaceae")
 records_multiple <- get_idigbio(
   species = c("Araucaria angustifolia"),
   limit = 100)
+#> Warning: Error during API request: HTTP failure: 500
+#> Error message from API server: {"error":"Internal Server Error"}
+#> Error: HTTP failure: 500
+#> Error message from API server: {"error":"Internal Server Error"}
 
 ## save results as a compressed RDS file
 records_saved_rds <- get_idigbio(
@@ -123,6 +127,6 @@ records_saved_rds <- get_idigbio(
   save = TRUE,
   compress = TRUE,
   file.format = "rds")
-#> Writing /tmp/Rtmpo8Yq0h/anacardiaceae_records.rds on disk.
+#> Writing /tmp/RtmpXSzbvQ/anacardiaceae_records.rds on disk.
 # }
 ```

@@ -1,12 +1,12 @@
 # Identify records outside natural ranges according to Flora e Funga do Brasil
 
 Flags occurrence records based on known distribution data from the Flora
-e Funga do Brasil (florabr) data. This function checks if an occurrence
-point for a given species falls within its documented distribution,
-allowing for user-defined buffers around Brazilian states, biomes, or
-the entire country. Records are flagged as `TRUE` if they fall within
-the specified range for the distribution information available in the
-`florabr` data.
+e Funga do Brasil (`florabr`) data. This function checks if an
+occurrence point for a given species falls within its documented
+distribution, allowing for user-defined buffers around Brazilian states,
+biomes, or the entire country. Records are flagged as `TRUE` if they
+fall within the specified range for the distribution information
+available in the `florabr` data.
 
 ## Usage
 
@@ -39,13 +39,14 @@ flag_florabr(
 
 - data_dir:
 
-  (character) directory path where the `florabr` data is saved
+  (character) directory path where the `florabr` data is saved.
   **Required.**
 
 - occ:
 
-  (data.frame) a data frame containing the occurrence records to be
-  flagged. Must contain columns for species, longitude, and latitude.
+  (data.frame or data.table) a data frame containing the occurrence
+  records to be flagged. Must contain columns for species, longitude,
+  and latitude.
 
 - species:
 
@@ -102,7 +103,7 @@ flag_florabr(
 
 - state_vect:
 
-  (SpatVector) qn optional custom simple features (`sf`) vector
+  (SpatVector) an optional custom spatial vector (`SpatVector`)
   representing Brazilian states/regions. If `NULL`, uses the default
   data loaded by `florabr`. Default is `NULL`.
 
@@ -114,7 +115,7 @@ flag_florabr(
 
 - biome_vect:
 
-  (SpatVector) an optional custom simple features (`sf`) vector
+  (SpatVector) an optional custom spatial vector (`SpatVector`)
   representing Brazilian biomes. If `NULL`, uses the default data loaded
   by `florabr`. Default is `NULL`.
 
@@ -126,7 +127,7 @@ flag_florabr(
 
 - br_vect:
 
-  (SpatVector) an optional custom simple features (`sf`) vector
+  (SpatVector) an optional custom spatial vector (`SpatVector`)
   representing the entire Brazilian boundary. If `NULL`, uses the
   default data loaded by `florabr`. Default is `NULL`.
 
@@ -139,7 +140,7 @@ flag_florabr(
 - progress_bar:
 
   (logical) whether to display a progress bar during processing. If
-  TRUE, the 'pbapply' package must be installed. Default is `FALSE`.
+  `TRUE`, the `'pbapply'` package must be installed. Default is `FALSE`.
 
 - verbose:
 
@@ -156,8 +157,20 @@ functions in RuHere, `TRUE` indicates that the record passed this test
 and is eligible for retention; `FALSE` indicates it failed and is
 flagged as potentially problematic, and can be removed using
 [`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md).
-Records for species not found in the `florabr` data will have `NA` in
-the `florabr_flag` column.
+Records for species not found in the `florabr` data, or lacking
+distribution information in the catalogue, will have `NA` in the
+`florabr_flag` column.
+
+## Details
+
+For some taxonomic groups in the Flora e Funga do Brasil (e.g., algae,
+fungi, and certain bryophyte or angiosperm groups), a substantial
+proportion of valid species entries lack documented state (`states`),
+biome (`biome`), or endemism (`endemism`) distribution records. When a
+species is present in the catalogue but lacks distribution information
+for the enabled spatial filters (`by_state`, `by_biome`, and/or
+`by_endemism`), its records cannot be validated and are assigned `NA` in
+`florabr_flag` (consistent with species absent from the catalogue).
 
 ## Examples
 

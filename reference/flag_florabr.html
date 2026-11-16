@@ -60,7 +60,7 @@ florabr data."><meta property="og:image" content="https://wevertonbio.github.io/
 
     <div class="ref-description section level2">
     <p>Flags occurrence records based on known distribution data
-from the Flora e Funga do Brasil (florabr) data. This function checks if an
+from the Flora e Funga do Brasil (<code>florabr</code>) data. This function checks if an
 occurrence point for a given species falls within its documented distribution,
 allowing for user-defined buffers around Brazilian states, biomes, or the
 entire country. Records are flagged as <code>TRUE</code> if they fall within
@@ -100,12 +100,13 @@ the specified range for the distribution information available in the
 
 <dl><dt id="arg-data-dir">data_dir<a class="anchor" aria-label="anchor" href="#arg-data-dir"></a></dt>
 <dd><p>(character) directory path where the <code>florabr</code> data is
-saved <strong>Required.</strong></p></dd>
+saved. <strong>Required.</strong></p></dd>
 
 
 <dt id="arg-occ">occ<a class="anchor" aria-label="anchor" href="#arg-occ"></a></dt>
-<dd><p>(data.frame) a data frame containing the occurrence records to be
-flagged. Must contain columns for species, longitude, and latitude.</p></dd>
+<dd><p>(data.frame or data.table) a data frame containing the occurrence
+records to be flagged. Must contain columns for species, longitude, and
+latitude.</p></dd>
 
 
 <dt id="arg-species">species<a class="anchor" aria-label="anchor" href="#arg-species"></a></dt>
@@ -162,8 +163,8 @@ around the entire Brazilian boundary. Default is 20 km.</p></dd>
 
 
 <dt id="arg-state-vect">state_vect<a class="anchor" aria-label="anchor" href="#arg-state-vect"></a></dt>
-<dd><p>(SpatVector) qn optional custom simple features
-(<code>sf</code>) vector representing Brazilian states/regions. If <code>NULL</code>, uses the
+<dd><p>(SpatVector) an optional custom spatial vector
+(<code>SpatVector</code>) representing Brazilian states/regions. If <code>NULL</code>, uses the
 default data loaded by <code>florabr</code>. Default is <code>NULL</code>.</p></dd>
 
 
@@ -174,8 +175,8 @@ Default is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-biome-vect">biome_vect<a class="anchor" aria-label="anchor" href="#arg-biome-vect"></a></dt>
-<dd><p>(SpatVector) an optional custom simple features (<code>sf</code>)
-vector representing Brazilian biomes. If <code>NULL</code>, uses the default data
+<dd><p>(SpatVector) an optional custom spatial vector
+(<code>SpatVector</code>) representing Brazilian biomes. If <code>NULL</code>, uses the default data
 loaded by <code>florabr</code>. Default is <code>NULL</code>.</p></dd>
 
 
@@ -186,9 +187,9 @@ Default is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-br-vect">br_vect<a class="anchor" aria-label="anchor" href="#arg-br-vect"></a></dt>
-<dd><p>(SpatVector) an optional custom simple features (<code>sf</code>) vector
-representing the entire Brazilian boundary. If <code>NULL</code>, uses the default data
-loaded by <code>florabr</code>. Default is <code>NULL</code>.</p></dd>
+<dd><p>(SpatVector) an optional custom spatial vector
+(<code>SpatVector</code>) representing the entire Brazilian boundary. If <code>NULL</code>, uses
+the default data loaded by <code>florabr</code>. Default is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-keep-columns">keep_columns<a class="anchor" aria-label="anchor" href="#arg-keep-columns"></a></dt>
@@ -199,7 +200,7 @@ and the flag. Default is <code>TRUE</code>.</p></dd>
 
 <dt id="arg-progress-bar">progress_bar<a class="anchor" aria-label="anchor" href="#arg-progress-bar"></a></dt>
 <dd><p>(logical) whether to display a progress bar during
-processing. If TRUE, the 'pbapply' package must be installed. Default is
+processing. If <code>TRUE</code>, the <code>'pbapply'</code> package must be installed. Default is
 <code>FALSE</code>.</p></dd>
 
 
@@ -218,8 +219,19 @@ data. As with all other flagging functions in RuHere, <code>TRUE</code>
 indicates that the record passed this test and is eligible for retention;
 <code>FALSE</code> indicates it failed and is flagged as potentially problematic,
 and can be removed using <code><a href="remove_flagged.html">remove_flagged()</a></code>. Records for species not
-found in the <code>florabr</code> data will have <code>NA</code> in the
-<code>florabr_flag</code> column.</p>
+found in the <code>florabr</code> data, or lacking distribution information in the
+catalogue, will have <code>NA</code> in the <code>florabr_flag</code> column.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>For some taxonomic groups in the Flora e Funga do Brasil (e.g., algae,
+fungi, and certain bryophyte or angiosperm groups), a substantial proportion
+of valid species entries lack documented state (<code>states</code>), biome (<code>biome</code>),
+or endemism (<code>endemism</code>) distribution records. When a species is present in
+the catalogue but lacks distribution information for the enabled spatial
+filters (<code>by_state</code>, <code>by_biome</code>, and/or <code>by_endemism</code>), its records cannot be
+validated and are assigned <code>NA</code> in <code>florabr_flag</code> (consistent with species
+absent from the catalogue).</p>
     </div>
 
     <div class="section level2">
@@ -235,7 +247,6 @@ found in the <code>florabr</code> data will have <code>NA</code> in the
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Flag records using specialist information from Flora do Brasil</span></span></span>
 <span class="r-in"><span><span class="va">occ_flora</span> <span class="op">&lt;-</span> <span class="fu">flag_florabr</span><span class="op">(</span>data_dir <span class="op">=</span> <span class="va">dataset_dir</span>, occ <span class="op">=</span> <span class="va">occ</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

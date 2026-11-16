@@ -26,7 +26,8 @@ flag_bien(
 
 - data_dir:
 
-  (character) **Required** directory path where the `BIEN` data is saved
+  (character) **Required** directory path where the `BIEN` data is
+  saved.
 
 - occ:
 
@@ -52,12 +53,12 @@ flag_bien(
 - buffer:
 
   (numeric) buffer distance (in kilometers) to be applied around the
-  region of distribution. Default is 20 km.
+  region of distribution. Default is `10` km.
 
 - progress_bar:
 
   (logical) whether to display a progress bar during processing. If
-  TRUE, the 'pbapply' package must be installed. Default is `FALSE`.
+  `TRUE`, the `'pbapply'` package must be installed. Default is `FALSE`.
 
 - verbose:
 
@@ -74,8 +75,8 @@ functions in RuHere, `TRUE` indicates that the record passed this test
 and is eligible for retention; `FALSE` indicates it failed and is
 flagged as potentially problematic, and can be removed using
 [`remove_flagged()`](https://wevertonbio.github.io/RuHere/reference/remove_flagged.md).
-Records for species not found in the `BIEN` data will have `NA` in the
-`bien_flag` column.
+Records for species not found in the `BIEN` data (or with missing
+coordinates) will have `NA` in the `bien_flag` column.
 
 ## Examples
 
