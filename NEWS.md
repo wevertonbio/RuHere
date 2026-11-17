@@ -12,6 +12,7 @@
 * Handle missing distribution data as `NA` and use `fill = TRUE` in `flag_faunabr()` and `flag_florabr()` (Issue #23)
 * Resolve origin/column bugs and optimize spatial checks in `flag_bien()`, `flag_iucn()`, and `flag_wcvp()`.
 * In `standardize_countries()` and `standardize_states()`, resolve ambiguous fuzzy matches via coordinates and handle all-NA coordinate columns to prevent row expansion.
+* Prevent duplicate field name errors in `map_here()`.
 
 # RuHere 1.1.1 (October 2026)
 
