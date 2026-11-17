@@ -66,6 +66,8 @@
   [`standardize_states()`](https://wevertonbio.github.io/RuHere/reference/standardize_states.md),
   resolve ambiguous fuzzy matches via coordinates and handle all-NA
   coordinate columns to prevent row expansion.
+- Prevent duplicate field name errors in
+  [`map_here()`](https://wevertonbio.github.io/RuHere/reference/map_here.md).
 
 ## RuHere 1.1.1 (October 2026)
 

@@ -123,6 +123,9 @@ records_saved_rds <- get_idigbio(
   save = TRUE,
   compress = TRUE,
   file.format = "rds")
-#> Writing /tmp/Rtmp6QPqIX/anacardiaceae_records.rds on disk.
+#> Warning: Error during API request: HTTP failure: 500
+#> Error message from API server: {"error":"Internal Server Error"}
+#> Error: HTTP failure: 500
+#> Error message from API server: {"error":"Internal Server Error"}
 # }
 ```
