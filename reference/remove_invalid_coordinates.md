@@ -1,9 +1,9 @@
 # Identify and remove invalid coordinates
 
 This function identifies and removes invalid geographic coordinates,
-including non-numeric values, NA or empty values, and coordinates
-outside the valid range for Earth (latitude \> 90 or \< -90, and
-longitude \> 180 or \< -180).
+including non-numeric values, `NA`, `NaN`, `Inf`, or empty values, and
+coordinates outside the valid range for Earth (latitude \> 90 or \< -90,
+and longitude \> 180 or \< -180).
 
 ## Usage
 
@@ -71,9 +71,10 @@ remove_invalid_coordinates(
 
 ## Value
 
-If `return_invalid = FALSE`, returns a `data.frame` containing only
-records with valid coordinates. If `return_invalid = TRUE` (default),
-returns a list with two elements:
+If `return_invalid = FALSE`, returns an object of the same class as
+`occ` (`data.frame` or `data.table`) containing only records with valid
+coordinates. If `return_invalid = TRUE` (default), returns a list with
+two elements:
 
 - `valid` – the dataset with valid coordinates.
 
@@ -84,9 +85,24 @@ returns a list with two elements:
 
 ``` r
 # Create fake data example
-occ <- data.frame("species" = "spp",
-                  "decimalLongitude" = c(10, -190, 20, 50, NA),
-                  "decimalLatitude" = c(20, 20, 240, 50, NA))
+occ <- data.frame(
+  species = "Araucaria angustifolia",
+  decimalLongitude = c(-49.2, -190, -50.1, -48.5, NA),
+  decimalLatitude  = c(-25.4, -25.0, 240, -26.1, NA)
+)
+
 # Split valid and invalid coordinates
-occ_valid <- remove_invalid_coordinates(occ)
+res <- remove_invalid_coordinates(occ)
+res$valid
+#>                  species decimalLongitude decimalLatitude
+#> 1 Araucaria angustifolia            -49.2           -25.4
+#> 4 Araucaria angustifolia            -48.5           -26.1
+res$invalid
+#>                  species decimalLongitude decimalLatitude invalid_coordinates
+#> 2 Araucaria angustifolia           -190.0             -25               FALSE
+#> 3 Araucaria angustifolia            -50.1             240               FALSE
+#> 5 Araucaria angustifolia               NA              NA               FALSE
+
+# Return only valid records
+occ_valid <- remove_invalid_coordinates(occ, return_invalid = FALSE)
 ```

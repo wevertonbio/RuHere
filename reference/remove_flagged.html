@@ -79,38 +79,41 @@ or removing specific records, regardless of their flag values.</p>
 
 <dl><dt id="arg-occ">occ<a class="anchor" aria-label="anchor" href="#arg-occ"></a></dt>
 <dd><p>(data.frame or data.table) a dataset with occurrence records that
-has been processed by two or more flagging functions. See details.</p></dd>
+has been processed by one or more flagging functions. See <em>Details</em>.</p></dd>
 
 
 <dt id="arg-flags">flags<a class="anchor" aria-label="anchor" href="#arg-flags"></a></dt>
 <dd><p>(character) a character vector with the names of the flag
-columns to be used for filtering records. See <em>details</em> for the available
-options. Default is "all".</p></dd>
+columns to be used for filtering records. See <em>Details</em> for the available
+options. Default is <code>"all"</code>.</p></dd>
 
 
 <dt id="arg-additional-flags">additional_flags<a class="anchor" aria-label="anchor" href="#arg-additional-flags"></a></dt>
-<dd><p>(character) an optional named character vector with
-the names of additional logical columns to be used as flags. Default is <code>NULL</code>.</p></dd>
+<dd><p>(character) an optional <strong>named</strong> character vector
+where the values correspond to additional logical flag columns in <code>occ</code> and
+the names are human-readable labels used when saving flagged records
+(e.g., <code>c("Custom flag" = "custom_flag")</code>). Default is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-force-keep">force_keep<a class="anchor" aria-label="anchor" href="#arg-force-keep"></a></dt>
-<dd><p>(character) an optional character vector with the IDs of
-records that were flagged but should still be kept. Default is <code>NULL</code>.</p></dd>
+<dd><p>(character) an optional vector with the IDs of records
+that were flagged (<code>FALSE</code>) but should still be kept. Default is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-force-remove">force_remove<a class="anchor" aria-label="anchor" href="#arg-force-remove"></a></dt>
-<dd><p>(character) an optional character vector with the IDs of
-records that were not flagged but should still be removed. Default is <code>NULL</code>.</p></dd>
+<dd><p>(character) an optional vector with the IDs of records
+that were not flagged (<code>TRUE</code>) but should still be removed. Default is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-remove-na">remove_NA<a class="anchor" aria-label="anchor" href="#arg-remove-na"></a></dt>
-<dd><p>(logical) whether to remove records that have NA in the
-flags specified. Default is FALSE.</p></dd>
+<dd><p>(logical) whether to remove records that have <code>NA</code> in the
+specified flags. Default is <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-column-id">column_id<a class="anchor" aria-label="anchor" href="#arg-column-id"></a></dt>
 <dd><p>(character) the name of the column containing unique record
-IDs. Required if <code>force_keep</code> or <code>force_remove</code> is used. Default is <code>NULL</code>.</p></dd>
+IDs. Required if <code>force_keep</code> or <code>force_remove</code> is used. Default is
+<code>"record_id"</code>.</p></dd>
 
 
 <dt id="arg-save-flagged">save_flagged<a class="anchor" aria-label="anchor" href="#arg-save-flagged"></a></dt>
@@ -124,7 +127,7 @@ flagged records will be saved. Only used when <code>save_flagged = TRUE</code>.<
 
 
 <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
-<dd><p>(logical)  whether to overwrite existing files in
+<dd><p>(logical) whether to overwrite existing files in
 <code>output_dir</code>. Only used when <code>save_flagged = TRUE</code>. Default is <code>FALSE</code>.</p></dd>
 
 
@@ -136,15 +139,19 @@ Default is <code>".gz"</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>data.frame</code> containing only the valid (kept) records according to the
-flags and additional criteria.</p>
+    <p>An object of the same class as <code>occ</code> (<code>data.frame</code> or <code>data.table</code>)
+containing only the valid (kept) records according to the flags and
+additional criteria.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The following flags are available: correct_country, correct_state, cultivated,
-fossil, inaturalist, faunabr, florabr, wcvp, iucn, duplicated, thin_geo,
-thin_env, .val, .equ, .zer, .cap, .cen, .sea, .urb, .otl, .gbf, .inst, and
-.aohi.</p>
+    <p>The following built-in flags are recognized when <code>flags = "all"</code> (or can be
+passed individually without the <code>_flag</code> suffix): <code>correct_country</code>,
+<code>correct_state</code>, <code>year</code>, <code>duplicated</code>, <code>fossil</code>, <code>cultivated</code>,
+<code>inaturalist</code>, <code>florabr</code>, <code>faunabr</code>, <code>wcvp</code>, <code>iucn</code>, <code>bien</code>, <code>thin_env</code>,
+<code>thin_geo</code>, <code>consensus</code>, as well as <code>CoordinateCleaner</code> flags (<code>.val</code>,
+<code>.equ</code>, <code>.zer</code>, <code>.cap</code>, <code>.cen</code>, <code>.sea</code>, <code>.urb</code>, <code>.otl</code>, <code>.gbf</code>, <code>.inst</code>,
+and <code>.aohi</code>).</p>
     </div>
 
     <div class="section level2">
@@ -163,7 +170,7 @@ thin_env, .val, .equ, .zer, .cap, .cen, .sea, .urb, .otl, .gbf, .inst, and
 <span class="r-in"><span><span class="co"># Remove flagged records but keep some flagged ones</span></span></span>
 <span class="r-in"><span><span class="va">to_keep</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gbif_14501"</span>, <span class="st">"gbif_12002"</span>, <span class="st">"gbif_5168"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">occ_valid3</span> <span class="op">&lt;-</span> <span class="fu">remove_flagged</span><span class="op">(</span>occ <span class="op">=</span> <span class="va">occ_flagged</span>,</span></span>
-<span class="r-in"><span>                            force_keep <span class="op">=</span> <span class="va">to_keep</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                             force_keep <span class="op">=</span> <span class="va">to_keep</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

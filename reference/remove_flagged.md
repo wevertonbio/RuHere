@@ -27,38 +27,41 @@ remove_flagged(
 - occ:
 
   (data.frame or data.table) a dataset with occurrence records that has
-  been processed by two or more flagging functions. See details.
+  been processed by one or more flagging functions. See *Details*.
 
 - flags:
 
   (character) a character vector with the names of the flag columns to
-  be used for filtering records. See *details* for the available
-  options. Default is "all".
+  be used for filtering records. See *Details* for the available
+  options. Default is `"all"`.
 
 - additional_flags:
 
-  (character) an optional named character vector with the names of
-  additional logical columns to be used as flags. Default is `NULL`.
+  (character) an optional **named** character vector where the values
+  correspond to additional logical flag columns in `occ` and the names
+  are human-readable labels used when saving flagged records (e.g.,
+  `c("Custom flag" = "custom_flag")`). Default is `NULL`.
 
 - force_keep:
 
-  (character) an optional character vector with the IDs of records that
-  were flagged but should still be kept. Default is `NULL`.
+  (character) an optional vector with the IDs of records that were
+  flagged (`FALSE`) but should still be kept. Default is `NULL`.
 
 - force_remove:
 
-  (character) an optional character vector with the IDs of records that
-  were not flagged but should still be removed. Default is `NULL`.
+  (character) an optional vector with the IDs of records that were not
+  flagged (`TRUE`) but should still be removed. Default is `NULL`.
 
 - remove_NA:
 
-  (logical) whether to remove records that have NA in the flags
-  specified. Default is FALSE.
+  (logical) whether to remove records that have `NA` in the specified
+  flags. Default is `FALSE`.
 
 - column_id:
 
   (character) the name of the column containing unique record IDs.
-  Required if `force_keep` or `force_remove` is used. Default is `NULL`.
+  Required if `force_keep` or `force_remove` is used. Default is
+  `"record_id"`.
 
 - save_flagged:
 
@@ -83,15 +86,19 @@ remove_flagged(
 
 ## Value
 
-A `data.frame` containing only the valid (kept) records according to the
-flags and additional criteria.
+An object of the same class as `occ` (`data.frame` or `data.table`)
+containing only the valid (kept) records according to the flags and
+additional criteria.
 
 ## Details
 
-The following flags are available: correct_country, correct_state,
-cultivated, fossil, inaturalist, faunabr, florabr, wcvp, iucn,
-duplicated, thin_geo, thin_env, .val, .equ, .zer, .cap, .cen, .sea,
-.urb, .otl, .gbf, .inst, and .aohi.
+The following built-in flags are recognized when `flags = "all"` (or can
+be passed individually without the `_flag` suffix): `correct_country`,
+`correct_state`, `year`, `duplicated`, `fossil`, `cultivated`,
+`inaturalist`, `florabr`, `faunabr`, `wcvp`, `iucn`, `bien`, `thin_env`,
+`thin_geo`, `consensus`, as well as `CoordinateCleaner` flags (`.val`,
+`.equ`, `.zer`, `.cap`, `.cen`, `.sea`, `.urb`, `.otl`, `.gbf`, `.inst`,
+and `.aohi`).
 
 ## Examples
 
@@ -110,5 +117,5 @@ occ_valid2 <- remove_flagged(occ = occ_flagged,
 # Remove flagged records but keep some flagged ones
 to_keep <- c("gbif_14501", "gbif_12002", "gbif_5168")
 occ_valid3 <- remove_flagged(occ = occ_flagged,
-                            force_keep = to_keep)
+                             force_keep = to_keep)
 ```
