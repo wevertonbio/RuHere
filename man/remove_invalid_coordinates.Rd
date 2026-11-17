@@ -46,8 +46,9 @@ Default is \code{".gz"}.}
 Default is \code{FALSE}.}
 }
 \value{
-If \code{return_invalid = FALSE}, returns a \code{data.frame} containing only records
-with valid coordinates.
+If \code{return_invalid = FALSE}, returns an object of the same class as \code{occ}
+(\code{data.frame} or \code{data.table}) containing only records with valid
+coordinates.
 If \code{return_invalid = TRUE} (default), returns a list with two elements:
 \itemize{
 \item \code{valid} – the dataset with valid coordinates.
@@ -57,14 +58,23 @@ If \code{return_invalid = TRUE} (default), returns a list with two elements:
 }
 \description{
 This function identifies and removes invalid geographic coordinates,
-including non-numeric values, NA or empty values, and coordinates outside the
-valid range for Earth (latitude > 90 or < -90, and longitude > 180 or < -180).
+including non-numeric values, \code{NA}, \code{NaN}, \code{Inf}, or empty values, and
+coordinates outside the valid range for Earth (latitude > 90 or < -90, and
+longitude > 180 or < -180).
 }
 \examples{
 # Create fake data example
-occ <- data.frame("species" = "spp",
-                  "decimalLongitude" = c(10, -190, 20, 50, NA),
-                  "decimalLatitude" = c(20, 20, 240, 50, NA))
+occ <- data.frame(
+  species = "Araucaria angustifolia",
+  decimalLongitude = c(-49.2, -190, -50.1, -48.5, NA),
+  decimalLatitude  = c(-25.4, -25.0, 240, -26.1, NA)
+)
+
 # Split valid and invalid coordinates
-occ_valid <- remove_invalid_coordinates(occ)
+res <- remove_invalid_coordinates(occ)
+res$valid
+res$invalid
+
+# Return only valid records
+occ_valid <- remove_invalid_coordinates(occ, return_invalid = FALSE)
 }

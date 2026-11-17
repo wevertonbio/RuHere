@@ -6,43 +6,49 @@
 #' or removing specific records, regardless of their flag values.
 #'
 #' @param occ (data.frame or data.table) a dataset with occurrence records that
-#' has been processed by two or more flagging functions. See details.
+#' has been processed by one or more flagging functions. See *Details*.
 #' @param flags (character) a character vector with the names of the flag
-#' columns to be used for filtering records. See *details* for the available
-#' options. Default is "all".
-#' @param additional_flags (character) an optional named character vector with
-#' the names of additional logical columns to be used as flags. Default is `NULL`.
-#' @param force_keep (character) an optional character vector with the IDs of
-#' records that were flagged but should still be kept. Default is `NULL`.
-#' @param force_remove (character) an optional character vector with the IDs of
-#' records that were not flagged but should still be removed. Default is `NULL`.
-#' @param remove_NA (logical) whether to remove records that have NA in the
-#' flags specified. Default is FALSE.
+#' columns to be used for filtering records. See *Details* for the available
+#' options. Default is `"all"`.
+#' @param additional_flags (character) an optional **named** character vector
+#' where the values correspond to additional logical flag columns in `occ` and
+#' the names are human-readable labels used when saving flagged records
+#' (e.g., `c("Custom flag" = "custom_flag")`). Default is `NULL`.
+#' @param force_keep (character) an optional vector with the IDs of records
+#' that were flagged (`FALSE`) but should still be kept. Default is `NULL`.
+#' @param force_remove (character) an optional vector with the IDs of records
+#' that were not flagged (`TRUE`) but should still be removed. Default is `NULL`.
+#' @param remove_NA (logical) whether to remove records that have `NA` in the
+#' specified flags. Default is `FALSE`.
 #' @param column_id (character) the name of the column containing unique record
-#' IDs. Required if `force_keep` or `force_remove` is used. Default is `NULL`.
+#' IDs. Required if `force_keep` or `force_remove` is used. Default is
+#' `"record_id"`.
 #' @param save_flagged (logical) whether to save the flagged (removed) records.
 #' If `TRUE`, an `output_dir` must be provided. Default is `FALSE`.
 #' @param output_dir (character) path to an existing directory where removed
 #' flagged records will be saved. Only used when `save_flagged = TRUE`.
-#' @param overwrite (logical)  whether to overwrite existing files in
+#' @param overwrite (logical) whether to overwrite existing files in
 #' `output_dir`. Only used when `save_flagged = TRUE`. Default is `FALSE`.
 #' @param output_format (character) output format for saving removed records.
 #' Options are `".csv"` or `".gz"`. Only used when `save_flagged = TRUE`.
 #' Default is `".gz"`.
 #'
 #' @details
-#' The following flags are available: correct_country, correct_state, cultivated,
-#' fossil, inaturalist, faunabr, florabr, wcvp, iucn, duplicated, thin_geo,
-#' thin_env, .val, .equ, .zer, .cap, .cen, .sea, .urb, .otl, .gbf, .inst, and
-#' .aohi.
-#'
+#' The following built-in flags are recognized when `flags = "all"` (or can be
+#' passed individually without the `_flag` suffix): `correct_country`,
+#' `correct_state`, `year`, `duplicated`, `fossil`, `cultivated`,
+#' `inaturalist`, `florabr`, `faunabr`, `wcvp`, `iucn`, `bien`, `thin_env`,
+#' `thin_geo`, `consensus`, as well as `CoordinateCleaner` flags (`.val`,
+#' `.equ`, `.zer`, `.cap`, `.cen`, `.sea`, `.urb`, `.otl`, `.gbf`, `.inst`,
+#' and `.aohi`).
 #'
 #' @returns
-#' A \code{data.frame} containing only the valid (kept) records according to the
-#' flags and additional criteria.
+#' An object of the same class as `occ` (`data.frame` or `data.table`)
+#' containing only the valid (kept) records according to the flags and
+#' additional criteria.
 #'
 #' @importFrom stats setNames
-#' @importFrom data.table fwrite
+#' @importFrom data.table fwrite is.data.table as.data.table
 #'
 #' @export
 #'
@@ -61,7 +67,7 @@
 #' # Remove flagged records but keep some flagged ones
 #' to_keep <- c("gbif_14501", "gbif_12002", "gbif_5168")
 #' occ_valid3 <- remove_flagged(occ = occ_flagged,
-#'                             force_keep = to_keep)
+#'                              force_keep = to_keep)
 remove_flagged <- function(occ,
                            flags = "all",
                            additional_flags = NULL,
@@ -72,28 +78,38 @@ remove_flagged <- function(occ,
                            save_flagged = FALSE,
                            output_dir = NULL,
                            overwrite = FALSE,
-                           output_format = ".gz"){
-  ## --- Argument checking ------------------------------------------------------
+                           output_format = ".gz") {
+  # ---- ARGUMENT CHECKING ----
+  is_single_str <- function(x) {
+    is.character(x) && length(x) == 1L && !is.na(x) && nzchar(trimws(x))
+  }
+  is_single_bool <- function(x) {
+    is.logical(x) && length(x) == 1L && !is.na(x)
+  }
 
-  # occ must be a data.frame or data.table
+  # 1. Check occ
+  if (missing(occ) || is.null(occ)) {
+    stop("'occ' must be specified (must not be NULL or missing).", call. = FALSE)
+  }
   if (!inherits(occ, c("data.frame", "data.table"))) {
-    stop("'occ' must be a data.frame or data.table.", call. = FALSE)
+    stop("'occ' must be a data.frame or data.table, not ",
+         paste(class(occ), collapse = "/"), ".", call. = FALSE)
+  }
+  if (nrow(occ) == 0L) {
+    stop("'occ' is empty. Please provide a dataset with occurrence records.",
+         call. = FALSE)
   }
 
-  # Force occ to be a dataframe
-  if (inherits(occ, "data.table")) {
-    occ <- as.data.frame(occ)
-  }
+  was_dt <- data.table::is.data.table(occ)
+  df <- if (was_dt) as.data.frame(occ) else occ
 
-  # flags must be NULL or a character vector
+  # 2. Check flags
   if (!is.null(flags)) {
-    if (!is.character(flags)) {
-      stop("'flags' must be a character vector.", call. = FALSE)
+    if (!is.character(flags) || length(flags) == 0L || any(is.na(flags))) {
+      stop("'flags' must be a non-empty character vector without NAs or NULL.", call. = FALSE)
     }
 
-    # Check if "all" was requested to define the default flag list
     is_all <- "all" %in% flags
-
     if (is_all) {
       flags <- c("correct_country", "correct_state",
                  "year", "duplicated", "fossil", "cultivated", "inaturalist",
@@ -104,207 +120,185 @@ remove_flagged <- function(occ,
                  ".gbf", ".inst", ".aohi")
     }
 
-    # Add _flag suffix for specific columns
-    to_paste <- c("florabr", "faunabr", "wcvp", "iucn", "bien", "cultivated", "fossil", "year",
-                  "inaturalist", "duplicated", "thin_env", "thin_geo", "consensus")
-
+    to_paste <- c("florabr", "faunabr", "wcvp", "iucn", "bien", "cultivated",
+                  "fossil", "year", "inaturalist", "duplicated",
+                  "thin_env", "thin_geo", "consensus")
     flags[flags %in% to_paste] <- paste0(flags[flags %in% to_paste], "_flag")
 
-    # Conditional treatment for missing flags
     if (is_all) {
-      # If "all" is used, silently drop the flags that do not exist in 'occ'
-      flags <- flags[flags %in% names(occ)]
+      flags <- intersect(flags, names(df))
     } else {
-      # If the user provided custom flags, keep strict validation (throw an error if missing)
-      missing_flags <- flags[!flags %in% names(occ)]
-      if (length(missing_flags) > 0) {
-        stop(
-          "The following flags do not exist in 'occ': ",
-          paste(missing_flags, collapse = ", "),
-          call. = FALSE
-        )
+      missing_flags <- setdiff(flags, names(df))
+      if (length(missing_flags) > 0L) {
+        stop("The following flags do not exist in 'occ': ",
+             paste(missing_flags, collapse = ", "), call. = FALSE)
       }
+      flags <- unique(flags)
     }
+  } else {
+    flags <- character(0L)
   }
 
-  # additional_flags must be NULL or a character vector
-  if (!is.null(additional_flags) && !is.character(additional_flags)) {
-    stop("'additional_flags' must be a character vector.", call. = FALSE)
-  }
-
-  # if additional_flags provided, ensure they exist and are logical
+  # 3. Check additional_flags (named vector: names = labels, values = columns in occ)
   if (!is.null(additional_flags)) {
-    if (is.null(names(additional_flags))) {
-      stop("'additional_flags' must be a named character (i.e., 'user_flag' = 'User flag')")
+    if (!is.character(additional_flags) || length(additional_flags) == 0L || any(is.na(additional_flags))) {
+      stop("'additional_flags' must be a non-empty named character vector or NULL.", call. = FALSE)
     }
-    missing_extra <- additional_flags[!additional_flags %in% names(occ)]
-    if (length(missing_extra) > 0) {
-      stop(
-        "These additional flag columns do not exist in 'occ': ",
-        paste(missing_extra, collapse = ", "),
-        call. = FALSE
-      )
+    extra_labels <- names(additional_flags)
+    if (is.null(extra_labels) || any(!nzchar(trimws(extra_labels)))) {
+      stop("'additional_flags' must be a named character vector (e.g., c('User flag' = 'user_flag')).",
+           call. = FALSE)
     }
-
-    # ensure they are logical
-    non_logical <- additional_flags[
-      !sapply(occ[, additional_flags, drop = FALSE], is.logical)
-    ]
-    if (length(non_logical) > 0) {
-      stop(
-        "These additional flag columns are not logical: ",
-        paste(non_logical, collapse = ", "),
-        call. = FALSE
-      )
+    extra_cols <- unname(additional_flags)
+    missing_extra <- setdiff(extra_cols, names(df))
+    if (length(missing_extra) > 0L) {
+      stop("These additional flag columns do not exist in 'occ': ",
+           paste(missing_extra, collapse = ", "), call. = FALSE)
+    }
+    non_logical <- extra_cols[!vapply(df[, extra_cols, drop = FALSE], is.logical, logical(1L))]
+    if (length(non_logical) > 0L) {
+      stop("These additional flag columns are not logical: ",
+           paste(non_logical, collapse = ", "), call. = FALSE)
     }
   }
 
-  # force_keep must be NULL or character
-  if (!is.null(force_keep) && !is.character(force_keep)) {
-    stop("'force_keep' must be a character vector.", call. = FALSE)
+  # 4. Check force_keep, force_remove & column_id
+  if (!is.null(force_keep) && (!is.atomic(force_keep) || length(force_keep) == 0L)) {
+    stop("'force_keep' must be a non-empty vector or NULL.", call. = FALSE)
+  }
+  if (!is.null(force_remove) && (!is.atomic(force_remove) || length(force_remove) == 0L)) {
+    stop("'force_remove' must be a non-empty vector or NULL.", call. = FALSE)
   }
 
-  # force_remove must be NULL or character
-  if (!is.null(force_remove) && !is.character(force_remove)) {
-    stop("'force_remove' must be a character vector.", call. = FALSE)
-  }
-
-  # if forcing keep/remove, column_id is required
-  if ((!is.null(force_keep) || !is.null(force_remove)) && is.null(column_id)) {
-    stop(
-      "You must specify 'column_id' when using 'force_keep' or 'force_remove'.",
-      call. = FALSE
-    )
-  }
-
-  # check column_id
-  if (!is.null(column_id)) {
-    if (!is.character(column_id) || length(column_id) != 1) {
-      stop("'column_id' must be a single character string.", call. = FALSE)
+  if (!is.null(force_keep) || !is.null(force_remove)) {
+    if (!is_single_str(column_id)) {
+      stop("You must specify a valid 'column_id' when using 'force_keep' or 'force_remove'.",
+           call. = FALSE)
     }
-    if (!column_id %in% names(occ)) {
-      stop("'column_id' does not exist in 'occ'.", call. = FALSE)
+    if (!column_id %in% names(df)) {
+      stop("Column '", column_id, "' specified in 'column_id' does not exist in 'occ'.",
+           call. = FALSE)
     }
   }
 
-  # save_flagged must be logical
-  if (!is.logical(save_flagged) || length(save_flagged) != 1) {
-    stop("'save_flagged' must be TRUE or FALSE.", call. = FALSE)
+  # 5. Check remove_NA & saving options
+  if (!is_single_bool(remove_NA)) {
+    stop("'remove_NA' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+  }
+  if (!is_single_bool(save_flagged)) {
+    stop("'save_flagged' must be a single logical value (TRUE or FALSE).", call. = FALSE)
   }
 
-  # check saving options
   if (save_flagged) {
-    # output_dir must exist
-    if (is.null(output_dir) || !is.character(output_dir)) {
+    if (!is_single_str(output_dir)) {
       stop("You must provide a valid 'output_dir' when 'save_flagged = TRUE'.", call. = FALSE)
     }
     if (!dir.exists(output_dir)) {
       stop("'output_dir' does not exist: ", output_dir, call. = FALSE)
     }
-
-    # check output_format
-    if (!output_format %in% c(".csv", ".gz")) {
+    if (!is_single_str(output_format) || !output_format %in% c(".csv", ".gz")) {
       stop("'output_format' must be either '.csv' or '.gz'.", call. = FALSE)
     }
-
-    # overwrite must be logical
-    if (!is.logical(overwrite) || length(overwrite) != 1) {
-      stop("'overwrite' must be TRUE or FALSE.", call. = FALSE)
+    if (!is_single_bool(overwrite)) {
+      stop("'overwrite' must be a single logical value (TRUE or FALSE).", call. = FALSE)
     }
   }
 
-  ## --- Processing flags -------------------------------------------------------
-
-  # Subset existing columns in occ
-  flags <- intersect(flags, colnames(occ))
-
-  # Change names of flags
+  # ---- PROCESSING FLAGS ----
   flag_names <- getExportedValue("RuHere", "flag_names")
 
-  # Additional flags
   if (!is.null(additional_flags)) {
-    flag_names <- c(flag_names, additional_flags)
-    flags <- c(flags, additional_flags)
+    extra_mapped <- stats::setNames(names(additional_flags), unname(additional_flags))
+    flag_names <- c(flag_names, extra_mapped)
+    flags <- unique(c(flags, unname(additional_flags)))
   }
 
-  # Handle force_remove
-  if (!is.null(force_remove)) {
-    # Cria a coluna de flag manual: TRUE = manter, FALSE = remover
-    occ$force_remove <- !(occ[[column_id]] %in% force_remove)
-
-    # Adiciona aos vetores de filtragem e nomenclatura de salvamento
-    flags <- c(flags, "force_remove")
-    flag_names <- c(flag_names, setNames("force_remove", "force_remove"))
+  # Add manual force_remove flag if provided
+  has_force_remove <- !is.null(force_remove)
+  if (has_force_remove) {
+    df$.force_remove_flag <- !(df[[column_id]] %in% force_remove)
+    flags <- c(flags, ".force_remove_flag")
+    flag_names <- c(flag_names, stats::setNames("force_remove", ".force_remove_flag"))
   }
 
-  # Handle force_keep
+  if (length(flags) == 0L) {
+    warning("No flag columns were found in 'occ'. Returning original dataset.",
+            call. = FALSE)
+    return(occ)
+  }
+
+  # Separate records forced to be kept (preserving row indices)
   if (!is.null(force_keep)) {
-    occ_keep <- occ[occ[[column_id]] %in% force_keep, ]
-    occ <- occ[!(occ[[column_id]] %in% force_keep), ]
-  }
-
-  # Handle NAs
-  if (remove_NA) {
-    occ[, flags][is.na(occ[, flags])] <- FALSE
-  } else {
-    occ[, flags][is.na(occ[, flags])] <- TRUE
-  }
-
-  # Create list with flagged records for each flag
-  occ_flagged <- list()
-  for (i in flags) {
-    occ_flagged[[i]] <- occ[!occ[[i]], ]
-  }
-
-  # Update flag names based on flag_names lookup
-  match_flags <- flag_names[match(names(occ_flagged), names(flag_names))]
-  # Se algum nome não for mapeado em flag_names, mantém o nome original da coluna
-  na_names <- is.na(match_flags)
-  match_flags[na_names] <- names(occ_flagged)[na_names]
-  names(occ_flagged) <- match_flags
-
-  # Remove flags with 0 records
-  occ_flagged <- occ_flagged[sapply(occ_flagged, function(i) nrow(i) > 0)]
-
-  # Filter valid records (all flags == TRUE)
-  occ_final <- occ[rowSums(occ[flags]) == length(flags), ]
-
-  # Restore force_keep records
-  if (!is.null(force_keep)) {
-    if (nrow(occ_keep) > 0) {
-      occ_final <- rbind(occ_final, occ_keep)
-    } else {
+    keep_mask <- df[[column_id]] %in% force_keep
+    if (!any(keep_mask)) {
       warning("None of the IDs provided in 'force_keep' were found in the dataset.\n",
-              "Keeping only unflagged records.")
+              "Keeping only unflagged records.", call. = FALSE)
     }
+    occ_keep <- df[keep_mask, , drop = FALSE]
+    df <- df[!keep_mask, , drop = FALSE]
+  } else {
+    occ_keep <- NULL
   }
 
-  # Remove temporary force_remove column from output if it was created
-  if ("force_remove" %in% names(occ_final)) {
-    occ_final$force_remove <- NULL
-  }
+  # Resolve NAs in flag columns (using drop = FALSE to support single-flag filtering)
+  flag_mat <- as.matrix(df[, flags, drop = FALSE])
+  flag_mat[is.na(flag_mat)] <- !remove_NA
 
-  # Save flagged records
-  if (save_flagged && length(occ_flagged) > 0) {
-    saved_flag_names <- names(occ_flagged)
-
-    p <- lapply(saved_flag_names, function(i) {
-      file.path(output_dir, paste0(i, output_format))
-    })
-
-    if (!overwrite) {
-      f_exists <- sapply(p, file.exists)
-      if (any(f_exists)) {
-        stop("Some flagged occurrences already exist in '", output_dir, "'.\n",
-             "Delete the file, change the folder or set 'overwrite = TRUE'")
+  # Save flagged records per category only when save_flagged = TRUE
+  if (save_flagged && nrow(df) > 0L) {
+    occ_flagged <- list()
+    for (col_f in flags) {
+      bad_rows <- !flag_mat[, col_f]
+      if (any(bad_rows)) {
+        sub_bad <- df[bad_rows, , drop = FALSE]
+        if (".force_remove_flag" %in% names(sub_bad)) {
+          sub_bad$.force_remove_flag <- NULL
+        }
+        occ_flagged[[col_f]] <- sub_bad
       }
     }
 
-    for (y in seq_along(saved_flag_names)) {
-      data.table::fwrite(x = occ_flagged[[saved_flag_names[y]]],
-                         file = p[[y]])
+    if (length(occ_flagged) > 0L) {
+      match_flags <- flag_names[match(names(occ_flagged), names(flag_names))]
+      na_names <- is.na(match_flags)
+      match_flags[na_names] <- names(occ_flagged)[na_names]
+      names(occ_flagged) <- match_flags
+
+      saved_flag_names <- names(occ_flagged)
+      paths <- file.path(output_dir, paste0(saved_flag_names, output_format))
+
+      if (!overwrite) {
+        f_exists <- file.exists(paths)
+        if (any(f_exists)) {
+          stop("Some flagged occurrences already exist in '", output_dir, "'.\n",
+               "Delete the file, change the folder or set 'overwrite = TRUE'.",
+               call. = FALSE)
+        }
+      }
+
+      for (y in seq_along(saved_flag_names)) {
+        data.table::fwrite(x = occ_flagged[[saved_flag_names[y]]],
+                           file = paths[y])
+      }
     }
   }
 
+  # Keep records passing all flags
+  valid_rows <- rowSums(flag_mat) == ncol(flag_mat)
+  occ_final <- df[valid_rows, , drop = FALSE]
+
+  # Restore force_keep records
+  if (!is.null(occ_keep) && nrow(occ_keep) > 0L) {
+    occ_final <- rbind(occ_final, occ_keep)
+  }
+
+  # Clean up temporary helper column
+  if (".force_remove_flag" %in% names(occ_final)) {
+    occ_final$.force_remove_flag <- NULL
+  }
+
+  if (was_dt) {
+    return(data.table::as.data.table(occ_final))
+  }
   return(occ_final)
 }

@@ -20,26 +20,29 @@ remove_flagged(
 }
 \arguments{
 \item{occ}{(data.frame or data.table) a dataset with occurrence records that
-has been processed by two or more flagging functions. See details.}
+has been processed by one or more flagging functions. See \emph{Details}.}
 
 \item{flags}{(character) a character vector with the names of the flag
-columns to be used for filtering records. See \emph{details} for the available
-options. Default is "all".}
+columns to be used for filtering records. See \emph{Details} for the available
+options. Default is \code{"all"}.}
 
-\item{additional_flags}{(character) an optional named character vector with
-the names of additional logical columns to be used as flags. Default is \code{NULL}.}
+\item{additional_flags}{(character) an optional \strong{named} character vector
+where the values correspond to additional logical flag columns in \code{occ} and
+the names are human-readable labels used when saving flagged records
+(e.g., \code{c("Custom flag" = "custom_flag")}). Default is \code{NULL}.}
 
-\item{force_keep}{(character) an optional character vector with the IDs of
-records that were flagged but should still be kept. Default is \code{NULL}.}
+\item{force_keep}{(character) an optional vector with the IDs of records
+that were flagged (\code{FALSE}) but should still be kept. Default is \code{NULL}.}
 
-\item{force_remove}{(character) an optional character vector with the IDs of
-records that were not flagged but should still be removed. Default is \code{NULL}.}
+\item{force_remove}{(character) an optional vector with the IDs of records
+that were not flagged (\code{TRUE}) but should still be removed. Default is \code{NULL}.}
 
-\item{remove_NA}{(logical) whether to remove records that have NA in the
-flags specified. Default is FALSE.}
+\item{remove_NA}{(logical) whether to remove records that have \code{NA} in the
+specified flags. Default is \code{FALSE}.}
 
 \item{column_id}{(character) the name of the column containing unique record
-IDs. Required if \code{force_keep} or \code{force_remove} is used. Default is \code{NULL}.}
+IDs. Required if \code{force_keep} or \code{force_remove} is used. Default is
+\code{"record_id"}.}
 
 \item{save_flagged}{(logical) whether to save the flagged (removed) records.
 If \code{TRUE}, an \code{output_dir} must be provided. Default is \code{FALSE}.}
@@ -47,7 +50,7 @@ If \code{TRUE}, an \code{output_dir} must be provided. Default is \code{FALSE}.}
 \item{output_dir}{(character) path to an existing directory where removed
 flagged records will be saved. Only used when \code{save_flagged = TRUE}.}
 
-\item{overwrite}{(logical)  whether to overwrite existing files in
+\item{overwrite}{(logical) whether to overwrite existing files in
 \code{output_dir}. Only used when \code{save_flagged = TRUE}. Default is \code{FALSE}.}
 
 \item{output_format}{(character) output format for saving removed records.
@@ -55,8 +58,9 @@ Options are \code{".csv"} or \code{".gz"}. Only used when \code{save_flagged = T
 Default is \code{".gz"}.}
 }
 \value{
-A \code{data.frame} containing only the valid (kept) records according to the
-flags and additional criteria.
+An object of the same class as \code{occ} (\code{data.frame} or \code{data.table})
+containing only the valid (kept) records according to the flags and
+additional criteria.
 }
 \description{
 This function removes occurrence records flagged as invalid by one or more
@@ -64,10 +68,13 @@ flagging functions. Additional manual control is available to force keeping
 or removing specific records, regardless of their flag values.
 }
 \details{
-The following flags are available: correct_country, correct_state, cultivated,
-fossil, inaturalist, faunabr, florabr, wcvp, iucn, duplicated, thin_geo,
-thin_env, .val, .equ, .zer, .cap, .cen, .sea, .urb, .otl, .gbf, .inst, and
-.aohi.
+The following built-in flags are recognized when \code{flags = "all"} (or can be
+passed individually without the \verb{_flag} suffix): \code{correct_country},
+\code{correct_state}, \code{year}, \code{duplicated}, \code{fossil}, \code{cultivated},
+\code{inaturalist}, \code{florabr}, \code{faunabr}, \code{wcvp}, \code{iucn}, \code{bien}, \code{thin_env},
+\code{thin_geo}, \code{consensus}, as well as \code{CoordinateCleaner} flags (\code{.val},
+\code{.equ}, \code{.zer}, \code{.cap}, \code{.cen}, \code{.sea}, \code{.urb}, \code{.otl}, \code{.gbf}, \code{.inst},
+and \code{.aohi}).
 }
 \examples{
 # Load example data
@@ -84,5 +91,5 @@ occ_valid2 <- remove_flagged(occ = occ_flagged,
 # Remove flagged records but keep some flagged ones
 to_keep <- c("gbif_14501", "gbif_12002", "gbif_5168")
 occ_valid3 <- remove_flagged(occ = occ_flagged,
-                            force_keep = to_keep)
+                             force_keep = to_keep)
 }
