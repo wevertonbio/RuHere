@@ -173,9 +173,10 @@ check_countries <- function(occ,
     }
 
     idx_by_country <- split(seq_len(nrow(groups)), groups[[country_column]])
+    countries_to_test <- names(idx_by_country)
     buf_width <- distance * 1000
 
-    res_list <- my_lapply(countries_in, function(i) {
+    res_list <- my_lapply(countries_to_test, function(i) {
       occ_i <- idx_by_country[[i]]
       xy_i <- dc[occ_i]
       country_i <- country_shp[country_shp$name == i]
@@ -196,8 +197,8 @@ check_countries <- function(occ,
     })
 
     unique_res <- rep(NA, nrow(groups))
-    for (k in seq_along(countries_in)) {
-      unique_res[idx_by_country[[countries_in[k]]]] <- res_list[[k]]
+    for (k in seq_along(countries_to_test)) {
+      unique_res[idx_by_country[[countries_to_test[k]]]] <- res_list[[k]]
     }
 
     # Expand results back to original row indices

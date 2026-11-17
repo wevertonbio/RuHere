@@ -178,9 +178,10 @@ check_states <- function(occ,
     }
 
     idx_by_state <- split(seq_len(nrow(groups)), groups[[state_column]])
+    states_to_test <- names(idx_by_state)
     buf_width <- distance * 1000
 
-    res_list <- my_lapply(states_in, function(i) {
+    res_list <- my_lapply(states_to_test, function(i) {
       occ_i <- idx_by_state[[i]]
       xy_i <- dc[occ_i]
       state_i <- state_shp[state_shp$name == i]
@@ -201,8 +202,8 @@ check_states <- function(occ,
     })
 
     unique_res <- rep(NA, nrow(groups))
-    for (k in seq_along(states_in)) {
-      unique_res[idx_by_state[[states_in[k]]]] <- res_list[[k]]
+    for (k in seq_along(states_to_test)) {
+      unique_res[idx_by_state[[states_to_test[k]]]] <- res_list[[k]]
     }
 
     # Expand results back to original row indices
